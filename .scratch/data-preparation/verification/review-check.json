@@ -1,0 +1,279 @@
+{
+  "ticket": "03",
+  "verified_at_utc": "2026-10-10T14:19:22.882643+00:00",
+  "verdict": "complete_acquisition_and_diagnosis_with_disclosed_rating_anomaly",
+  "runtime": {
+    "prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+    "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+    "python": "3.13.16 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:20:25) [MSC v.1942 64 bit (AMD64)]"
+  },
+  "raw_sha256": "7f6ae806af2e2dbdda8564abde3141b81c7ee3cf4d8443d361d6bdad91aea4b8",
+  "independent_powershell_sha256": "7f6ae806af2e2dbdda8564abde3141b81c7ee3cf4d8443d361d6bdad91aea4b8",
+  "raw_bytes": 1630860152,
+  "download_completed_at_utc_file_mtime": "2026-10-10T14:05:04.665771+00:00",
+  "independent_file_scan": {
+    "method": "independent blockwise newline count and second gzip-to-EOF read",
+    "newline_count": 14318520,
+    "inflated_bytes": 5973991903,
+    "gzip_to_eof": true,
+    "first": {
+      "parent_asin": "B00CM36GAQ",
+      "asin": "B00CM36GAQ",
+      "timestamp": 1587854482395
+    },
+    "last": {
+      "parent_asin": "B0714KTNVM",
+      "asin": "B0714KTNVM",
+      "timestamp": 1541654252673
+    }
+  },
+  "raw_samples": {
+    "method": "raw-line extraction by block boundaries, public fields only",
+    "samples": [
+      {
+        "source_line": 1,
+        "parent_asin": "B00CM36GAQ",
+        "asin": "B00CM36GAQ",
+        "timestamp": 1587854482395,
+        "rating": 5.0
+      },
+      {
+        "source_line": 378447,
+        "parent_asin": "B0C396H8QB",
+        "asin": "B00RQPUV0Q",
+        "timestamp": 1595703983161,
+        "rating": 0.0
+      },
+      {
+        "source_line": 1768274,
+        "parent_asin": "B00004S1C5",
+        "asin": "B00004S1C5",
+        "timestamp": 965820395000,
+        "rating": 5.0
+      },
+      {
+        "source_line": 14313383,
+        "parent_asin": "B08L11TH6C",
+        "asin": "B08L1245CJ",
+        "timestamp": 1694550038851,
+        "rating": 1.0
+      },
+      {
+        "source_line": 14318520,
+        "parent_asin": "B0714KTNVM",
+        "asin": "B0714KTNVM",
+        "timestamp": 1541654252673,
+        "rating": 5.0
+      }
+    ]
+  },
+  "independent_utc_checks": [
+    {
+      "source_line": 1,
+      "timestamp": 1587854482395,
+      "utc": "2020-04-25T22:41:22.395+00:00",
+      "method": "Independent .NET DateTimeOffset.FromUnixTimeMilliseconds",
+      "roundtrip": true
+    },
+    {
+      "source_line": 378447,
+      "timestamp": 1595703983161,
+      "utc": "2020-07-25T19:06:23.161+00:00",
+      "method": "Independent .NET DateTimeOffset.FromUnixTimeMilliseconds",
+      "roundtrip": true
+    },
+    {
+      "source_line": 1768274,
+      "timestamp": 965820395000,
+      "utc": "2000-08-09T11:26:35.000+00:00",
+      "method": "Independent .NET DateTimeOffset.FromUnixTimeMilliseconds",
+      "roundtrip": true
+    },
+    {
+      "source_line": 14313383,
+      "timestamp": 1694550038851,
+      "utc": "2023-09-12T20:20:38.851+00:00",
+      "method": "Independent .NET DateTimeOffset.FromUnixTimeMilliseconds",
+      "roundtrip": true
+    },
+    {
+      "source_line": 14318520,
+      "timestamp": 1541654252673,
+      "utc": "2018-11-08T05:17:32.673+00:00",
+      "method": "Independent .NET DateTimeOffset.FromUnixTimeMilliseconds",
+      "roundtrip": true
+    }
+  ],
+  "acquisition_code_sha256": "77ae82fa04d7b62b47ea6b1b17f633242ab7f0201511533e28d3fce60476d834",
+  "verified_current_code_sha256": "5e87ac657590b8589d2518222ff75db9b63243f49e9c67192da10be67b42fa4a",
+  "code_change_after_acquisition": "Avoid oversized-integer rating float conversion; actual file has only float ratings and the aggregate facts are unchanged.",
+  "approved_spec_sha256": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
+  "tests": {
+    "count": 18,
+    "result": "passed",
+    "output": ".scratch/data-preparation/verification/ticket03-tests.txt"
+  },
+  "original_materials": {
+    "files": 26,
+    "changed": 0,
+    "checks": [
+      {
+        "path": "research/数据修复方案与验收草案_20261010.md",
+        "expected_sha256": "40f3960a9cce38221367ef6f05074c61e22251e93ebb664bbad3077fefdb8a8d",
+        "actual_sha256": "40f3960a9cce38221367ef6f05074c61e22251e93ebb664bbad3077fefdb8a8d",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/verify_manuscript.py",
+        "expected_sha256": "b9d76e71057be961fe964e281668f0db6fc277fbd2bb0c0d94c692fd54720cd1",
+        "actual_sha256": "b9d76e71057be961fe964e281668f0db6fc277fbd2bb0c0d94c692fd54720cd1",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/source_notes.md",
+        "expected_sha256": "8d8f29b1e26a64c226d8427efa10276b1123d4319560cf768f2627c4b4cb0aea",
+        "actual_sha256": "8d8f29b1e26a64c226d8427efa10276b1123d4319560cf768f2627c4b4cb0aea",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/revision_manifest.json",
+        "expected_sha256": "62b6837476ce969a17096ccef21ca6dbdaf5a9e2053ec47cc4e27aa60e2593df",
+        "actual_sha256": "62b6837476ce969a17096ccef21ca6dbdaf5a9e2053ec47cc4e27aa60e2593df",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/revise_manuscript.py",
+        "expected_sha256": "71b2cba1e18416f1c740e1511faf5f651f62107327de0a3ce42d4812d7ed1241",
+        "actual_sha256": "71b2cba1e18416f1c740e1511faf5f651f62107327de0a3ce42d4812d7ed1241",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/revised_fulltext.txt",
+        "expected_sha256": "90c57b133cc4757078044f3d3f5677d83787a42e13c8a5701cbd5a1ab1584655",
+        "actual_sha256": "90c57b133cc4757078044f3d3f5677d83787a42e13c8a5701cbd5a1ab1584655",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render_with_word.py",
+        "expected_sha256": "1ee0cbf5d22548969efbd51cf97482a476998e5f9da6d1276eb578ba728b2c5c",
+        "actual_sha256": "1ee0cbf5d22548969efbd51cf97482a476998e5f9da6d1276eb578ba728b2c5c",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/论文初稿_表达与实验结构修订版_20261010.pdf",
+        "expected_sha256": "9d5b7605382d48ae0dbdc553165b183bf9122506057754de332f84e71f2ff442",
+        "actual_sha256": "9d5b7605382d48ae0dbdc553165b183bf9122506057754de332f84e71f2ff442",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-9.png",
+        "expected_sha256": "8545718a96b0fff68877695da0d14d168cb58a5589409856ba3be9cae642e8b4",
+        "actual_sha256": "8545718a96b0fff68877695da0d14d168cb58a5589409856ba3be9cae642e8b4",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-8.png",
+        "expected_sha256": "d474c8f7304f5f17b3fcfadfdce5cf25fd0538f74e60cfd983848b7b70bdf8ad",
+        "actual_sha256": "d474c8f7304f5f17b3fcfadfdce5cf25fd0538f74e60cfd983848b7b70bdf8ad",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-7.png",
+        "expected_sha256": "9a0ab6dd22546aaa5adaacde7af71f7708d287b06a0613a3bb04ab5583bc84c4",
+        "actual_sha256": "9a0ab6dd22546aaa5adaacde7af71f7708d287b06a0613a3bb04ab5583bc84c4",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-6.png",
+        "expected_sha256": "ead9094db75b1c71f2d0790d5c041ff0afaa7c96aec5225598e902499a38855d",
+        "actual_sha256": "ead9094db75b1c71f2d0790d5c041ff0afaa7c96aec5225598e902499a38855d",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-5.png",
+        "expected_sha256": "2883079b1cbc4709d71f77f7f18c76189eccc990a9629f3969f433883ca74377",
+        "actual_sha256": "2883079b1cbc4709d71f77f7f18c76189eccc990a9629f3969f433883ca74377",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-4.png",
+        "expected_sha256": "2974f0e2cafe8c6bcd664c03d8b4dad125b64a764d5c2030cbe6f02e034b8a6a",
+        "actual_sha256": "2974f0e2cafe8c6bcd664c03d8b4dad125b64a764d5c2030cbe6f02e034b8a6a",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-3.png",
+        "expected_sha256": "1cfdbe75637ba02ba83419fe802571c22b33c2dfa159c70fdd39a9483e9cb43f",
+        "actual_sha256": "1cfdbe75637ba02ba83419fe802571c22b33c2dfa159c70fdd39a9483e9cb43f",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-2.png",
+        "expected_sha256": "5274b34f7c7bf30d2a80b14e80f653e60ce3b322690f6261c225f79944ec3ee8",
+        "actual_sha256": "5274b34f7c7bf30d2a80b14e80f653e60ce3b322690f6261c225f79944ec3ee8",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-14.png",
+        "expected_sha256": "ccf548ba26e3053aee4f331a89548aac65497f73c54125139eed6635d5a66dbb",
+        "actual_sha256": "ccf548ba26e3053aee4f331a89548aac65497f73c54125139eed6635d5a66dbb",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-13.png",
+        "expected_sha256": "da8b4a5732637e250af1e66003fef1cfaa2a0fe4da8d1153ba06165aece1227c",
+        "actual_sha256": "da8b4a5732637e250af1e66003fef1cfaa2a0fe4da8d1153ba06165aece1227c",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-12.png",
+        "expected_sha256": "e7c2ea30a4d1dad5e40b2ec16a4060fe5f5528676fcf6b3e25803e661243cc8b",
+        "actual_sha256": "e7c2ea30a4d1dad5e40b2ec16a4060fe5f5528676fcf6b3e25803e661243cc8b",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-11.png",
+        "expected_sha256": "2e9bc8ddb191155d4e27deb6b255987d554302b5c419f85dd1a207d26e4bcbca",
+        "actual_sha256": "2e9bc8ddb191155d4e27deb6b255987d554302b5c419f85dd1a207d26e4bcbca",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-10.png",
+        "expected_sha256": "8dcabf9ccc9a42df68ece19965fd3f48eafbedd6b85b9945bef513401985ed6f",
+        "actual_sha256": "8dcabf9ccc9a42df68ece19965fd3f48eafbedd6b85b9945bef513401985ed6f",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/render/page-1.png",
+        "expected_sha256": "f2d44ccb83f6d1c94ce168007ec5e652f1ba8f88b7d6f158447775d73a66b6ad",
+        "actual_sha256": "f2d44ccb83f6d1c94ce168007ec5e652f1ba8f88b7d6f158447775d73a66b6ad",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/paragraph_changes.json",
+        "expected_sha256": "ef6d9c49417325070f89e0b5dc9989a6da85a8fa06acb7fe92e82f7ab213b8a3",
+        "actual_sha256": "ef6d9c49417325070f89e0b5dc9989a6da85a8fa06acb7fe92e82f7ab213b8a3",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/formula_review.md",
+        "expected_sha256": "1836d1d8223d5ee9d52a6123cab766b05aafcc07195bc7324e88d9a995c96cd4",
+        "actual_sha256": "1836d1d8223d5ee9d52a6123cab766b05aafcc07195bc7324e88d9a995c96cd4",
+        "unchanged": true
+      },
+      {
+        "path": "research/manuscript_review_20261010/formula_checks.json",
+        "expected_sha256": "964422c5abc88a27e5e88a8c33647c5ffd8b3938ad0d98a30a46db880119c0f9",
+        "actual_sha256": "964422c5abc88a27e5e88a8c33647c5ffd8b3938ad0d98a30a46db880119c0f9",
+        "unchanged": true
+      },
+      {
+        "path": "manuscript/论文初稿_表达与实验结构修订版_20261010.docx",
+        "expected_sha256": "b9f44938f7298a23e84a69bfed33f2398bb705a8433bd44f49866f8fbc2064b0",
+        "actual_sha256": "b9f44938f7298a23e84a69bfed33f2398bb705a8433bd44f49866f8fbc2064b0",
+        "unchanged": true
+      }
+    ]
+  },
+  "research_rules": "D1-D12 remaining choices pending; no cleaning, cutoff, formal catalog, SIM materials or evaluation labels generated"
+}

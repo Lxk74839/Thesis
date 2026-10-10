@@ -1,0 +1,41 @@
+{
+  "id": "amazon-2023-grocery-reviews",
+  "dataset": "Amazon Reviews'23",
+  "publisher": "McAuley Lab, UC San Diego",
+  "category": "Grocery_and_Gourmet_Food",
+  "kind": "user_reviews",
+  "version": "2023",
+  "url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/Grocery_and_Gourmet_Food.jsonl.gz",
+  "documentation": "https://amazon-reviews-2023.github.io/main.html",
+  "documentation_checked_on": "2026-10-10",
+  "publisher_checksum": null,
+  "publisher_checksum_note": "No file digest is supplied on the inspected official download page; the captured SHA-256 identifies our local snapshot.",
+  "association_key": "parent_asin",
+  "time_field": "timestamp",
+  "time_unit": "milliseconds",
+  "time_epoch_utc": "1970-01-01T00:00:00+00:00",
+  "time_basis": [
+    {
+      "url": "https://amazon-reviews-2023.github.io/main.html#for-user-reviews",
+      "location": "Data Fields / For User Reviews",
+      "observation": "timestamp is documented as an integer Unix time. parent_asin is the key for product metadata; asin identifies the reviewed product or variant."
+    },
+    {
+      "url": "https://arxiv.org/html/2403.03952v1#S2.SS1",
+      "location": "Section 2.1 / Finer-Grained Timestamps",
+      "observation": "The dataset authors describe timestamp precision up to milliseconds. Combined with the integer Unix field and actual-file UTC/subsecond checks, this supports an epoch-millisecond mapping. Actual-file checks are recorded separately."
+    }
+  ],
+  "documented_fields": {
+    "rating": "float",
+    "title": "str",
+    "text": "str",
+    "images": "list",
+    "asin": "str",
+    "parent_asin": "str",
+    "user_id": "str",
+    "timestamp": "int",
+    "verified_purchase": "bool",
+    "helpful_vote": "int"
+  }
+}

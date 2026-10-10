@@ -18,25 +18,33 @@ class MetadataPreparationTests(unittest.TestCase):
         self.addCleanup(self.work.cleanup)
         self.output = Path(self.work.name)
 
-    def prepare(self, payload, url=None):
+    def prepare(self, payload, url=None, stage="metadata", time_unit="milliseconds"):
         source_file = self.output / "fixture.jsonl.gz"
         source_file.write_bytes(payload)
         source = self.output / "source.json"
         source.write_text(json.dumps({
-            "id": "fixture-metadata",
+            "id": "fixture-" + stage,
             "dataset": "interface-fixture",
-            "kind": "item_metadata",
+            "kind": "item_metadata" if stage == "metadata" else "user_reviews",
             "url": url or source_file.as_uri(),
             "documentation": "interface-fixture",
             "documented_fields": {
                 "parent_asin": "str", "title": "str",
                 "categories": "list", "description": "list",
+            } if stage == "metadata" else {
+                "parent_asin": "str", "asin": "str", "user_id": "str",
+                "rating": "float", "title": "str", "text": "str",
+                "timestamp": "int",
             },
+            "time_unit": time_unit if stage == "reviews" else None,
         }), encoding="utf-8")
+        arguments = ["--metadata-record", str(
+            self.output / "records/sources/fixture-metadata.json"
+        )] if stage == "reviews" else []
         run = subprocess.run(
             [sys.executable, str(PROJECT / "prepare_data.py"),
-             "--stage", "metadata", "--source-manifest", str(source),
-             "--output-root", str(self.output)],
+             "--stage", stage, "--source-manifest", str(source),
+             "--output-root", str(self.output), *arguments],
             cwd=PROJECT, capture_output=True, text=True, encoding="utf-8",
         )
         return run
@@ -211,6 +219,121 @@ class MetadataPreparationTests(unittest.TestCase):
                 issues = self.output / report["diagnostic_path"]
                 self.assertTrue(issues.is_file())
                 self.assertEqual(issues.read_text("utf-8"), "")
+
+    def test_complete_reviews_reach_last_record_and_preserve_original_bytes(self):
+        self.prepare(gzip.compress(
+            b'{"parent_asin":"FIRST"}\n{"parent_asin":"LAST"}\n', mtime=0))
+        payload = gzip.compress(
+            b'{"parent_asin":"FIRST","asin":"V1","user_id":"U1","rating":1.0,"title":" raw ","text":"","timestamp":1609459200123}\n'
+            b'{"parent_asin":"LAST","asin":"V2","user_id":"U2","rating":5.0,"title":"End","text":" unchanged ","timestamp":1609459200456}\n',
+            mtime=0,
+        )
+        run = self.prepare(payload, stage="reviews")
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual((report["stage"], report["scan"]["records"],
+                          report["scan"]["last_parent_asin"]), ("reviews", 2, "LAST"))
+        self.assertEqual((self.output / report["raw_path"]).read_bytes(), payload)
+        self.assertEqual(report["fields"]["text"]["empty"], 1)
+
+    def test_reviews_join_parent_metadata_without_falling_back_to_variant(self):
+        self.prepare(gzip.compress(b'{"parent_asin":"A"}\n{"parent_asin":"B"}\n', mtime=0))
+        run = self.prepare(gzip.compress(
+            b'{"parent_asin":"A","asin":"V1"}\n'
+            b'{"parent_asin":"A","asin":"V2"}\n'
+            b'{"parent_asin":"UNKNOWN","asin":"A"}\n'
+            b'{"asin":"A"}\n'
+            b'{"parent_asin":null,"asin":"B"}\n', mtime=0), stage="reviews")
+        report = json.loads(run.stdout)
+        association = report["association"]
+        self.assertEqual((association["matched_review_rows"],
+                          association["unmatched_review_rows"],
+                          association["unmatched_unique_parents"]), (2, 1, 1))
+        self.assertEqual((association["metadata_parents_with_reviews"],
+                          association["metadata_parents_without_reviews"]), (1, 1))
+        self.assertEqual(report["scan"]["invalid_parent_rows"], 2)
+        self.assertEqual(association["asin_differs_from_parent_rows"], 3)
+        self.assertEqual(report["scan"]["records"], 5)
+
+    def test_review_milliseconds_map_to_utc_without_losing_subsecond_values(self):
+        self.prepare(gzip.compress(b'{"parent_asin":"A"}\n', mtime=0))
+        run = self.prepare(gzip.compress(
+            b'{"parent_asin":"A","timestamp":1609459200123}\n'
+            b'{"parent_asin":"A","timestamp":1609459200000}\n', mtime=0), stage="reviews")
+        time = json.loads(run.stdout)["time"]
+        self.assertEqual(time["unit"], "milliseconds")
+        self.assertEqual((time["min_raw"], time["min_utc"]),
+                         (1609459200000, "2021-01-01T00:00:00.000+00:00"))
+        self.assertEqual((time["max_raw"], time["max_utc"]),
+                         (1609459200123, "2021-01-01T00:00:00.123+00:00"))
+        self.assertEqual(time["nonzero_millisecond_rows"], 1)
+
+    def test_review_anomalies_are_separate_and_do_not_stop_later_diagnosis(self):
+        self.prepare(gzip.compress(b'{"parent_asin":"A"}\n', mtime=0))
+        rows = [
+            {"parent_asin":"A", "asin":"V", "user_id":"U", "rating":0, "title":"", "text":""},
+            {"parent_asin":"A", "asin":"V", "user_id":"U", "rating":1, "title":"", "text":"", "timestamp":None},
+            {"parent_asin":"A", "asin":"V", "user_id":"U", "rating":1, "title":"", "text":"", "timestamp":"1609459200000"},
+            {"parent_asin":"A", "asin":"V", "user_id":"U", "rating":1, "title":"", "text":"", "timestamp":True},
+            {"parent_asin":"A", "asin":"V", "user_id":"U", "rating":1, "title":"", "text":{}, "timestamp":10**30},
+            {"parent_asin":"A", "rating":5, "title":"", "text":"ok", "timestamp":1609459200000},
+        ]
+        body = ("\n".join(json.dumps(row) for row in rows) +
+                '\n{broken\n[]\n{"parent_asin":"A","asin":"V","user_id":"U","rating":1,"title":"End","text":"valid","timestamp":1609459200123}\n').encode()
+        run = self.prepare(gzip.compress(body, mtime=0), stage="reviews")
+        self.assertNotEqual(run.returncode, 0)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "needs_review")
+        self.assertEqual((report["scan"]["lines"], report["scan"]["records"],
+                          report["scan"]["invalid_json_rows"], report["scan"]["non_object_rows"]), (9, 7, 1, 1))
+        self.assertEqual(report["time"]["invalid_reasons"],
+                         {"missing":1, "null":1, "not_integer":2, "unrepresentable":1})
+        self.assertEqual(report["time"]["valid_rows"], 2)
+        self.assertEqual(report["review_diagnostics"]["invalid_rating_rows"], 1)
+        self.assertEqual(report["review_diagnostics"]["invalid_asin_rows"], 1)
+        self.assertEqual(report["review_diagnostics"]["invalid_user_rows"], 1)
+        self.assertEqual(report["review_diagnostics"]["invalid_text_rows"], 1)
+        self.assertEqual(report["fields"]["timestamp"]["missing"], 1)
+        self.assertEqual(report["time"]["max_line"], 9)
+
+    def test_review_join_rejects_metadata_bytes_changed_since_verified_record(self):
+        metadata = json.loads(self.prepare(gzip.compress(
+            b'{"parent_asin":"A"}\n', mtime=0)).stdout)
+        (self.output / metadata["raw_path"]).write_bytes(gzip.compress(
+            b'{"parent_asin":"OTHER"}\n', mtime=0))
+        run = self.prepare(gzip.compress(
+            b'{"parent_asin":"A","timestamp":1609459200000}\n', mtime=0), stage="reviews")
+        self.assertNotEqual(run.returncode, 0)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "source_incomplete")
+        self.assertIn("metadata checksum", report["error"]["message"])
+        self.assertEqual(report["scan"]["lines"], 0)
+
+    def test_review_time_unit_must_be_explicitly_supported_not_guessed(self):
+        self.prepare(gzip.compress(b'{"parent_asin":"A"}\n', mtime=0))
+        for unit in (None, "seconds"):
+            with self.subTest(unit=unit):
+                run = self.prepare(gzip.compress(
+                    b'{"parent_asin":"A","timestamp":1609459200000}\n', mtime=0),
+                    stage="reviews", time_unit=unit)
+                self.assertNotEqual(run.returncode, 0)
+                report = json.loads(run.stdout)
+                self.assertEqual(report["status"], "source_incomplete")
+                self.assertIn("time_unit", report["error"]["message"])
+                self.assertEqual(report["scan"]["lines"], 0)
+
+    def test_oversized_rating_is_diagnosed_without_aborting_the_full_review_scan(self):
+        self.prepare(gzip.compress(b'{"parent_asin":"A"}\n', mtime=0))
+        body = (json.dumps({"parent_asin": "A", "asin": "V", "user_id": "U",
+                            "rating": 10**400, "title": "", "text": "", "timestamp": 1609459200000}) +
+                '\n{"parent_asin":"A","asin":"V","user_id":"U","rating":5,"title":"End","text":"ok","timestamp":1609459200123}\n').encode()
+        run = self.prepare(gzip.compress(body, mtime=0), stage="reviews")
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "needs_review")
+        self.assertEqual(report["scan"]["records"], 2)
+        self.assertTrue(report["scan"]["gzip_verified"])
+        self.assertEqual(report["review_diagnostics"]["invalid_rating_rows"], 1)
+        self.assertEqual(report["time"]["max_line"], 2)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
-"""Single public entry for staged data preparation; currently metadata only."""
+"""Single public entry for staged source acquisition and diagnostics."""
 
 import argparse
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import gzip
 import hashlib
 from http.client import HTTPException
@@ -15,9 +15,10 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews"])
     parser.add_argument("--source-manifest", required=True, type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--metadata-record", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
@@ -46,8 +47,38 @@ def main():
             "invalid_json_rows": 0, "non_object_rows": 0, "invalid_parent_rows": 0,
             "unique_parents": 0, "duplicate_parent_rows": 0}
     parents = set()
+    metadata_parents = set()
+    association = {"matched_review_rows": 0, "unmatched_review_rows": 0,
+                   "asin_differs_from_parent_rows": 0} if args.stage == "reviews" else None
+    time = {"field": "timestamp", "unit": source.get("time_unit"), "timezone": "UTC",
+            "min_raw": None, "max_raw": None, "min_utc": None, "max_utc": None,
+            "min_line": None, "max_line": None, "valid_rows": 0,
+            "invalid_reasons": Counter(),
+            "nonzero_millisecond_rows": 0} if args.stage == "reviews" else None
+    review_diagnostics = {"invalid_rating_rows": 0, "invalid_asin_rows": 0,
+                          "invalid_user_rows": 0, "invalid_text_rows": 0,
+                          "anomalous_records": 0} if args.stage == "reviews" else None
+    epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
     error = None
     try:
+        if args.stage == "reviews":
+            if source.get("time_unit") != "milliseconds":
+                raise ValueError("reviews require the documented time_unit milliseconds")
+            if args.metadata_record is None:
+                raise ValueError("reviews require a metadata source record")
+            metadata_record = json.loads(args.metadata_record.read_text(encoding="utf-8"))
+            if metadata_record["stage"] != "metadata" or metadata_record["status"] != "diagnostic_complete":
+                raise ValueError("reviews require a complete, verified metadata source")
+            metadata_raw = (args.metadata_record.resolve().parent.parents[1] / metadata_record["raw_path"]).resolve()
+            if project not in metadata_raw.parents:
+                raise ValueError("metadata raw path must remain inside the Thesis project")
+            with metadata_raw.open("rb") as metadata_bytes:
+                metadata_sha256 = hashlib.file_digest(metadata_bytes, "sha256").hexdigest()
+            if metadata_sha256 != metadata_record["download"]["sha256"]:
+                raise ValueError("metadata checksum differs from its verified source record")
+            with gzip.open(metadata_raw, "rb") as metadata_stream:
+                metadata_parents = {json.loads(line)["parent_asin"] for line in metadata_stream}
+            association["metadata_source_sha256"] = metadata_sha256
         with urllib.request.urlopen(source["url"], timeout=60) as response:
             download["resolved_url"] = response.geturl()
             download["headers"] = dict(response.headers)
@@ -90,10 +121,57 @@ def main():
                     scan["invalid_parent_rows"] += 1
                     issues.write(json.dumps({"line": scan["lines"],
                                              "reason": "invalid_parent_asin"}) + "\n")
-                elif parent in parents:
+                elif parent in parents and args.stage == "metadata":
                     scan["duplicate_parent_rows"] += 1
                 else:
                     parents.add(parent)
+                if association is not None and isinstance(parent, str) and parent.strip():
+                    key = "matched_review_rows" if parent in metadata_parents else "unmatched_review_rows"
+                    association[key] += 1
+                    asin = item.get("asin")
+                    if isinstance(asin, str) and asin.strip() and asin != parent:
+                        association["asin_differs_from_parent_rows"] += 1
+                if time is not None:
+                    reasons = []
+                    timestamp = item.get("timestamp")
+                    reason = ("missing" if "timestamp" not in item else
+                              "null" if timestamp is None else
+                              "not_integer" if type(timestamp) is not int else None)
+                    if reason is None:
+                        try:
+                            utc = epoch + timedelta(milliseconds=timestamp)
+                        except OverflowError:
+                            reason = "unrepresentable"
+                    if reason:
+                        time["invalid_reasons"][reason] += 1
+                        reasons.append("timestamp_" + reason)
+                    else:
+                        time["valid_rows"] += 1
+                        time["nonzero_millisecond_rows"] += timestamp % 1000 != 0
+                        for boundary in ("min", "max"):
+                            previous = time[boundary + "_raw"]
+                            if previous is None or (timestamp < previous if boundary == "min" else timestamp > previous):
+                                time[boundary + "_raw"] = timestamp
+                                time[boundary + "_utc"] = utc.isoformat(timespec="milliseconds")
+                                time[boundary + "_line"] = scan["lines"]
+                    rating = item.get("rating")
+                    invalid = {
+                        "rating": type(rating) not in (int, float) or not 1 <= rating <= 5,
+                        "asin": not isinstance(item.get("asin"), str) or not item["asin"].strip(),
+                        "user": not isinstance(item.get("user_id"), str) or not item["user_id"].strip(),
+                        "text": not isinstance(item.get("text"), str),
+                    }
+                    for name, bad in invalid.items():
+                        if bad:
+                            review_diagnostics["invalid_" + name + "_rows"] += 1
+                            reasons.append("invalid_" + name)
+                    if not isinstance(parent, str) or not parent.strip():
+                        reasons.append("invalid_parent_asin")
+                    elif parent not in metadata_parents:
+                        reasons.append("unmatched_parent_asin")
+                    if reasons:
+                        review_diagnostics["anomalous_records"] += 1
+                        issues.write(json.dumps({"line": scan["lines"], "reasons": reasons}) + "\n")
                 for name, value in item.items():
                     field = fields.setdefault(name, {"present": 0, "empty": 0, "types": Counter()})
                     field["present"] += 1
@@ -103,17 +181,22 @@ def main():
                         field["empty"] += 1
         scan["gzip_verified"] = True
         if scan["lines"] == 0:
-            raise ValueError("metadata source contains no records")
+            raise ValueError("source contains no records")
     except (OSError, EOFError, HTTPException, zlib.error, ValueError) as exc:
         error = {"kind": type(exc).__name__, "message": str(exc)}
     download["sha256"] = digest.hexdigest()
     scan["unique_parents"] = len(parents)
+    if association is not None:
+        association["unmatched_unique_parents"] = len(parents - metadata_parents)
+        association["metadata_parents_with_reviews"] = len(parents & metadata_parents)
+        association["metadata_parents_without_reviews"] = len(metadata_parents - parents)
     for field in fields.values():
         field["missing"] = scan["records"] - field["present"]
     needs_review = (scan["invalid_json_rows"] + scan["non_object_rows"]
-                    + scan["invalid_parent_rows"]) > 0
+                    + scan["invalid_parent_rows"]) > 0 or bool(
+                        review_diagnostics and review_diagnostics["anomalous_records"])
     report = {
-        "stage": "metadata",
+        "stage": args.stage,
         "status": "source_incomplete" if error else
                   ("needs_review" if needs_review else "diagnostic_complete"),
         "formal_package_status": "not_built",
@@ -124,6 +207,9 @@ def main():
         "record_path": record.relative_to(root).as_posix(),
         "diagnostic_path": diagnostic.relative_to(root).as_posix(),
         "scan": scan,
+        "association": association,
+        "time": time,
+        "review_diagnostics": review_diagnostics,
         "fields": fields,
         "error": error,
     }

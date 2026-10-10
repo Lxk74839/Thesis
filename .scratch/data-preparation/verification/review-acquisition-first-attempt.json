@@ -1,0 +1,162 @@
+{
+  "association": {
+    "asin_differs_from_parent_rows": 0,
+    "matched_review_rows": 0,
+    "metadata_parents_with_reviews": 0,
+    "metadata_parents_without_reviews": 603274,
+    "metadata_source_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
+    "unmatched_review_rows": 0,
+    "unmatched_unique_parents": 0
+  },
+  "diagnostic_path": "data/diagnostics/amazon-2023-grocery-reviews.errors.jsonl",
+  "download": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "error": {
+    "kind": "URLError",
+    "message": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+  },
+  "fields": {
+    "asin": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "helpful_vote": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "images": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "parent_asin": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "rating": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "text": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "timestamp": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "title": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "user_id": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    },
+    "verified_purchase": {
+      "empty": 0,
+      "missing": 0,
+      "present": 0,
+      "types": {}
+    }
+  },
+  "formal_package_status": "not_built",
+  "raw_path": "data/raw/amazon-2023-grocery-reviews.partial",
+  "record_path": "records/sources/amazon-2023-grocery-reviews.json",
+  "retrieved_at_utc": "2026-10-10T14:01:44.917286+00:00",
+  "review_diagnostics": {
+    "anomalous_records": 0,
+    "invalid_asin_rows": 0,
+    "invalid_rating_rows": 0,
+    "invalid_text_rows": 0,
+    "invalid_user_rows": 0
+  },
+  "scan": {
+    "duplicate_parent_rows": 0,
+    "first_parent_asin": null,
+    "gzip_verified": false,
+    "invalid_json_rows": 0,
+    "invalid_parent_rows": 0,
+    "last_parent_asin": null,
+    "lines": 0,
+    "non_object_rows": 0,
+    "records": 0,
+    "unique_parents": 0
+  },
+  "source": {
+    "association_key": "parent_asin",
+    "category": "Grocery_and_Gourmet_Food",
+    "dataset": "Amazon Reviews'23",
+    "documentation": "https://amazon-reviews-2023.github.io/main.html",
+    "documentation_checked_on": "2026-10-10",
+    "documented_fields": {
+      "asin": "str",
+      "helpful_vote": "int",
+      "images": "list",
+      "parent_asin": "str",
+      "rating": "float",
+      "text": "str",
+      "timestamp": "int",
+      "title": "str",
+      "user_id": "str",
+      "verified_purchase": "bool"
+    },
+    "id": "amazon-2023-grocery-reviews",
+    "kind": "user_reviews",
+    "publisher": "McAuley Lab, UC San Diego",
+    "publisher_checksum": null,
+    "publisher_checksum_note": "No file digest is supplied on the inspected official download page; the captured SHA-256 identifies our local snapshot.",
+    "time_basis": [
+      {
+        "location": "Data Fields / For User Reviews",
+        "observation": "timestamp is documented as an integer Unix time. parent_asin is the key for product metadata; asin identifies the reviewed product or variant.",
+        "url": "https://amazon-reviews-2023.github.io/main.html#for-user-reviews"
+      },
+      {
+        "location": "Section 2.1 / Finer-Grained Timestamps",
+        "observation": "The dataset authors describe timestamp precision up to milliseconds. Combined with the integer Unix field and actual-file UTC/subsecond checks, this supports an epoch-millisecond mapping. Actual-file checks are recorded separately.",
+        "url": "https://arxiv.org/html/2403.03952v1#S2.SS1"
+      }
+    ],
+    "time_epoch_utc": "1970-01-01T00:00:00+00:00",
+    "time_field": "timestamp",
+    "time_unit": "milliseconds",
+    "url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/Grocery_and_Gourmet_Food.jsonl.gz",
+    "version": "2023"
+  },
+  "stage": "reviews",
+  "status": "source_incomplete",
+  "time": {
+    "field": "timestamp",
+    "invalid_reasons": {},
+    "max_line": null,
+    "max_raw": null,
+    "max_utc": null,
+    "min_line": null,
+    "min_raw": null,
+    "min_utc": null,
+    "nonzero_millisecond_rows": 0,
+    "timezone": "UTC",
+    "unit": "milliseconds",
+    "valid_rows": 0
+  }
+}
