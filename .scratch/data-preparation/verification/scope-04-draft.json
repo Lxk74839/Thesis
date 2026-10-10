@@ -1,0 +1,692 @@
+{
+  "status": "draft_rules_not_approved",
+  "formal_catalog": "not_built",
+  "generated_at_utc": "2026-10-10T14:33:11.223668+00:00",
+  "metadata_rows": 603274,
+  "metadata_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
+  "counts": {
+    "outside_evidence_pool": 510428,
+    "pending_category_or_description_only": 58467,
+    "pending_blend_or_seasoning": 4268,
+    "true_cereal_primary_candidate": 5372,
+    "pending_prepared_or_usage_words": 4947,
+    "excluded_processed_category": 13717,
+    "pseudo_primary_candidate": 516,
+    "pending_form_not_explicit": 3920,
+    "true_cereal_flour_candidate": 1166,
+    "pseudo_flour_candidate": 95,
+    "excluded_nonfood_or_supplement": 111,
+    "pending_category_form_conflict": 255,
+    "pending_category_crop_conflict": 12
+  },
+  "category_conflict_signals": {
+    "pseudo_in_wheat_category": 1,
+    "true_cereal_in_pseudo_category": 11
+  },
+  "examples": {
+    "outside_evidence_pool": [
+      {
+        "source_line": 1,
+        "parent_asin": "B00NE08WM6",
+        "status": "outside_evidence_pool",
+        "title": "Dark Roast Pure Coffee",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Beverages",
+          "Coffee"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 2,
+        "parent_asin": "B084Q13Q5Q",
+        "status": "outside_evidence_pool",
+        "title": "PICARAS Galletas Peruanas Bañadas en Chocolate 6 units x 40 gr. ( 2 Pack )",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Breads & Bakery",
+          "Cookies",
+          "Chocolate"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 4,
+        "parent_asin": "B0BN4PW255",
+        "status": "outside_evidence_pool",
+        "title": "Asher's Sugar Free Milk Chocolate Cordial Cherries Gift Box, 1 Pound",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Snacks & Sweets",
+          "Chocolate",
+          "Fruit"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": false
+      }
+    ],
+    "pending_category_or_description_only": [
+      {
+        "source_line": 3,
+        "parent_asin": "B00KBRUYVM",
+        "status": "pending_category_or_description_only",
+        "title": "Chipped Beef and Gravy By Patterson's - Great for Breakfast or Dinner - 8 Ounce Cans - 6 Cans Per Case",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Canned, Jarred & Packaged Foods",
+          "Vegetables",
+          "Tomatoes"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 7,
+        "parent_asin": "B002HQF1BI",
+        "status": "pending_category_or_description_only",
+        "title": "Chincoteague Seafood 90944 Vegetable Red Crab Soup",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Soups, Stocks & Broths"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 9,
+        "parent_asin": "B019QP6648",
+        "status": "pending_category_or_description_only",
+        "title": "Vintners Best Fruit Wine Base-Rhubarb,128 oz",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Home Brewing & Winemaking",
+          "Beer Brewing Ingredients"
+        ],
+        "title_crop_hits": [],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pending_blend_or_seasoning": [
+      {
+        "source_line": 12,
+        "parent_asin": "B07TTJYHGX",
+        "status": "pending_blend_or_seasoning",
+        "title": "RXBAR, RX A.M. Oats, Variety Pack, 9ct, 2.18oz Cups, 9 Gluten Free Oatmeal Cups",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Breakfast Foods",
+          "Cereals",
+          "Oatmeal"
+        ],
+        "title_crop_hits": [
+          "Oats",
+          "Oatmeal"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 159,
+        "parent_asin": "B06XJWPD5C",
+        "status": "pending_blend_or_seasoning",
+        "title": "Popcorners Popped Corn Chips 2 Flavor 10 Individual Bag Variety Bundle - 5 Each: White Cheddar and Salt of the Earth, 1 Ounce ea",
+        "categories": [],
+        "title_crop_hits": [
+          "Corn"
+        ],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 288,
+        "parent_asin": "B09B8J37N1",
+        "status": "pending_blend_or_seasoning",
+        "title": "Iberia Yellow Rice 6.25 lb. Bulk Spanish Style Seasoned Rice",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Jasmine"
+        ],
+        "title_crop_hits": [
+          "Rice",
+          "Rice"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "true_cereal_primary_candidate": [
+      {
+        "source_line": 13,
+        "parent_asin": "B0BYLK9168",
+        "status": "true_cereal_primary_candidate",
+        "title": "TAJ Indian Poha Powa Flattened Rice (Thick, 4-Pounds)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "White"
+        ],
+        "title_crop_hits": [
+          "Poha",
+          "Rice"
+        ],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 258,
+        "parent_asin": "B08Q44XV13",
+        "status": "true_cereal_primary_candidate",
+        "title": "[Product of Japan] Japanese Tochihonoka Milled Koshihikari Sushi Rice, White Short Grain (Tochigi Prefecture) 【精米】栃木県産コシヒカリ - 11 Pound / 5KG",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "White"
+        ],
+        "title_crop_hits": [
+          "Rice"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 345,
+        "parent_asin": "B09TS94RVG",
+        "status": "true_cereal_primary_candidate",
+        "title": "Bakery On Main Quick Oats - Gluten Free, Non-GMO Project Verified, Kosher, Resealable Bag, 24oz (Pack of 4)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Breakfast Foods",
+          "Cereals",
+          "Oatmeal"
+        ],
+        "title_crop_hits": [
+          "Oats"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pending_prepared_or_usage_words": [
+      {
+        "source_line": 31,
+        "parent_asin": "B0BDV6ZTHR",
+        "status": "pending_prepared_or_usage_words",
+        "title": "Purely Elizabeth, Organic Apple Cinnamon, Oatmeal Pouch 10oz (3 Ct.), Gluten-Free, Instant, Non-GMO",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Breakfast Foods",
+          "Cereals",
+          "Oatmeal"
+        ],
+        "title_crop_hits": [
+          "Oatmeal"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 344,
+        "parent_asin": "B009T799AM",
+        "status": "pending_prepared_or_usage_words",
+        "title": "Pepperidge Farm Corn Bread Classic Stuffing, 14 Ounce Bag",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Canned, Jarred & Packaged Foods",
+          "Packaged Meals & Side Dishes",
+          "Potatoes & Stuffings",
+          "Stuffing Side Dishes"
+        ],
+        "title_crop_hits": [
+          "Corn"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 373,
+        "parent_asin": "B07CL4VNZB",
+        "status": "pending_prepared_or_usage_words",
+        "title": "Matthews 1812 House Dark Chocolate Sauce- Small Batch, All Natural, Gourmet Dessert Sauce, No Corn Syrup, Ice Cream Topping, 9 oz",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Dessert Syrups & Sauces",
+          "Chocolate"
+        ],
+        "title_crop_hits": [
+          "Corn"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "excluded_processed_category": [
+      {
+        "source_line": 69,
+        "parent_asin": "B09S8Q6FG5",
+        "status": "excluded_processed_category",
+        "title": "Friendly Grains - Crunchy Rollers - Organic Rice Snacks, Crispy Puffed Rice Rolls, Healthy Snack Rolls for Adults and Kids - Apple Cinnamon (4 packs of 6)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Snacks & Sweets",
+          "Snack Foods",
+          "Rice Cakes, Chips & Crackers",
+          "Cakes"
+        ],
+        "title_crop_hits": [
+          "Rice",
+          "Rice"
+        ],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 98,
+        "parent_asin": "B000F9Z272",
+        "status": "excluded_processed_category",
+        "title": "Wheat Thins, Reduced Fat, Family Size, 14.5-Ounce Boxes (Pack of 6)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Snacks & Sweets",
+          "Snack Foods",
+          "Crackers",
+          "Wheat"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 125,
+        "parent_asin": "B07GY27RCB",
+        "status": "excluded_processed_category",
+        "title": "Vidal Gummy Candy Corn 2.2 POUNDS - In a Resealable Container -Holiday FALL Gummi Candy",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Snacks & Sweets",
+          "Candy & Chocolate",
+          "Hard Candy"
+        ],
+        "title_crop_hits": [
+          "Corn"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pseudo_primary_candidate": [
+      {
+        "source_line": 165,
+        "parent_asin": "B07JG4744N",
+        "status": "pseudo_primary_candidate",
+        "title": "OA QUINOA Now Greenfit | Royal Organic White Quinoa (10 Lb)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Quinoa"
+        ],
+        "title_crop_hits": [
+          "QUINOA",
+          "Quinoa"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 2122,
+        "parent_asin": "B00DGDO2MK",
+        "status": "pseudo_primary_candidate",
+        "title": "Alter Eco Fair Trade Organic Rainbow Quinoa, 14 oz",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Quinoa"
+        ],
+        "title_crop_hits": [
+          "Quinoa"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 3082,
+        "parent_asin": "B07DFXYXW1",
+        "status": "pseudo_primary_candidate",
+        "title": "Arrowhead Mills Organic Amaranth Grain, Gluten Free, 16 Ounce Bag",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Specialty Diets Storefront",
+          "Certified Organic Store"
+        ],
+        "title_crop_hits": [
+          "Amaranth"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pending_form_not_explicit": [
+      {
+        "source_line": 282,
+        "parent_asin": "B00HU6WYJ2",
+        "status": "pending_form_not_explicit",
+        "title": "Snappy Maze Craze Combo Movie Popcorn Trays, 50Count",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Food Should Taste Good Multigrain Tortilla Free Sampling"
+        ],
+        "title_crop_hits": [
+          "Popcorn"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 721,
+        "parent_asin": "B0001G6V74",
+        "status": "pending_form_not_explicit",
+        "title": "Hodgson Mill All Natural Untoasted Wheat Germ 12 oz Box",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 924,
+        "parent_asin": "B0BXB8TWMH",
+        "status": "pending_form_not_explicit",
+        "title": "Yupik Organic Gluten Free Oat Bran, 2.2 lbs, Breakfast Cereal Topping, High Fiber, Vegan, GMO-Free, Vegetarian, Keto, Gluten-Free, Brown",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Oat Bran"
+        ],
+        "title_crop_hits": [
+          "Oat"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "true_cereal_flour_candidate": [
+      {
+        "source_line": 498,
+        "parent_asin": "B0C1MBK724",
+        "status": "true_cereal_flour_candidate",
+        "title": "Sujata Chakki Atta, Whole Wheat Flour, 10-Pound Bag",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 1813,
+        "parent_asin": "B00MWVTID0",
+        "status": "true_cereal_flour_candidate",
+        "title": "Doves Farm Organic Stoneground Wholegrain Spelt Flour (1Kg)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Spelt"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 2268,
+        "parent_asin": "B081M31L27",
+        "status": "true_cereal_flour_candidate",
+        "title": "Thai Rice Flour-16 Oz-6 Pack",
+        "categories": [],
+        "title_crop_hits": [
+          "Rice"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pseudo_flour_candidate": [
+      {
+        "source_line": 607,
+        "parent_asin": "B07CSXLSZ6",
+        "status": "pseudo_flour_candidate",
+        "title": "TREBLEC Buckwheat Flour From Brittany - Sarrasin Flour - 11 lbs / 5 kg",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Buckwheat"
+        ],
+        "title_crop_hits": [
+          "Buckwheat"
+        ],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 2240,
+        "parent_asin": "B07QCR2ZS3",
+        "status": "pseudo_flour_candidate",
+        "title": "Bob's Red Mill Organic Buckwheat Flour, 22 Oz (4 Pack)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Buckwheat"
+        ],
+        "title_crop_hits": [
+          "Buckwheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 4546,
+        "parent_asin": "B077PJNMDH",
+        "status": "pseudo_flour_candidate",
+        "title": "Organic Sprouted Buckwheat Flour - 80 oz (5lbs)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Buckwheat"
+        ],
+        "title_crop_hits": [
+          "Buckwheat"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "excluded_nonfood_or_supplement": [
+      {
+        "source_line": 1715,
+        "parent_asin": "B08X6NXXJC",
+        "status": "excluded_nonfood_or_supplement",
+        "title": "Organic Wheatgrass Seed - Certified Organic Hard Red Wheat by PowerGrow (5 Pounds)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 2585,
+        "parent_asin": "B08BVT2QT1",
+        "status": "excluded_nonfood_or_supplement",
+        "title": "Organic Matcha Green Tea Latte - Superfood Mix of Matcha, Coconut Milk Barley Grass - Sweetened With Vanilla Stevia - No Added Sugar or Artificial Ingredients - Vegan, Non GMO, Gluten Free - 1 lb",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Beverages",
+          "Tea",
+          "Green",
+          "Matcha"
+        ],
+        "title_crop_hits": [
+          "Barley"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 13409,
+        "parent_asin": "B0BZNGFS4V",
+        "status": "excluded_nonfood_or_supplement",
+        "title": "XPRS Nutra Organic Wheatgrass Juice Powder - Sustainably Grown in The US - Instant Wheat Grass Juice Powder Made from Concentrated Juice - More Potent Than Organic Wheatgrass Powder - 4 Ounce",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Beverages",
+          "Bottled Beverages, Water & Drink Mixes",
+          "Juices"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pending_category_form_conflict": [
+      {
+        "source_line": 1821,
+        "parent_asin": "B0731W4SQP",
+        "status": "pending_category_form_conflict",
+        "title": "#1 Fine Traditional Bulgur Wheat, 4lbs (2 pack)",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Bulgur",
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 1950,
+        "parent_asin": "B0BSRSXK4W",
+        "status": "pending_category_form_conflict",
+        "title": "Hard Red Spring Wheat Berries | 25 LBS | Meet the Farmers | 100% Desiccant Free | Sproutable | Non-GMO Project Verified | Kosher | Poly Bag",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Wheat"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 3757,
+        "parent_asin": "B084D61FM8",
+        "status": "pending_category_form_conflict",
+        "title": "Bulgur Wheat size #3 Resealable Bag 2.5 Lb (Bulgur, Pilavlik Bulgur) Coarse #3",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Cooking & Baking",
+          "Flours & Meals",
+          "Wheat Flours & Meals"
+        ],
+        "title_crop_hits": [
+          "Bulgur",
+          "Wheat",
+          "Bulgur",
+          "Bulgur"
+        ],
+        "description_feature_detail_hit": true
+      }
+    ],
+    "pending_category_crop_conflict": [
+      {
+        "source_line": 5580,
+        "parent_asin": "B08H48CGRH",
+        "status": "pending_category_crop_conflict",
+        "title": "Anna and Sarah Organic Amaranth Grains in Resealable Bag, 1.5 Lbs",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Wheat Berries"
+        ],
+        "title_crop_hits": [
+          "Amaranth"
+        ],
+        "description_feature_detail_hit": true
+      },
+      {
+        "source_line": 33250,
+        "parent_asin": "B00JM1DP32",
+        "status": "pending_category_crop_conflict",
+        "title": "GERBS Brown Teff Grain, 64 ounce Bag, Top 14 Food Allergen Free, Non GMO, Vegan, Keto, Paleo Friendly",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Buckwheat"
+        ],
+        "title_crop_hits": [
+          "Teff"
+        ],
+        "description_feature_detail_hit": false
+      },
+      {
+        "source_line": 69044,
+        "parent_asin": "B000VVWUMY",
+        "status": "pending_category_crop_conflict",
+        "title": "Bob's Red Mill, Bulgur Wheat, 28 oz",
+        "categories": [
+          "Grocery & Gourmet Food",
+          "Pantry Staples",
+          "Dried Grains & Rice",
+          "Buckwheat"
+        ],
+        "title_crop_hits": [
+          "Bulgur",
+          "Wheat"
+        ],
+        "description_feature_detail_hit": false
+      }
+    ]
+  },
+  "last_candidate": {
+    "source_line": 603191,
+    "parent_asin": "B0831RX8K4",
+    "status": "true_cereal_primary_candidate",
+    "title": "Healthy Un-Polished Basmati Rice ( Pack of 1 )",
+    "categories": [],
+    "title_crop_hits": [
+      "Basmati",
+      "Rice"
+    ],
+    "description_feature_detail_hit": true
+  },
+  "query_sha256": "9e328949ccab179e084c79d4245eb8fdcd633731c840c27db9a6cb1dc490c2ec",
+  "audit_path": "data/diagnostics/scope-04-draft.jsonl",
+  "audit_sha256": "27797ee570840d57bf56905c2020947aa83887cc821ef919ed16c7d22eb1eadc"
+}
