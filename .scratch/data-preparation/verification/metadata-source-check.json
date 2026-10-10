@@ -5,7 +5,6 @@
   "initial_git_commit": "b59611e97b6eedf07c4e624884c48570fbfa2cdd",
   "public_entry": "prepare_data.py --stage metadata --source-manifest sources/amazon-2023-grocery-metadata.json --output-root <Thesis>",
   "source_manifest_sha256": "c5a32761fd633049f534b939c205d62e74d8ee05446c3dd2458da071b60f1e7b",
-  "implementation_sha256": "fda59a4e5980a76d878fb9646411b1f172e4fce28c6213ef0043a382317e8e51",
   "source_record_sha256": "41075dc0b4434859b79e0b6ddd2852063c37e74d1bf905f6a3efef1adab696f0",
   "independent_raw_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
   "raw_file_bytes": 324346561,
@@ -29,12 +28,16 @@
       }
     ]
   },
-  "public_interface_test_count": 9,
+  "public_interface_test_count": 11,
   "public_interface_test_result": "passed",
   "original_files_checked": 26,
   "original_files_changed": 0,
   "original_manifest_sha256": "192f9e82f26ee1baaf10165d477fa2439038c46d2d8e500560d63f3f2e2aad81",
   "confirmed_spec_sha256": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
   "formal_package_status": "not_built",
-  "global_git_config_exists": false
+  "global_git_config_exists": false,
+  "acquisition_implementation_sha256": "fda59a4e5980a76d878fb9646411b1f172e4fce28c6213ef0043a382317e8e51",
+  "current_implementation_sha256": "1fb1f23c0ddfe4abed40121087dccd07d7c79df29e1601a14b682aa8cbe77f1c",
+  "after_review_check_at_utc": "2026-10-10T12:39:31.1694987Z",
+  "correction_scope": "HTTP exception diagnostics and per-attempt row-error reset only; original successful full-source capture remains valid"
 }

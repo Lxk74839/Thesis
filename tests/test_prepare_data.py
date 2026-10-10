@@ -41,14 +41,20 @@ class MetadataPreparationTests(unittest.TestCase):
         )
         return run
 
-    def serve(self, payload, status=200, length=None):
+    def serve(self, payload, status=200, length=None, truncated_chunks=False):
         class Handler(BaseHTTPRequestHandler):
             def do_GET(handler):
                 handler.send_response(status)
-                handler.send_header("Content-Length", str(
-                    len(payload) if length is None else length))
+                if truncated_chunks:
+                    handler.send_header("Transfer-Encoding", "chunked")
+                else:
+                    handler.send_header("Content-Length", str(
+                        len(payload) if length is None else length))
                 handler.end_headers()
-                handler.wfile.write(payload)
+                if truncated_chunks:
+                    handler.wfile.write(f"{len(payload):x}\r\n".encode() + payload + b"\r\n")
+                else:
+                    handler.wfile.write(payload)
 
             def log_message(handler, *args):
                 pass
@@ -182,6 +188,29 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual(report["status"], "source_incomplete")
         self.assertTrue(report["scan"]["gzip_verified"])
         self.assertEqual(report["scan"]["lines"], 0)
+
+    def test_truncated_chunked_http_response_gets_a_machine_diagnostic(self):
+        payload = gzip.compress(b'{"parent_asin":"ONLY"}\n', mtime=0)
+        run = self.prepare(payload, self.serve(payload, truncated_chunks=True))
+        self.assertNotEqual(run.returncode, 0)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "source_incomplete")
+        self.assertEqual(report["error"]["kind"], "IncompleteRead")
+        self.assertFalse(report["scan"]["gzip_verified"])
+
+    def test_download_failure_has_only_this_attempts_row_diagnostics(self):
+        payload = gzip.compress(b'{"parent_asin":"ONLY"}\n', mtime=0)
+        for previous_errors in (False, True):
+            with self.subTest(previous_errors=previous_errors):
+                if previous_errors:
+                    self.prepare(gzip.compress(b'{"parent_asin":"OLD"}\n{broken\n', mtime=0))
+                run = self.prepare(payload, self.serve(b"", status=503))
+                report = json.loads(run.stdout)
+                self.assertEqual(report["status"], "source_incomplete")
+                self.assertEqual(report["scan"]["lines"], 0)
+                issues = self.output / report["diagnostic_path"]
+                self.assertTrue(issues.is_file())
+                self.assertEqual(issues.read_text("utf-8"), "")
 
 
 if __name__ == "__main__":

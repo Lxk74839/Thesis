@@ -5,6 +5,7 @@ from collections import Counter
 from datetime import datetime, timezone
 import gzip
 import hashlib
+from http.client import HTTPException
 import json
 from pathlib import Path
 import re
@@ -33,6 +34,7 @@ def main():
     record.parent.mkdir(parents=True, exist_ok=True)
     diagnostic.parent.mkdir(parents=True, exist_ok=True)
     raw.write_bytes(b"")
+    diagnostic.write_text("", encoding="utf-8")
     digest = hashlib.sha256()
     download = {"bytes": 0}
     fields = {
@@ -102,7 +104,7 @@ def main():
         scan["gzip_verified"] = True
         if scan["lines"] == 0:
             raise ValueError("metadata source contains no records")
-    except (OSError, EOFError, zlib.error, ValueError) as exc:
+    except (OSError, EOFError, HTTPException, zlib.error, ValueError) as exc:
         error = {"kind": type(exc).__name__, "message": str(exc)}
     download["sha256"] = digest.hexdigest()
     scan["unique_parents"] = len(parents)
