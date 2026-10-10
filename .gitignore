@@ -1,0 +1,10 @@
+/.conda/
+/.cache/
+/.tmp/
+__pycache__/
+*.py[cod]
+/data/
+/manuscript/
+/research/
+.env
+.env.*

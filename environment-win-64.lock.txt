@@ -1,0 +1,23 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: win-64
+# created-by: conda 25.11.1
+@EXPLICIT
+https://repo.anaconda.com/pkgs/main/win-64/ca-certificates-2026.9.25-haa95532_0.conda#89619f08409846ae563761b35d05b38b41a6a6f5ba8bdc161573ceb125aaa7d3
+https://repo.anaconda.com/pkgs/main/win-64/python_abi-3.13-5_cp313.conda#e7f20986020710b7b531f2febe61dab3e42f580f6a596e47cbb585156626f38b
+https://repo.anaconda.com/pkgs/main/noarch/tzdata-2026c-he532380_0.conda#52adc4b0a9cce2ffb8ad319d54b7c940ae7961f7caf7ce6851eec4b3f542c368
+https://repo.anaconda.com/pkgs/main/win-64/ucrt-10.0.22621.0-haa95532_0.conda#9dfca4fb23f20e62a48b9c52e2fdf4d0d34bb31eb6a930c2195fcd10651b3cc3
+https://repo.anaconda.com/pkgs/main/win-64/vc14_runtime-14.44.35208-h4927774_12.conda#492ba65a50d99120e047469057f5eaddd3043cf17a18761653d1b3ae5d9d6c84
+https://repo.anaconda.com/pkgs/main/win-64/vc-14.3-h2df5915_12.conda#81f68bd3f7e74032547fc3c2b1d7d914b2688cc11f2470625c5c65d49d1474bd
+https://repo.anaconda.com/pkgs/main/win-64/vs2015_runtime-14.44.35208-ha6b5a95_12.conda#5b484a4b7df0133f60fd9e12dcf1926f868eaa34a2c3ddad8475169a1a99d9fa
+https://repo.anaconda.com/pkgs/main/win-64/bzip2-1.0.8-h2bbff1b_6.conda#4e30c9bfd4501555b0859c863e95ea044290babf3bf190b9d4fb38b06cf15c3c
+https://repo.anaconda.com/pkgs/main/win-64/libexpat-2.9.0-hd7fb8db_0.conda#d8f38e6ce4244a16a88e138e85b41ead0634d1633e696afcea0f098bf2ad6c5e
+https://repo.anaconda.com/pkgs/main/win-64/libffi-3.4.8-h42d73b9_3.conda#52fa61549a14619aa53c0ae875f6d969fd97c92edffce64bfd7277e2557a726e
+https://repo.anaconda.com/pkgs/main/win-64/libmpdec-4.0.1-h1c6eee0_0.conda#4e89181b2d9ec67a855517ff35c6901d649829a31ac9c366c5277bd56563fe50
+https://repo.anaconda.com/pkgs/main/win-64/libzlib-1.3.2-h1c6eee0_0.conda#ee9ff49405717b96ec8d9b586beaaf96b741ffc4d37df6623f1d599ab8bdbb14
+https://repo.anaconda.com/pkgs/main/win-64/openssl-3.5.9-hbb43b14_0.conda#21eb85790bfa29ef178a40951afb72ce9b67e08a6ed836ebe5571e68fbbbd512
+https://repo.anaconda.com/pkgs/main/win-64/sqlite-3.53.4-hee5a0db_0.conda#8adb7b42e99594567e5789c33813b90cc7669183d6760836150ce8a23a7d3813
+https://repo.anaconda.com/pkgs/main/win-64/xz-5.8.4-hb851c79_0.conda#786d5df4b6f0097eeef2c07c642119a80b8b97ed062fd956707d2810bd15428a
+https://repo.anaconda.com/pkgs/main/win-64/zlib-1.3.2-h1c6eee0_0.conda#538f7c9b5ed6fa388c51bd499c736fd474826bcd7f2908456e9d2050b486e476
+https://repo.anaconda.com/pkgs/main/win-64/tk-8.6.15-hf199647_0.conda#2f7e9d06b513bcabce6d9ae195e45ccf94fd249edfefc591a5430a9f6f92a7fa
+https://repo.anaconda.com/pkgs/main/win-64/python-3.13.16-h2e1fde4_102_cp313.conda#21d7dfdbf1140634ac764e3f735a91f5bfc15b2fed0cbca24915c97e14ce3d06
