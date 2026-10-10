@@ -1,0 +1,204 @@
+{
+  "diagnostic_path": "data/diagnostics/amazon-2023-grocery-metadata.errors.jsonl",
+  "download": {
+    "bytes": 324346561,
+    "content_length": 324346561,
+    "headers": {
+      "Accept-Ranges": "bytes",
+      "Connection": "close",
+      "Content-Length": "324346561",
+      "Content-Type": "application/gzip",
+      "Date": "Sat, 10 Oct 2026 12:28:15 GMT",
+      "ETag": "\"135522c1-62bda3d801e5f\"",
+      "Last-Modified": "Thu, 16 Jan 2025 22:23:14 GMT",
+      "Strict-Transport-Security": "max-age=15768000"
+    },
+    "http_status": 200,
+    "resolved_url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/meta_categories/meta_Grocery_and_Gourmet_Food.jsonl.gz",
+    "sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2"
+  },
+  "error": null,
+  "fields": {
+    "author": {
+      "empty": 0,
+      "missing": 603250,
+      "present": 24,
+      "types": {
+        "dict": 17,
+        "null": 7
+      }
+    },
+    "average_rating": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "float": 603274
+      }
+    },
+    "bought_together": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "null": 603274
+      }
+    },
+    "categories": {
+      "empty": 68198,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "list": 603274
+      }
+    },
+    "description": {
+      "empty": 225223,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "list": 603274
+      }
+    },
+    "details": {
+      "empty": 16930,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "dict": 603274
+      }
+    },
+    "features": {
+      "empty": 167424,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "list": 603274
+      }
+    },
+    "images": {
+      "empty": 88,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "list": 603274
+      }
+    },
+    "main_category": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "null": 7960,
+        "str": 595314
+      }
+    },
+    "parent_asin": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "str": 603274
+      }
+    },
+    "price": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "float": 224318,
+        "null": 378955,
+        "str": 1
+      }
+    },
+    "rating_number": {
+      "empty": 0,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "int": 603274
+      }
+    },
+    "store": {
+      "empty": 1,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "null": 17280,
+        "str": 585994
+      }
+    },
+    "subtitle": {
+      "empty": 0,
+      "missing": 603250,
+      "present": 24,
+      "types": {
+        "null": 4,
+        "str": 20
+      }
+    },
+    "title": {
+      "empty": 38,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "str": 603274
+      }
+    },
+    "videos": {
+      "empty": 428743,
+      "missing": 0,
+      "present": 603274,
+      "types": {
+        "list": 603274
+      }
+    }
+  },
+  "formal_package_status": "not_built",
+  "raw_path": "data/raw/amazon-2023-grocery-metadata-ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2.jsonl.gz",
+  "record_path": "records/sources/amazon-2023-grocery-metadata.json",
+  "retrieved_at_utc": "2026-10-10T12:28:56.478811+00:00",
+  "scan": {
+    "duplicate_parent_rows": 0,
+    "first_parent_asin": "B00NE08WM6",
+    "gzip_verified": true,
+    "invalid_json_rows": 0,
+    "invalid_parent_rows": 0,
+    "last_parent_asin": "B000N7WXDM",
+    "lines": 603274,
+    "non_object_rows": 0,
+    "records": 603274,
+    "unique_parents": 603274
+  },
+  "source": {
+    "category": "Grocery_and_Gourmet_Food",
+    "dataset": "Amazon Reviews'23",
+    "documentation": "https://amazon-reviews-2023.github.io/main.html",
+    "documentation_checked_on": "2026-10-10",
+    "documented_fields": {
+      "average_rating": "float",
+      "bought_together": "list",
+      "categories": "list",
+      "description": "list",
+      "details": "dict",
+      "features": "list",
+      "images": "list",
+      "main_category": "str",
+      "parent_asin": "str",
+      "price": "float",
+      "rating_number": "int",
+      "store": "str",
+      "title": "str",
+      "videos": "list"
+    },
+    "id": "amazon-2023-grocery-metadata",
+    "kind": "item_metadata",
+    "publisher": "McAuley Lab, UC San Diego",
+    "publisher_checksum": null,
+    "publisher_checksum_note": "No file digest is supplied on the inspected official download page; the captured SHA-256 identifies our local snapshot.",
+    "url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/meta_categories/meta_Grocery_and_Gourmet_Food.jsonl.gz",
+    "version": "2023"
+  },
+  "stage": "metadata",
+  "status": "diagnostic_complete"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "amazon-2023-grocery-metadata",
+  "dataset": "Amazon Reviews'23",
+  "publisher": "McAuley Lab, UC San Diego",
+  "category": "Grocery_and_Gourmet_Food",
+  "kind": "item_metadata",
+  "version": "2023",
+  "url": "https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/meta_categories/meta_Grocery_and_Gourmet_Food.jsonl.gz",
+  "documentation": "https://amazon-reviews-2023.github.io/main.html",
+  "documentation_checked_on": "2026-10-10",
+  "publisher_checksum": null,
+  "publisher_checksum_note": "No file digest is supplied on the inspected official download page; the captured SHA-256 identifies our local snapshot.",
+  "documented_fields": {
+    "main_category": "str",
+    "title": "str",
+    "average_rating": "float",
+    "rating_number": "int",
+    "features": "list",
+    "description": "list",
+    "price": "float",
+    "images": "list",
+    "videos": "list",
+    "store": "str",
+    "categories": "list",
+    "details": "dict",
+    "parent_asin": "str",
+    "bought_together": "list"
+  }
+}

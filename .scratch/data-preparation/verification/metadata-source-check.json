@@ -1,0 +1,40 @@
+{
+  "recorded_at_utc": "2026-10-10T12:32:08.0410784Z",
+  "ticket": "02",
+  "scope": "source acquisition and diagnostics only; research rules not frozen",
+  "initial_git_commit": "b59611e97b6eedf07c4e624884c48570fbfa2cdd",
+  "public_entry": "prepare_data.py --stage metadata --source-manifest sources/amazon-2023-grocery-metadata.json --output-root <Thesis>",
+  "source_manifest_sha256": "c5a32761fd633049f534b939c205d62e74d8ee05446c3dd2458da071b60f1e7b",
+  "implementation_sha256": "fda59a4e5980a76d878fb9646411b1f172e4fce28c6213ef0043a382317e8e51",
+  "source_record_sha256": "41075dc0b4434859b79e0b6ddd2852063c37e74d1bf905f6a3efef1adab696f0",
+  "independent_raw_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
+  "raw_file_bytes": 324346561,
+  "matches_download_digest": true,
+  "matches_http_length": true,
+  "complete_gzip_scan": true,
+  "diagnostic_file_bytes": 0,
+  "independent_scan": {
+    "method": "independent chunk-wise newline count through gzip EOF; rare price type manually located",
+    "python_version": "3.13.16",
+    "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+    "uncompressed_bytes": 1382105675,
+    "newline_count": 603274,
+    "ends_with_newline": true,
+    "matches_reported_lines": true,
+    "string_prices": [
+      {
+        "line": 113255,
+        "parent_asin": "B004PYDISS",
+        "price": "—"
+      }
+    ]
+  },
+  "public_interface_test_count": 9,
+  "public_interface_test_result": "passed",
+  "original_files_checked": 26,
+  "original_files_changed": 0,
+  "original_manifest_sha256": "192f9e82f26ee1baaf10165d477fa2439038c46d2d8e500560d63f3f2e2aad81",
+  "confirmed_spec_sha256": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
+  "formal_package_status": "not_built",
+  "global_git_config_exists": false
+}
