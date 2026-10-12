@@ -28,6 +28,10 @@ for name, digest in report["producer_sha256"].items():
 included = {r["parent_asin"]: r for r in map(json.loads, (ROOT / report["catalog_path"]).read_text("utf-8").splitlines())}
 cases = json.loads((ROOT / ".scratch/data-preparation/diagnostics/usability-case-review-20261012.json").read_text("utf-8"))["annotations"]
 expected = {r["parent_asin"]: ("included" if r["group"] in ("I", "P") else "excluded" if r["group"] == "X" else "pending") for r in cases}
+# The original U note identifies Almond & Vanilla and missing form evidence.
+# The explicit sold flavor combination is now handled like the reviewed Apple Cinnamon
+# title under the approved seasoning exclusion, without inventing a full composition list.
+expected["B08L737QS1"] = "excluded"
 case_results = []
 counts, reasons, transitions, compositions, included_compositions, crops = (Counter() for _ in range(6))
 references = 0

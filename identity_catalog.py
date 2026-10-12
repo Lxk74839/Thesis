@@ -21,9 +21,9 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
-        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|not sticky|when cooked|while cooking)\b"),
-        ("storage_context", r"\b(?:store in|storage|keep in|keep refrigerated|refrigerate after)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
+        ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
     ):
         match = re.search(expression, text, re.I)
         if match:
@@ -73,8 +73,8 @@ def composition_disclosure(item, config):
     if not declarations:
         return "not_disclosed", set(), []
     known = {(tuple(sorted(crops)), tuple(sorted(match.group().lower() for match in pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).finditer("\n".join(ref["declaration_parts"])))))
-             for status, crops, ref in declarations if status != "unresolved"}
-    status = ("conflict" if len(known) > 1 else
+             for status, crops, ref in declarations if status != "unresolved" and not (pattern(config["partial_composition_prefixes"]).search(ref["text"]) or re.search("|".join(config["partial_composition_patterns"]), ref["text"], re.I))}
+    status = ("conflict" if len(known) > 1 or ({"declared_single_grain", "declared_outside_scope"} <= {status for status, _, _ in declarations}) else
               "unresolved" if any(status == "unresolved" for status, _, _ in declarations) else
               "declared_outside_scope" if any(status == "declared_outside_scope" for status, _, _ in declarations) else
               "declared_single_grain")
@@ -87,6 +87,7 @@ def classify_identity(item, config):
     decision.update(composition_status=composition_status, composition_evidence=composition)
     title = item.get("title", "")
     affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
+    affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)
     sold = re.split(r"\b(?:for|use with|great with|alternative to|substitute for)\b", affirmative, maxsplit=1, flags=re.I)[0]
     if pattern(config["outside_objects"]).search(sold):
         decision.update(status="excluded", reason="sold_object_outside_scope", crop=None,
@@ -116,13 +117,13 @@ def classify_identity(item, config):
         decision["identity_evidence"] = [{"field": "title", "text": title}]
     decision["context_evidence"] = []
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
-        if all(all(context_role(fragment) for fragment in re.split(r"(?<=[.!?])\s*|\n", ref["text"]) if fragment.strip())
+        if all(all(context_role(fragment) for fragment in re.split(r"(?<=[.!?;])\s*|\n", ref["text"]) if fragment.strip())
                for ref in decision["counter_evidence"]):
             decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     for field, text in text_fields(item):
         if field == "title":
             continue
-        for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
+        for fragment in re.split(r"(?<=[.!?;])\s*|\n", text):
             ref = {"field": field, "text": text}
             role = context_role(fragment)
             negated_use = re.search(r"\b(?:not|no|without)\s+", fragment, re.I)

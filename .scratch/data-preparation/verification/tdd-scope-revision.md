@@ -37,3 +37,7 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第一轮独立审查：Standards 0 项；Spec 4 项 P1，尚未全量生成。均通过公共 CLI 逐项观察 Red 并修复：No Raw Rice Grain 否定误入选；This product is wheat 不重复形态词的直接身份冲突；真实混粮与 perfect for 同句；Apple Cinnamon 本品风味误作未知纯粮。用途仅在局部分句生效，食谱仍不充当配料。另在第三项中追加 rice/wheat 实际混粮反例，观察到待裁决误覆盖排除的 Red 后修复。全部单项 Green，第二轮全套 71 项通过（24.353 秒），见 scope-revision-tests-round2.txt。旧配置／既有行为仍通过。
 
 第二轮审查：Standards 0 项；Spec 2 项 P1。扩充真实混粮 making it perfect for／本品 wheat for baking 夹具，实际 Red；不再枚举连接词，改为语义角色记录开始位置，保留前置本品事实，只把后置用途归为上下文，Green。另增加 Arborio Rice＋Store in a cool, dry place，实际 Red；储存说明保存为上下文，不供销售形态，直接 uncooked rice 仍可供证，Green。全套 72 项通过（25.003 秒），见 scope-revision-tests-round3.txt。两份独立全量验收脚本不导入生产实现，分别核对源原文／旧新审计与 SQL 评论分组／时间／损失，旧验收脚本保持原样。
+
+第三轮审查：Standards 0 项；Spec 2 项 P1。Perfect for dinner; this product is wheat 扩展夹具 Red 后按独立分号句保留事实，Green；Store dry／Keep dry 扩展夹具 Red 后采用存储指令头，Green。重新检查 41 条实际完整原记录，发现 Salt-Free 标题、high starch 质地、带拼写误差 alterative／EASY TO USE 的比较用途和部分配料列表的误解释；分别公共夹具实际 Red→最小 Green。部分配料列表不能按不同完整配方判冲突，但完整纯粮与真实添加声明仍冲突。全套 75 项通过（25.664 秒）。
+
+41 条历史代表记录的旧诊断保留不改写。其中 B08L737QS1 原 U 注释记 Almond & Vanilla 口味／配料线索及形态缺失；新版按明确标题风味组合（与 Apple Cinnamon 同一已确认 A 外原则）排除，不声称补齐完整配方或核实真实配料。独立 oracle 明列这一语义更正，其他 I／P、X、C／U 预期保留。仅代表案例对齐不是总体人工裁决，正式全量和新入选抽查仍需完成。
