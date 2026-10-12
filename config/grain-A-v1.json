@@ -1,5 +1,5 @@
 {
-  "version": "grain-A-1.0.4",
+  "version": "grain-A-1.0.5",
   "scheme": "A",
   "approved_on": "2026-10-12",
   "approval": "User confirmed scheme A and identity/composition, exclusion, pending and metadata conflict principles.",
@@ -32,6 +32,7 @@
   "identity_prefixes": ["this product is", "product:", "this is"],
   "identity_negations": ["not", "no", "without"],
   "composition_prefixes": ["ingredients", "ingredient", "single ingredient", "only ingredient", "one ingredient", "contains only", "made from only", "made of only", "100%", "100 percent"],
+  "composition_end_prefixes": ["directions", "directionsdirections", "cooking directions", "to cook", "serve with", "store in", "store dry", "store at", "storage instructions"],
   "percentage_quality_prefixes": ["natural", "organic", "whole", "certified"],
   "composition_modifiers": ["organic", "pure", "whole", "grain", "grains", "brown", "white", "red", "black", "yellow", "blue", "long", "short", "medium", "hulled", "pearled", "cracked", "rolled", "steel", "cut", "quick", "old", "fashioned", "flakes", "kernels", "groats", "berries", "milled", "jasmine", "gluten", "free", "certified", "natural"],
   "policy": {

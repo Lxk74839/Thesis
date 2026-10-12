@@ -1,28 +1,28 @@
 {
-  "catalog_sha256": "a4b98a286b317dcebb215ab37891c6a4afdca83ee705c9fef673499a4c1dfd6b",
+  "catalog_sha256": "727f2265daa0901b11a270e6e45e857957466f25288ff4601513354944595dc6",
   "counts": {
     "excluded": 547052,
     "included": 13,
     "pending": 56209
   },
-  "generated_at_utc": "2026-10-12T03:24:27.065937+00:00",
+  "generated_at_utc": "2026-10-12T03:36:03.446621+00:00",
   "included_outside_mechanical_A": 1,
   "last_included_source": {
     "line": 501711,
     "parent_asin": "B0861CPXR2"
   },
   "limitations": "Checks all source locations, summaries and set accounting; does not substitute for independent semantic adjudication of pending products.",
-  "literal_evidence_references_checked": 488452,
+  "literal_evidence_references_checked": 488474,
   "mechanical_A_outcomes": {
     "excluded": 185,
     "included": 12,
     "pending": 5175
   },
   "mechanical_A_reasons": {
-    "ambiguous_processing_or_mix": 925,
+    "ambiguous_processing_or_mix": 922,
     "category_form_conflict": 13,
     "category_identity_conflict": 93,
-    "composition_declaration_conflict": 31,
+    "composition_declaration_conflict": 45,
     "excluded_form": 182,
     "field_form_conflict": 12,
     "field_identity_conflict": 5,
@@ -30,16 +30,16 @@
     "identity_and_composition": 12,
     "missing_composition": 3474,
     "outside_crop": 3,
-    "unresolved_composition": 184,
+    "unresolved_composition": 173,
     "weak_identity": 85
   },
   "original_material_count": 26,
   "original_materials_unchanged": true,
   "reasons": {
-    "ambiguous_processing_or_mix": 4012,
+    "ambiguous_processing_or_mix": 4007,
     "category_form_conflict": 7403,
     "category_identity_conflict": 702,
-    "composition_declaration_conflict": 37,
+    "composition_declaration_conflict": 53,
     "excluded_form": 216290,
     "field_form_conflict": 76,
     "field_identity_conflict": 71,
@@ -49,10 +49,10 @@
     "no_scope_evidence": 319270,
     "nonfood": 2216,
     "outside_crop": 9276,
-    "unresolved_composition": 227,
+    "unresolved_composition": 216,
     "weak_identity": 36738
   },
-  "scope_sha256": "debe45cc7d15aef642e3193c539c036ab2cf1faf3d9ac7ad11e66db1ac81c041",
+  "scope_sha256": "f9037e14a568c8adc2605b62bf6bae2fec73de6d79d8c32133ffa56f3b1c70a1",
   "source_rows": 603274,
   "status": "independent_artifact_audit_passed"
 }

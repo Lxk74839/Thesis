@@ -83,12 +83,27 @@ def classify(item, config):
     prefix = pattern(config["composition_prefixes"])
     modifiers = pattern(config["composition_modifiers"])
     for field, text in fields:
+        declarations_in_field = []
+        active = None
+        dedicated = field.lower() in ("details.ingredients", "details.ingredient")
         for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
             if not fragment.strip():
                 continue
+            fragment = fragment.strip()
+            if prefix.match(fragment) or dedicated:
+                if active is not None:
+                    declarations_in_field.append(active)
+                active = fragment
+            elif active is not None:
+                if pattern(config["composition_end_prefixes"]).match(fragment):
+                    declarations_in_field.append(active)
+                    active = None
+                else:
+                    active += "\n" + fragment
+        if active is not None:
+            declarations_in_field.append(active)
+        for fragment in declarations_in_field:
             match = prefix.match(fragment.strip())
-            if match is None and field.lower() not in ("details.ingredients", "details.ingredient"):
-                continue
             value = fragment.strip()[match.end():] if match else fragment
             value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", value, flags=re.I).rstrip(".!?")
             if match and match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value):
@@ -103,7 +118,7 @@ def classify(item, config):
             remainder = modifiers.sub(" ", remainder)
             remainder = re.sub(r"100\s*%|[\s,;:()\-]", "", remainder)
             unresolved |= not present or bool(remainder)
-            component_mix |= len(present) == 1 and not remainder and bool(re.search(r"[,;]", value))
+            component_mix |= len(present) == 1 and not remainder and bool(re.search(r"[,;\n]", value))
             composition_crops.update(present)
             declarations.add(frozenset(present))
             composition.append({"field": field, "text": text})

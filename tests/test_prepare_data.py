@@ -371,6 +371,22 @@ class MetadataPreparationTests(unittest.TestCase):
         decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "included"])
 
+    def test_catalog_checks_unprefixed_composition_continuations_in_all_fields(self):
+        run = self.catalog([
+            {"parent_asin": "FEATURE", "title": "Rice", "features": ["Ingredients: Rice\nSalt"]},
+            {"parent_asin": "DESCRIPTION", "title": "Rice", "description": ["Ingredients: Rice\nSalt"]},
+            {"parent_asin": "SENTENCE", "title": "Rice", "features": ["Ingredients: Rice. Salt."]},
+            {"parent_asin": "COOKING", "title": "Rice", "features": ["Ingredients: Rice\nDirections: Serve with wheat bread."]},
+            {"parent_asin": "LATER", "title": "Rice", "features": ["Ingredients: Rice\nDirections: Store dry.\nIngredients: Wheat"]},
+            {"parent_asin": "FRONT", "title": "Rice", "features": ["Store dry.\nIngredients: Rice"]},
+            {"parent_asin": "NOT_DIRECTIONS", "title": "Rice", "features": ["Ingredients: Rice. Store-bought salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "pending", "included", "pending", "included", "pending"])
+        self.assertEqual(decisions[0]["composition_evidence"][0]["text"], "Ingredients: Rice\nSalt")
+
     def test_full_source_includes_last_record_and_field_diagnostics(self):
         payload = gzip.compress(
             b'{"parent_asin":"FIRST","title":"Tea","categories":[]}\n'
