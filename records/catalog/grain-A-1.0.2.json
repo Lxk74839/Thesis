@@ -33,6 +33,7 @@
     "unresolved_composition": 210,
     "weak_identity": 36143
   },
+  "rejection_reason": "Spec review: later composition declarations and explicit outside/negated identity were not fully checked.",
   "sample_sufficiency": "not_determined",
   "scan": {
     "conflicting_parents": 0,
@@ -45,5 +46,6 @@
   "scope_version": "grain-A-1.0.2",
   "source_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
   "stage": "catalog",
-  "status": "catalog_complete"
+  "status": "rejected_pre_release",
+  "superseded_by": "grain-A-1.0.3"
 }

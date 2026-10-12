@@ -54,9 +54,18 @@ def classify(item, config):
                 "discovery_evidence": [],
                 "counter_evidence": [{"field": "title", "text": title}] if reason != "no_scope_evidence" else []}
     identity = [{"field": "title", "text": title}] if crops else []
+    identity_conflicts = []
     for field, text in fields:
-        if field != "title" and pattern(config["identity_prefixes"]).match(text.strip()):
-            found = [crop for crop, expression in grain_patterns.items() if expression.search(text)]
+        if field == "title":
+            continue
+        for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
+            if not pattern(config["identity_prefixes"]).match(fragment.strip()):
+                continue
+            statement = re.sub(r"\b[\w]+[- ]free\b|\b(?:not|no|without)\s+\w+", " ", fragment, flags=re.I)
+            found = [crop for crop, expression in grain_patterns.items() if expression.search(statement)]
+            negated = {crop for crop, expression in grain_patterns.items() if expression.search(fragment)} - set(found)
+            if pattern(config["outside_crops"]).search(statement) or negated.intersection(crops):
+                identity_conflicts.append({"field": field, "text": text})
             if found:
                 identity.append({"field": field, "text": text})
                 crops = list(dict.fromkeys([*crops, *found]))
@@ -64,17 +73,18 @@ def classify(item, config):
     form.extend(evidence for evidence in identity if evidence["field"] != "title" and pattern(config["forms"]).search(evidence["text"]))
     composition = []
     composition_crops = set()
+    declarations = set()
     unresolved = False
     component_mix = False
     prefix = pattern(config["composition_prefixes"])
     modifiers = pattern(config["composition_modifiers"])
     for field, text in fields:
-        for fragment in text.splitlines():
+        for index, fragment in enumerate(re.split(r"(?<=[.!?])\s*|\n", text)):
             match = prefix.match(fragment.strip())
-            if match is None and field.lower() not in ("details.ingredients", "details.ingredient"):
+            if match is None and not (index == 0 and field.lower() in ("details.ingredients", "details.ingredient")):
                 continue
             value = fragment.strip()[match.end():] if match else fragment
-            value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", value, flags=re.I).split(".", 1)[0]
+            value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", value, flags=re.I).rstrip(".!?")
             if match and match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value):
                 continue  # Whole-grain/organic quality claims do not disclose all ingredients.
             present = {crop for crop, expression in grain_patterns.items() if expression.search(value)}
@@ -89,6 +99,7 @@ def classify(item, config):
             unresolved |= not present or bool(remainder)
             component_mix |= len(present) == 1 and not remainder and bool(re.search(r"[,;]", value))
             composition_crops.update(present)
+            declarations.add(frozenset(present))
             composition.append({"field": field, "text": text})
             if not remainder and len(present) == 1 and pattern(config["forms"]).search(value):
                 form.append({"field": field, "text": text})
@@ -113,7 +124,10 @@ def classify(item, config):
     field_conflicts = [evidence for evidence in identity if evidence["field"] != "title" and pattern(config["excluded_forms"]).search(evidence["text"])]
     processing = [{"field": field, "text": text} for field, text in fields if field != "title"
                   and pattern(config["processing_claims"]).search(re.sub(r"\b(?:not|no|without)\s+\w+", " ", text, flags=re.I))]
-    if category_conflict:
+    if identity_conflicts:
+        status, reason = "pending", "field_identity_conflict"
+        counter = identity_conflicts
+    elif category_conflict:
         status, reason = "pending", category_conflict
     elif pattern(config["nonfood"]).search(affirmative):
         status, reason = "excluded", "nonfood"
@@ -129,6 +143,9 @@ def classify(item, config):
     elif field_conflicts:
         status, reason = "pending", "field_form_conflict"
         counter = field_conflicts
+    elif len(declarations) > 1:
+        status, reason = "pending", "composition_declaration_conflict"
+        counter = composition
     elif len(composition_crops) > 1 and not unresolved:
         status, reason = "excluded", "mixed_composition"
     elif component_mix:

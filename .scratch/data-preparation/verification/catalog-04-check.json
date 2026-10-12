@@ -1,56 +1,57 @@
 {
-  "catalog_sha256": "e95ba7eccafe524f3d8de1687b7ada584a23f4eabff8b1326362d1204211e766",
+  "catalog_sha256": "aa438781459c6794f2fe24d3cef94d8f251101c097f85e0f9ebd573cebe1c9c1",
   "counts": {
-    "excluded": 547643,
-    "included": 10,
-    "pending": 55621
+    "excluded": 547604,
+    "included": 14,
+    "pending": 55656
   },
-  "generated_at_utc": "2026-10-12T02:55:41.988557+00:00",
-  "included_outside_mechanical_A": 0,
+  "generated_at_utc": "2026-10-12T03:13:08.929230+00:00",
+  "included_outside_mechanical_A": 2,
   "last_included_source": {
     "line": 501711,
     "parent_asin": "B0861CPXR2"
   },
   "limitations": "Checks all source locations, summaries and set accounting; does not substitute for independent semantic adjudication of pending products.",
-  "literal_evidence_references_checked": 486153,
+  "literal_evidence_references_checked": 490461,
   "mechanical_A_outcomes": {
     "excluded": 185,
-    "included": 10,
-    "pending": 5177
+    "included": 12,
+    "pending": 5175
   },
   "mechanical_A_reasons": {
-    "ambiguous_processing_or_mix": 941,
+    "ambiguous_processing_or_mix": 936,
     "category_form_conflict": 13,
     "category_identity_conflict": 61,
-    "component_mix_not_resolved": 1,
+    "composition_declaration_conflict": 31,
     "excluded_form": 182,
-    "field_form_conflict": 3,
-    "form_not_verified": 356,
-    "identity_and_composition": 10,
-    "missing_composition": 3562,
+    "field_form_conflict": 12,
+    "form_not_verified": 352,
+    "identity_and_composition": 12,
+    "missing_composition": 3524,
     "outside_crop": 3,
-    "unresolved_composition": 179,
+    "unresolved_composition": 185,
     "weak_identity": 61
   },
   "original_material_count": 26,
   "original_materials_unchanged": true,
   "reasons": {
-    "ambiguous_processing_or_mix": 4074,
-    "category_form_conflict": 7435,
-    "category_identity_conflict": 555,
-    "component_mix_not_resolved": 1,
-    "excluded_form": 217611,
-    "field_form_conflict": 94,
-    "form_not_verified": 3046,
-    "identity_and_composition": 10,
-    "missing_composition": 4063,
+    "ambiguous_processing_or_mix": 4076,
+    "category_form_conflict": 7420,
+    "category_identity_conflict": 553,
+    "composition_declaration_conflict": 38,
+    "excluded_form": 217605,
+    "field_form_conflict": 86,
+    "field_identity_conflict": 50,
+    "form_not_verified": 3030,
+    "identity_and_composition": 14,
+    "missing_composition": 4017,
     "no_scope_evidence": 318393,
     "nonfood": 2269,
-    "outside_crop": 9370,
-    "unresolved_composition": 210,
-    "weak_identity": 36143
+    "outside_crop": 9337,
+    "unresolved_composition": 224,
+    "weak_identity": 36162
   },
-  "scope_sha256": "c5f435430279ff3dedbfaf2ff75d69e85ac653eba751a233cfaa3002bb9f5828",
+  "scope_sha256": "48ee8f469e4d09b4d77b47626fa59c9af25121334af6d8f4b73732216c6b6b31",
   "source_rows": 603274,
   "status": "independent_artifact_audit_passed"
 }

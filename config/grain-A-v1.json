@@ -1,5 +1,5 @@
 {
-  "version": "grain-A-1.0.2",
+  "version": "grain-A-1.0.3",
   "scheme": "A",
   "approved_on": "2026-10-12",
   "approval": "User confirmed scheme A and identity/composition, exclusion, pending and metadata conflict principles.",
@@ -37,6 +37,8 @@
     "weak_evidence": "pending",
     "unknown_composition": "pending",
     "material_metadata_conflict": "pending",
+    "multiple_complete_composition_declarations": "Inspect every sentence; differing declarations remain pending.",
+    "explicit_identity_counter_evidence": "Inspect every sentence; conflicting outside-scope or negated identity remains pending.",
     "exact_duplicate_metadata": "merge_references",
     "no_reviews": "retain",
     "review_statistics_for_selection": "forbidden",

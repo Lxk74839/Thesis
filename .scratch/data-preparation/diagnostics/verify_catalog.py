@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-report = json.loads((ROOT / "records/catalog/grain-A-1.0.2.json").read_text("utf-8"))
+report = json.loads((ROOT / "records/catalog/grain-A-1.0.3.json").read_text("utf-8"))
 source = json.loads((ROOT / "records/sources/amazon-2023-grocery-metadata.json").read_text("utf-8"))
 assert source["download"]["sha256"] == "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2"
 assert report["source_sha256"] == source["download"]["sha256"]
@@ -21,7 +21,8 @@ for name in ("catalog", "audit", "pending"):
 
 included = {row["parent_asin"]: row for row in map(json.loads, (ROOT / report["catalog_path"]).read_text("utf-8").splitlines())}
 assert set(included) == {"B09S5HJV3W", "B01BCJ2M0S", "B0B53M8WS2", "B089N9636M", "B0014GZCQQ",
-                         "B005HVDZS6", "B00CQAYHQ0", "B01K9F6QQ2", "B0078DQPZG", "B0861CPXR2"}
+                         "B005HVDZS6", "B00CQAYHQ0", "B01K9F6QQ2", "B0078DQPZG", "B0861CPXR2",
+                         "B001QHAJES", "B00CYV2DV2", "B005IPSNMY", "B07CGS1MRR"}
 counts = Counter()
 reasons = Counter()
 pending_rows = 0
@@ -34,7 +35,7 @@ with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_pa
         assert decision["parent_asin"] == item["parent_asin"]
         assert decision["source_line"] == line_number and decision["source_lines"] == [line_number]
         assert decision["source_sha256"] == report["source_sha256"]
-        assert decision["scope_version"] == "grain-A-1.0.2"
+        assert decision["scope_version"] == "grain-A-1.0.3"
         for kind in ("identity_evidence", "composition_evidence", "form_evidence", "counter_evidence", "discovery_evidence"):
             for evidence in decision[kind]:
                 field = evidence["field"]

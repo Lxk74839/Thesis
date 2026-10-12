@@ -191,7 +191,8 @@ class MetadataPreparationTests(unittest.TestCase):
                 run = self.run_catalog()
                 self.assertNotEqual(run.returncode, 0, run.stdout)
                 self.assertEqual(json.loads(run.stdout)["status"], "catalog_incomplete")
-                self.assertFalse((self.output / "records/catalog/grain-A-1.0.2.json").exists())
+                version = json.loads((PROJECT / "config/grain-A-v1.json").read_text("utf-8"))["version"]
+                self.assertFalse((self.output / "records/catalog" / (version + ".json")).exists())
 
     def test_catalog_reproduces_digest_and_rejects_rule_change_under_same_version(self):
         run = self.catalog([{"parent_asin": "R", "title": "Rice", "features": ["Ingredients: Rice"]}])
@@ -206,7 +207,7 @@ class MetadataPreparationTests(unittest.TestCase):
         config.write_text(json.dumps(altered), "utf-8")
         rejected = self.run_catalog(config)
         self.assertNotEqual(rejected.returncode, 0, rejected.stdout)
-        retained = json.loads((self.output / "records/catalog/grain-A-1.0.2.json").read_text("utf-8"))
+        retained = json.loads((self.output / "records/catalog" / (first["scope_version"] + ".json")).read_text("utf-8"))
         self.assertEqual(retained["scope_sha256"], first["scope_sha256"])
         self.assertEqual(retained["catalog_sha256"], first["catalog_sha256"])
 
@@ -280,6 +281,42 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 3})
         self.assertEqual(audit[0]["discovery_evidence"], [{"field": "title", "text": "Poha THIN - 2lb"}])
         self.assertEqual(audit[2]["discovery_evidence"], [{"field": "categories[0]", "text": "Wheat Berries"}])
+
+    def test_catalog_quarantines_conflicting_later_composition_statements(self):
+        run = self.catalog([
+            {"parent_asin": "CONFLICT", "title": "Rice",
+             "features": ["Ingredients: Rice. Ingredients: Wheat."]},
+            {"parent_asin": "LATER", "title": "Rice",
+             "features": ["Store in a dry place. Ingredients: Rice. Ingredients: Wheat."]},
+            {"parent_asin": "COOKING", "title": "Rice",
+             "features": ["Ingredients: Rice. Serve with wheat bread."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "included"])
+        self.assertEqual(decisions[0]["reason"], "composition_declaration_conflict")
+        self.assertEqual(decisions[1]["composition_evidence"][0]["text"], "Store in a dry place. Ingredients: Rice. Ingredients: Wheat.")
+
+    def test_catalog_quarantines_explicit_outside_or_negated_identity(self):
+        run = self.catalog([
+            {"parent_asin": "OUTSIDE", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["This product is quinoa."]},
+            {"parent_asin": "NEGATED", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["This product is not rice."]},
+            {"parent_asin": "LATER", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["Keep dry. This product is quinoa."]},
+            {"parent_asin": "ONLY_NEGATIVE", "title": "Pantry food",
+             "description": ["This product is not rice."], "features": ["Ingredients: Rice"]},
+            {"parent_asin": "SAFE", "title": "Oat groats", "features": ["Ingredients: Oats"],
+             "description": ["This product is wheat-free oats."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "pending", "pending", "included"])
+        self.assertEqual(decisions[0]["reason"], "field_identity_conflict")
+        self.assertEqual(decisions[1]["counter_evidence"][0]["text"], "This product is not rice.")
 
     def test_full_source_includes_last_record_and_field_diagnostics(self):
         payload = gzip.compress(
