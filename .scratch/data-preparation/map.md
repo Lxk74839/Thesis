@@ -14,9 +14,9 @@
 - [工单 04 范围审核草案](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/product-scope-proposal.md)待用户确认：全量 603,274 行机械诊断比较 A 5,372、B 6,538、C 5,888 个候选父商品；逐行计数与摘要复核通过。这些是条件诊断数量，尚未完成语义裁决，不是正式目录；D1 和 D3 元数据冲突子项尚未冻结，工单 04 保持 claimed。
 - 2026-10-12：用户确认方案 A 及范围／冲突原则；规则 grain-A-1.0.2 全量扫描得到入选 10、排除 547,643、待裁决 55,621。30 项公共入口测试和独立源引用／摘要对账通过；工单 04 等待固定提交的 Standards／Spec 审查后验收关闭。[范围与产物](C:/Users/Kane/Documents/CodexProject/Thesis/docs/data-sources/grain-catalog.md)。
 
-## Fog
-
 - 2026-10-12：[工单 04](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/04-product-scope.md)验收关闭；grain-A-1.0.6 全量 603,274 行，入选 13、排除 547,052、待裁决 56,209，38 项测试及独立对账通过，最终两轴均 0 项发现。实现提交 64bb0cb；目录摘要 e344b11fabf8296a93ea99050c70d2feda1f51a0ad8eb856c5feba0f0d13cc4b，26 份原材料及规格不变。以下历史进度保留追溯，当前推进工单 05。
+
+## Fog
 
 - D1—D12 的其余规则和参数继续待确认；依对应工单提供推荐、理由和用户明确结论。
 - 工单 04 范围目录已生成，正在验收；正式用户任务或正式联合包尚未建立，不能宣称样本充分。历史“待确认”进度条目仅表示当时状态。

@@ -1,0 +1,21 @@
+{
+  "candidate_potential_accounts": 181,
+  "candidate_prior_positive_products": {
+    "0": 180,
+    "1": 1
+  },
+  "catalog_products": 13,
+  "checked_at_utc": "2026-10-12T04:09:24.270019+00:00",
+  "extract_sha256": "78869a8f57eeef070323bd72d5902642bee32f354c25b34dbcfea19f1cf1bebf",
+  "last_match_source_line": 14304194,
+  "limitations": "Account IDs do not prove independent natural people. Unapproved candidate results do not establish formal qualification or sample sufficiency.",
+  "matched_reviews": 260,
+  "oracle": "Full-source parent selection with byte-by-byte extraction reconciliation; independent SQLite grouping, membership, losses and chronology.",
+  "original_material_count": 26,
+  "original_materials_unchanged": true,
+  "products_without_reviews": 0,
+  "source_rows": 14318520,
+  "spec_unchanged": true,
+  "status": "independent_review_reconciliation_passed",
+  "unique_accounts": 256
+}

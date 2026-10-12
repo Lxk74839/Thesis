@@ -89,6 +89,231 @@ class MetadataPreparationTests(unittest.TestCase):
             cwd=PROJECT, capture_output=True, text=True, encoding="utf-8",
         )
 
+    def extract(self, body, parents=("A", "B", "ZERO")):
+        catalog = self.catalog([
+            {"parent_asin": parent, "title": "Rice", "features": ["Ingredients: Rice"]}
+            for parent in parents
+        ])
+        self.assertEqual(catalog.returncode, 0, catalog.stderr)
+        self.prepare(gzip.compress(body, mtime=0), stage="reviews")
+        return self.run_extract()
+
+    def run_extract(self):
+        version = json.loads((PROJECT / "config/grain-A-v1.json").read_text("utf-8"))["version"]
+        return subprocess.run(
+            [sys.executable, str(PROJECT / "prepare_data.py"), "--stage", "review_extract",
+             "--catalog-record", str(self.output / "records/catalog" / (version + ".json")),
+             "--review-record", str(self.output / "records/sources/fixture-reviews.json"),
+             "--output-root", str(self.output)],
+            cwd=PROJECT, capture_output=True, text=True, encoding="utf-8",
+        )
+
+    def test_extract_keeps_all_parent_reviews_original_bytes_and_zero_products(self):
+        first = b'{"parent_asin":"A", "asin":"VARIANT", "user_id":"U1","rating":1,"text":"","timestamp":1609459200000}\n'
+        unrelated = b'{"parent_asin":"OTHER","asin":"A","user_id":"U2","rating":5,"text":"outside","timestamp":1609459200001}\n'
+        last = b'{"parent_asin":"B","asin":"V2","user_id":"U3","rating":5,"text":" untouched ","timestamp":1609459200002}\n'
+        run = self.extract(first + unrelated + last)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "extraction_complete")
+        self.assertEqual(report["scan"]["lines"], 3)
+        self.assertTrue(report["scan"]["gzip_verified"])
+        self.assertEqual((self.output / report["extract_path"]).read_bytes(), first + last)
+        self.assertEqual(report["product_review_counts"], {"A": 1, "B": 1, "ZERO": 0})
+        refs = [json.loads(line) for line in (self.output / report["references_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["source_line"] for row in refs], [1, 3])
+        self.assertEqual(report["formal_clean_status"], "not_built")
+
+    def test_extract_reports_duplicates_and_fact_conflicts_without_resolving_them(self):
+        row = {"parent_asin": "A", "asin": "V", "user_id": "U", "rating": 1, "title": "", "text": "same", "timestamp": 1609459200000}
+        conflict = {**row, "rating": 5}
+        ungroupable = {"parent_asin": "B", "rating": 5, "text": "missing key"}
+        body = b"".join(json.dumps(value).encode() + b"\n" for value in (row, row, conflict, ungroupable))
+        run = self.extract(body)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual((self.output / report["extract_path"]).read_bytes(), body)
+        self.assertEqual(report["raw"]["unique_accounts"], 1)
+        self.assertEqual(report["duplicates"]["exact_object_excess_rows"], 1)
+        self.assertEqual(report["duplicates"]["raw_quad"], {
+            "duplicate_groups": 1, "duplicate_member_rows": 3, "duplicate_excess_rows": 2,
+            "conflict_groups": 1, "conflict_member_rows": 3, "ungroupable_rows": 1,
+        })
+        groups = [json.loads(line) for line in (self.output / report["groups_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(groups[0]["source_lines"], [1, 2, 3])
+        self.assertEqual(groups[0]["conflicting_fields"], ["rating"])
+        self.assertEqual(report["cleaning_status"], "rules_not_approved")
+
+    def test_extract_diagnoses_nfc_and_edge_space_only_as_unapproved_candidate(self):
+        row = {"parent_asin": "A", "asin": "V", "user_id": "U", "rating": 5, "text": " café ", "timestamp": 1609459200000}
+        body = b"".join(json.dumps(value, ensure_ascii=False).encode() + b"\n" for value in (row, {**row, "text": "cafe\u0301"}))
+        run = self.extract(body)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["duplicates"]["raw_quad"]["duplicate_groups"], 0)
+        self.assertEqual(report["duplicates"]["nfc_strip_quad"]["duplicate_groups"], 1)
+        self.assertEqual(report["duplicates"]["nfc_strip_quad"]["conflict_groups"], 0)
+        self.assertEqual(report["candidate_normalization"]["approval"], "not_approved")
+        self.assertEqual(report["candidate_normalization"]["changed_text_rows"], 2)
+        self.assertEqual((self.output / report["extract_path"]).read_bytes(), body)
+
+    def test_extract_reaches_end_but_blocks_completeness_for_unknown_bad_source_rows(self):
+        first = b'{"parent_asin":"A","text":"first"}\n'
+        last = b'{"parent_asin":"B","text":"last"}\n'
+        run = self.extract(first + b'{broken\n[]\n{"asin":"A"}\n{"parent_asin":"OTHER"}\n' + last)
+        self.assertNotEqual(run.returncode, 0)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["status"], "extraction_incomplete")
+        self.assertTrue(report["scan"]["gzip_verified"])
+        self.assertEqual((report["scan"]["lines"], report["scan"]["records"], report["scan"]["matched_rows"]), (6, 4, 2))
+        self.assertEqual((report["scan"]["invalid_json_rows"], report["scan"]["non_object_rows"], report["scan"]["invalid_parent_rows"]), (1, 1, 1))
+        self.assertEqual((self.output / report["extract_path"]).read_bytes(), first + last)
+        errors = [json.loads(line) for line in (self.output / report["errors_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["source_line"] for row in errors], [2, 3, 4])
+
+    def test_extract_reports_single_and_combined_cleaning_losses_without_clean_output(self):
+        row = {"parent_asin": "A", "asin": "V", "user_id": "U1", "rating": 5, "text": "ok", "timestamp": 1609459200000}
+        values = [row, row, {**row, "parent_asin": "B", "user_id": "U2", "rating": 1, "text": ""},
+                  {**row, "parent_asin": "B", "user_id": "U3", "rating": 0, "timestamp": "1609459200000"},
+                  {"parent_asin": "B", "rating": 5, "text": "ok", "timestamp": 1609459200002}]
+        run = self.extract(b"".join(json.dumps(value).encode() + b"\n" for value in values))
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["quality"]["invalid_time_rows"], 1)
+        self.assertEqual(report["quality"]["invalid_rating_rows"], 1)
+        self.assertEqual(report["quality"]["empty_text_rows"], 1)
+        self.assertEqual(report["quality"]["fields"]["user_id"]["missing"], 1)
+        separate = report["candidate_cleaning"]["scenarios"]
+        self.assertEqual(separate["nonblank_text"]["lost_reviews"], 1)
+        self.assertEqual(separate["nonblank_text"]["lost_accounts"], 1)
+        self.assertEqual(separate["valid_rating"]["lost_reviews"], 1)
+        self.assertEqual(separate["valid_time"]["lost_reviews"], 1)
+        self.assertEqual(separate["exact_object_dedup"]["lost_reviews"], 1)
+        self.assertEqual(separate["combined_raw"]["kept_reviews"], 1)
+        self.assertEqual(separate["combined_raw"]["lost_products_with_reviews"], 1)
+        self.assertEqual(separate["combined_raw"]["lost_accounts"], 2)
+        self.assertEqual(separate["combined_raw"]["catalog_products_retained"], 3)
+        self.assertEqual(report["candidate_cleaning"]["approval"], "not_approved")
+        self.assertEqual(report["raw"]["reviews"], 5)
+        self.assertEqual(report["formal_clean_status"], "not_built")
+
+    def test_extract_history_uses_strict_time_all_seen_interactions_and_accounts(self):
+        template = {"asin": "V", "rating": 1, "text": "", "timestamp": 1}
+        values = [
+            {**template, "parent_asin": "A", "user_id": "U1"},
+            {**template, "parent_asin": "B", "user_id": "U1", "timestamp": 2},
+            {**template, "parent_asin": "A", "user_id": "U2"},
+            {**template, "parent_asin": "A", "user_id": "U2", "timestamp": 2},
+            {**template, "parent_asin": "A", "user_id": "U3", "timestamp": 3},
+            {**template, "parent_asin": "B", "user_id": "U3", "timestamp": 3},
+            {**template, "parent_asin": "A", "user_id": "U4", "timestamp": None},
+            {**template, "parent_asin": "B", "user_id": "U4", "timestamp": 5},
+        ]
+        run = self.extract(b"".join(json.dumps(row).encode() + b"\n" for row in values))
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        history = report["history"]
+        self.assertEqual(history["reviews_per_account"], {"2": 4})
+        self.assertEqual(history["distinct_products_per_account"], {"1": 1, "2": 3})
+        self.assertEqual(history["strict_prior_reviews"], {"0": 2, "1": 2})
+        self.assertEqual(history["strict_prior_products"], {"0": 2, "1": 2})
+        self.assertEqual(history["latest_unseen_products"], {"0": 1, "1": 2, "2": 1})
+        self.assertEqual(history["multiple_latest_parent_accounts"], 1)
+        self.assertEqual(history["accounts_with_invalid_time"], 1)
+        self.assertEqual(history["unique_latest_unseen_accounts_with_known_time"], 1)
+        self.assertEqual(report["sample_sufficiency"], "not_determined")
+        self.assertEqual(report["model_input_status"], "not_released")
+
+    def test_extract_positive_candidate_never_searches_back_or_ignores_seen_ties_conflicts(self):
+        template = {"asin": "V", "rating": 5, "text": "ok", "timestamp": 1}
+        values = []
+        for user in ("U1", "U2", "U3", "U5", "U6", "U7"):
+            values.append({**template, "parent_asin": "A", "user_id": user,
+                           "timestamp": None if user == "U6" else 1,
+                           "rating": 1 if user in ("U2", "U7") else 5,
+                           "text": "" if user in ("U2", "U7") else "ok"})
+            values.append({**template, "parent_asin": "A" if user == "U2" else "B", "user_id": user,
+                           "timestamp": 2, "rating": 1 if user == "U1" else 5})
+        values.extend([{**template, "parent_asin": parent, "user_id": "U4", "timestamp": 2} for parent in ("A", "B")])
+        values.append({**template, "parent_asin": "B", "user_id": "U5", "timestamp": 2, "rating": 1})
+        run = self.extract(b"".join(json.dumps(row).encode() + b"\n" for row in values))
+        self.assertEqual(run.returncode, 0, run.stderr)
+        candidate = json.loads(run.stdout)["history"]["manuscript_positive_candidate"]
+        self.assertEqual(candidate["approval"], "not_approved")
+        self.assertEqual(candidate["rating_min"], 4)
+        self.assertEqual(candidate["potential_accounts"], 2)
+        self.assertEqual(candidate["prior_positive_products"], {"0": 1, "1": 1})
+        self.assertEqual(candidate["excluded_reasons"], {
+            "latest_not_positive": 1, "latest_seen_product": 1, "multiple_latest_parents": 1,
+            "latest_fact_conflict": 1, "unreliable_time": 1,
+        })
+        self.assertIsNone(candidate["minimum_prior_products"])
+
+    def test_extract_requires_verified_same_sources_and_reproduces_stable_artifacts(self):
+        body = b'{"parent_asin":"A","asin":"V","user_id":"U","rating":5,"text":"ok","timestamp":1609459200000}\n'
+        first = self.extract(body)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        report = json.loads(first.stdout)
+        repeated = json.loads(self.run_extract().stdout)
+        for name in ("extract", "references", "groups", "errors", "cleaning", "history"):
+            self.assertEqual(repeated[name + "_sha256"], report[name + "_sha256"])
+        version = report["scope_version"]
+        catalog_file = self.output / "records/catalog" / (version + ".json")
+        source_file = self.output / "records/sources/fixture-reviews.json"
+        catalog = json.loads(catalog_file.read_text("utf-8"))
+        source = json.loads(source_file.read_text("utf-8"))
+        changes = [
+            (catalog_file, {**catalog, "status": "rejected_pre_release"}, "catalog"),
+            (source_file, {**source, "time": {**source["time"], "unit": "seconds"}}, "milliseconds"),
+            (source_file, {**source, "scan": {**source["scan"], "lines": 2}}, "count"),
+            (source_file, {**source, "association": {**source["association"], "metadata_source_sha256": "wrong"}}, "metadata"),
+        ]
+        for path, changed, expected in changes:
+            original = path.read_bytes()
+            with self.subTest(expected=expected):
+                path.write_text(json.dumps(changed), "utf-8")
+                run = self.run_extract()
+                self.assertNotEqual(run.returncode, 0)
+                self.assertIn(expected, json.loads(run.stdout)["error"]["message"])
+            path.write_bytes(original)
+
+        for key, relative in (("catalog", catalog["catalog_path"]), ("reviews", source["raw_path"])):
+            path = self.output / relative
+            original = path.read_bytes()
+            path.write_bytes(original + b"changed")
+            with self.subTest(tampered=key):
+                run = self.run_extract()
+                self.assertNotEqual(run.returncode, 0)
+                self.assertIn("checksum", json.loads(run.stdout)["error"]["message"])
+            path.write_bytes(original)
+
+    def test_extract_equal_time_product_conflicts_do_not_inflate_positive_history(self):
+        base = {"parent_asin": "A", "asin": "V", "user_id": "U", "rating": 5, "text": "liked", "timestamp": 1}
+        values = [base, {**base, "rating": 1, "text": "disliked"}, {**base, "parent_asin": "B", "timestamp": 2}]
+        run = self.extract(b"".join(json.dumps(row).encode() + b"\n" for row in values))
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["duplicates"]["raw_quad"]["conflict_groups"], 0)
+        self.assertEqual(report["duplicates"]["same_product_equal_time"]["conflict_groups"], 1)
+        self.assertEqual(report["history"]["manuscript_positive_candidate"]["prior_positive_products"], {"0": 1})
+        self.assertEqual(report["candidate_cleaning"]["scenarios"]["equal_time_conflict_quarantine"]["lost_reviews"], 2)
+
+    def test_extract_time_diagnosis_preserves_invalid_values_and_does_not_apply_cutoff(self):
+        base = {"parent_asin": "A", "asin": "V", "user_id": "U", "rating": 5, "text": "ok"}
+        values = [{**base, "timestamp": value} for value in (1609459200123, 1609459200000, 10**30)]
+        body = b"".join(json.dumps(row).encode() + b"\n" for row in values)
+        run = self.extract(body)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual((self.output / report["extract_path"]).read_bytes(), body)
+        self.assertEqual(report["time"]["min_raw"], 1609459200000)
+        self.assertEqual(report["time"]["max_raw"], 1609459200123)
+        self.assertEqual(report["time"]["max_utc"], "2021-01-01T00:00:00.123+00:00")
+        self.assertEqual(report["time"]["valid_rows"], 2)
+        self.assertEqual(report["quality"]["invalid_time_reasons"], {"unrepresentable": 1})
+        self.assertEqual(report["time"]["cutoff_approval"], "not_approved")
+        self.assertIsNone(report["time"]["cutoff"])
+
     def test_catalog_uses_identity_and_composition_and_includes_last_product(self):
         run = self.catalog([
             {"parent_asin": "COFFEE", "title": "Coffee"},

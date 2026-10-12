@@ -15,16 +15,28 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--metadata-record", type=Path)
     parser.add_argument("--scope-config", type=Path)
+    parser.add_argument("--catalog-record", type=Path)
+    parser.add_argument("--review-record", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
     if root != project and project not in root.parents:
         parser.error("output-root must remain inside the Thesis project")
+    if args.stage == "review_extract":
+        if args.catalog_record is None or args.review_record is None:
+            parser.error("review_extract requires catalog-record and review-record")
+        from review_diagnostics import extract_reviews
+        try:
+            return extract_reviews(args.catalog_record, args.review_record, root)
+        except (OSError, EOFError, zlib.error, ValueError) as exc:
+            print(json.dumps({"stage": "review_extract", "status": "extraction_incomplete",
+                              "error": {"kind": type(exc).__name__, "message": str(exc)}}))
+            return 2
     if args.stage == "catalog":
         if args.metadata_record is None or args.scope_config is None:
             parser.error("catalog requires metadata-record and scope-config")

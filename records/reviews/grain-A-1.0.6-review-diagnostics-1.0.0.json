@@ -1,0 +1,333 @@
+{
+  "candidate_cleaning": {
+    "approval": "not_approved",
+    "scenarios": {
+      "combined_nfc": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 257,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 3
+      },
+      "combined_raw": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 257,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 3
+      },
+      "equal_time_conflict_quarantine": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      },
+      "exact_object_dedup": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 257,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 3
+      },
+      "nfc_strip_quad_safe_dedup": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 257,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 3
+      },
+      "nonblank_text": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      },
+      "raw_quad_conflict_quarantine": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      },
+      "valid_identifiers": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      },
+      "valid_rating": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      },
+      "valid_time": {
+        "catalog_products_retained": 13,
+        "kept_accounts": 256,
+        "kept_products_with_reviews": 13,
+        "kept_reviews": 260,
+        "lost_accounts": 0,
+        "lost_products_with_reviews": 0,
+        "lost_reviews": 0
+      }
+    }
+  },
+  "candidate_normalization": {
+    "approval": "not_approved",
+    "changed_text_rows": 0,
+    "form": "NFC",
+    "strip_edges": true,
+    "unicode_version": "15.1.0"
+  },
+  "catalog_record_sha256": "075e2cd26bcddd1bae472a09851feb30b1e5c1a6ce89e4a591213682e8a9b3c0",
+  "catalog_sha256": "e344b11fabf8296a93ea99050c70d2feda1f51a0ad8eb856c5feba0f0d13cc4b",
+  "cleaning_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/candidate-cleaning-audit.jsonl",
+  "cleaning_sha256": "2601d417321fb9e80b6997742898123d613ef53c6e1f3b47e1c0015abe3b4707",
+  "cleaning_status": "rules_not_approved",
+  "diagnostic_version": "review-diagnostics-1.0.0",
+  "duplicates": {
+    "exact_object_duplicate_groups": 3,
+    "exact_object_excess_rows": 3,
+    "nfc_strip_quad": {
+      "conflict_groups": 0,
+      "conflict_member_rows": 0,
+      "duplicate_excess_rows": 3,
+      "duplicate_groups": 3,
+      "duplicate_member_rows": 6,
+      "ungroupable_rows": 0
+    },
+    "raw_quad": {
+      "conflict_groups": 0,
+      "conflict_member_rows": 0,
+      "duplicate_excess_rows": 3,
+      "duplicate_groups": 3,
+      "duplicate_member_rows": 6,
+      "ungroupable_rows": 0
+    },
+    "same_product_equal_time": {
+      "conflict_groups": 0,
+      "conflict_member_rows": 0,
+      "duplicate_excess_rows": 3,
+      "duplicate_groups": 3,
+      "duplicate_member_rows": 6,
+      "ungroupable_rows": 0
+    }
+  },
+  "errors_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/source-errors.jsonl",
+  "errors_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "extract_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/raw-matched.jsonl",
+  "extract_sha256": "78869a8f57eeef070323bd72d5902642bee32f354c25b34dbcfea19f1cf1bebf",
+  "formal_clean_status": "not_built",
+  "formal_package_status": "not_built",
+  "generated_at_utc": "2026-10-12T04:06:31.370159+00:00",
+  "groups_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/groups.jsonl",
+  "groups_sha256": "37cf3ad222f0fce4f22a0e991e407d53749086e078a842fbaeaf66fe660d6941",
+  "history": {
+    "accounts_with_invalid_time": 0,
+    "accounts_without_valid_time": 0,
+    "basis": "All selected raw interactions; time distributions use representable timestamps. Unknown-time accounts cannot establish a reliable target.",
+    "distinct_products_per_account": {
+      "1": 255,
+      "2": 1
+    },
+    "latest_unseen_products": {
+      "1": 256
+    },
+    "manuscript_positive_candidate": {
+      "approval": "not_approved",
+      "excluded_reasons": {
+        "latest_not_positive": 75
+      },
+      "minimum_prior_products": null,
+      "potential_accounts": 181,
+      "prior_positive_products": {
+        "0": 180,
+        "1": 1
+      },
+      "rating_min": 4
+    },
+    "multiple_latest_parent_accounts": 0,
+    "qualification_status": "not_determined",
+    "reviews_per_account": {
+      "1": 252,
+      "2": 4
+    },
+    "strict_prior_products": {
+      "0": 255,
+      "1": 1
+    },
+    "strict_prior_reviews": {
+      "0": 255,
+      "1": 1
+    },
+    "unique_latest_unseen_accounts_with_known_time": 256
+  },
+  "history_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/account-history-diagnostics.jsonl",
+  "history_sha256": "2c4072c7c7ffd94104b5051f6db72a650492967152e7eddeec8bc197793fbe7b",
+  "model_input_status": "not_released",
+  "producer_sha256": {
+    "prepare_data.py": "564095b1d8d774d54acb8703bd0ed3884702bb491c823d7346e48b4164bd5c40",
+    "review_diagnostics.py": "7f4d0c0458a1985070fb073698d7eb268c1f96c9c21d2cd90baa22b088cfde28"
+  },
+  "product_review_counts": {
+    "B0014GZCQQ": 6,
+    "B005HVDZS6": 1,
+    "B005IPSNMY": 3,
+    "B0078DQPZG": 127,
+    "B00CQAYHQ0": 30,
+    "B00CYV2DV2": 14,
+    "B01BCJ2M0S": 4,
+    "B01K9F6QQ2": 10,
+    "B07CGS1MRR": 2,
+    "B0861CPXR2": 1,
+    "B089N9636M": 18,
+    "B09S5HJV3W": 43,
+    "B0B53M8WS2": 1
+  },
+  "quality": {
+    "empty_text_rows": 0,
+    "fields": {
+      "asin": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "str": 260
+        }
+      },
+      "helpful_vote": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "int": 260
+        }
+      },
+      "images": {
+        "empty": 246,
+        "missing": 0,
+        "types": {
+          "list": 260
+        }
+      },
+      "parent_asin": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "str": 260
+        }
+      },
+      "rating": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "float": 260
+        }
+      },
+      "text": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "str": 260
+        }
+      },
+      "timestamp": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "int": 260
+        }
+      },
+      "title": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "str": 260
+        }
+      },
+      "user_id": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "str": 260
+        }
+      },
+      "verified_purchase": {
+        "empty": 0,
+        "missing": 0,
+        "types": {
+          "bool": 260
+        }
+      }
+    },
+    "invalid_identifier_rows": 0,
+    "invalid_rating_rows": 0,
+    "invalid_text_rows": 0,
+    "invalid_time_reasons": {},
+    "invalid_time_rows": 0,
+    "rating_values": {
+      "1.0": 42,
+      "2.0": 10,
+      "3.0": 23,
+      "4.0": 32,
+      "5.0": 153
+    }
+  },
+  "raw": {
+    "catalog_products": 13,
+    "products_with_reviews": 13,
+    "products_without_reviews": 0,
+    "reviews": 260,
+    "unique_accounts": 256
+  },
+  "references_path": "data/reviews/grain-A-1.0.6/review-diagnostics-1.0.0/source-references.jsonl",
+  "references_sha256": "419c15b394317b5b4c3e3577613e521ee0b89d8043e0581619c97ffa623ced85",
+  "sample_sufficiency": "not_determined",
+  "scan": {
+    "gzip_verified": true,
+    "invalid_json_rows": 0,
+    "invalid_parent_rows": 0,
+    "lines": 14318520,
+    "matched_rows": 260,
+    "non_object_rows": 0,
+    "other_parent_rows": 14318260,
+    "records": 14318520
+  },
+  "scope_version": "grain-A-1.0.6",
+  "source_record_sha256": "fff549ff7f17f56a6ec41e63d9e5aecbdea5f23eab89baf208024c578d1aabc7",
+  "source_sha256": "7f6ae806af2e2dbdda8564abde3141b81c7ee3cf4d8443d361d6bdad91aea4b8",
+  "source_status": "needs_review",
+  "stage": "review_extract",
+  "status": "extraction_complete",
+  "time": {
+    "cutoff": null,
+    "cutoff_approval": "not_approved",
+    "max_raw": 1684088963188,
+    "max_utc": "2023-05-14T18:29:23.188+00:00",
+    "min_raw": 1364672916000,
+    "min_utc": "2013-03-30T19:48:36.000+00:00",
+    "timezone": "UTC",
+    "unit": "milliseconds",
+    "valid_rows": 260
+  }
+}
