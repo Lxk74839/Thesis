@@ -16,10 +16,12 @@
 
 - 2026-10-12：[工单 04](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/04-product-scope.md)验收关闭；grain-A-1.0.6 全量 603,274 行，入选 13、排除 547,052、待裁决 56,209，38 项测试及独立对账通过，最终两轴均 0 项发现。实现提交 64bb0cb；目录摘要 e344b11fabf8296a93ea99050c70d2feda1f51a0ad8eb856c5feba0f0d13cc4b，26 份原材料及规格不变。以下历史进度保留追溯，当前推进工单 05。
 
+- 2026-10-12：[工单 05](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/05-review-diagnostics.md)验收关闭；完整 14,318,520 行复扫，13 个商品提取 260 条原始评论、256 个来源账户；3 条完全重复副本原样保留，条件归并不减少账户。181 个文稿正向条件候选中 180 个无正向历史、1 个有一个历史商品，资格与充分性均未确定。48 项公共入口测试、独立全源字节／分组／损失／时间核对通过，固定实现提交 b3a0dfe 的 Standards 与 Spec 均 0 项发现；26 份原材料及规格不变。[诊断说明](C:/Users/Kane/Documents/CodexProject/Thesis/docs/data-sources/selected-reviews.md)、[验收记录](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/verification/review-extract-05-check.json)、[审查记录](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/verification/code-review-05.md)。工单 06 的正式规则尚待用户确认。
+
 ## Fog
 
 - D1—D12 的其余规则和参数继续待确认；依对应工单提供推荐、理由和用户明确结论。
-- 工单 04 范围目录已生成，正在验收；正式用户任务或正式联合包尚未建立，不能宣称样本充分。历史“待确认”进度条目仅表示当时状态。
+- 工单 04、05 已验收关闭；工单 06 的清洗、时间截断和用户资格规则待确认。正式用户任务或正式联合包尚未建立，不能宣称样本充分。下列“待确认／等待审查”历史进度条目仅表示当时状态。
 
 2026-10-12 更新：首轮审查 Standards 0 项、Spec 2 项；两项经 TDD 修复，版本升至 grain-A-1.0.3。完整来源重跑入选 14、排除 547,604、待裁决 55,656，32 项测试通过；490,461 个证据引用、目录摘要、机械候选去向及 26 份原材料均独立对账通过。工单 04 等待修复后的两轴复审。
 

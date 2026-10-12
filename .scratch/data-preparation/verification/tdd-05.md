@@ -18,3 +18,5 @@
 10. `-k test_extract_time_diagnosis`：红，缺少入选评论的原时值和 UTC 范围。绿，按已核实 epoch 毫秒转换，异常原值仍保留并单独诊断；不施加时间截断，cutoff_approval 为 not_approved。
 
 最终全套 48/48 通过，Thesis 环境运行 16.973 秒；含 38 项既有来源／目录行为。未新增依赖，原材料与规格只读。后续全量与独立核查、审查结果另行记录。
+
+2026-10-12 验收补记：完整 14,318,520 行扫描及独立验收通过，260 条提取逐字节／源行定位一致，SQLite 独立分组、各候选损失和严格时间历史核对一致；26 份原材料及规格摘要不变。固定提交 b3a0dfe08823ddc84bf9c9216ef5831cf3d3a4f4 的 Standards／Spec 均 0 项发现，工单 05 关闭。记录见 ticket05-tests.txt、review-extract-05-check.json、code-review-05.md；正式规则和样本充分性继续待确认。
