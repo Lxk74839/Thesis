@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-report = json.loads((ROOT / "records/catalog/grain-A-1.0.5.json").read_text("utf-8"))
+report = json.loads((ROOT / "records/catalog/grain-A-1.0.6.json").read_text("utf-8"))
 source = json.loads((ROOT / "records/sources/amazon-2023-grocery-metadata.json").read_text("utf-8"))
 assert source["download"]["sha256"] == "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2"
 assert report["source_sha256"] == source["download"]["sha256"]
@@ -35,7 +35,7 @@ with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_pa
         assert decision["parent_asin"] == item["parent_asin"]
         assert decision["source_line"] == line_number and decision["source_lines"] == [line_number]
         assert decision["source_sha256"] == report["source_sha256"]
-        assert decision["scope_version"] == "grain-A-1.0.5"
+        assert decision["scope_version"] == "grain-A-1.0.6"
         for kind in ("identity_evidence", "composition_evidence", "form_evidence", "counter_evidence", "discovery_evidence"):
             for evidence in decision[kind]:
                 field = evidence["field"]

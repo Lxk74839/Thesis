@@ -269,6 +269,17 @@ class MetadataPreparationTests(unittest.TestCase):
         report = json.loads(run.stdout)
         self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 2})
 
+    def test_catalog_preserves_component_lists_in_dedicated_ingredient_fields(self):
+        run = self.catalog([
+            {"parent_asin": "MILLET", "title": "Millet Grain", "details": {"Ingredients": "Ragi\nBajra"}},
+            {"parent_asin": "RICE", "title": "Rice", "details": {"Ingredient": "Brown rice. Red rice."}},
+            {"parent_asin": "REPEATED", "title": "Rice", "details": {"Ingredients": "Ingredients: Rice. Ingredients: Rice."}},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included"])
+
     def test_catalog_keeps_ambiguous_alias_and_leaf_category_clues_pending(self):
         run = self.catalog([
             {"parent_asin": "POHA", "title": "Poha THIN - 2lb"},

@@ -1,5 +1,5 @@
 {
-  "version": "grain-A-1.0.5",
+  "version": "grain-A-1.0.6",
   "scheme": "A",
   "approved_on": "2026-10-12",
   "approval": "User confirmed scheme A and identity/composition, exclusion, pending and metadata conflict principles.",
@@ -41,7 +41,7 @@
     "unknown_composition": "pending",
     "material_metadata_conflict": "pending",
     "multiple_complete_composition_declarations": "Inspect every sentence; differing declarations remain pending.",
-    "dedicated_ingredient_fields": "Inspect every nonempty sentence or line, including text without a declaration prefix.",
+    "dedicated_ingredient_fields": "Inspect the complete list; unmarked continuation lines remain components, not independent repeated declarations.",
     "specific_crop_categories": "Discovery categories are not exempt from crop-identity conflicts.",
     "explicit_identity_counter_evidence": "Inspect every sentence; conflicting outside-scope or negated identity remains pending.",
     "exact_duplicate_metadata": "merge_references",

@@ -90,12 +90,12 @@ def classify(item, config):
             if not fragment.strip():
                 continue
             fragment = fragment.strip()
-            if prefix.match(fragment) or dedicated:
+            if prefix.match(fragment) or (dedicated and active is None):
                 if active is not None:
                     declarations_in_field.append(active)
                 active = fragment
             elif active is not None:
-                if pattern(config["composition_end_prefixes"]).match(fragment):
+                if not dedicated and pattern(config["composition_end_prefixes"]).match(fragment):
                     declarations_in_field.append(active)
                     active = None
                 else:

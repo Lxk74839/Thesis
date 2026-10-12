@@ -34,6 +34,7 @@
     "unresolved_composition": 216,
     "weak_identity": 36738
   },
+  "rejection_reason": "Spec re-review: dedicated ingredient continuation lists were split into repeated declarations.",
   "sample_sufficiency": "not_determined",
   "scan": {
     "conflicting_parents": 0,
@@ -46,5 +47,6 @@
   "scope_version": "grain-A-1.0.5",
   "source_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
   "stage": "catalog",
-  "status": "catalog_complete"
+  "status": "rejected_pre_release",
+  "superseded_by": "grain-A-1.0.6"
 }
