@@ -6,6 +6,7 @@ from functools import cache
 import gzip
 import hashlib
 import json
+from contextlib import nullcontext
 from pathlib import Path
 import re
 
@@ -34,6 +35,13 @@ def text_fields(item):
 
 
 def classify(item, config):
+    if config.get("catalog_kind") == "identity_with_composition_disclosure":
+        from identity_catalog import classify_identity
+        return classify_identity(item, config)
+    return classify_legacy(item, config)
+
+
+def classify_legacy(item, config):
     title = item.get("title") or ""
     affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
     affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)
@@ -189,7 +197,7 @@ def classify(item, config):
             "counter_evidence": counter, "form_evidence": form}
 
 
-def build_catalog(source_record, scope_config, root):
+def build_catalog(source_record, scope_config, root, previous_record=None):
     source = json.loads(source_record.read_text(encoding="utf-8"))
     config = json.loads(scope_config.read_text(encoding="utf-8"))
     if source["stage"] != "metadata" or source["status"] != "diagnostic_complete" or source["error"] or not source["scan"]["gzip_verified"]:
@@ -204,11 +212,31 @@ def build_catalog(source_record, scope_config, root):
     if source_sha != source["download"]["sha256"]:
         raise ValueError("metadata checksum differs from the source record")
     scope_sha = hashlib.sha256(scope_config.read_bytes()).hexdigest()
+    producer_names = ["catalog.py", "prepare_data.py"]
+    if config.get("catalog_kind") == "identity_with_composition_disclosure":
+        producer_names.append("identity_catalog.py")
+        if previous_record is None:
+            raise ValueError("identity catalog requires previous-catalog-record for full migration auditing")
+    producer = {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest() for name in producer_names}
+    old = None
+    old_audit = None
+    if previous_record is not None:
+        old = json.loads(previous_record.read_text("utf-8"))
+        if old["stage"] != "catalog" or old["status"] != "catalog_complete" or old["source_sha256"] != source_sha or old["scope_version"] == config["version"]:
+            raise ValueError("migration requires a complete different catalog version on the identical metadata source")
+        old_audit = (previous_record.resolve().parent.parents[1] / old["audit_path"]).resolve()
+        if Path(__file__).resolve().parent not in old_audit.parents:
+            raise ValueError("previous audit must remain inside Thesis")
+        with old_audit.open("rb") as stream:
+            if hashlib.file_digest(stream, "sha256").hexdigest() != old["audit_sha256"]:
+                raise ValueError("previous audit checksum differs from its record")
     record = root / "records" / "catalog" / (config["version"] + ".json")
     if record.exists():
         previous = json.loads(record.read_text(encoding="utf-8"))
         if previous["source_sha256"] != source_sha or previous["scope_sha256"] != scope_sha:
             raise ValueError("changed source or rules require a new catalog version")
+        if previous["producer_sha256"] != producer:
+            raise ValueError("changed implementation requires a new catalog version")
     parents = {}
     conflicts = set()
     rows = 0
@@ -231,9 +259,13 @@ def build_catalog(source_record, scope_config, root):
     catalog_path = directory / "catalog.jsonl"
     audit_path = directory / "audit.jsonl"
     pending_path = directory / "pending.jsonl"
+    migration_path = directory / "migration.jsonl"
     counts = Counter(included=0, excluded=0, pending=0)
     reasons = Counter()
-    with gzip.open(raw, "rb") as stream, catalog_path.open("w", encoding="utf-8", newline="\n") as catalog, audit_path.open("w", encoding="utf-8", newline="\n") as audit, pending_path.open("w", encoding="utf-8", newline="\n") as pending:
+    composition_counts = Counter()
+    included_composition_counts = Counter()
+    migrations = Counter()
+    with gzip.open(raw, "rb") as stream, catalog_path.open("w", encoding="utf-8", newline="\n") as catalog, audit_path.open("w", encoding="utf-8", newline="\n") as audit, pending_path.open("w", encoding="utf-8", newline="\n") as pending, (old_audit.open(encoding="utf-8") if old_audit else nullcontext()) as prior, (migration_path.open("w", encoding="utf-8", newline="\n") if old else nullcontext()) as migration:
         for line_number, line in enumerate(stream, 1):
             item = json.loads(line)
             decision = {"parent_asin": item["parent_asin"], **classify(item, config),
@@ -245,11 +277,33 @@ def build_catalog(source_record, scope_config, root):
             if first:
                 counts[decision["status"]] += 1
                 reasons[decision["reason"]] += 1
+                if "composition_status" in decision:
+                    composition_counts[decision["composition_status"]] += 1
+                    if decision["status"] == "included":
+                        included_composition_counts[decision["composition_status"]] += 1
+            if old:
+                old_line = prior.readline()
+                if not old_line:
+                    raise ValueError("previous audit ends before the metadata source")
+                previous = json.loads(old_line)
+                if previous["parent_asin"] != decision["parent_asin"] or previous["source_line"] != line_number:
+                    raise ValueError("previous audit source locations do not align")
+                if first:
+                    migrations[previous["status"] + "->" + decision["status"]] += 1
+                change = {"parent_asin": decision["parent_asin"], "source_line": line_number,
+                          "source_lines": decision["source_lines"], "source_sha256": source_sha,
+                          "old": {key: previous[key] for key in ("status", "reason", "crop", "scope_version")},
+                          "new": {key: decision[key] for key in ("status", "reason", "crop", "scope_version", "composition_status")},
+                          "old_audit_line": line_number, "new_audit_line": line_number,
+                          "migration_reason": previous["reason"] + " -> " + decision["reason"]}
+                migration.write(json.dumps(change, ensure_ascii=False, sort_keys=True) + "\n")
             audit.write(json.dumps(decision, ensure_ascii=False, sort_keys=True) + "\n")
             if decision["status"] == "included" and first:
                 catalog.write(json.dumps({**decision, "metadata": item}, ensure_ascii=False, sort_keys=True) + "\n")
             elif decision["status"] == "pending":
                 pending.write(json.dumps({**decision, "metadata": item}, ensure_ascii=False, sort_keys=True) + "\n")
+        if prior and prior.readline():
+            raise ValueError("previous audit extends beyond metadata EOF")
     report = {"stage": "catalog", "status": "catalog_complete", "counts": counts,
               "reasons": reasons,
               "scan": {"rows": rows, "unique_parents": len(parents), "gzip_verified": True,
@@ -260,10 +314,19 @@ def build_catalog(source_record, scope_config, root):
               "audit_path": audit_path.relative_to(root).as_posix(),
               "pending_path": pending_path.relative_to(root).as_posix(),
               "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-              "producer_sha256": {name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-                                  for name in ("catalog.py", "prepare_data.py")},
+              "producer_sha256": producer,
               "model_input_status": "not_released", "sample_sufficiency": "not_determined",
               "formal_package_status": "not_built"}
+    if old:
+        report.update(previous_scope_version=old["scope_version"], previous_audit_sha256=old["audit_sha256"],
+                      previous_record_path=previous_record.resolve().relative_to(Path(__file__).resolve().parent).as_posix(),
+                      previous_record_sha256=hashlib.sha256(previous_record.read_bytes()).hexdigest(),
+                      migration_counts=migrations, composition_counts=composition_counts,
+                      included_composition_counts=included_composition_counts,
+                      composition_verification="source_declaration_only_not_independently_verified",
+                      supply_chain_verification="not_performed", migration_path=migration_path.relative_to(root).as_posix())
+        with migration_path.open("rb") as stream:
+            report["migration_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()
     for name, path in (("catalog", catalog_path), ("audit", audit_path), ("pending", pending_path)):
         with path.open("rb") as stream:
             report[name + "_sha256"] = hashlib.file_digest(stream, "sha256").hexdigest()

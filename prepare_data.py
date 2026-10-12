@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--metadata-record", type=Path)
     parser.add_argument("--scope-config", type=Path)
     parser.add_argument("--catalog-record", type=Path)
+    parser.add_argument("--previous-catalog-record", type=Path)
     parser.add_argument("--review-record", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
@@ -42,7 +43,7 @@ def main():
             parser.error("catalog requires metadata-record and scope-config")
         from catalog import build_catalog
         try:
-            return build_catalog(args.metadata_record, args.scope_config, root)
+            return build_catalog(args.metadata_record, args.scope_config, root, args.previous_catalog_record)
         except (OSError, EOFError, zlib.error, ValueError) as exc:
             print(json.dumps({"stage": "catalog", "status": "catalog_incomplete",
                               "error": {"kind": type(exc).__name__, "message": str(exc)}}))
