@@ -1,0 +1,56 @@
+{
+  "catalog_sha256": "e95ba7eccafe524f3d8de1687b7ada584a23f4eabff8b1326362d1204211e766",
+  "counts": {
+    "excluded": 547643,
+    "included": 10,
+    "pending": 55621
+  },
+  "generated_at_utc": "2026-10-12T02:55:41.988557+00:00",
+  "included_outside_mechanical_A": 0,
+  "last_included_source": {
+    "line": 501711,
+    "parent_asin": "B0861CPXR2"
+  },
+  "limitations": "Checks all source locations, summaries and set accounting; does not substitute for independent semantic adjudication of pending products.",
+  "literal_evidence_references_checked": 486153,
+  "mechanical_A_outcomes": {
+    "excluded": 185,
+    "included": 10,
+    "pending": 5177
+  },
+  "mechanical_A_reasons": {
+    "ambiguous_processing_or_mix": 941,
+    "category_form_conflict": 13,
+    "category_identity_conflict": 61,
+    "component_mix_not_resolved": 1,
+    "excluded_form": 182,
+    "field_form_conflict": 3,
+    "form_not_verified": 356,
+    "identity_and_composition": 10,
+    "missing_composition": 3562,
+    "outside_crop": 3,
+    "unresolved_composition": 179,
+    "weak_identity": 61
+  },
+  "original_material_count": 26,
+  "original_materials_unchanged": true,
+  "reasons": {
+    "ambiguous_processing_or_mix": 4074,
+    "category_form_conflict": 7435,
+    "category_identity_conflict": 555,
+    "component_mix_not_resolved": 1,
+    "excluded_form": 217611,
+    "field_form_conflict": 94,
+    "form_not_verified": 3046,
+    "identity_and_composition": 10,
+    "missing_composition": 4063,
+    "no_scope_evidence": 318393,
+    "nonfood": 2269,
+    "outside_crop": 9370,
+    "unresolved_composition": 210,
+    "weak_identity": 36143
+  },
+  "scope_sha256": "c5f435430279ff3dedbfaf2ff75d69e85ac653eba751a233cfaa3002bb9f5828",
+  "source_rows": 603274,
+  "status": "independent_artifact_audit_passed"
+}

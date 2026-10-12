@@ -15,15 +15,28 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews"])
-    parser.add_argument("--source-manifest", required=True, type=Path)
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog"])
+    parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--metadata-record", type=Path)
+    parser.add_argument("--scope-config", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
     if root != project and project not in root.parents:
         parser.error("output-root must remain inside the Thesis project")
+    if args.stage == "catalog":
+        if args.metadata_record is None or args.scope_config is None:
+            parser.error("catalog requires metadata-record and scope-config")
+        from catalog import build_catalog
+        try:
+            return build_catalog(args.metadata_record, args.scope_config, root)
+        except (OSError, EOFError, zlib.error, ValueError) as exc:
+            print(json.dumps({"stage": "catalog", "status": "catalog_incomplete",
+                              "error": {"kind": type(exc).__name__, "message": str(exc)}}))
+            return 2
+    if args.source_manifest is None:
+        parser.error("source acquisition requires source-manifest")
     source = json.loads(args.source_manifest.read_text(encoding="utf-8"))
     source_id = source["id"]
     if not re.fullmatch(r"[a-zA-Z0-9_-]+", source_id):

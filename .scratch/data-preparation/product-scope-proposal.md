@@ -1,6 +1,6 @@
 # 工单 04：谷物商品范围与冲突规则审核草案
 
-状态：**草案待用户确认，正式商品目录尚未生成**。规格正文已确认，未决规则与参数尚未冻结。本草案仅请求确认 D1，以及 D3 的父商品元数据重复／冲突处理子项；不批准评论清洗、时间截断、用户资格或实验参数。
+状态：**范围与处理原则已于 2026-10-12 经用户确认采用 A；以下保留 2026-10-10 的历史诊断草案。正式生成与验收另见工单 04。** 规格正文已确认，未决规则与参数尚未冻结。此次确认只解决 D1，以及 D3 的父商品元数据重复／冲突处理子项；不批准评论清洗、时间截断、用户资格或实验参数。
 
 ## 推荐与替代方案
 
@@ -77,4 +77,4 @@ $env:PYTHONIOENCODING = 'utf-8'
 & 'D:\Work\Anaconda\Library\bin\conda.bat' run -p 'C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis' --no-capture-output python .scratch\data-preparation\diagnostics\audit_scope_draft.py
 ```
 
-请确认所选方案 A／B／C（或明确组合）以及上述字段组合、排除、待裁决和元数据冲突约定。用户明确结论到达之前，工单 04 保持 claimed，正式范围配置与正式目录均不生成。
+历史审核请求已于 2026-10-12 得到明确确认：采用 A，以及上述字段组合、排除、待裁决和元数据冲突原则。正式配置在 config/grain-A-v1.json；正式目录、逐商品审计及独立复核完成后，按公共入口测试和 Standards／Spec 审查结果关闭工单 04。

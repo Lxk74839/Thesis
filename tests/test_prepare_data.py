@@ -73,6 +73,214 @@ class MetadataPreparationTests(unittest.TestCase):
         threading.Thread(target=server.serve_forever, daemon=True).start()
         return f"http://127.0.0.1:{server.server_port}/metadata.gz"
 
+    def catalog(self, rows):
+        metadata = self.prepare(gzip.compress(
+            b"".join(json.dumps(row).encode() + b"\n" for row in rows), mtime=0,
+        ))
+        self.assertEqual(metadata.returncode, 0, metadata.stderr)
+        return self.run_catalog()
+
+    def run_catalog(self, config=None):
+        return subprocess.run(
+            [sys.executable, str(PROJECT / "prepare_data.py"), "--stage", "catalog",
+             "--metadata-record", str(self.output / "records/sources/fixture-metadata.json"),
+             "--scope-config", str(config or PROJECT / "config/grain-A-v1.json"),
+             "--output-root", str(self.output)],
+            cwd=PROJECT, capture_output=True, text=True, encoding="utf-8",
+        )
+
+    def test_catalog_uses_identity_and_composition_and_includes_last_product(self):
+        run = self.catalog([
+            {"parent_asin": "COFFEE", "title": "Coffee"},
+            {"parent_asin": "LAST", "title": "Brown Rice", "categories": ["Dried Grains & Rice"],
+             "features": ["Ingredients: Brown rice"], "rating_number": 0},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        products = [json.loads(line) for line in (self.output / report["catalog_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([item["parent_asin"] for item in products], ["LAST"])
+        self.assertEqual(products[0]["source_lines"], [2])
+        self.assertEqual(products[0]["composition_evidence"][0]["text"], "Ingredients: Brown rice")
+        self.assertEqual(report["counts"], {"included": 1, "excluded": 1, "pending": 0})
+
+    def test_catalog_keeps_missing_or_incomplete_composition_pending(self):
+        run = self.catalog([
+            {"parent_asin": "TITLE_ONLY", "title": "Brown Rice"},
+            {"parent_asin": "UNKNOWN_ADDITION", "title": "White Rice",
+             "features": ["Ingredients: Rice, vitamin blend"]},
+            {"parent_asin": "WEAK", "title": "Healthy Pantry",
+             "description": ["A good companion for rice dishes."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 3})
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([item["reason"] for item in decisions],
+                         ["missing_composition", "unresolved_composition", "weak_identity"])
+        self.assertEqual(len((self.output / report["pending_path"]).read_text("utf-8").splitlines()), 3)
+
+    def test_catalog_distinguishes_sold_food_from_free_claims_and_recipe_words(self):
+        cases = [
+            ("SNACK", "Rice Krispies Treats", "Ingredients: Rice", "excluded"),
+            ("FLOUR", "Rice Flour", "Ingredients: Rice", "excluded"),
+            ("SEED", "Wheat Grain Seeds for planting", "Ingredients: Wheat", "excluded"),
+            ("PSEUDO", "Organic Quinoa", "May contain wheat", "excluded"),
+            ("OATS", "Wheat-free Rolled Oats", "Ingredients: Organic oats", "included"),
+            ("RECIPE", "Wheat Berries for bread recipes", "Ingredients: Wheat", "included"),
+        ]
+        run = self.catalog([{"parent_asin": parent, "title": title, "features": [feature]}
+                            for parent, title, feature, _ in cases])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([(row["parent_asin"], row["status"]) for row in audit],
+                         [(parent, status) for parent, _, _, status in cases])
+
+    def test_catalog_quarantines_identity_form_and_processing_conflicts(self):
+        run = self.catalog([
+            {"parent_asin": "CATEGORY", "title": "Brown Teff Grain", "features": ["Ingredients: Teff"],
+             "categories": ["Dried Grains & Rice", "Buckwheat"]},
+            {"parent_asin": "FORM", "title": "Barley Flakes", "features": ["Ingredients: Barley"],
+             "categories": ["Flours & Meals"]},
+            {"parent_asin": "BLEND", "title": "Rice Blend", "features": ["Ingredients: Rice"]},
+            {"parent_asin": "FORTIFIED", "title": "Enriched White Rice", "features": ["Ingredients: Rice"]},
+            {"parent_asin": "DISAGREE", "title": "Wheat Berries", "features": ["Ingredients: Rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 5})
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(audit[0]["reason"], "category_identity_conflict")
+        self.assertEqual(audit[0]["counter_evidence"], [{"field": "categories[1]", "text": "Buckwheat"}])
+        self.assertEqual(audit[1]["reason"], "category_form_conflict")
+
+    def test_catalog_merges_exact_duplicates_and_quarantines_late_parent_conflict(self):
+        first = {"parent_asin": "EXACT", "title": "Rice", "features": ["Ingredients: Rice"]}
+        run = self.catalog([first, first,
+            {"parent_asin": "CONFLICT", "title": "Rice", "features": ["Ingredients: Rice"]},
+            {"parent_asin": "CONFLICT", "title": "Wheat Berries", "features": ["Ingredients: Wheat"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["counts"], {"included": 1, "excluded": 0, "pending": 1})
+        catalog = [json.loads(line) for line in (self.output / report["catalog_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(catalog[0]["source_lines"], [1, 2])
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["source_line"] for row in audit], [1, 2, 3, 4])
+        self.assertEqual([row["reason"] for row in audit[2:]], ["parent_metadata_conflict"] * 2)
+        self.assertEqual([row["source_lines"] for row in audit[2:]], [[3, 4], [3, 4]])
+        self.assertEqual(report["scan"], {"rows": 4, "unique_parents": 2, "gzip_verified": True,
+                                         "duplicate_parent_rows": 2, "conflicting_parents": 1})
+
+    def test_catalog_rejects_unverified_or_tampered_metadata(self):
+        acquired = self.prepare(gzip.compress(b'{"parent_asin":"R","title":"Rice"}\n', mtime=0))
+        original = json.loads(acquired.stdout)
+        path = self.output / original["record_path"]
+        for fault in ("status", "gzip", "checksum", "row_count"):
+            with self.subTest(fault=fault):
+                record = json.loads(acquired.stdout)
+                if fault == "status":
+                    record["status"] = "source_incomplete"
+                elif fault == "gzip":
+                    record["scan"]["gzip_verified"] = False
+                elif fault == "checksum":
+                    record["download"]["sha256"] = "0" * 64
+                else:
+                    record["scan"]["lines"] = 2
+                path.write_text(json.dumps(record), "utf-8")
+                run = self.run_catalog()
+                self.assertNotEqual(run.returncode, 0, run.stdout)
+                self.assertEqual(json.loads(run.stdout)["status"], "catalog_incomplete")
+                self.assertFalse((self.output / "records/catalog/grain-A-1.0.2.json").exists())
+
+    def test_catalog_reproduces_digest_and_rejects_rule_change_under_same_version(self):
+        run = self.catalog([{"parent_asin": "R", "title": "Rice", "features": ["Ingredients: Rice"]}])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        first = json.loads(run.stdout)
+        repeated = self.run_catalog()
+        self.assertEqual(repeated.returncode, 0, repeated.stderr)
+        self.assertEqual(json.loads(repeated.stdout)["catalog_sha256"], first["catalog_sha256"])
+        altered = json.loads((PROJECT / "config/grain-A-v1.json").read_text("utf-8"))
+        altered["forms"].append("new research form")
+        config = self.output / "changed-config.json"
+        config.write_text(json.dumps(altered), "utf-8")
+        rejected = self.run_catalog(config)
+        self.assertNotEqual(rejected.returncode, 0, rejected.stdout)
+        retained = json.loads((self.output / "records/catalog/grain-A-1.0.2.json").read_text("utf-8"))
+        self.assertEqual(retained["scope_sha256"], first["scope_sha256"])
+        self.assertEqual(retained["catalog_sha256"], first["catalog_sha256"])
+
+    def test_catalog_uses_affirmative_identity_and_complete_composition_across_fields(self):
+        run = self.catalog([
+            {"parent_asin": "DESCRIPTION", "title": "Pantry Essentials",
+             "description": ["This product is barley groats.", "Ingredients: Barley"]},
+            {"parent_asin": "DETAILS", "title": "Wheat Berries", "details": {"Ingredients": "Whole wheat"}},
+            {"parent_asin": "PERCENT", "title": "Brown Rice", "features": ["100% Organic brown rice"]},
+            {"parent_asin": "CATEGORY_ONLY", "title": "Pantry Essentials", "categories": ["Dried Grains & Rice"]},
+            {"parent_asin": "MIXED", "title": "Rice and Wheat Grain", "features": ["Ingredients: Rice, wheat"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "pending", "pending", "excluded"])
+        self.assertEqual(audit[0]["identity_evidence"][0]["field"], "description[0]")
+        self.assertEqual(audit[4]["reason"], "mixed_composition")
+
+    def test_catalog_requires_form_and_retains_counterevidence_outside_title(self):
+        run = self.catalog([
+            {"parent_asin": "CATEGORY", "title": "Rice", "features": ["Ingredients: Rice"],
+             "categories": ["Breads & Bakery"]},
+            {"parent_asin": "FORM_UNKNOWN", "title": "Sorghum Food", "features": ["Ingredients: Sorghum"]},
+            {"parent_asin": "RAW_CORN", "title": "Corn Kernels", "features": ["Ingredients: Corn"],
+             "categories": ["Snack Foods", "Popcorn", "Unpopped"]},
+            {"parent_asin": "DESCRIPTION", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["This product is rice flour."]},
+            {"parent_asin": "ENRICHED", "title": "White Rice", "features": ["Ingredients: Rice", "Enriched with vitamins"]},
+            {"parent_asin": "CHINESE", "title": "有机大米"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included", "pending", "pending", "pending"])
+        self.assertEqual(audit[1]["reason"], "form_not_verified")
+        self.assertTrue(audit[2]["form_evidence"])
+
+    def test_catalog_does_not_treat_quality_percentage_as_complete_ingredients(self):
+        run = self.catalog([
+            {"parent_asin": "RICE", "title": "Brown Rice", "features": ["100% natural organic whole grain rice"]},
+            {"parent_asin": "SQUARES", "title": "Soft-Baked Oatmeal Squares, Peanut Butter",
+             "features": ["100% natural whole grain oats"], "categories": ["Oatmeal"]},
+            {"parent_asin": "SEVEN", "title": "Microwavable Rice, Mixture of Seven Whole Grains",
+             "features": ["100% natural organic whole grain basmati rice"]},
+            {"parent_asin": "PURE", "title": "Brown Rice", "features": ["100% pure brown rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "excluded", "pending", "included"])
+
+    def test_catalog_keeps_same_family_variety_mixture_pending(self):
+        run = self.catalog([
+            {"parent_asin": "MILLET", "title": "Millet Grain", "features": ["Ingredients: Ragi, bajra"]},
+            {"parent_asin": "RICE", "title": "Rice", "features": ["Ingredients: Brown rice, red rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 2})
+
+    def test_catalog_keeps_ambiguous_alias_and_leaf_category_clues_pending(self):
+        run = self.catalog([
+            {"parent_asin": "POHA", "title": "Poha THIN - 2lb"},
+            {"parent_asin": "JASMINE", "title": "Jasmine Dragon Pearl"},
+            {"parent_asin": "LEAF", "title": "Pantry Essentials", "categories": ["Wheat Berries"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(report["counts"], {"included": 0, "excluded": 0, "pending": 3})
+        self.assertEqual(audit[0]["discovery_evidence"], [{"field": "title", "text": "Poha THIN - 2lb"}])
+        self.assertEqual(audit[2]["discovery_evidence"], [{"field": "categories[0]", "text": "Wheat Berries"}])
+
     def test_full_source_includes_last_record_and_field_diagnostics(self):
         payload = gzip.compress(
             b'{"parent_asin":"FIRST","title":"Tea","categories":[]}\n'
