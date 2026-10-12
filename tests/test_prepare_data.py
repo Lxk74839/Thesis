@@ -134,11 +134,14 @@ class MetadataPreparationTests(unittest.TestCase):
             {"parent_asin": "MIX", "title": "Raw rice grain", "description": ["This grain blend contains rice and quinoa and is perfect for dinner."]},
             {"parent_asin": "RECIPE", "title": "Raw rice grain", "description": ["For this recipe, combine rice and quinoa for dinner."]},
             {"parent_asin": "TWO", "title": "Raw rice grain", "description": ["This grain blend contains rice and wheat and is ideal for dinner."]},
+            {"parent_asin": "MAKING", "title": "Raw rice grain", "description": ["This grain blend contains rice and quinoa, making it perfect for dinner."]},
+            {"parent_asin": "BAKING", "title": "Raw rice grain", "description": ["This product is wheat for baking."]},
+            {"parent_asin": "USE_ONLY", "title": "Raw rice grain", "description": ["Our rice is perfect for a recipe with quinoa grain."]},
         ])
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
-        self.assertEqual([r["status"] for r in audit], ["excluded", "included", "excluded"])
+        self.assertEqual([r["status"] for r in audit], ["excluded", "included", "excluded", "excluded", "pending", "included"])
         self.assertIn({"field": "description[0]", "text": "This grain blend contains rice and quinoa and is perfect for dinner."}, audit[0]["counter_evidence"])
 
     def test_identity_catalog_title_flavor_is_not_undisclosed_plain_grain(self):
@@ -151,6 +154,17 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
         self.assertEqual(audit[0]["counter_evidence"], [{"field": "title", "text": "Whole Grain Oatmeal Apple Cinnamon"}])
+
+    def test_identity_catalog_storage_directions_cannot_prove_sold_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "STORE", "title": "Arborio Rice", "description": ["Store in a cool, dry place."]},
+            {"parent_asin": "DIRECT", "title": "Arborio Rice", "description": ["This product contains uncooked rice. Store in a cool, dry place."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["pending", "included"])
+        self.assertEqual(audit[0]["form_evidence"], [])
 
     def test_identity_catalog_does_not_infer_form_from_category_or_ingredients(self):
         run = self.identity_catalog([

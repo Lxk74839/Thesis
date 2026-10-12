@@ -18,13 +18,17 @@ def grain_crops(text, config):
 
 
 def context_role(text):
-    if re.search(r"\b(?:facility|allergen|may contain|manufactured in)\b", text, re.I):
-        return "allergen_or_facility"
-    if re.search(r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b", text, re.I):
-        return "use_comparison_or_brand_context"
-    if re.search(r"\b(?:founded|our story|we pride|our ability|began as|not sticky|when cooked|while cooking)\b", text, re.I):
-        return "brand_or_texture_context"
-    return None
+    matches = []
+    for role, expression in (
+        ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|not sticky|when cooked|while cooking)\b"),
+        ("storage_context", r"\b(?:store in|storage|keep in|keep refrigerated|refrigerate after)\b"),
+    ):
+        match = re.search(expression, text, re.I)
+        if match:
+            matches.append((role, match.start()))
+    return min(matches, key=lambda match: match[1]) if matches else None
 
 
 def composition_disclosure(item, config):
@@ -118,15 +122,17 @@ def classify_identity(item, config):
     for field, text in text_fields(item):
         if field == "title":
             continue
-        for fragment in re.split(r"(?<=[.!?])\s*|\n|\b(?:and is|and are|and it is|which is)\s+(?=perfect for|ideal for)", text, flags=re.I):
+        for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
             ref = {"field": field, "text": text}
             role = context_role(fragment)
             negated_use = re.search(r"\b(?:not|no|without)\s+", fragment, re.I)
-            if crops and role != "allergen_or_facility" and pattern(config["nonfood"]).search(fragment) and not (negated_use and pattern(config["nonfood"]).match(fragment[negated_use.end():])):
+            if crops and (not role or role[0] != "allergen_or_facility") and pattern(config["nonfood"]).search(fragment) and not (negated_use and pattern(config["nonfood"]).match(fragment[negated_use.end():])):
                 decision.update(status="pending", reason="field_food_use_conflict",
                                 counter_evidence=[*decision["counter_evidence"], ref])
             if role:
-                decision["context_evidence"].append({**ref, "role": role})
+                decision["context_evidence"].append({**ref, "role": role[0], "context_start": role[1]})
+                fragment = fragment[:role[1]]
+            if not fragment.strip():
                 continue
             if crops and pattern(config["outside_form_statements"]).search(fragment):
                 decision.update(status="excluded", reason="sold_form_outside_scope",
