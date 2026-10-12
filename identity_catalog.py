@@ -82,7 +82,8 @@ def classify_identity(item, config):
     composition_status, composition_crops, composition = composition_disclosure(item, config)
     decision.update(composition_status=composition_status, composition_evidence=composition)
     title = item.get("title", "")
-    sold = re.split(r"\b(?:for|use with|great with|alternative to|substitute for)\b", title, maxsplit=1, flags=re.I)[0]
+    affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
+    sold = re.split(r"\b(?:for|use with|great with|alternative to|substitute for)\b", affirmative, maxsplit=1, flags=re.I)[0]
     if pattern(config["outside_objects"]).search(sold):
         decision.update(status="excluded", reason="sold_object_outside_scope", crop=None,
                         identity_evidence=[], form_evidence=[], counter_evidence=[{"field": "title", "text": title}])
@@ -92,6 +93,14 @@ def classify_identity(item, config):
                             counter_evidence=[*decision["counter_evidence"], {"field": f"categories[{len(categories) - 1}]", "text": categories[-1]}])
         return decision
     crops = grain_crops(sold, config)
+    if crops and pattern([*config["non_grain_ingredients"], *config["outside_crops"]]).search(sold):
+        decision.update(status="excluded", reason="sold_added_ingredient_or_outside_crop",
+                        composition_status="declared_outside_scope", counter_evidence=[{"field": "title", "text": title}])
+        return decision
+    title_negative = re.search(r"\b(?:not|no|without)\s+(?:raw\s+)?", title, re.I)
+    if title_negative and pattern([alias for aliases in config["grains"].values() for alias in aliases]).match(title[title_negative.end():]):
+        if not crops or crops & grain_crops(title[title_negative.end():], config):
+            decision.update(status="pending", reason="title_identity_negation", counter_evidence=[{"field": "title", "text": title}])
     if len(crops) > 1:
         decision.update(status="excluded", reason="sold_multiple_grains", crop=None,
                         composition_status="declared_outside_scope", counter_evidence=[{"field": "title", "text": title}])
@@ -109,7 +118,7 @@ def classify_identity(item, config):
     for field, text in text_fields(item):
         if field == "title":
             continue
-        for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
+        for fragment in re.split(r"(?<=[.!?])\s*|\n|\b(?:and is|and are|and it is|which is)\s+(?=perfect for|ideal for)", text, flags=re.I):
             ref = {"field": field, "text": text}
             role = context_role(fragment)
             negated_use = re.search(r"\b(?:not|no|without)\s+", fragment, re.I)
@@ -123,6 +132,10 @@ def classify_identity(item, config):
                 decision.update(status="excluded", reason="sold_form_outside_scope",
                                 counter_evidence=[*decision["counter_evidence"], ref])
             found = grain_crops(fragment, config)
+            if crops and re.search(r"\b(?:blend|mixture|mix|contains|consists of|made from)\b", fragment, re.I) and (len(found) > 1 or pattern(config["outside_crops"]).search(fragment)):
+                decision.update(status="excluded", reason="sold_mixture_outside_scope",
+                                composition_status="declared_outside_scope", counter_evidence=[*decision["counter_evidence"], ref])
+                continue
             negative = re.search(r"\b(?:not|no|without)\s+(?:raw\s+)?", fragment, re.I)
             if negative and pattern([alias for aliases in config["grains"].values() for alias in aliases]).match(fragment[negative.end():]):
                 if crops & found:
@@ -132,10 +145,10 @@ def classify_identity(item, config):
             if crops and pattern(config["excluded_forms"]).search(fragment):
                 decision.update(status="pending", reason="field_form_conflict",
                                 counter_evidence=[*decision["counter_evidence"], ref])
+            if crops and found and len(narrow_grains(crops | found, config)) > 1:
+                decision.update(status="pending", reason="field_identity_conflict",
+                                counter_evidence=[*decision["counter_evidence"], ref])
             if (found or crops) and pattern(config["identity_forms"]).search(fragment):
-                if crops and found and len(narrow_grains(crops | found, config)) > 1:
-                    decision.update(status="pending", reason="field_identity_conflict",
-                                    counter_evidence=[*decision["counter_evidence"], ref])
                 crops.update(found)
                 decision["identity_evidence"].append(ref)
                 forms.append(ref)

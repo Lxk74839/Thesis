@@ -33,3 +33,5 @@ Bird Seed and Feed 含 making 用途文字时被误跳过，公共夹具 Red；�
 同粮种但 Rice 与 Rice＋Salt 的多条声明被当作一个配方，公共夹具 Red；对实际声明包含的粮种及其他成分分别对账，保持冲突，Green。
 
 review_extract 复用行为补充公共入口回归：新身份目录保留完整成分未知、零评论商品，末尾／低评分／空文本原字节均提取，且不按变体关联。已有评论实现本身通过此测试，无须新增实现，也不声称观察到 Red。
+
+第一轮独立审查：Standards 0 项；Spec 4 项 P1，尚未全量生成。均通过公共 CLI 逐项观察 Red 并修复：No Raw Rice Grain 否定误入选；This product is wheat 不重复形态词的直接身份冲突；真实混粮与 perfect for 同句；Apple Cinnamon 本品风味误作未知纯粮。用途仅在局部分句生效，食谱仍不充当配料。另在第三项中追加 rice/wheat 实际混粮反例，观察到待裁决误覆盖排除的 Red 后修复。全部单项 Green，第二轮全套 71 项通过（24.353 秒），见 scope-revision-tests-round2.txt。旧配置／既有行为仍通过。

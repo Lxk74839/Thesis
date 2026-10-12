@@ -107,6 +107,51 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([(row["parent_asin"], row["composition_status"]) for row in products],
                          [("RAW", "not_disclosed")])
 
+    def test_identity_catalog_title_negation_cannot_supply_identity(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NO", "title": "No Raw Rice Grain"},
+            {"parent_asin": "FREE", "title": "Wheat-free raw oat groats"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included"])
+        self.assertEqual(audit[0]["identity_evidence"], [])
+        self.assertEqual(audit[0]["counter_evidence"], [{"field": "title", "text": "No Raw Rice Grain"}])
+
+    def test_identity_catalog_checks_identity_conflicts_without_repeated_form_words(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "description": ["This product is wheat."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "field_identity_conflict"))
+        self.assertIn({"field": "description[0]", "text": "This product is wheat."}, audit[0]["counter_evidence"])
+
+    def test_identity_catalog_use_clause_cannot_hide_the_sold_mixture(self):
+        run = self.identity_catalog([
+            {"parent_asin": "MIX", "title": "Raw rice grain", "description": ["This grain blend contains rice and quinoa and is perfect for dinner."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice grain", "description": ["For this recipe, combine rice and quinoa for dinner."]},
+            {"parent_asin": "TWO", "title": "Raw rice grain", "description": ["This grain blend contains rice and wheat and is ideal for dinner."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["excluded", "included", "excluded"])
+        self.assertIn({"field": "description[0]", "text": "This grain blend contains rice and quinoa and is perfect for dinner."}, audit[0]["counter_evidence"])
+
+    def test_identity_catalog_title_flavor_is_not_undisclosed_plain_grain(self):
+        run = self.identity_catalog([
+            {"parent_asin": "FLAVOR", "title": "Whole Grain Oatmeal Apple Cinnamon"},
+            {"parent_asin": "USE", "title": "Raw Rice Grain for Cinnamon Recipes"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+        self.assertEqual(audit[0]["counter_evidence"], [{"field": "title", "text": "Whole Grain Oatmeal Apple Cinnamon"}])
+
     def test_identity_catalog_does_not_infer_form_from_category_or_ingredients(self):
         run = self.identity_catalog([
             {"parent_asin": "UNKNOWN_FORM", "title": "Arborio Rice", "categories": ["Dried Grains & Rice"],
