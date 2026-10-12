@@ -318,6 +318,59 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual(decisions[0]["reason"], "field_identity_conflict")
         self.assertEqual(decisions[1]["counter_evidence"][0]["text"], "This product is not rice.")
 
+    def test_catalog_checks_all_content_of_dedicated_ingredient_fields(self):
+        run = self.catalog([
+            {"parent_asin": "MULTILINE", "title": "Rice", "details": {"Ingredients": "Rice\nSalt"}},
+            {"parent_asin": "SENTENCES", "title": "Rice", "details": {"Ingredients": "Rice. Salt."}},
+            {"parent_asin": "PURE", "title": "Rice", "details": {"Ingredients": "Rice"}},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "included"])
+        self.assertEqual(decisions[0]["composition_evidence"][0]["text"], "Rice\nSalt")
+
+    def test_catalog_does_not_treat_negated_identity_with_articles_as_positive(self):
+        run = self.catalog([
+            {"parent_asin": "NOT_A", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["This product is not a rice product."]},
+            {"parent_asin": "NOT_ANY", "title": "Rice", "features": ["Ingredients: Rice"],
+             "description": ["This product is not any kind of rice."]},
+            {"parent_asin": "ONLY_NEGATIVE", "title": "Pantry", "features": ["Ingredients: Rice"],
+             "description": ["This product is not a rice product."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "pending"])
+        self.assertFalse(decisions[2]["identity_evidence"])
+
+    def test_catalog_does_not_exempt_specific_crop_category_conflicts(self):
+        run = self.catalog([
+            {"parent_asin": "BARLEY", "title": "Pearled Barley", "features": ["Ingredients: Barley"],
+             "categories": ["Grocery", "Oatmeal"]},
+            {"parent_asin": "OATS", "title": "Oat groats", "features": ["Ingredients: Oats"],
+             "categories": ["Grocery", "Oatmeal"]},
+            {"parent_asin": "WHEAT", "title": "Wheat Berries", "features": ["Ingredients: Wheat"],
+             "categories": ["Grocery", "Dried Grains & Rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "included", "included"])
+        self.assertEqual(decisions[0]["counter_evidence"], [{"field": "categories[1]", "text": "Oatmeal"}])
+
+    def test_catalog_negated_title_does_not_prove_positive_identity(self):
+        run = self.catalog([
+            {"parent_asin": "NEGATIVE_TITLE", "title": "Not a rice product", "features": ["Ingredients: Rice"]},
+            {"parent_asin": "ABSENCE", "title": "Food without any kind of rice", "features": ["Ingredients: Rice"]},
+            {"parent_asin": "SAFE", "title": "Rice without preservatives", "features": ["Ingredients: Rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        decisions = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in decisions], ["pending", "pending", "included"])
+
     def test_full_source_includes_last_record_and_field_diagnostics(self):
         payload = gzip.compress(
             b'{"parent_asin":"FIRST","title":"Tea","categories":[]}\n'

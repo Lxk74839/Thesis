@@ -35,7 +35,8 @@ def text_fields(item):
 
 def classify(item, config):
     title = item.get("title") or ""
-    affirmative = re.sub(r"\b[\w]+[- ]free\b|\b(?:no|without)\s+\w+", " ", title, flags=re.I)
+    affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
+    affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)
     sold_title = re.split(r"\b(?:for|use with|great with)\b", affirmative, maxsplit=1, flags=re.I)[0]
     grain_patterns = {crop: pattern(aliases) for crop, aliases in config["grains"].items()}
     crops = [crop for crop, expression in grain_patterns.items() if expression.search(sold_title)]
@@ -61,7 +62,10 @@ def classify(item, config):
         for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
             if not pattern(config["identity_prefixes"]).match(fragment.strip()):
                 continue
-            statement = re.sub(r"\b[\w]+[- ]free\b|\b(?:not|no|without)\s+\w+", " ", fragment, flags=re.I)
+            statement = re.sub(r"\b[\w]+[- ]free\b", " ", fragment, flags=re.I)
+            negative = bool(pattern(config["identity_negations"]).search(statement))
+            if negative:
+                statement = ""  # Unresolved negation scope cannot establish positive identity.
             found = [crop for crop, expression in grain_patterns.items() if expression.search(statement)]
             negated = {crop for crop, expression in grain_patterns.items() if expression.search(fragment)} - set(found)
             if pattern(config["outside_crops"]).search(statement) or negated.intersection(crops):
@@ -79,9 +83,11 @@ def classify(item, config):
     prefix = pattern(config["composition_prefixes"])
     modifiers = pattern(config["composition_modifiers"])
     for field, text in fields:
-        for index, fragment in enumerate(re.split(r"(?<=[.!?])\s*|\n", text)):
+        for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
+            if not fragment.strip():
+                continue
             match = prefix.match(fragment.strip())
-            if match is None and not (index == 0 and field.lower() in ("details.ingredients", "details.ingredient")):
+            if match is None and field.lower() not in ("details.ingredients", "details.ingredient"):
                 continue
             value = fragment.strip()[match.end():] if match else fragment
             value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", value, flags=re.I).rstrip(".!?")
@@ -108,7 +114,7 @@ def classify(item, config):
     category_conflict = None
     if categories and (crops or pattern(config["outside_crops"]).search(sold_title)):
         leaf = categories[-1]
-        if leaf not in config["primary_categories"] and leaf != "Flours & Meals":
+        if leaf not in config["generic_categories"] and leaf != "Flours & Meals":
             leaf_crops = {crop for crop, expression in grain_patterns.items() if expression.search(leaf)}
             if (leaf_crops and leaf_crops != set(crops)) or (crops and pattern(config["outside_crops"]).search(leaf)):
                 category_conflict = "category_identity_conflict"
