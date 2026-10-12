@@ -1,0 +1,326 @@
+{
+  "accepted_reviews": {
+    "accounts": 256,
+    "history": {
+      "accounts_with_invalid_time": 0,
+      "accounts_without_valid_time": 0,
+      "basis": "All selected raw interactions; time distributions use representable timestamps. Unknown-time accounts cannot establish a reliable target.",
+      "distinct_products_per_account": {
+        "1": 255,
+        "2": 1
+      },
+      "latest_unseen_products": {
+        "1": 256
+      },
+      "manuscript_positive_candidate": {
+        "approval": "not_approved",
+        "excluded_reasons": {
+          "latest_not_positive": 75
+        },
+        "minimum_prior_products": null,
+        "potential_accounts": 181,
+        "prior_positive_products": {
+          "0": 180,
+          "1": 1
+        },
+        "rating_min": 4
+      },
+      "multiple_latest_parent_accounts": 0,
+      "qualification_status": "not_determined",
+      "reviews_per_account": {
+        "1": 252,
+        "2": 4
+      },
+      "strict_prior_products": {
+        "0": 255,
+        "1": 1
+      },
+      "strict_prior_reviews": {
+        "0": 255,
+        "1": 1
+      },
+      "unique_latest_unseen_accounts_with_known_time": 256
+    },
+    "reviews": 260
+  },
+  "all_source": {
+    "excluded": 547052,
+    "included": 13,
+    "ingredient_lexeme_in_text": 118382,
+    "ingredient_like_details_key": 332,
+    "pending": 56209
+  },
+  "composition_gate": {
+    "all": 3953,
+    "non_scope_object_word_in_title": 434,
+    "null_current_crop": 45,
+    "single_crop_no_non_scope_title_signal": 3459,
+    "single_crop_physical_no_non_scope_title_signal": 1367
+  },
+  "cross_signals": {
+    "ambiguous_processing_or_mix": {
+      "description_present": 2567,
+      "explicit_physical_word_in_title": 791,
+      "features_present": 2948,
+      "html_in_ingredient_text": 1,
+      "ingredient_lexeme_in_text": 1076,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 998,
+      "null_current_crop": 60,
+      "quality_or_marketing_percentage": 498,
+      "single_title_crop_family": 3905,
+      "use_or_allergen_language": 1292
+    },
+    "category_form_conflict": {
+      "description_present": 5298,
+      "explicit_physical_word_in_title": 1111,
+      "features_present": 5939,
+      "html_in_ingredient_text": 3,
+      "ingredient_lexeme_in_text": 1978,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 819,
+      "null_current_crop": 101,
+      "quality_or_marketing_percentage": 722,
+      "single_title_crop_family": 7254,
+      "use_or_allergen_language": 1691
+    },
+    "category_identity_conflict": {
+      "description_present": 468,
+      "explicit_physical_word_in_title": 189,
+      "features_present": 580,
+      "html_in_ingredient_text": 0,
+      "ingredient_lexeme_in_text": 171,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 42,
+      "null_current_crop": 245,
+      "quality_or_marketing_percentage": 122,
+      "single_title_crop_family": 455,
+      "use_or_allergen_language": 271
+    },
+    "composition_declaration_conflict": {
+      "description_present": 53,
+      "explicit_physical_word_in_title": 7,
+      "features_present": 52,
+      "html_in_ingredient_text": 0,
+      "ingredient_lexeme_in_text": 47,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 41,
+      "null_current_crop": 0,
+      "quality_or_marketing_percentage": 45,
+      "single_title_crop_family": 53,
+      "use_or_allergen_language": 13
+    },
+    "field_form_conflict": {
+      "description_present": 64,
+      "explicit_physical_word_in_title": 10,
+      "features_present": 72,
+      "html_in_ingredient_text": 0,
+      "ingredient_lexeme_in_text": 31,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 27,
+      "null_current_crop": 1,
+      "quality_or_marketing_percentage": 11,
+      "single_title_crop_family": 22,
+      "use_or_allergen_language": 38
+    },
+    "field_identity_conflict": {
+      "description_present": 66,
+      "explicit_physical_word_in_title": 16,
+      "features_present": 65,
+      "html_in_ingredient_text": 0,
+      "ingredient_lexeme_in_text": 34,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 17,
+      "null_current_crop": 38,
+      "quality_or_marketing_percentage": 6,
+      "single_title_crop_family": 28,
+      "use_or_allergen_language": 27
+    },
+    "form_not_verified": {
+      "description_present": 1765,
+      "explicit_physical_word_in_title": 259,
+      "features_present": 1880,
+      "html_in_ingredient_text": 0,
+      "ingredient_lexeme_in_text": 583,
+      "ingredient_like_details_key": 1,
+      "non_scope_object_word_in_title": 557,
+      "null_current_crop": 23,
+      "quality_or_marketing_percentage": 210,
+      "single_title_crop_family": 2858,
+      "use_or_allergen_language": 586
+    },
+    "missing_composition": {
+      "description_present": 2459,
+      "explicit_physical_word_in_title": 1464,
+      "features_present": 2768,
+      "html_in_ingredient_text": 2,
+      "ingredient_lexeme_in_text": 555,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 434,
+      "null_current_crop": 45,
+      "quality_or_marketing_percentage": 391,
+      "single_title_crop_family": 3878,
+      "use_or_allergen_language": 810
+    },
+    "unresolved_composition": {
+      "description_present": 160,
+      "explicit_physical_word_in_title": 79,
+      "features_present": 198,
+      "html_in_ingredient_text": 1,
+      "ingredient_lexeme_in_text": 121,
+      "ingredient_like_details_key": 0,
+      "non_scope_object_word_in_title": 52,
+      "null_current_crop": 4,
+      "quality_or_marketing_percentage": 66,
+      "single_title_crop_family": 207,
+      "use_or_allergen_language": 69
+    },
+    "weak_identity": {
+      "description_present": 30552,
+      "explicit_physical_word_in_title": 3552,
+      "features_present": 34513,
+      "html_in_ingredient_text": 34,
+      "ingredient_lexeme_in_text": 16677,
+      "ingredient_like_details_key": 19,
+      "non_scope_object_word_in_title": 8952,
+      "null_current_crop": 36738,
+      "quality_or_marketing_percentage": 2351,
+      "single_title_crop_family": 1132,
+      "use_or_allergen_language": 14573
+    }
+  },
+  "generated_at_utc": "2026-10-12T07:03:48.737687+00:00",
+  "generator_sha256": "2010e3363d0ebc390f69fc2c62d85a959947db6406732074b33620a7043fb2b2",
+  "ingredient_like_pending_details_keys": {
+    "Active Ingredients": 7,
+    "Special Ingredients": 12,
+    "material_composition": 1
+  },
+  "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+  "limitations": [
+    "Flags are discovery leads, not semantic membership judgments.",
+    "Composition gate counts reflect the existing mutually exclusive reason, not every hidden rejection cause.",
+    "Existing accepted catalog/reviews and user histories were not rebuilt.",
+    "No review count, rating, model outcome or eligibility parameter is used in metadata profiling."
+  ],
+  "original_material_count": 26,
+  "original_materials_unchanged": true,
+  "pending_reasons": {
+    "ambiguous_processing_or_mix": 4007,
+    "category_form_conflict": 7403,
+    "category_identity_conflict": 702,
+    "composition_declaration_conflict": 53,
+    "field_form_conflict": 76,
+    "field_identity_conflict": 71,
+    "form_not_verified": 2990,
+    "missing_composition": 3953,
+    "unresolved_composition": 216,
+    "weak_identity": 36738
+  },
+  "preserved_sha256": {
+    ".scratch/data-preparation/product-scope-proposal.md": "334b2ac524fe6d8f3a90ec2b7cc66eb75d2e1aa9b32242733d4d7d9e7badd94a",
+    ".scratch/data-preparation/spec.md": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
+    ".scratch/data-preparation/verification/catalog-04-check.json": "e043e83e88de5eec887496a137e5ecf17981b2bbca618eea7422a969be19f5be",
+    ".scratch/data-preparation/verification/code-review-04.md": "354282137c6865d4c430eb145a1d7b0e68d7e0162d18a5751226f22dae621994",
+    ".scratch/data-preparation/verification/code-review-05.md": "7b96ccc174e4c001a4dd6acc4c48d972dc597d2551e62901282ca249eebdfef3",
+    ".scratch/data-preparation/verification/review-extract-05-check.json": "15e2c5ef9dd28a79e4328ecc1efd2af2bfcf119962cbb8b96e3771a05cc3b346",
+    "catalog.py": "477d1418ab4a5e75fbf089c8cb77807428d6e0d5ba8cf23252c7d90f914d2c15",
+    "config/grain-A-v1.json": "6148cc25f327d81423aa6aef16708a1ed973b46a36a806e8e06fd9fca24816f9",
+    "prepare_data.py": "564095b1d8d774d54acb8703bd0ed3884702bb491c823d7346e48b4164bd5c40",
+    "records/catalog/grain-A-1.0.6.json": "075e2cd26bcddd1bae472a09851feb30b1e5c1a6ce89e4a591213682e8a9b3c0",
+    "records/reviews/grain-A-1.0.6-review-diagnostics-1.0.0.json": "d295eb35860f43a4badabee28d0cb28ff6b1059df4748d3bcfe1125e4629a63c",
+    "review_diagnostics.py": "7f4d0c0458a1985070fb073698d7eb268c1f96c9c21d2cd90baa22b088cfde28"
+  },
+  "profile_path": "data/diagnostics/usability-04-05-draft-01/pending-profile.jsonl",
+  "profile_sha256": "cc47599f3fc6c4bb196cf40919e2ac82c87fa71526e7a7670d13371d8558a6b3",
+  "python": "3.13.16 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:20:25) [MSC v.1942 64 bit (AMD64)]",
+  "reason_layers": {
+    "composition_gate": 3953,
+    "composition_parse_or_fact": 216,
+    "insufficient_identity_or_form": 39728,
+    "processing_or_conflict_signal": 12312
+  },
+  "representative_count": 41,
+  "representative_path": "data/diagnostics/usability-04-05-draft-01/representative-records.json",
+  "representative_sha256": "8d0f432fcff6699e50411524968a736950f5be7025c717f27d60b4abab7187a1",
+  "sampling_method": "First source row plus two lexicographically smallest SHA256(parent_asin) values per existing reason, supplemented with named raw examples. Not a probability or complete semantic audit.",
+  "source_rows": 603274,
+  "source_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
+  "status": "draft_diagnostic_not_approved",
+  "title_alias_counts": {
+    "avalakki": {
+      "ambiguous_processing_or_mix": 1
+    },
+    "bajra": {
+      "ambiguous_processing_or_mix": 1,
+      "category_form_conflict": 3,
+      "category_identity_conflict": 1,
+      "missing_composition": 3
+    },
+    "barnyard millet": {
+      "category_identity_conflict": 1,
+      "form_not_verified": 13,
+      "missing_composition": 2
+    },
+    "dalia": {
+      "ambiguous_processing_or_mix": 1,
+      "category_form_conflict": 5,
+      "category_identity_conflict": 1,
+      "weak_identity": 1
+    },
+    "foxtail millet": {
+      "ambiguous_processing_or_mix": 1,
+      "category_form_conflict": 1,
+      "category_identity_conflict": 2,
+      "form_not_verified": 6,
+      "missing_composition": 2
+    },
+    "hato mugi": {
+      "form_not_verified": 1
+    },
+    "jasmine": {
+      "ambiguous_processing_or_mix": 77,
+      "category_form_conflict": 18,
+      "category_identity_conflict": 1,
+      "missing_composition": 259,
+      "unresolved_composition": 17,
+      "weak_identity": 84
+    },
+    "jowar": {
+      "category_form_conflict": 1,
+      "category_identity_conflict": 6,
+      "missing_composition": 3
+    },
+    "kodo millet": {
+      "ambiguous_processing_or_mix": 4,
+      "category_form_conflict": 1,
+      "category_identity_conflict": 1,
+      "form_not_verified": 6,
+      "missing_composition": 1
+    },
+    "little millet": {
+      "ambiguous_processing_or_mix": 1,
+      "form_not_verified": 4,
+      "missing_composition": 4
+    },
+    "poha": {
+      "ambiguous_processing_or_mix": 17,
+      "weak_identity": 12
+    },
+    "powa": {
+      "ambiguous_processing_or_mix": 3
+    },
+    "proso millet": {
+      "form_not_verified": 2,
+      "missing_composition": 2
+    },
+    "ragi": {
+      "ambiguous_processing_or_mix": 2,
+      "category_form_conflict": 2,
+      "category_identity_conflict": 1,
+      "form_not_verified": 15,
+      "missing_composition": 3
+    }
+  },
+  "version": "usability-04-05-draft-01"
+}

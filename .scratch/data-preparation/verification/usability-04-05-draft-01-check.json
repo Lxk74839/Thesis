@@ -1,0 +1,58 @@
+{
+  "status": "independent_diagnostic_count_and_provenance_checks_passed",
+  "executed_at_utc": "2026-10-12T07:45:29.620701+00:00",
+  "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+  "python": "3.13.16 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:20:25) [MSC v.1942 64 bit (AMD64)]",
+  "metadata_eof": 603274,
+  "profile_rows": 56209,
+  "pending_reasons": {
+    "weak_identity": 36738,
+    "ambiguous_processing_or_mix": 4007,
+    "category_form_conflict": 7403,
+    "missing_composition": 3953,
+    "form_not_verified": 2990,
+    "unresolved_composition": 216,
+    "category_identity_conflict": 702,
+    "field_identity_conflict": 71,
+    "field_form_conflict": 76,
+    "composition_declaration_conflict": 53
+  },
+  "semantic_case_primary_groups": {
+    "X": 24,
+    "I": 5,
+    "P": 4,
+    "C": 5,
+    "U": 3
+  },
+  "semantic_cases_reviewed": 41,
+  "semantic_population_not_individually_reviewed": 56168,
+  "priority_leads_not_admissions": 1367,
+  "existing_reviews": 260,
+  "existing_accounts": 256,
+  "preserved_sha256": {
+    ".scratch/data-preparation/product-scope-proposal.md": "334b2ac524fe6d8f3a90ec2b7cc66eb75d2e1aa9b32242733d4d7d9e7badd94a",
+    ".scratch/data-preparation/spec.md": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
+    ".scratch/data-preparation/verification/catalog-04-check.json": "e043e83e88de5eec887496a137e5ecf17981b2bbca618eea7422a969be19f5be",
+    ".scratch/data-preparation/verification/code-review-04.md": "354282137c6865d4c430eb145a1d7b0e68d7e0162d18a5751226f22dae621994",
+    ".scratch/data-preparation/verification/code-review-05.md": "7b96ccc174e4c001a4dd6acc4c48d972dc597d2551e62901282ca249eebdfef3",
+    ".scratch/data-preparation/verification/review-extract-05-check.json": "15e2c5ef9dd28a79e4328ecc1efd2af2bfcf119962cbb8b96e3771a05cc3b346",
+    "catalog.py": "477d1418ab4a5e75fbf089c8cb77807428d6e0d5ba8cf23252c7d90f914d2c15",
+    "config/grain-A-v1.json": "6148cc25f327d81423aa6aef16708a1ed973b46a36a806e8e06fd9fca24816f9",
+    "prepare_data.py": "564095b1d8d774d54acb8703bd0ed3884702bb491c823d7346e48b4164bd5c40",
+    "records/catalog/grain-A-1.0.6.json": "075e2cd26bcddd1bae472a09851feb30b1e5c1a6ce89e4a591213682e8a9b3c0",
+    "records/reviews/grain-A-1.0.6-review-diagnostics-1.0.0.json": "d295eb35860f43a4badabee28d0cb28ff6b1059df4748d3bcfe1125e4629a63c",
+    "review_diagnostics.py": "7f4d0c0458a1985070fb073698d7eb268c1f96c9c21d2cd90baa22b088cfde28"
+  },
+  "original_materials_unchanged": true,
+  "original_material_count": 26,
+  "inputs": {
+    ".scratch/data-preparation/verification/usability-04-05-draft-01.json": "5abb3bdc4a0a3691e6fbf4ca22eee7be8e1e73a19ee73c5cc546737bc07bd148",
+    ".scratch/data-preparation/diagnostics/usability-case-review-20261012.json": "d789947f6290af8086a6596bda825ae85da1010e91bf79bded22bc8756ce6150",
+    ".scratch/data-preparation/diagnostics/usability-diagnosis-20261012.ipynb": "34bf888096eae7305e830975b3acfb22e6cc340ebdeb7fba64d7120424b9935b"
+  },
+  "limitations": [
+    "Independent counts and byte bindings do not replace semantic judgment.",
+    "The 41 non-probability cases cannot estimate full-population semantic counts.",
+    "No formal rule, scope decision, review extraction or user qualification was changed."
+  ]
+}
