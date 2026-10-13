@@ -38,10 +38,22 @@ def source_statements(item, config):
             continue
         for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
             role = context_role(clause)
-            negative = re.match(r"\s*(?:not|no|without)\b", clause, re.I)
-            if negative and not re.match(r"\s*not\s+only\b", clause, re.I) and not grain_crops(clause, config):
-                role = ("negative_nonidentity_claim", negative.start())
             direct = clause[:role[1]] if role else clause
+            negative_terms = pattern([*config["processing_claims"], *config["non_grain_ingredients"],
+                                      *config["excluded_forms"], *config["outside_form_statements"],
+                                      *config["nonfood"], *config["outside_crops"]])
+            negated_positions = []
+            for negative in reversed(list(re.finditer(r"\b(?:not(?!\s+only\b)|no|without)\s+", direct, re.I))):
+                claim = negative_terms.match(direct, negative.end())
+                if claim:
+                    direct = direct[:negative.start()] + " " + direct[claim.end():]
+                    negated_positions.append(negative.start())
+            negative = re.match(r"\s*(?:not|no|without)\b", clause, re.I)
+            if negated_positions:
+                role = ("negative_nonidentity_claim", min(negated_positions))
+            elif negative and not re.match(r"\s*not\s+only\b", clause, re.I) and not grain_crops(clause, config):
+                role = ("negative_nonidentity_claim", negative.start())
+                direct = clause[:negative.start()]
             yield {"field": field, "text": text}, clause, re.sub(r"\b[\w]+[- ]free\b", " ", direct, flags=re.I), role
 
 

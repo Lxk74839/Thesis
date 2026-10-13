@@ -1,0 +1,6 @@
+test_identity_catalog_negation_scope_preserves_other_affirmative_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negation_scope_preserves_other_affirmative_facts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.367s
+
+OK

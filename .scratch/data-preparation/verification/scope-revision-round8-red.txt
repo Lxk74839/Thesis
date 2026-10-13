@@ -1,0 +1,27 @@
+test_identity_catalog_negation_scope_preserves_other_affirmative_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negation_scope_preserves_other_affirmative_facts) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_negation_scope_preserves_other_affirmative_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negation_scope_preserves_other_affirmative_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 456, in test_identity_catalog_negation_scope_preserves_other_affirmative_facts
+    self.assertEqual([r["status"] for r in audit], ["included", "included", "excluded", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['pending', 'pending', 'excluded', 'pending'] != ['included', 'included', 'excluded', 'pending']
+
+First differing element 0:
+'pending'
+'included'
+
+- ['pending', 'pending', 'excluded', 'pending']
+?   ----  ^    ----  ^
+
++ ['included', 'included', 'excluded', 'pending']
+?     ^^^^^^      ^^^^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.361s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k negation_scope` failed. (See above for error)

@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full scan reached EOF. Round7 Spec and public RED demonstrate noninitial processing negation is falsely treated as affirmative counterevidence. Independent 1.1.4 fixes scope while retaining later affirmative facts. This version is not accepted; all six components preserved.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.3.json": "18ce94fc8b9ed87206bae103b408515b90aaf3a36d615ee30590884715a18b8e",
+    "records/catalog/grain-A-1.1.3.json": "43e26db34b02a0163e89cc65aa0fd81988d9b2fda22dedde170644ab43714afa",
+    "data/catalog/grain-A-1.1.3/catalog.jsonl": "1ae80737c7eafa1eab58aa37d73a4dcf77e9ac37c4c2812549b9b170e88c9649",
+    "data/catalog/grain-A-1.1.3/audit.jsonl": "b6a4ca1daec8bb0547efe83006e69899fc8ea31ca9ac6cfd14911e5a15e2c813",
+    "data/catalog/grain-A-1.1.3/pending.jsonl": "85615ee662fb520c620a8ebd8723d95883594f6415f06857c8f82518f573b43c",
+    "data/catalog/grain-A-1.1.3/migration.jsonl": "32443ce1de7e7120d30dbba875900bf0663512938828405eb27384d6445ea4d9"
+  }
+}
