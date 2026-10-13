@@ -1,0 +1,6 @@
+test_identity_catalog_direct_bulgur_fields_are_not_hidden_by_raw_wheat_title (test_prepare_data.MetadataPreparationTests.test_identity_catalog_direct_bulgur_fields_are_not_hidden_by_raw_wheat_title) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.348s
+
+OK

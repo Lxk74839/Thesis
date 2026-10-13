@@ -202,7 +202,7 @@ def classify_identity(item, config):
     if crops:
         decision["identity_evidence"] = [{"field": "title", "text": title}]
     decision["context_evidence"] = []
-    if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
+    if decision["reason"] in ("field_identity_conflict", "field_form_conflict", "ambiguous_processing_or_mix") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     affirmative_forms = set()

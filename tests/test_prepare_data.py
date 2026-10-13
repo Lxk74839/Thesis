@@ -441,6 +441,21 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertTrue(audit[0]["counter_evidence"])
         self.assertTrue(audit[2]["context_evidence"])
 
+    def test_identity_catalog_direct_bulgur_fields_are_not_hidden_by_raw_wheat_title(self):
+        claim = "Bulgur wheat is made from whole grain wheat."
+        run = self.identity_catalog([
+            {"parent_asin": "DESCRIPTION", "title": "Raw Wheat Berries", "description": [claim]},
+            {"parent_asin": "FEATURES", "title": "Raw Wheat Berries", "features": [claim]},
+            {"parent_asin": "DETAILS", "title": "Raw Wheat Berries", "details": {"Product": claim}},
+            {"parent_asin": "RECIPE", "title": "Raw Wheat Berries", "features": ["Use as an alternative to bulgur in a recipe."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included"])
+        self.assertTrue(all(row["counter_evidence"] for row in audit[:3]))
+        self.assertTrue(audit[3]["context_evidence"])
+
     def test_identity_catalog_recipe_label_ends_composition_but_salt_continuation_does_not(self):
         run = self.identity_catalog([
             {"parent_asin": "RECIPE", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Recipe ingredients: Rice, salt."]},

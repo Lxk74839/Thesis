@@ -95,3 +95,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第十八轮固定实现 b3e879a 的 Standards硬违反0／新增启发0（历史1已修复、1评估保留），Spec0。1.1.11随后完整603,274行扫描与独立数量／迁移／870,774引用对账通过，但最终74条完整原文抽查定位四个实际误入／冲突案例，正式拒绝并保留六组件摘要、全源核查及样本；详见 semantic-sample-1.1.11-rejection.md，不将数量通过当语义通过。
 
 独立候选1.1.12：①连字符专名 Otona-no-Furikake 遮住真实米饭调味料，公共 RED→GREEN，实际语言否定与专名分开，普通 No raw rice 仍未决；②Steel Cut／Corn Grits与Item Form Flaked的关键矛盾，公共 RED→GREEN，保留两方引用，rolled/flaked一致及食谱用途对照仍可入；③Bulgur名称的预处理歧义，结合实际USDA报告与元数据，公共 RED→GREEN，真正Raw Cracked Wheat和食谱用途不受影响。不扩A、不补真实加工事实。全套115项通过（42.705秒），41原例和两版已读分层样本的并集回放全部一致，原1.1.11回放不改写。独立验收按明确传入版本读取相应预检原文判定，下一版全源仍待执行。
+
+第19轮因会话中断没有两个完整报告，不记通过，见 scope-revision-round19-interrupted.md。Spec阶段消息定位bulgur只加入标题歧义项、遗漏非标题字段。公共 description／features／details 三种直接陈述实际 RED；加到processing_claims后直接字段正确，但食谱用途对照仍失败。旧判定器留下的反证实际使用 ambiguous_processing_or_mix 原因码；按既有新版分句流程重建该类反证，直接预处理陈述仍pending、已明确用途不供反证，第三次单项GREEN。两次中间失败及116项失败回归日志原样保留，未削弱测试。最终116项通过（38.065秒），41原例和86分层并集重新通过，上一配置摘要的预检另存preflight-01。1.1.12仍未正式全源生成，没有伪增版本或冻结06参数。
