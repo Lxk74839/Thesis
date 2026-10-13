@@ -1,0 +1,27 @@
+test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns (test_prepare_data.MetadataPreparationTests.test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns (test_prepare_data.MetadataPreparationTests.test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 305, in test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns
+    self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'pending', 'included', 'excluded', 'pending'] != ['included', 'included', 'included', 'excluded', 'pending']
+
+First differing element 1:
+'pending'
+'included'
+
+- ['included', 'pending', 'included', 'excluded', 'pending']
+?              -----------
+
++ ['included', 'included', 'included', 'excluded', 'pending']
+?                          ++++++++++++
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.360s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k known_negative_component_lists -v` failed. (See above for error)

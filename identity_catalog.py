@@ -33,6 +33,9 @@ def context_role(text):
 
 
 def source_statements(item, config):
+    components = [*config["non_grain_ingredients"], *config["outside_crops"],
+                  *(alias for aliases in config["grains"].values() for alias in aliases)]
+    continued_component = re.compile(r"\s*(?:,\s*(?:and|or)?|\band\b|\bor\b)\s*(?:" + pattern(components).pattern + ")", re.I)
     for field, text in text_fields(item):
         for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
             role = context_role(clause)
@@ -50,7 +53,10 @@ def source_statements(item, config):
             for negative in reversed(list(re.finditer(r"\b(?:not(?!\s+only\b)|no|without)\s+", direct, re.I))):
                 claim = negative_terms.match(direct, negative.end())
                 if claim:
-                    direct = direct[:negative.start()] + " " + direct[claim.end():]
+                    end = claim.end()
+                    while continuation := continued_component.match(direct, end):
+                        end = continuation.end()
+                    direct = direct[:negative.start()] + " " + direct[end:]
                     negated_positions.append(negative.start())
             negative = re.match(r"\s*(?:not|no|without)\b", clause, re.I)
             if negated_positions:
@@ -66,7 +72,9 @@ def source_statements(item, config):
 def affirmative_composition(value, config):
     components = [alias for aliases in config["grains"].values() for alias in aliases]
     components += [*config["outside_crops"], *config["non_grain_ingredients"]]
-    negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:mixed\s+with\s+)?(?:" + pattern(components).pattern + ")"
+    component = r"(?:" + pattern(components).pattern + ")"
+    component_list = component + r"(?:\s*(?:,\s*(?:and|or)?|\band\b|\bor\b)\s*" + component + ")*"
+    negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:mixed\s+with\s+)?" + component_list
     value = re.sub(negative, " ", value, flags=re.I)
     return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
 
@@ -218,7 +226,7 @@ def classify_identity(item, config):
     if crops:
         decision["identity_evidence"] = [{"field": "title", "text": title}]
     decision["context_evidence"] = []
-    if decision["reason"] in ("field_identity_conflict", "field_form_conflict", "ambiguous_processing_or_mix") and decision["counter_evidence"]:
+    if decision["reason"] in ("field_identity_conflict", "field_form_conflict", "ambiguous_processing_or_mix", "composition_declaration_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     affirmative_forms = set()

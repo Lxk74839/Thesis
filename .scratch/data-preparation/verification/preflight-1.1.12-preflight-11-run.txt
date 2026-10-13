@@ -1,0 +1,17 @@
+{
+  "scope_version": "grain-A-1.1.12",
+  "source_cases": 41,
+  "counts": {
+    "excluded": 25,
+    "included": 9,
+    "pending": 7
+  },
+  "failures": [],
+  "source_case_file_sha256": "8d0f432fcff6699e50411524968a736950f5be7025c717f27d60b4abab7187a1",
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "3f5876ba0cd864fe932205247041cd50e0fc8c0a188960806e58a099eec9ac0e",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "2537534e930d09c234cb3dfb721b1b569a87f9b165d868e484297d46486cd4d2"
+}

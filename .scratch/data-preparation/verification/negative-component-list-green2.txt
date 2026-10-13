@@ -1,0 +1,6 @@
+test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns (test_prepare_data.MetadataPreparationTests.test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.366s
+
+OK

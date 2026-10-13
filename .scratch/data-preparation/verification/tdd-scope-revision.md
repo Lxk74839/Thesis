@@ -113,3 +113,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第25轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。not mixed with salt／wheat 否定本商品添加，公共RED→GREEN，整段已知否定混合短语不供肯定成分，保留原句／否定角色；实际mixed with salt仍排除，but contains wheat后面的真实肯定反证继续排除，没有整句截断。132项通过（43.477秒）后，41原例／86分层回放退出0、failures=[]，旧回放另存preflight-09。生产器021606f5…、配置2537534e…；1.1.12仍未正式全源生成，等待新固定复审及来源/评论独立验收。
 
 第26轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。完整Contains only rice, not mixed with salt声明不能把否定项当组成，公共RED→GREEN：肯定组成解释识别相同已知否定混合，原句和declaration_parts不改，与Ingredients Rice签名一致；真正Rice,salt仍排除。133项45.446秒通过后41／86回放均退出0、failures=[]，旧回放另存preflight-10。1.1.12尚未全源生成、06仍待确认；须新固定复审和全量独立验收。
+
+第27轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。连续否定成分列表公共RED：free from wheat and salt、not mixed with salt or wheat后项被当肯定组成。最小处理已知成分列表，but后的真实添加保留、未知novel_additive仍unresolved；首次GREEN仍失败一致声明对照，实际CLI审计显示新版组成一致但旧判定器composition_declaration_conflict残留。将该旧原因同既有分句重建路径一起重判，第二次单项GREEN。RED和首次失败原样保留，不改测试预期。全套134项通过（45.746秒，scope-revision-tests-round28.txt），随后41原例及86分层并集串行回放退出0、failures=[]；前一通过回放另存preflight-11。生产器ac06d61b…、配置2537534e…；1.1.12未全源生成，下一步固定两轴复审与完整目录／评论独立验收，06仍待确认。

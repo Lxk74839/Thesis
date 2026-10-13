@@ -291,6 +291,22 @@ class MetadataPreparationTests(unittest.TestCase):
                          ["declared_single_grain", "declared_single_grain", "declared_outside_scope"])
         self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["rice, not mixed with salt."])
 
+    def test_identity_catalog_known_negative_component_lists_preserve_unknowns_and_affirmative_turns(self):
+        run = self.identity_catalog([
+            {"parent_asin": "FREE", "title": "Raw rice kernels", "features": ["Contains only rice, free from wheat and salt."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Contains only rice, free from wheat and salt."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "MIXNEG", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with salt or wheat."]},
+            {"parent_asin": "LATER", "title": "Raw rice kernels", "features": ["This rice is not mixed with salt or wheat but contains oil."]},
+            {"parent_asin": "UNKNOWN", "title": "Raw rice kernels", "features": ["Contains only rice, free from wheat and novel_additive."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded", "pending"])
+        self.assertEqual([row["composition_status"] for row in audit],
+                         ["declared_single_grain", "declared_single_grain", "declared_single_grain", "declared_outside_scope", "unresolved"])
+        self.assertTrue(any("novel_additive" in ref["text"] for ref in audit[4]["composition_evidence"]))
+
     def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "details": {"Item Form": "Powder"}},
