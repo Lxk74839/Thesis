@@ -1,0 +1,6 @@
+test_identity_catalog_second_inline_complete_claim_starts_a_new_declaration (test_prepare_data.MetadataPreparationTests.test_identity_catalog_second_inline_complete_claim_starts_a_new_declaration) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.370s
+
+OK

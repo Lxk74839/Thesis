@@ -84,7 +84,7 @@ def composition_disclosure(item, config):
                 inline = re.search(r"\bingredients?\s*:", fragment, re.I)
                 if inline and not context_role(fragment[:inline.start()]):
                     match = inline
-            if not match and not active:
+            if not match:
                 complete = re.search(r"\b(?:made of|made from)\s+100\s*%", fragment, re.I)
                 if complete and not context_role(fragment[:complete.start()]):
                     match = complete

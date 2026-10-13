@@ -403,6 +403,20 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "field_food_use_conflict"))
 
+    def test_identity_catalog_second_inline_complete_claim_starts_a_new_declaration(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "features": ["Ingredients: Rice. This product is made of 100% wheat."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Ingredients: Rice. This product is made of 100% rice."]},
+            {"parent_asin": "CONTINUATION", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "excluded"])
+        self.assertEqual([row["composition_status"] for row in audit], ["conflict", "declared_single_grain", "declared_outside_scope"])
+        self.assertEqual(len(audit[0]["composition_evidence"]), 2)
+        self.assertEqual(audit[2]["composition_evidence"][0]["declaration_parts"], ["Rice.", "Salt."])
+
     def test_identity_catalog_inline_complete_percent_is_a_source_composition_claim(self):
         run = self.identity_catalog([
             {"parent_asin": "COMPLETE", "title": "Hulled millet whole grain", "features": ["Naturevibe Botanicals Hulled millet is made of 100% Pure hulled millet."]},

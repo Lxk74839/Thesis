@@ -1,0 +1,37 @@
+{
+  "scope_version": "grain-A-1.1.11",
+  "sample_source_version": "grain-A-1.1.10",
+  "sample_size": 74,
+  "sampling": "Five lowest parent SHA per crop among previous unknown-composition inclusions plus every previous declared-single inclusion; deterministic non-probability sample.",
+  "counts": {
+    "included": 62,
+    "excluded": 4,
+    "pending": 8
+  },
+  "source_metadata_judgments": {
+    "excluded": [
+      "B001HTISYS",
+      "B00FWK2TFM",
+      "B00JNSZK5K",
+      "B08XZS7VRD"
+    ],
+    "pending": [
+      "B0033UE02S",
+      "B005CD38KE",
+      "B0078DSUV8",
+      "B00838WFWM",
+      "B00IV6P4J2",
+      "B074D9F3T3",
+      "B08KSY7NYN",
+      "B0BSZXZXZP"
+    ]
+  },
+  "failures": [],
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "c46bf13f2bbc7133d4cf247ac4f418ada764c40f1a9c53446c72858bb465de32",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "ea2c78f58591ff91898560ad7e7dbe083bea4e4b96ae8f2f500cad161ceb05ef",
+  "limitation": "Preflight semantic sample is not the final-version full-source reconciliation or exhaustive human adjudication."
+}

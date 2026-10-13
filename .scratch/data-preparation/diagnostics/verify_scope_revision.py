@@ -32,6 +32,11 @@ expected = {r["parent_asin"]: ("included" if r["group"] in ("I", "P") else "excl
 # The explicit sold flavor combination is now handled like the reviewed Apple Cinnamon
 # title under the approved seasoning exclusion, without inventing a full composition list.
 expected["B08L737QS1"] = "excluded"
+assert len(expected) == 41
+preflight = json.loads((ROOT / ".scratch/data-preparation/verification/grain-A-1.1.11-preflight-sample.json").read_text("utf-8"))
+for status, parents in preflight["source_metadata_judgments"].items():
+    expected.update({parent: status for parent in parents})
+expected["B092DF65V1"] = "included"
 case_results = []
 counts, reasons, transitions, compositions, included_compositions, crops = (Counter() for _ in range(6))
 references = 0
@@ -68,6 +73,10 @@ with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_pa
         compositions[decision["composition_status"]] += 1
         if parent in expected:
             assert decision["status"] == expected[parent], (parent, expected[parent], decision)
+            if parent == "B092DF65V1":
+                assert decision["composition_status"] == "declared_single_grain"
+            if parent == "B0BSZXZXZP":
+                assert decision["crop"] is None
             case_results.append({"parent_asin": parent, "status": decision["status"], "source_line": number})
         if decision["status"] == "included":
             assert included[parent] == {**decision, "metadata": item}
@@ -93,7 +102,7 @@ assert report["scan"]["unique_parents"] == number and report["scan"]["gzip_verif
 assert dict(counts) == report["counts"] and dict(reasons) == report["reasons"]
 assert dict(transitions) == report["migration_counts"]
 assert dict(compositions) == report["composition_counts"] and dict(included_compositions) == report["included_composition_counts"]
-assert len(included) == counts["included"] and len(case_results) == len(expected) == 41
+assert len(included) == counts["included"] and len(case_results) == len(expected)
 assert report["composition_verification"] == "source_declaration_only_not_independently_verified"
 assert report["supply_chain_verification"] == "not_performed"
 assert report["model_input_status"] == "not_released" and report["sample_sufficiency"] == "not_determined"
@@ -111,10 +120,11 @@ result = {"status": "independent_scope_revision_audit_passed", "checked_at_utc":
           "scope_version": VERSION, "source_rows": number, "counts": counts, "migration_counts": transitions,
           "composition_counts": compositions, "included_composition_counts": included_compositions, "included_crop_counts": crops,
           "literal_source_references_checked": references, "known_semantic_cases_checked": case_results,
+          "verification_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           "catalog_sha256": report["catalog_sha256"], "migration_sha256": report["migration_sha256"],
           "protected_files_unchanged": len(protection["protected_sha256"]), "original_materials_unchanged": 26,
           "rejected_version_components_unchanged": rejected_components,
-          "limitations": "All source/migration accounting checked; 41 fixed semantic cases checked. New population still requires documented semantic spot checks, not an assertion of exhaustive human adjudication."}
+          "limitations": "All source/migration accounting checked; fixed original cases plus documented preflight corrections checked. New population still requires documented semantic spot checks, not an assertion of exhaustive human adjudication."}
 destination = ROOT / ".scratch/data-preparation/verification" / (VERSION + "-check.json")
 destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", "utf-8")
 sample_path = ROOT / "data/diagnostics" / (VERSION + "-semantic-sample.json")
