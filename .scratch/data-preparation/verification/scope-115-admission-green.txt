@@ -1,0 +1,6 @@
+test_identity_catalog_reviewed_decision_cannot_force_grain_admission (test_prepare_data.MetadataPreparationTests.test_identity_catalog_reviewed_decision_cannot_force_grain_admission) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.329s
+
+OK

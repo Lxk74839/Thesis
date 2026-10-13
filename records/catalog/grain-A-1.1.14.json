@@ -1,0 +1,90 @@
+{
+  "audit_path": "data/catalog/grain-A-1.1.14/audit.jsonl",
+  "audit_sha256": "d9fa27f580a33144219da4d3544058ecc8e75703253f0909e6c0d8e5e1d4c75c",
+  "catalog_path": "data/catalog/grain-A-1.1.14/catalog.jsonl",
+  "catalog_sha256": "fb956df5196f2fcbeceba194980b1313366b6aa4ce3413d5adb4f827fa2fd6c9",
+  "composition_counts": {
+    "conflict": 977,
+    "declared_outside_scope": 53176,
+    "declared_single_grain": 58,
+    "not_disclosed": 491954,
+    "unresolved": 57109
+  },
+  "composition_verification": "source_declaration_only_not_independently_verified",
+  "counts": {
+    "excluded": 568223,
+    "included": 1536,
+    "pending": 33515
+  },
+  "formal_package_status": "not_built",
+  "generated_at_utc": "2026-10-13T14:49:09.583795+00:00",
+  "included_composition_counts": {
+    "declared_single_grain": 13,
+    "not_disclosed": 1523
+  },
+  "migration_counts": {
+    "excluded->excluded": 544697,
+    "excluded->pending": 2355,
+    "included->included": 5,
+    "included->pending": 8,
+    "pending->excluded": 23526,
+    "pending->included": 1531,
+    "pending->pending": 31152
+  },
+  "migration_path": "data/catalog/grain-A-1.1.14/migration.jsonl",
+  "migration_sha256": "d50ef4003bc107ef4fa40ab0faba9fb9ac17068485c477d3386326f4fec253d9",
+  "model_input_status": "not_released",
+  "pending_path": "data/catalog/grain-A-1.1.14/pending.jsonl",
+  "pending_sha256": "9d586746dfb119560cf9b56051ac634f0f7e69149c3e2792b631f6bcf4d581ab",
+  "previous_audit_sha256": "27ecb523a608af181ec0461281b9c1a261caa0b54a4df9c78451f90d2f999a9c",
+  "previous_record_path": "records/catalog/grain-A-1.0.6.json",
+  "previous_record_sha256": "075e2cd26bcddd1bae472a09851feb30b1e5c1a6ce89e4a591213682e8a9b3c0",
+  "previous_scope_version": "grain-A-1.0.6",
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "14725e873c483d808ab4d7bc7c37c90a6ed6522101df0bd81344ffa1dcf336c7",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "reasons": {
+    "ambiguous_processing_or_mix": 1489,
+    "category_form_conflict": 4111,
+    "category_identity_conflict": 200,
+    "composition_declaration_conflict": 155,
+    "declared_outside_composition": 5400,
+    "excluded_form": 148041,
+    "field_food_use_conflict": 55,
+    "field_form_conflict": 1426,
+    "field_identity_conflict": 595,
+    "field_processing_ambiguity": 249,
+    "form_not_verified": 2698,
+    "identity_composition_conflict": 1,
+    "identity_form_declared_single_grain": 13,
+    "identity_form_not_disclosed": 1523,
+    "missing_composition": 1014,
+    "no_scope_evidence": 229170,
+    "nonfood": 1758,
+    "outside_crop": 5759,
+    "sold_added_ingredient_or_outside_crop": 4314,
+    "sold_form_outside_scope": 22,
+    "sold_mixture_outside_scope": 2956,
+    "sold_multiple_grains": 377,
+    "sold_object_outside_scope": 170426,
+    "title_identity_negation": 3,
+    "unresolved_composition": 6328,
+    "weak_identity": 15191
+  },
+  "sample_sufficiency": "not_determined",
+  "scan": {
+    "conflicting_parents": 0,
+    "duplicate_parent_rows": 0,
+    "gzip_verified": true,
+    "rows": 603274,
+    "unique_parents": 603274
+  },
+  "scope_sha256": "2b9d7860446866d51b83550a72abf7a23896fa0b8f9c6f3566ccb38e6fffece1",
+  "scope_version": "grain-A-1.1.14",
+  "source_sha256": "ea678886c259d762fac3df5016c34dacd01bd0cc7f0f7aef51cc943f2326bad2",
+  "stage": "catalog",
+  "status": "catalog_complete",
+  "supply_chain_verification": "not_performed"
+}

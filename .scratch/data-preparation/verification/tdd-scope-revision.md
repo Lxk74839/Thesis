@@ -129,3 +129,9 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第31轮固定4683a41两轴静态报告均无新增发现。1.1.13全量603,274行及独立对账通过，但全部75条原文抽核发现玉米香精借储存dry入选、GREAT FOR VEGAN功能标题隐藏Our organic barley本品身份反证两处错误。拒绝1.1.13，8组件摘要保留，未运行评论提取；详见semantic-sample-1.1.13-rejection.md。
 
 独立1.1.14按三项行为逐个公共RED→最小GREEN：①flavoring／flavouring售卖对象排除，用途和自然风味不误排；②行内STORAGE切断储存dry形态，本品明确dry kernels或raw标题仍保留；③GREAT FOR…:后明确Our／This product本品陈述不被标题掩盖，与millet冲突的barley原文保留pending，单纯barley配餐仍不造混粮。三份RED日志均真实失败，三份GREEN均退出0，原有期望不改。最终143项通过47.988秒（scope-revision-tests-round32.txt）；41原例9入／25排／7待裁决、四版已读原文并集94条73入／13待裁决／8排均退出0、failures=[]。生产器14725e87…、配置2b9d7860…；等待固定两轴审查与新目录及评论独立验收，06研究参数仍待确认。
+
+第32轮固定ca65f71两个轴0新增发现。1.1.14全源及独立对账通过，新增语义记录B0166MGHL6明确调味，拒绝验收并保留9组件，未提评论。完整阅读75条入选销售线索记录，独立38排除／4待裁决／33保留，详见semantic-sample-1.1.14-rejection.md及sales-source-review-1.1.14.json。
+
+1.1.15逐行为公共RED→GREEN：完整元数据摘要绑定的排除／待裁决及原文裁决；完整来源变化重新待裁决；拒绝裁决强制入选；明确single-ingredient本袋声明只记来源披露；复核明确添加只记来源A外组成，未解保持unresolved。初始146、147、148项各次真实回归通过；169条完整原文回放首次失败揭示明确成分声明后配方问句被错误续接，失败日志保留。单独公共RED→GREEN识别“Did you know you can make…”用途句边界，完整原文不删改，原期望不降低。最终149项通过50.302秒（scope-revision-tests-round33-verified.txt），41原例9入／25排／7待裁决、169原文并集106入／46排／17待裁决均failures=[]，生产器94abfdf9…、配置f7af9405…。旧41回放保存pre-recipe-question副本。
+
+2026-10-13 15:52 UTC冻结上述已完成变更与案例，停止扩展解析／复审集合；遵守scope-revision-execution.md新增的一次必要阻塞修复及失败退出约定。当前不声称1.1.15正式目录／评论已验收或06规则已批准。

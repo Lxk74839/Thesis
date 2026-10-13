@@ -1,0 +1,6 @@
+test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata (test_prepare_data.MetadataPreparationTests.test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.361s
+
+OK

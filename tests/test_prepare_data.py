@@ -90,11 +90,11 @@ class MetadataPreparationTests(unittest.TestCase):
             cwd=PROJECT, capture_output=True, text=True, encoding="utf-8",
         )
 
-    def identity_catalog(self, rows):
+    def identity_catalog(self, rows, config=None):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.14.json",
+        return self.run_catalog(config or PROJECT / "config/grain-A-1.1.15.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -415,6 +415,107 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in audit], ["pending", "included", "included"])
         self.assertTrue(any("Our organic barley" in ref["text"] for ref in audit[0]["counter_evidence"]))
+
+    def test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata(self):
+        config = json.loads((PROJECT / "config/grain-A-1.1.15.json").read_text("utf-8"))
+        config["version"] = "reviewed-scope-fixture"
+        config["reviewed_decisions"] = {"REVIEW": {
+            "status": "excluded", "reason": "reviewed_outside_scope_sale",
+            "metadata_sha256": "aa2e89cfce6ad6409ae3f18d7ec6b0bc2e185b7dea9a8845fa29dc934fcfb512",
+            "basis": "Corn taquitos are a prepared sale object; rolled corn does not make them A grain.",
+            "evidence": [{"field": "title", "text": "Corn Taquitos"}],
+        }}
+        path = self.output / "reviewed-scope.json"
+        path.write_text(json.dumps(config), encoding="utf-8")
+        run = self.identity_catalog([
+            {"parent_asin": "REVIEW", "title": "Corn Taquitos", "features": ["Rolled corn"]},
+            {"parent_asin": "GRAIN", "title": "Raw corn kernels"},
+        ], config=path)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+        self.assertEqual(audit[0]["reason"], "reviewed_outside_scope_sale")
+        self.assertEqual(audit[0]["reviewed_decision"]["metadata_sha256"], config["reviewed_decisions"]["REVIEW"]["metadata_sha256"])
+        self.assertIn({"field": "title", "text": "Corn Taquitos"}, audit[0]["counter_evidence"])
+
+    def test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review(self):
+        config = json.loads((PROJECT / "config/grain-A-1.1.15.json").read_text("utf-8"))
+        config["version"] = "changed-reviewed-scope-fixture"
+        config["reviewed_decisions"] = {"REVIEW": {
+            "status": "excluded", "reason": "reviewed_outside_scope_sale",
+            "metadata_sha256": "aa2e89cfce6ad6409ae3f18d7ec6b0bc2e185b7dea9a8845fa29dc934fcfb512",
+            "basis": "Corn taquitos are not A grain.",
+            "evidence": [{"field": "title", "text": "Corn Taquitos"}],
+        }}
+        path = self.output / "changed-reviewed-scope.json"
+        path.write_text(json.dumps(config), encoding="utf-8")
+        run = self.identity_catalog([{"parent_asin": "REVIEW", "title": "Raw corn kernels"}], config=path)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(audit[0]["status"], "pending")
+        self.assertEqual(audit[0]["reason"], "reviewed_metadata_changed")
+        self.assertEqual(audit[0]["counter_evidence"], [{"field": "title", "text": "Raw corn kernels"}])
+
+    def test_identity_catalog_reviewed_decision_cannot_force_grain_admission(self):
+        config = json.loads((PROJECT / "config/grain-A-1.1.15.json").read_text("utf-8"))
+        config["version"] = "invalid-reviewed-scope-fixture"
+        config["reviewed_decisions"] = {"REVIEW": {
+            "status": "included", "reason": "unsupported_admission",
+            "metadata_sha256": "aa2e89cfce6ad6409ae3f18d7ec6b0bc2e185b7dea9a8845fa29dc934fcfb512",
+            "evidence": [{"field": "title", "text": "Corn Taquitos"}],
+        }}
+        path = self.output / "invalid-reviewed-scope.json"
+        path.write_text(json.dumps(config), encoding="utf-8")
+        run = self.identity_catalog([{"parent_asin": "REVIEW", "title": "Corn Taquitos", "features": ["Rolled corn"]}], config=path)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("cannot admit", run.stdout + run.stderr)
+
+    def test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure(self):
+        claim = "We don't add any salt, oil, or strange chemicals you find in microwave popcorn - this bag is just pure, single-ingredient, yellow popcorn."
+        run = self.identity_catalog([
+            {"parent_asin": "CLAIM", "title": "Whole yellow popcorn kernels", "description": [claim]},
+            {"parent_asin": "RECIPE", "title": "Whole yellow popcorn kernels", "description": ["Recipe: " + claim]},
+            {"parent_asin": "UNKNOWN", "title": "Whole yellow popcorn kernels", "features": ["No additives or preservatives."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "not_disclosed", "not_disclosed"])
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["text"], claim)
+        self.assertEqual(report["composition_verification"], "source_declaration_only_not_independently_verified")
+
+    def test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification(self):
+        config = json.loads((PROJECT / "config/grain-A-1.1.15.json").read_text("utf-8"))
+        config["version"] = "reviewed-composition-fixture"
+        config["reviewed_decisions"] = {"REVIEWCOMP": {
+            "status": "excluded", "reason": "reviewed_outside_scope_sale",
+            "metadata_sha256": "43f12a3aa7aa1405638abf201fddc530e1d5ccc1dc6aa45125712008076d37ce",
+            "composition_status": "declared_outside_scope",
+            "basis": "Cheddar popcorn explicitly declares a non-grain component; no full real recipe is verified.",
+            "evidence": [{"field": "title", "text": "Cheddar Popcorn"}],
+        }}
+        path = self.output / "reviewed-composition.json"
+        path.write_text(json.dumps(config), encoding="utf-8")
+        run = self.identity_catalog([{"parent_asin": "REVIEWCOMP", "title": "Cheddar Popcorn", "features": ["Whole grain corn"]}], config=path)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(audit[0]["composition_status"], "declared_outside_scope")
+        self.assertEqual(audit[0]["composition_evidence"], [{"field": "title", "text": "Cheddar Popcorn"}])
+        self.assertEqual(report["composition_verification"], "source_declaration_only_not_independently_verified")
+
+    def test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure(self):
+        claim = "We don't add any salt, oil, or strange chemicals you find in microwave popcorn - this bag is just pure, single-ingredient, yellow popcorn. Did you know you can make it in the microwave too? It's true! Just place the kernels in a small paper bag and microwave on high until you count 3 seconds between pops."
+        run = self.identity_catalog([{"parent_asin": "BAG", "title": "Whole yellow popcorn kernels", "description": [claim]}])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual(audit[0]["composition_status"], "declared_single_grain")
+        self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["yellow popcorn."])
+        self.assertEqual(audit[0]["composition_evidence"][0]["text"], claim)
 
     def test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim(self):
         claim = "Our Fruit Rainbow popcorn brings the colors of the rainbow and the flavors of grape, lemon, orange, blue raspberry and cherry in a light, crunchy coating."

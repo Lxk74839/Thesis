@@ -1,0 +1,6 @@
+test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.354s
+
+OK

@@ -1,0 +1,23 @@
+test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 485, in test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure
+    self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "not_disclosed", "not_disclosed"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['not_disclosed', 'not_disclosed', 'not_disclosed'] != ['declared_single_grain', 'not_disclosed', 'not_disclosed']
+
+First differing element 0:
+'not_disclosed'
+'declared_single_grain'
+
+- ['not_disclosed', 'not_disclosed', 'not_disclosed']
++ ['declared_single_grain', 'not_disclosed', 'not_disclosed']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.358s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_identity_catalog_explicit_single_ingredient_bag_claim_is_source_disclosure -v` failed. (See above for error)

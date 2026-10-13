@@ -1,0 +1,6 @@
+test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.355s
+
+OK

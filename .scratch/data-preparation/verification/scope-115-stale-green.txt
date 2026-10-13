@@ -1,0 +1,6 @@
+test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review (test_prepare_data.MetadataPreparationTests.test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.407s
+
+OK

@@ -1,0 +1,19 @@
+test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review (test_prepare_data.MetadataPreparationTests.test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review (test_prepare_data.MetadataPreparationTests.test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 457, in test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review
+    self.assertEqual(audit[0]["status"], "pending")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'included' != 'pending'
+- included
++ pending
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.402s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_identity_catalog_changed_metadata_cannot_silently_reuse_or_drop_review -v` failed. (See above for error)

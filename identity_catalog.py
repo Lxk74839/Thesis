@@ -1,5 +1,7 @@
 """Source-declared grain identities with separate composition disclosure."""
 
+import hashlib
+import json
 import re
 
 from catalog import classify_legacy, pattern, text_fields
@@ -30,7 +32,7 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|(?:can|should|to) be (?:cooked|combined|mixed)|often cooked with|can be coated|can be topped|baking|make|making|perfect for|ideal for|great for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|(?:can|should|to) be (?:cooked|combined|mixed)|often cooked with|can be coated|can be topped|baking|did you know you can make|make|making|perfect for|ideal for|great for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
         ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|offers the widest diversity|(?:USDA )?guidelines recommend eating|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking|freshly cooked (?:luster|gloss|stickiness))\b"),
         ("storage_context", r"^\s*(?:store|keep|refrigerate)\b|\b(?:storage|keep refrigerated|refrigerate after)\b"),
         ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in|known as the southern oatmeal|preferred over)\b"),
@@ -120,6 +122,12 @@ def composition_disclosure(item, config):
                 complete = re.search(r"\b(?:made of|made from)\s+100\s*%", fragment, re.I)
                 if complete and not context_role(fragment[:complete.start()]):
                     match = complete
+            if not match:
+                complete = re.search(r"\bthis bag is just pure,\s*single[- ]ingredient,\s*", fragment, re.I)
+                if complete:
+                    before = re.sub(r"\bwe (?:don't|do not) add\b", "", fragment[:complete.start()], flags=re.I)
+                    if not context_role(before):
+                        match = complete
             if not match and not active:
                 partial = re.search("|".join(config["partial_composition_patterns"]), fragment, re.I)
                 if partial and not context_role(fragment[:partial.start()]):
@@ -167,6 +175,21 @@ def classify_identity(item, config):
     decision = classify_legacy(item, config)
     composition_status, composition_crops, composition = composition_disclosure(item, config)
     decision.update(composition_status=composition_status, composition_evidence=composition)
+    reviewed = config.get("reviewed_decisions", {}).get(item.get("parent_asin"))
+    if reviewed:
+        if reviewed["status"] not in ("excluded", "pending"):
+            raise ValueError("reviewed metadata decisions cannot admit a grain product")
+        fingerprint = hashlib.sha256(json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+        if fingerprint == reviewed["metadata_sha256"]:
+            decision.update(status=reviewed["status"], reason=reviewed["reason"],
+                            counter_evidence=reviewed["evidence"], reviewed_decision=reviewed)
+            if "composition_status" in reviewed:
+                decision.update(composition_status=reviewed["composition_status"],
+                                composition_evidence=reviewed["evidence"])
+            return decision
+        decision.update(status="pending", reason="reviewed_metadata_changed",
+                        counter_evidence=[{"field": "title", "text": item.get("title", "")}])
+        return decision
     title = item.get("title", "")
     affirmative = affirmative_identity(title, config)
     affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)

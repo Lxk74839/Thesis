@@ -1,0 +1,607 @@
+{
+  "source_version": "grain-A-1.1.14",
+  "target_version": "grain-A-1.1.15",
+  "method": "All 75 discovery-flagged inclusion records read in full; metadata-only judgments, not prevalence estimates.",
+  "annotations": [
+    {
+      "index": 0,
+      "parent_asin": "B0BMSZCYM7",
+      "source_line": 416,
+      "title": "Himalayan Chef Basmati Rice, Long Grain Rice Fluffy Quick Cooking Aromatic - 10 lbs.",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 1,
+      "parent_asin": "B00XK594A4",
+      "source_line": 4602,
+      "title": "Moss Water Ground White Corn Grits 2 Lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 2,
+      "parent_asin": "B001E5E04M",
+      "source_line": 7200,
+      "title": "Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 3,
+      "parent_asin": "B074QVZYYP",
+      "source_line": 32797,
+      "title": "Moss Water Ground Yellow Corn Grits 2 Lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 4,
+      "parent_asin": "B09S5KBYSP",
+      "source_line": 34836,
+      "title": "Jovvily Nutritional Yeast Flakes - 2lb - Popcorn - Soups - Pastas",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Jovvily Nutritional Yeast Flakes - 2lb - Popcorn - Soups - Pastas. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 5,
+      "parent_asin": "B09ZYJVBQR",
+      "source_line": 39722,
+      "title": "Bakery On Main Steel Cut Oats - Gluten Free, Non-GMO Project Verified, Purity Protocol, Kosher, Resealable Bag, 24oz (Pack of 2)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 6,
+      "parent_asin": "B00J4FS0AE",
+      "source_line": 54299,
+      "title": "Delimex White Meat Chicken Corn Taquitos Frozen Snacks, 23 ct Box",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Delimex White Meat Chicken Corn Taquitos Frozen Snacks, 23 ct Box. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 7,
+      "parent_asin": "B074QWJ2SQ",
+      "source_line": 57203,
+      "title": "Moss Water Ground White and Yellow Whole Corn Grits each Bag is 2 Lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 8,
+      "parent_asin": "B074QVNV4J",
+      "source_line": 81520,
+      "title": "Moss Water Ground Yellow Corn Grits 5 Lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 9,
+      "parent_asin": "B0776XQFKM",
+      "source_line": 87411,
+      "title": "Basil Hayden Dark Rye Whiskey, 750 ml, 80 Proof",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Basil Hayden Dark Rye Whiskey, 750 ml, 80 Proof. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 10,
+      "parent_asin": "B0B5PKQR5M",
+      "source_line": 93860,
+      "title": "Hulled Barley Grain, 6 Pounds – 100% Whole Grain, Vegan, Great for Home Baking, Brewing, Grinding. Rich in Selenium, Fiber. Perfect for Chili, Stews, Hot Cereal, Salads, Soup. Bulk Seeds. Made in USA",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 11,
+      "parent_asin": "B006YH3VEA",
+      "source_line": 96760,
+      "title": "Nagatanien OTONA NO FURIKAKE Mini #1 | Rice Seasoning | 37.6g ( 20 Pcs ) [ Japanese Import ]",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Nagatanien OTONA NO FURIKAKE Mini #1 | Rice Seasoning | 37.6g ( 20 Pcs ) [ Japanese Import ]. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 12,
+      "parent_asin": "B00Y9KYVUW",
+      "source_line": 101539,
+      "title": "Japan Cheese in Rice Cracker Rolled By Laver 550g Norimaki Arare",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Japan Cheese in Rice Cracker Rolled By Laver 550g Norimaki Arare. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 13,
+      "parent_asin": "B01M13R9F9",
+      "source_line": 116875,
+      "title": "Roland Foods Basmati Rice, Brown, 11 Pound",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 14,
+      "parent_asin": "B001F8FO3O",
+      "source_line": 118145,
+      "title": "Popcorn Lovers/Night At The Movies Gift Stack",
+      "source_review_status": "excluded",
+      "basis": "grain_plus_non_grain_set: Popcorn Lovers/Night At The Movies Gift Stack. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 15,
+      "parent_asin": "B09WF4BHB8",
+      "source_line": 120135,
+      "title": "Amish Country Popcorn | 10-4 Oz Bags - Extra Large Caramel Type Kernels | Old Fashioned, Non-GMO and Gluten Free",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 16,
+      "parent_asin": "B01MPXDTAW",
+      "source_line": 123597,
+      "title": "Gourmet Habanero Pork Tamales - One Dozen",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Gourmet Habanero Pork Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 17,
+      "parent_asin": "B00M9NI7IS",
+      "source_line": 128576,
+      "title": "Amish Country Popcorn | 6 lb Bag | Extra Large Caramel Type Popcorn Kernels | Old Fashioned, Non-GMO and Gluten Free (Extra Large Caramel - 6 lb Bag)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 18,
+      "parent_asin": "B01NCT6B7W",
+      "source_line": 129756,
+      "title": "Slofoodgroup -Ceylon Cinnamon Sticks - 1 Lb - Pure Ceylon Cinnamon Quills -5 Inch Cut Cinnamon Spice from Sri Lanka, True Cinnamon - Cinnamomum Verum",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Slofoodgroup -Ceylon Cinnamon Sticks - 1 Lb - Pure Ceylon Cinnamon Quills -5 Inch Cut Cinnamon Spice from Sri Lanka, True Cinnamon - Cinnamomum Verum. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 19,
+      "parent_asin": "B00HC74NZC",
+      "source_line": 143970,
+      "title": "Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Cherry and Chia, 2.6 Ounce (Pack of 12)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Cherry and Chia, 2.6 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 20,
+      "parent_asin": "B09TY615CQ",
+      "source_line": 145088,
+      "title": "Organic Yellow Popcorn, 1 Pound – Non-GMO Corn Kernels, 100% Whole Grain, No Additives, No Preservatives, Vegan, Bulk. Theater-Quality Popcorn. Easy to Make. High Fiber, and Low-Calorie Snack",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 21,
+      "parent_asin": "B08JN8G999",
+      "source_line": 151415,
+      "title": "Don Ponchos - Ceilán Canela Sticks/Ceylon Cinnamon Sticks 1lb",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Don Ponchos - Ceilán Canela Sticks/Ceylon Cinnamon Sticks 1lb. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 22,
+      "parent_asin": "B07RV7K71G",
+      "source_line": 159190,
+      "title": "Spicy World Swad Poha THICK (Flattened Rice), 32 Ounce, 2 pound (pack of 1)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 23,
+      "parent_asin": "B0045TXNRE",
+      "source_line": 160153,
+      "title": "Tanka Wild Snack Stick Spicy, 1-Ounce (Pack of 24)",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Tanka Wild Snack Stick Spicy, 1-Ounce (Pack of 24). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 24,
+      "parent_asin": "B07T6BRNVN",
+      "source_line": 168049,
+      "title": "Bob's Red Mill Whole Yellow Popcorn, 30 Oz",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 25,
+      "parent_asin": "B00PCCHI7O",
+      "source_line": 169619,
+      "title": "Pirate's Brand Tings, Original Crunchy Corn Sticks, 6 Ounce",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Pirate's Brand Tings, Original Crunchy Corn Sticks, 6 Ounce. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 26,
+      "parent_asin": "B01MDRG9EE",
+      "source_line": 195519,
+      "title": "Gourmet Pork Tamales - One Dozen",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Gourmet Pork Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 27,
+      "parent_asin": "B00DUW76HU",
+      "source_line": 198605,
+      "title": "Orville Redenbacker's Pop Up Bowl Kettle Korn Gourmet Popping Corn- 6 CT",
+      "source_review_status": "pending",
+      "basis": "Microwaveable Kettle Korn: sold processing is unresolved; brand kernel history does not establish an A dry-kernel sale."
+    },
+    {
+      "index": 28,
+      "parent_asin": "B074H76S1P",
+      "source_line": 201423,
+      "title": "365 by Whole Foods Market, Rice White Indian Basmati, 32 Ounce",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 29,
+      "parent_asin": "B0BMPP82HN",
+      "source_line": 201898,
+      "title": "卫龙辣条礼包魔芋爽亲嘴烧大面筋Weilong Spicy Bar Gift Bag 22/43/64 bags零食礼包, casual snacks, hot bar gift bag Konjak, Weilong big gluten kiss and burn, delicious food (22 bags)",
+      "source_review_status": "excluded",
+      "basis": "grain_plus_non_grain_set: 卫龙辣条礼包魔芋爽亲嘴烧大面筋Weilong Spicy Bar Gift Bag 22/43/64 bags零食礼包, casual snacks, hot bar gift bag Konjak, Weilong big gluten kiss and burn, delicious food (22 bags). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 30,
+      "parent_asin": "B01MCYRZ9V",
+      "source_line": 204240,
+      "title": "Gourmet Chicken Tamales - One Dozen",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Gourmet Chicken Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 31,
+      "parent_asin": "B01H99SJUW",
+      "source_line": 206815,
+      "title": "Poppin Popcorn Chicago Style (16.00 oz)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Poppin Popcorn Chicago Style (16.00 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 32,
+      "parent_asin": "B08H2DK3ZH",
+      "source_line": 210718,
+      "title": "Spicy World Poha (Powa) Thick Medium Cut Flattened Rice - 4 Pound Bulk Bag - LARGE, Vegan, Salt Free, Indian",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 33,
+      "parent_asin": "B07RY2FFBJ",
+      "source_line": 216587,
+      "title": "Poppin Popcorn Kettle Corn (17.00 oz)",
+      "source_review_status": "pending",
+      "basis": "Kettle Corn is described as sweet, salty and crisp, without establishing an A dry-kernel sale; preserve processing uncertainty."
+    },
+    {
+      "index": 34,
+      "parent_asin": "B07QJVMD96",
+      "source_line": 236161,
+      "title": "TableTop King 50 lb. Extra Large Mushroom Popcorn Kernels",
+      "source_review_status": "pending",
+      "basis": "Title Mushroom kernels/Unpopped and details Flavor Caramel leave the flavor/form counter unresolved; no added ingredient is invented."
+    },
+    {
+      "index": 35,
+      "parent_asin": "B095PTNQTB",
+      "source_line": 239129,
+      "title": "SPICY ORGANIC Coriander Seeds - Pure USDA Organic - Non-GMO Coriander Seeds Whole - 16 Oz",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: SPICY ORGANIC Coriander Seeds - Pure USDA Organic - Non-GMO Coriander Seeds Whole - 16 Oz. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 36,
+      "parent_asin": "B00BLBJOO0",
+      "source_line": 247193,
+      "title": "Swad Whole Red Dried Chillies 3.5oz., 100 Grams/ Indian Groceries",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Swad Whole Red Dried Chillies 3.5oz., 100 Grams/ Indian Groceries. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 37,
+      "parent_asin": "B075N1QTTG",
+      "source_line": 261519,
+      "title": "365 Everyday Value, Indian Basmati White Rice, 32 Ounce",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 38,
+      "parent_asin": "B01D34KRN4",
+      "source_line": 263057,
+      "title": "Tilda Steamed Basmati Rice Coconut, Chilli & Lemongrass (250g) - Pack of 6",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Tilda Steamed Basmati Rice Coconut, Chilli & Lemongrass (250g) - Pack of 6. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 39,
+      "parent_asin": "B019QTRKV2",
+      "source_line": 263865,
+      "title": "Minute Ready to Serve Natural Whole Grain Brown Rice 2 Cups 8.8 OZ (Pack of 4)",
+      "source_review_status": "excluded",
+      "basis": "fully_cooked_sale: Minute Ready to Serve Natural Whole Grain Brown Rice 2 Cups 8.8 OZ (Pack of 4). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 40,
+      "parent_asin": "B0166MGHL6",
+      "source_line": 264040,
+      "title": "Spiced and Infused Popcorn, Chipotle Taco, 1.1 Ounce (Pack of 12)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Spiced and Infused Popcorn, Chipotle Taco, 1.1 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 41,
+      "parent_asin": "B08W2HZF46",
+      "source_line": 273262,
+      "title": "Mushroom Popcorn (2 lb) Gourmet Popcorn, Perfect for Popcorn Treats, Eco-Friendly Packaging, Extra Large Whole Kernels",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 42,
+      "parent_asin": "B006P1CC2W",
+      "source_line": 276652,
+      "title": "Quaker Kettle Hearty Oats For Making Overnight Oats 47 Ounce Pack of 2",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 43,
+      "parent_asin": "B01DJ80GM6",
+      "source_line": 282533,
+      "title": "OliveNation White Grits, Ground Dried US-Grown Corn Kernels, Vegan, Gluten Free, Kosher Parve for Sweet or Savory Breakfast, Side Dish, or Entrée Recipes - 32 ounces",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 44,
+      "parent_asin": "B0C1JKKL57",
+      "source_line": 288869,
+      "title": "Amish Country Popcorn | 14 oz Bottle | Extra Large Caramel Type Popcorn Kernels | Old Fashioned, Non-GMO and Gluten Free (14 oz Bottle)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 45,
+      "parent_asin": "B0C6SY4Y3K",
+      "source_line": 289391,
+      "title": "Amish Country Popcorn | 50 Lb Bag Extra Large Caramel Type Kernels | Old Fashioned, Non-GMO and Gluten Free (50lb Bag)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 46,
+      "parent_asin": "B08DD37JST",
+      "source_line": 313860,
+      "title": "Elvissmart Extra Long White Basmati Rice, Premium Aged Aromatic Grain, 3 LBS, (1.36 Kilo) Jar",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 47,
+      "parent_asin": "B0733MF6RF",
+      "source_line": 339265,
+      "title": "Vigo Farro,4 Cheese 7 Oz (Pack of 6)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Vigo Farro,4 Cheese 7 Oz (Pack of 6). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 48,
+      "parent_asin": "B07RWDTY8V",
+      "source_line": 350327,
+      "title": "Poppin Popcorn Jalapeno Cheddar (9.50 oz)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Poppin Popcorn Jalapeno Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 49,
+      "parent_asin": "B00MWE7ATQ",
+      "source_line": 351951,
+      "title": "Eden Mirin, Sweet and Savory Rice Cooking Wine, Traditionally Made Japanese Ajino-haha, Umami, 10.1 Fl Oz Glass Bottle, (3-Pack)",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Eden Mirin, Sweet and Savory Rice Cooking Wine, Traditionally Made Japanese Ajino-haha, Umami, 10.1 Fl Oz Glass Bottle, (3-Pack). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 50,
+      "parent_asin": "B00CJ8L5SM",
+      "source_line": 361277,
+      "title": "Jimmy Dean Delights Turkey Sausage Egg White and Cheese English Muffin Breakfast Sandwiches 4 Count (Frozen)",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Jimmy Dean Delights Turkey Sausage Egg White and Cheese English Muffin Breakfast Sandwiches 4 Count (Frozen). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 51,
+      "parent_asin": "B08HV858MP",
+      "source_line": 367639,
+      "title": "Angie's Boomchickapop Kettle Corn 4.5 Oz! Pumpkin Spice Drizzled Popcorn! Whole Grain, Non-GMO And Gluten Free! Simply, Deliciously And Crunchy Snack!",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Angie's Boomchickapop Kettle Corn 4.5 Oz! Pumpkin Spice Drizzled Popcorn! Whole Grain, Non-GMO And Gluten Free! Simply, Deliciously And Crunchy Snack!. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 52,
+      "parent_asin": "B07RYWC62Q",
+      "source_line": 383584,
+      "title": "Poppin Popcorn White Cheddar (9.50 oz)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Poppin Popcorn White Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 53,
+      "parent_asin": "B08D4MH72F",
+      "source_line": 411701,
+      "title": "Elvissmart Authentic White Basmati Rice, 10 Lbs/Each, (Pack of 2)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 54,
+      "parent_asin": "B08GRB3L3J",
+      "source_line": 412119,
+      "title": "Aiva Organic White Basmati Rice 4 lb",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 55,
+      "parent_asin": "B08D4J8ZX3",
+      "source_line": 428489,
+      "title": "Elvissmart Extra Long Basmati Rice, 10 Pound (4.45 KG), Aromatic Grain",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 56,
+      "parent_asin": "B07R7R52HG",
+      "source_line": 432128,
+      "title": "Poppin Popcorn Buttery Caramel (23.50 oz)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Poppin Popcorn Buttery Caramel (23.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 57,
+      "parent_asin": "B004KA6VHC",
+      "source_line": 444256,
+      "title": "Magic Mushroom Popcorn 10 lbs./4.55 kg. Pack",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 58,
+      "parent_asin": "B0BS5HSRNS",
+      "source_line": 458338,
+      "title": "Popcorn Gifts For Women Movie Night Gift Baskets Gifts For Her Gift Set For Women, 10 Piece Set, 5 Gourmet Popcorn Kernels and 5 Popcorn Seasoning Flavoring, Non-GMO, Gift Idea From Daughter, Wife, Mom, Son",
+      "source_review_status": "excluded",
+      "basis": "grain_plus_non_grain_set: Popcorn Gifts For Women Movie Night Gift Baskets Gifts For Her Gift Set For Women, 10 Piece Set, 5 Gourmet Popcorn Kernels and 5 Popcorn Seasoning Flavoring, Non-GMO, Gift Idea From Daughter, Wife, Mom, Son. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 59,
+      "parent_asin": "B09TS7LGMS",
+      "source_line": 459743,
+      "title": "Bakery On Main Organic Oats - Gluten Free Steel Cut Oats - Non-GMO, Preservative-Free Steel Cut Oats for Breakfast, Baking - 7.5 lb. Bag (Pack of 2)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 60,
+      "parent_asin": "B00HC74QQS",
+      "source_line": 460378,
+      "title": "Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Blueberry Blitz, 3 Ounce (Pack of 12)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Blueberry Blitz, 3 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 61,
+      "parent_asin": "B09219JB4Q",
+      "source_line": 465615,
+      "title": "Spicy World Italian Pearled Farro 4 Pound Large Bag (64 Ounce) - From Italy, Vegan, Specialty Whole Grain",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 62,
+      "parent_asin": "B00LA5YW08",
+      "source_line": 477885,
+      "title": "Quaker Oats Steamed Table Kettle Hearty - 47 oz",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 63,
+      "parent_asin": "B078NMZK4V",
+      "source_line": 479420,
+      "title": "泰国长糯米 Thai Green Elephant Thai Pure White Sticky Long Grain Sweet Rice 4.4 lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 64,
+      "parent_asin": "B001BKU4GS",
+      "source_line": 479772,
+      "title": "Bob's Red Mill Premium Quality Yellow Popcorn (1) 27 oz (765 g)",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 65,
+      "parent_asin": "B01MQ1EY2N",
+      "source_line": 483099,
+      "title": "One Half-Dozen (6) Gourmet Jalapeno and Cheese (Four Cheese) Tamales",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: One Half-Dozen (6) Gourmet Jalapeno and Cheese (Four Cheese) Tamales. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 66,
+      "parent_asin": "B01ID12UMI",
+      "source_line": 503467,
+      "title": "Delimex White Meat Chicken Corn Taquitos Frozen Snacks (33 ct Box)",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Delimex White Meat Chicken Corn Taquitos Frozen Snacks (33 ct Box). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 67,
+      "parent_asin": "B07RBQCRBL",
+      "source_line": 519514,
+      "title": "Poppin Popcorn Cheesy Cheddar (9.50 oz)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Poppin Popcorn Cheesy Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 68,
+      "parent_asin": "B099S9ZWFV",
+      "source_line": 522170,
+      "title": "Zibari - Farro - Kosher- 2 Lb (907g) - Product From Italy - Gourmet Food - Artisanal - Chef Approved - Kitchen - International Cuisine",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 69,
+      "parent_asin": "B01M29R9CO",
+      "source_line": 536759,
+      "title": "Gourmet Beef Tamales - One Dozen",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Gourmet Beef Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 70,
+      "parent_asin": "B08CQ9CV3R",
+      "source_line": 549446,
+      "title": "Himalayan Chef Extra Long Basmati Rice - Premium Aged Healthy Grain, 10 lbs",
+      "source_review_status": "included",
+      "basis": "A grain identity and particle/flake form are explicit. Cooking suggestions, natural flavors, Spicy World brand, Caramel Type kernels and optional coatings do not establish actual seasoning or ready-cooked sale. Source declaration remains separate from independently verified facts."
+    },
+    {
+      "index": 71,
+      "parent_asin": "B007UJ4F9G",
+      "source_line": 551975,
+      "title": "Wabash Valley Farms44; Inc 43601 Open-Fire Pop All-Inclusive Popping Kits - Singles",
+      "source_review_status": "excluded",
+      "basis": "grain_plus_non_grain_set: Wabash Valley Farms44; Inc 43601 Open-Fire Pop All-Inclusive Popping Kits - Singles. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 72,
+      "parent_asin": "B000PEPDOE",
+      "source_line": 567598,
+      "title": "Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary)",
+      "source_review_status": "excluded",
+      "basis": "actual_added_components: Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    },
+    {
+      "index": 73,
+      "parent_asin": "B01A5KVADK",
+      "source_line": 575873,
+      "title": "Hodgson Mill Oat Quick Rolled Whole Grain, 18 oz",
+      "source_review_status": "pending",
+      "basis": "Rolled whole-grain oat title and the cheddar-cheese product feature leave a key cross-field counter unresolved."
+    },
+    {
+      "index": 74,
+      "parent_asin": "B085LRQFDQ",
+      "source_line": 598318,
+      "title": "Spicy Roll - Tuna 10pc (Brown Rice)",
+      "source_review_status": "excluded",
+      "basis": "non_grain_or_prepared_sale: Spicy Roll - Tuna 10pc (Brown Rice). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history."
+    }
+  ]
+}

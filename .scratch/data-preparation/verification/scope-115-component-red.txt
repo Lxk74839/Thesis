@@ -1,0 +1,19 @@
+test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification (test_prepare_data.MetadataPreparationTests.test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification (test_prepare_data.MetadataPreparationTests.test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 506, in test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification
+    self.assertEqual(audit[0]["composition_status"], "declared_outside_scope")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not_disclosed' != 'declared_outside_scope'
+- not_disclosed
++ declared_outside_scope
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.345s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification -v` failed. (See above for error)

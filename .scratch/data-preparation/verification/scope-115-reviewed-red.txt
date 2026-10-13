@@ -1,0 +1,27 @@
+test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata (test_prepare_data.MetadataPreparationTests.test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata (test_prepare_data.MetadataPreparationTests.test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 437, in test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata
+    self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included'] != ['excluded', 'included']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'included']
+?   ^^
+
++ ['excluded', 'included']
+?   ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.367s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_identity_catalog_applies_reviewed_exclusion_bound_to_complete_metadata -v` failed. (See above for error)

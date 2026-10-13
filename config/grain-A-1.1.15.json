@@ -1,0 +1,2118 @@
+{
+  "version": "grain-A-1.1.15",
+  "scheme": "A",
+  "approved_on": "2026-10-12",
+  "approval": "User confirmed scope-rule-revision-draft-20261012.md body and evidenced semantic corrections on 2026-10-12; scheme A unchanged.",
+  "keywords_are_discovery_only": true,
+  "references": [
+    "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/SR/sr28/sr28_doc.pdf#page=87",
+    "https://www.fao.org/4/x9892e/X9892e02.htm",
+    "https://www.fao.org/4/T0818e/T0818E01.htm",
+    "https://www.fao.org/millets-2023/about/",
+    "https://ir.cftri.res.in/6762/",
+    "https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30100521-2",
+    "https://amazon-reviews-2023.github.io/main.html"
+  ],
+  "grains": {
+    "rice": [
+      "rice",
+      "basmati",
+      "arborio",
+      "carnaroli",
+      "oryza sativa",
+      "大米",
+      "稻米",
+      "精米"
+    ],
+    "wheat": [
+      "wheat",
+      "spelt",
+      "einkorn",
+      "emmer",
+      "kamut",
+      "khorasan",
+      "farro",
+      "bulgur",
+      "freekeh",
+      "小麦"
+    ],
+    "barley": [
+      "barley",
+      "大麦"
+    ],
+    "oats": [
+      "oat",
+      "oats",
+      "oatmeal",
+      "燕麦"
+    ],
+    "rye": [
+      "rye",
+      "黑麦"
+    ],
+    "corn": [
+      "corn",
+      "maize",
+      "popcorn",
+      "玉米"
+    ],
+    "millet": [
+      "millet",
+      "小米",
+      "粟"
+    ],
+    "sorghum": [
+      "sorghum",
+      "jowar",
+      "高粱"
+    ],
+    "teff": [
+      "teff",
+      "苔麸"
+    ],
+    "fonio": [
+      "fonio"
+    ],
+    "triticale": [
+      "triticale"
+    ],
+    "coix": [
+      "coix",
+      "adlay",
+      "job's tears",
+      "薏米",
+      "hato mugi",
+      "hatomugi",
+      "job’s tears"
+    ],
+    "pearl_millet": [
+      "pearl millet",
+      "bajra",
+      "bajri"
+    ],
+    "finger_millet": [
+      "finger millet",
+      "ragi"
+    ],
+    "barnyard_millet": [
+      "barnyard millet"
+    ],
+    "foxtail_millet": [
+      "foxtail millet"
+    ],
+    "little_millet": [
+      "little millet"
+    ],
+    "kodo_millet": [
+      "kodo millet"
+    ],
+    "proso_millet": [
+      "proso millet"
+    ]
+  },
+  "outside_crops": [
+    "quinoa",
+    "buckwheat",
+    "amaranth",
+    "kaniwa",
+    "canihua",
+    "kasha",
+    "lentil",
+    "lentils",
+    "chickpea",
+    "chickpeas",
+    "beans",
+    "藜麦",
+    "荞麦",
+    "苋",
+    "扁豆",
+    "鹰嘴豆"
+  ],
+  "discovery_only_terms": [
+    "poha",
+    "jasmine",
+    "job’s tears"
+  ],
+  "forms": [
+    "rice",
+    "basmati",
+    "arborio",
+    "carnaroli",
+    "berries",
+    "groats",
+    "kernels",
+    "grain",
+    "grains",
+    "hulled",
+    "pearled",
+    "cracked",
+    "rolled",
+    "steel cut",
+    "steel-cut",
+    "quick oats",
+    "quick 1 minute oats",
+    "old fashioned",
+    "old-fashioned",
+    "flakes",
+    "grits",
+    "麦粒",
+    "米粒",
+    "燕麦片",
+    "精米",
+    "大米",
+    "稻米"
+  ],
+  "primary_categories": [
+    "Dried Grains & Rice",
+    "Oatmeal",
+    "Unpopped"
+  ],
+  "generic_categories": [
+    "Dried Grains & Rice",
+    "Unpopped"
+  ],
+  "excluded_forms": [
+    "powder",
+    "powdered",
+    "flour",
+    "flours",
+    "cornmeal",
+    "masa",
+    "atta",
+    "semolina",
+    "bread",
+    "noodle",
+    "noodles",
+    "pasta",
+    "cookies",
+    "crackers",
+    "chips",
+    "cakes",
+    "cake",
+    "candy",
+    "chocolate",
+    "milk",
+    "tea",
+    "soup",
+    "syrup",
+    "vinegar",
+    "oil",
+    "starch",
+    "protein powder",
+    "extract",
+    "treats",
+    "krispies",
+    "granola",
+    "popped",
+    "ready to eat",
+    "ready-to-eat",
+    "cooked rice",
+    "soft-baked",
+    "soft baked",
+    "shredded wheat",
+    "面粉",
+    "米粉",
+    "熟饭",
+    "饮料",
+    "meal",
+    "meals",
+    "cooked"
+  ],
+  "excluded_categories": [
+    "Pasta & Noodles",
+    "Breads & Bakery",
+    "Rice Dishes",
+    "Snack Foods",
+    "Candy & Chocolate",
+    "Beverages",
+    "Vegetables",
+    "Soups, Stocks & Broths",
+    "Breakfast & Cereal Bars",
+    "Cold Cereal",
+    "Cold Cereals",
+    "Granola",
+    "Muesli"
+  ],
+  "nonfood": [
+    "pet",
+    "bird",
+    "feed",
+    "planting",
+    "cat litter",
+    "wheatgrass",
+    "barley grass",
+    "supplement",
+    "candle",
+    "soap",
+    "shampoo",
+    "incense",
+    "mechanical components",
+    "grow mushrooms",
+    "mushroom growing",
+    "mushroom substrate",
+    "propagate mushroom"
+  ],
+  "ambiguous_forms": [
+    "blend",
+    "mixed",
+    "mix",
+    "mixture",
+    "multigrain",
+    "multi-grain",
+    "variety",
+    "assorted",
+    "bundle",
+    "kit",
+    "seasoned",
+    "flavored",
+    "flavoured",
+    "masala",
+    "pilaf",
+    "saffron",
+    "risotto",
+    "enriched",
+    "fortified",
+    "parboiled",
+    "precooked",
+    "pre-cooked",
+    "instant",
+    "microwavable",
+    "roasted",
+    "toasted",
+    "polenta",
+    "with",
+    "blended",
+    "malt",
+    "malted",
+    "sprouted",
+    "muesli",
+    "pre-gelatinized",
+    "pregelatinized",
+    "bulgur"
+  ],
+  "processing_claims": [
+    "bulgur",
+    "enriched",
+    "fortified",
+    "parboiled",
+    "precooked",
+    "pre-cooked",
+    "instant",
+    "roasted",
+    "toasted",
+    "seasoned",
+    "flavored",
+    "flavoured",
+    "malt",
+    "malted",
+    "sprouted",
+    "pre-gelatinized",
+    "pregelatinized"
+  ],
+  "identity_prefixes": [
+    "this product is",
+    "product:",
+    "this is"
+  ],
+  "identity_negations": [
+    "not",
+    "no",
+    "without",
+    "不包含",
+    "不含",
+    "不是",
+    "并非"
+  ],
+  "composition_prefixes": [
+    "ingredients",
+    "ingredient",
+    "single ingredient",
+    "only ingredient",
+    "one ingredient",
+    "contains only",
+    "made from only",
+    "made of only",
+    "100%",
+    "100 percent",
+    "nothing else is added, just",
+    "made with"
+  ],
+  "composition_end_prefixes": [
+    "directions",
+    "directionsdirections",
+    "cooking directions",
+    "to cook",
+    "serve with",
+    "store in",
+    "store dry",
+    "store at",
+    "storage instructions",
+    "cooking instructions",
+    "instructions",
+    "nutrition facts",
+    "how to cook",
+    "allergens",
+    "may contain",
+    "manufactured in"
+  ],
+  "percentage_quality_prefixes": [
+    "natural",
+    "organic",
+    "whole",
+    "certified",
+    "premium",
+    "satisfaction",
+    "money",
+    "edible",
+    "Italian",
+    "authentic",
+    "quality"
+  ],
+  "composition_modifiers": [
+    "organic",
+    "pure",
+    "whole",
+    "grain",
+    "grains",
+    "brown",
+    "white",
+    "red",
+    "black",
+    "yellow",
+    "blue",
+    "long",
+    "short",
+    "medium",
+    "hulled",
+    "pearled",
+    "cracked",
+    "rolled",
+    "steel",
+    "cut",
+    "quick",
+    "old",
+    "fashioned",
+    "flakes",
+    "kernels",
+    "groats",
+    "berries",
+    "milled",
+    "jasmine",
+    "gluten",
+    "free",
+    "certified",
+    "natural",
+    "raw"
+  ],
+  "policy": {
+    "include": "Affirmative sold identity and scheme A form, no unresolved material counter-evidence; complete composition disclosure is recorded separately.",
+    "weak_evidence": "pending",
+    "unknown_composition": "included only with affirmative identity/form and no unresolved material counter-evidence; never verified",
+    "material_metadata_conflict": "pending",
+    "multiple_complete_composition_declarations": "Inspect every sentence; differing declarations remain pending.",
+    "dedicated_ingredient_fields": "Inspect the complete list; unmarked continuation lines remain components, not independent repeated declarations.",
+    "specific_crop_categories": "Discovery categories are not exempt from crop-identity conflicts.",
+    "explicit_identity_counter_evidence": "Inspect every sentence; conflicting outside-scope or negated identity remains pending.",
+    "exact_duplicate_metadata": "merge_references",
+    "no_reviews": "retain",
+    "review_statistics_for_selection": "forbidden",
+    "model_input_status": "not_released",
+    "generic_millet": "Unspecified millet subtype; do not infer botanical species or collapse known different millet types.",
+    "declaration_evidence": "Source statements only; not independently verified ingredients or supply-chain facts."
+  },
+  "catalog_kind": "identity_with_composition_disclosure",
+  "identity_forms": [
+    "raw",
+    "dry",
+    "dried",
+    "uncooked",
+    "whole grain",
+    "whole-grain",
+    "long grain",
+    "long-grain",
+    "short grain",
+    "short-grain",
+    "medium grain",
+    "medium-grain",
+    "grain",
+    "grains",
+    "kernels",
+    "groats",
+    "berries",
+    "hulled",
+    "pearled",
+    "cracked",
+    "rolled",
+    "steel cut",
+    "steel-cut",
+    "quick oats",
+    "flakes",
+    "quick 1 minute oats",
+    "grits",
+    "milled",
+    "flattened rice",
+    "米粒",
+    "麦粒",
+    "碾白",
+    "精米",
+    "燕麦片",
+    "old fashioned oats",
+    "old-fashioned oats"
+  ],
+  "explicit_sale_shapes": {
+    "cut_or_grits": [
+      "steel cut",
+      "steel-cut",
+      "grits"
+    ],
+    "flaked": [
+      "rolled",
+      "flakes",
+      "flaked"
+    ]
+  },
+  "solid_sale_shapes": [
+    "kernel",
+    "kernels",
+    "groats",
+    "berries",
+    "rolled",
+    "steel cut",
+    "steel-cut",
+    "flakes",
+    "flaked",
+    "grits",
+    "flattened rice",
+    "米粒",
+    "麦粒",
+    "燕麦片"
+  ],
+  "outside_objects": [
+    "sauce",
+    "sauces",
+    "seasoning",
+    "seasonings",
+    "honey",
+    "tempeh",
+    "starter",
+    "trays",
+    "rice paper",
+    "toppers",
+    "decorations",
+    "candy corn",
+    "sport beans",
+    "coffee",
+    "cloves",
+    "gravy",
+    "sour cream",
+    "sunflower seeds",
+    "bars",
+    "pastry",
+    "pastries",
+    "granola",
+    "puffed",
+    "crispy",
+    "popped",
+    "sugar",
+    "tea",
+    "corn cans",
+    "masala",
+    "seasoned",
+    "flavored",
+    "flavoured",
+    "grain spawn",
+    "cauliflower rice",
+    "broccoli rice",
+    "riced cauliflower",
+    "riced broccoli",
+    "mushroom spawn",
+    "preserved lemons",
+    "lemons naturally preserved",
+    "flavoring",
+    "flavouring"
+  ],
+  "flavored_coating_pattern": "\\bflavors? of\\b.*\\bcoating\\b",
+  "non_grain_ingredients": [
+    "salt",
+    "sugar",
+    "honey",
+    "oil",
+    "butter",
+    "almond",
+    "almonds",
+    "pecan",
+    "pecans",
+    "sesame",
+    "seaweed",
+    "egg",
+    "eggs",
+    "cinnamon",
+    "vanilla",
+    "flavor",
+    "flavours",
+    "flavors",
+    "spices",
+    "milk",
+    "raisin",
+    "raisins"
+  ],
+  "grain_parents": {
+    "pearl_millet": "millet",
+    "finger_millet": "millet",
+    "barnyard_millet": "millet",
+    "foxtail_millet": "millet",
+    "little_millet": "millet",
+    "kodo_millet": "millet",
+    "proso_millet": "millet",
+    "fonio": "millet"
+  },
+  "partial_composition_prefixes": [
+    "made with"
+  ],
+  "partial_composition_patterns": [
+    "\\bingredients like\\b",
+    "\\bsweetened with\\b",
+    "\\bmade with\\b"
+  ],
+  "outside_form_statements": [
+    "canned vegetables",
+    "canned corn",
+    "toaster pastry",
+    "canned in water"
+  ],
+  "short_millet_names": {
+    "foxtail": "foxtail_millet",
+    "kodo": "kodo_millet",
+    "little": "little_millet",
+    "barnyard": "barnyard_millet",
+    "proso": "proso_millet"
+  },
+  "composition_states": [
+    "not_disclosed",
+    "declared_single_grain",
+    "declared_outside_scope",
+    "unresolved",
+    "conflict"
+  ],
+  "reviewed_decisions": {
+    "B001E5E04M": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c7c13f6665c10428142f5db398e8ce4d292409a0369d978efbb06a0a4d6d794a",
+      "source_line": 7200,
+      "basis": "actual_added_components: Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Pack of 3 (total 24 oz)"
+        },
+        {
+          "field": "features[1]",
+          "text": "Vine-ripened tomatoes, peas, carrots, corn, and jalapeno, all dried to perfection"
+        },
+        {
+          "field": "features[2]",
+          "text": "Absolutely nothing added; no sulfur or preservatives"
+        },
+        {
+          "field": "features[3]",
+          "text": "Wholesome and fiery snack; adds intense flavor to soups, eggs, and baked potatoes"
+        },
+        {
+          "field": "features[4]",
+          "text": "Gluten-free mix hand-picked at peak of ripeness; produced in the United States"
+        },
+        {
+          "field": "description[0]",
+          "text": "We don’t fool with Mother Nature our products are exactly what they say they are absolutely nothing is added. We do not add fat, sweeteners, sulfur, sulfites, preservatives, colorings. We do not add anything. All we do is take out the water leaving intense flavor, good color and great nutrients."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B09S5KBYSP": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "7c64c97f551a242b2198e443c9de2c6c85ac7b1ff8221a2606b2f8c262e76596",
+      "source_line": 34836,
+      "basis": "non_grain_or_prepared_sale: Jovvily Nutritional Yeast Flakes - 2lb - Popcorn - Soups - Pastas. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Jovvily Nutritional Yeast Flakes - 2lb - Popcorn - Soups - Pastas"
+        },
+        {
+          "field": "features[0]",
+          "text": "Jovvily Nutritional Yeast Flakes, also known as Nooch"
+        },
+        {
+          "field": "features[1]",
+          "text": "Delicious creamy and cheesy flavor"
+        },
+        {
+          "field": "features[2]",
+          "text": "Great addition to popcorn, soups, pastas, and more"
+        },
+        {
+          "field": "features[3]",
+          "text": "Delicious ingredients to help you live simply"
+        },
+        {
+          "field": "features[4]",
+          "text": "Proudly packaged in Utah, USA"
+        },
+        {
+          "field": "description[0]",
+          "text": "Our products are made from pure food-grade ingredients, without added fillers, additives, or preservatives. Whether cooking, cleaning, baking, or practicing self-care, our extensive selection is sure to help get the job done."
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Cheese"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00J4FS0AE": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c77ea027e75abe7d0b62e6c916c466c5149d007f4fa2248ec9568407bc15f500",
+      "source_line": 54299,
+      "basis": "non_grain_or_prepared_sale: Delimex White Meat Chicken Corn Taquitos Frozen Snacks, 23 ct Box. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Delimex White Meat Chicken Corn Taquitos Frozen Snacks, 23 ct Box"
+        },
+        {
+          "field": "features[0]",
+          "text": "One 23 ct box of Delimex Chicken Taquito Frozen Snacks with White Meat"
+        },
+        {
+          "field": "features[1]",
+          "text": "Delimex Chicken Taquito Frozen Snacks with White Meat are made from America's #1 taquito brand"
+        },
+        {
+          "field": "features[2]",
+          "text": "Taquitos make a perfect appetizer for parties"
+        },
+        {
+          "field": "features[3]",
+          "text": "Tasty white meat chicken rolled corn taquitos"
+        },
+        {
+          "field": "features[4]",
+          "text": "Taquitos with spices and seasoning for delicious flavor"
+        },
+        {
+          "field": "features[5]",
+          "text": "Store in the freezer"
+        },
+        {
+          "field": "features[6]",
+          "text": "Microwaveable for quick and easy preparation"
+        },
+        {
+          "field": "description[0]",
+          "text": "Delimex Chicken Taquito Frozen Snacks with White Meat are made by America's #1 taquito brand to deliver that authentic Mexican flavor your family craves. Serve up these quick and easy microwaveable taquitos as fun after school snacks for the kids, or make them a family meal on a busy weeknight. Delimex frozen taquitos also make a great party food when you're entertaining guests. Each of these white meat chicken taquitos is wrapped in a corn tortilla for delicious flavor. Simply microwave the easy appetizer for 1 minute and enjoy. Keep each 23 count box of Delimex Chicken Taquito Frozen Snacks with White Meat frozen to lock in flavors."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B0776XQFKM": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "954122b383d665731a6e082b43c2898e33b0e10e8e64fc07b14e7c3c829430be",
+      "source_line": 87411,
+      "basis": "non_grain_or_prepared_sale: Basil Hayden Dark Rye Whiskey, 750 ml, 80 Proof. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Basil Hayden Dark Rye Whiskey, 750 ml, 80 Proof"
+        },
+        {
+          "field": "features[0]",
+          "text": "Basil Hayden Dark Rye Whiskey is unlike any other rye before it: the mash bill starts with traditional Kentucky rye grain, then Canadian rye from our award-winning Alberta distillery is layered in - it is finally finished with a touch of California Port"
+        },
+        {
+          "field": "features[1]",
+          "text": "Beautiful deep, rich amber color with ruby undertones"
+        },
+        {
+          "field": "features[2]",
+          "text": "Taste a wonderful and complex blend of caramel, dried fruit and oak with back notes of spice and a round mouthfeel"
+        },
+        {
+          "field": "features[3]",
+          "text": "Created by Master Distiller Frederick “Booker” Noe to showcase the depth and breadth of what a bourbon could be, Dark Rye offers something to love for everyone, from whiskey lovers to those taking their first sip"
+        },
+        {
+          "field": "features[4]",
+          "text": "Silver Medal Winner at the 2020 International Wine and Spirits Competition"
+        },
+        {
+          "field": "description[0]",
+          "text": "Basil Hayden Dark Rye pushes the bounds of what a rye whiskey can be through a harmonious combination of three distinct liquid profiles. The mash bill starts with traditional Kentucky rye grain, then Canadian rye from our award-winning Alberta distillery is layered in. Finally, the whiskey is finished with a touch of California Port. Kentucky rye gives Basil Hayden Dark Rye a firm base of spice, rich oak, dried fruit and molasses, while Canadian rye accentuates the depth of the dried fruit adding a more substantial and viscous mouthfeel. The California Port adds complementary notes of juicy, ripe fruit and gives the bourbon its trademark ruby hue. The subtle nuances from each part of the mash bill come together flawlessly, resulting in a rye bourbon that takes you far beyond the expected. Basil Hayden Dark Rye is ideally served in light aperitif-style sipping cocktails that complement the spice and versatility of the liquid. It can also be enjoyed neat or on the rocks."
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Caramel"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B006YH3VEA": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c5e60c729a59f4b7c6a6ed3e120482162b4037dfbcd680f03076236daba57c96",
+      "source_line": 96760,
+      "basis": "non_grain_or_prepared_sale: Nagatanien OTONA NO FURIKAKE Mini #1 | Rice Seasoning | 37.6g ( 20 Pcs ) [ Japanese Import ]. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Nagatanien OTONA NO FURIKAKE Mini #1 | Rice Seasoning | 37.6g ( 20 Pcs ) [ Japanese Import ]"
+        },
+        {
+          "field": "features[0]",
+          "text": "Furikake is a dried mixed seasoning sprinkled over rice."
+        },
+        {
+          "field": "features[1]",
+          "text": "5 flavor are Layu, Sukiyaki, Nori Wasabi, Aojiso hijiki, Yaki Sake"
+        },
+        {
+          "field": "features[2]",
+          "text": "There are 4 of small pack of each 5 flavor, total 20 of small pack are included 1 package."
+        },
+        {
+          "field": "features[3]",
+          "text": "Net Wt. 1.23 Oz"
+        },
+        {
+          "field": "description[0]",
+          "text": "It is a sprinkle of various tastes. Comes with five flavors: Yakizake packed with delicious salmon, Aojiso and Hijiki with refreshing green shiso mint and seaweed, Nori Wasabi with seaweed spiced with wasabi, Tarako (Cod Roe), and Okaka Goma with bonito and healthy sesame seeds."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00Y9KYVUW": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "0d2b054c5ec180f5af50753267ff0bd731debf11ece539bc2734b9dd3071a629",
+      "source_line": 101539,
+      "basis": "non_grain_or_prepared_sale: Japan Cheese in Rice Cracker Rolled By Laver 550g Norimaki Arare. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Japan Cheese in Rice Cracker Rolled By Laver 550g Norimaki Arare"
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Cheese"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B001F8FO3O": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "0ef82f6e5a0aa440380c09f7905ec423cebdb1ff7ae2a0bb5e510e3c873d58b7",
+      "source_line": 118145,
+      "basis": "grain_plus_non_grain_set: Popcorn Lovers/Night At The Movies Gift Stack. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Popcorn Lovers/Night At The Movies Gift Stack"
+        },
+        {
+          "field": "features[0]",
+          "text": "Enjoying a movie without crisp, finger-licking-good popcorn? It just isn't possible. That's why we created this adorable gift that's perfect for the movie lover in your life!"
+        },
+        {
+          "field": "features[1]",
+          "text": "Included are 3 sophisticated seasonings: sweet & salty kettlecorn seasoning, white cheddar seasoning, and asiago & cracker pepper seasoning; white gold popcorn kernels; ruby red popcorn kernels; and 2 vintage popcorn boxes!"
+        },
+        {
+          "field": "features[2]",
+          "text": "The perfect gift for anyone who loves popcorn and the movies, look no further for a tasty gift that they'll appreciate long after the curtain has closed!"
+        },
+        {
+          "field": "features[3]",
+          "text": "100% Satisfaction Guarantee for you and your recipient."
+        },
+        {
+          "field": "features[4]",
+          "text": "Award-Winning Gift Baskets with Award-Winning Gourmet Foods."
+        },
+        {
+          "field": "description[0]",
+          "text": "Enjoying a movie without crisp, finger-licking-good popcorn? It just isn't possible. That's why we created this adorable gift that's perfect for the movie lover in your life! It supplies them with gourmet ingredients, like sophisticated seasonings and all-natural kernels, so that they can make their favorite snack (and movie night) better than ever."
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Cheddar-Cheese"
+        }
+      ],
+      "review_category": "grain_plus_non_grain_set"
+    },
+    "B01MPXDTAW": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "6e9add410796be7183a5b9b718899209ac1b76f35d69dd418626352c6f455cba",
+      "source_line": 123597,
+      "basis": "non_grain_or_prepared_sale: Gourmet Habanero Pork Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Gourmet Habanero Pork Tamales - One Dozen"
+        },
+        {
+          "field": "features[0]",
+          "text": "Hand-rolled in real corn husks at a USDA Inspected facility"
+        },
+        {
+          "field": "features[1]",
+          "text": "No Lard"
+        },
+        {
+          "field": "features[2]",
+          "text": "No MSG"
+        },
+        {
+          "field": "features[3]",
+          "text": "Gluten-Free"
+        },
+        {
+          "field": "features[4]",
+          "text": "Boil-in Bag"
+        },
+        {
+          "field": "description[0]",
+          "text": "Want a bigger kick in your pork tamale? These Spicy Tamales are for you. They're also a great gift for all of your heat-loving friends! Both Habanero and Ancho Chilis. Spicy Factor: 8 on a scale of 1 to 10"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B01NCT6B7W": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "ac469dde8ab3e9e3d5d50d2d119587a6012b91be23b0a5ef88b7dd98e44b76cc",
+      "source_line": 129756,
+      "basis": "non_grain_or_prepared_sale: Slofoodgroup -Ceylon Cinnamon Sticks - 1 Lb - Pure Ceylon Cinnamon Quills -5 Inch Cut Cinnamon Spice from Sri Lanka, True Cinnamon - Cinnamomum Verum. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Slofoodgroup -Ceylon Cinnamon Sticks - 1 Lb - Pure Ceylon Cinnamon Quills -5 Inch Cut Cinnamon Spice from Sri Lanka, True Cinnamon - Cinnamomum Verum"
+        },
+        {
+          "field": "features[0]",
+          "text": "REAL CEYLON CINNAMON - this is not Cassia Cinnamon or more common varieties of cinnamon, information about this product is provided to assist in your buying decision and to help understand what Ceylon cinnamon is and how it differs from common household cinnamons. This information is solely provided to help consumers understand the product and realistic expectations"
+        },
+        {
+          "field": "features[1]",
+          "text": "EASY TO BREAK -the quills are soft and delicate and should break easy and pale tan to light brown in color. The fragrance is soft delicate. Each quill is hand rolled and graded according to its width in diameter. The quills are made from the bark of a small evergreen trees hence some people describe as tasting like wood, It Is Wood. Ceylon cinnamon Quills once broken gives off aromatic notes that are sweet and can be described as light, floral, with hints of citrus as wisps of cinnamon"
+        },
+        {
+          "field": "features[2]",
+          "text": "LIGHT FRUITY AND FLORAL - unlike cassia cinnamon Ceylon cinnamon is lighter it is not hot, spicy and does not have a peppery kick that is associated with more common cinnamons. Each Cinnamon Quill measure 5 inch in length. Ceylon cinnamon is commonly referred to as Mexican Cinnamon or True Cinnamon. It is lighter in flavor and aroma than other varieties of cinnamon and plays a supporting role in recipes"
+        },
+        {
+          "field": "features[3]",
+          "text": "AROMATIC WHEN BROKEN -to get a true sense of the aroma of Sri Lankan cinnamon break and crumble by hand. This is the best way to get a true sense of the flavor and aroma. We recommend grinding and using with fresh fruits, berries, breakfast pastries, yogurt, oatmeal, curry mixes, savory spice mixes etc. It is a complimentary cinnamon and not intended to be overpowering"
+        },
+        {
+          "field": "features[4]",
+          "text": "ALL NATURAL - true Cinnamon that is packed and sealed for freshness and kosher certified by EarthKosher. It is naturally lower in coumarin content and a main factor in why many people consume it. Try real Ceylon cinnamon today your taste buds will thank you"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00HC74NZC": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "98ce1a698cd6356485f09ad4290b34c51f0f7602d90ec3674a8b961cb50dff17",
+      "source_line": 143970,
+      "basis": "actual_added_components: Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Cherry and Chia, 2.6 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Cherry and Chia, 2.6 Ounce (Pack of 12)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Rolled oats high fiber and protein"
+        },
+        {
+          "field": "features[1]",
+          "text": "Vegan, non-GMO ingredients"
+        },
+        {
+          "field": "features[2]",
+          "text": "10% of our profits go to charity"
+        },
+        {
+          "field": "features[3]",
+          "text": "On-the-go convenience - just add hot water or milk and enjoy"
+        },
+        {
+          "field": "features[4]",
+          "text": "Great for your CAMPING, FISHING, HIKING, etc Fun Days - READY TO EAT IN A CUP MEAL."
+        },
+        {
+          "field": "description[0]",
+          "text": "Straw Propeller Gourmet Foods is taking oatmeal and muesli to new heights. Straw Propeller was started by an active family that needed healthy and convenient eating options for any adventure they faced. Our on-the-go cups make it easy for you to take a healthy meal with you anywhere life leads you. Clean eating has never been more enjoyable than with our innovative flavors that will propel you through your day. Find your favorite flavor and you'll know why we say. We're spreading happiness one cup at a time."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B08JN8G999": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "759c7813362fd0093400f5868c6d34a9e2ba9c9de49193c4b3528937c18b40ce",
+      "source_line": 151415,
+      "basis": "non_grain_or_prepared_sale: Don Ponchos - Ceilán Canela Sticks/Ceylon Cinnamon Sticks 1lb. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Don Ponchos - Ceilán Canela Sticks/Ceylon Cinnamon Sticks 1lb"
+        },
+        {
+          "field": "features[0]",
+          "text": "REAL CEYLON CINNAMON - this is not Cassia Cinnamon or more common varieties of cinnamon, information about this product is provided to assist in your buying decision and to help understand what Ceylon cinnamon is and how it differs from common household cinnamons. This information is solely provided to help consumers understand the product and realistic expectations"
+        },
+        {
+          "field": "features[1]",
+          "text": "EASY TO BREAK -the quills are soft and delicate and should break easy and pale tan to light brown in color. The fragrance is soft delicate. Each quill is hand rolled and graded according to its width in diameter. The quills are made from the bark of a small evergreen trees hence some people describe as tasting like wood, It Is Wood. Ceylon cinnamon Quills once broken gives off aromatic notes that are sweet and can be described as light, floral, with hints of citrus as wisps of cinnamon"
+        },
+        {
+          "field": "features[2]",
+          "text": "LIGHT FRUITY AND FLORAL - unlike cassia cinnamon Ceylon cinnamon is lighter it is not hot, spicy and does not have a peppery kick that is associated with more common cinnamons. Each Cinnamon Quill measure 5 inch in length. Ceylon cinnamon is commonly referred to as Mexican Cinnamon or True Cinnamon. It is lighter in flavor and aroma than other varieties of cinnamon and plays a supporting role in recipes"
+        },
+        {
+          "field": "features[3]",
+          "text": "AROMATIC WHEN BROKEN -to get a true sense of the aroma of Sri Lankan cinnamon break and crumble by hand. This is the best way to get a true sense of the flavor and aroma. We recommend grinding and using with fresh fruits, berries, breakfast pastries, yogurt, oatmeal, curry mixes, savory spice mixes etc. It is a complimentary cinnamon and not intended to be overpowering"
+        },
+        {
+          "field": "features[4]",
+          "text": "ALL NATURAL - true Cinnamon that is packed and sealed for freshness. It is naturally lower in coumarin content and a main factor in why many people consume it. Try real Ceylon cinnamon today your taste buds will thank you"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B0045TXNRE": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "34b5008bcb43b5ce6fffb6dca15f3e85cd67dd9b733d33b3e6b71dae5c332681",
+      "source_line": 160153,
+      "basis": "non_grain_or_prepared_sale: Tanka Wild Snack Stick Spicy, 1-Ounce (Pack of 24). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Tanka Wild Snack Stick Spicy, 1-Ounce (Pack of 24)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Only 70 calories, 5 grams of lean protein, and made from whole food ingredients including peppers, tart-sweet cranberries and prairie-raised buffalo"
+        },
+        {
+          "field": "features[1]",
+          "text": "Tanka Meat Sticks are more tender and moist than beef jerky and is the perfect healthy snack for anyone on the go"
+        },
+        {
+          "field": "features[2]",
+          "text": "This high protein snack fits nearly every diet lifestyle and is Certified Gluten-Free, nitrites-free, MSG-free, hormone-free, dairy-free, soy-free and low-fat"
+        },
+        {
+          "field": "features[3]",
+          "text": "Our products are 100% Natural and proudly Made in the USA based on the traditional Native American Lakota recipe for aasna or pemmican"
+        },
+        {
+          "field": "features[4]",
+          "text": "Stock up and prepare for the adventure ahead with this box of 8 protein packed 1 ounce buffalo sticks"
+        },
+        {
+          "field": "description[0]",
+          "text": "Blazin’ hot from a blend of habaneros, jalapenos, red and black pepper, Tanka Wild Snack Sticks Spicy combine the goodness of prairie-raised buffalo and tart-sweet cranberries with 100% Native American-grown and harvested Minnesota cultivated wild rice in a convenient, eat-as-you-go snack stick. A great alternative to the usual processed meat sticks, this unconventional combination of bison meat, fruit, peppers and wild rice gives the spicy-sweet Tanka Wild Snack Stick a little crunch with a slightly nutty flavor. Our wild rice is non-GMO, and contains no artificial flavors or colors. Wild rice is a whole grain that is high in fiber, antioxidants and phosphorus. Based on a traditional Lakota recipe for wasna or pemmican, Tanka Wild Snack Sticks Spicy are 100% natural, gluten-free, nitrites-free, MSG-free, hormone-free, dairy-free, soy-free and only 70 calories. Named for the Lakota word for \"outstanding\" or \"great,\" Tanka Wild Snack Sticks offer powerful protein for your life journey."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00PCCHI7O": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "039b2ddce7851980b1b583ff9170074114697b8da5ae1cb8b37943a6159bf6e8",
+      "source_line": 169619,
+      "basis": "non_grain_or_prepared_sale: Pirate's Brand Tings, Original Crunchy Corn Sticks, 6 Ounce. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Pirate's Brand Tings, Original Crunchy Corn Sticks, 6 Ounce"
+        },
+        {
+          "field": "features[0]",
+          "text": "Crafted from the finest milled American corn, these crunchy corn sticks are sure going to take center stage"
+        },
+        {
+          "field": "features[1]",
+          "text": "All natural, vegan, and kosher"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans fat, gluten, and cholesterol free"
+        },
+        {
+          "field": "features[3]",
+          "text": "Contains natural yeast"
+        },
+        {
+          "field": "features[4]",
+          "text": "Great snack to share with friends and family"
+        },
+        {
+          "field": "description[0]",
+          "text": "Enjoy this great, delicious snack with your family--every \"ting\" is going to be great while munching on this tasty snack. At Pirate Brands, we have been creating treasures since 1987 with the belief you shouldn’t have to “snackrifice” taste for goodness. We’ve created products for the whole family that are baked AND delicious. Pirate Brands snacks are free from fryers and ingredients you can’t pronounce. So hoist a sail and join the crew! Glad to have you aboard. No need for a cheat sheet, the formula is simple. Pirate Brands Smart Puffs are made from the finest milled American corn and tastiest Wisconsin cheddar. Smart Puffs are a genius snack, baked to perfection and are free from artificial colors, flavors or preservatives with only the tastiest cheddar. Certified gluten free and Kosher, Smart Puffs are the perfect snack for the genius in you. Real tasty ingredients that are easy to pronounce and even easier to enjoy! Pirate Brand’s Smart Puffs make for a snack that’s a real treasure!"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B01MDRG9EE": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "b0b42bf86751b7663776a4764434bb75b0168131c9677d453776d36276e7640b",
+      "source_line": 195519,
+      "basis": "non_grain_or_prepared_sale: Gourmet Pork Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Gourmet Pork Tamales - One Dozen"
+        },
+        {
+          "field": "features[0]",
+          "text": "2 pounds of Hand-rolled tamales in real corn husks at a USDA Inspected facility"
+        },
+        {
+          "field": "features[1]",
+          "text": "No Lard"
+        },
+        {
+          "field": "features[2]",
+          "text": "No MSG"
+        },
+        {
+          "field": "features[3]",
+          "text": "Gluten-Free"
+        },
+        {
+          "field": "features[4]",
+          "text": "Boil-in Bag"
+        },
+        {
+          "field": "description[0]",
+          "text": "Buy one or buy several dozen of these Pork Tamales -- with just the right amount of spicy-ness -- for gifts, holiday parties, or just your own family holiday tradition. Tamales are becoming as much a sign of the holidays as turkey and cranberries. Spicy Factor: 3 on a scale of 1 to 10"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00DUW76HU": {
+      "status": "pending",
+      "reason": "reviewed_scope_counter_unresolved",
+      "metadata_sha256": "736a76684c2f1584595187ae47da79b497ca325780a6117b5c15a4f278a76640",
+      "source_line": 198605,
+      "basis": "Microwaveable Kettle Korn: sold processing is unresolved; brand kernel history does not establish an A dry-kernel sale.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Orville Redenbacker's Pop Up Bowl Kettle Korn Gourmet Popping Corn- 6 CT"
+        },
+        {
+          "field": "features[0]",
+          "text": "Orville Redenbacher Microwaveable Popcorn"
+        },
+        {
+          "field": "features[1]",
+          "text": "Pop up bowl"
+        },
+        {
+          "field": "features[2]",
+          "text": "Kettle Korn"
+        },
+        {
+          "field": "features[3]",
+          "text": "Enjoy as a snack at any time"
+        },
+        {
+          "field": "features[4]",
+          "text": "From sports to movies, Orville is a great addition to any party"
+        },
+        {
+          "field": "description[0]",
+          "text": "Orville Redenbacher popcorn is simply made and passionately created. Orville Redenbacher made it his life's work to develop the perfect kernel decades ago, never compromising in his quest to perfect this simple little grain. This commitment to quality makes Orville Redenbacher's Gourmet Popping Corn the number one popcorn and the favorite snack for many families. About ConAgra Foods: Orville Redenbacher's is a member of the ConAgra Foods family. Our more than seventy brands include favorites such as Pam, Healthy Choice, Wesson, Swiss Miss, Rotel, Peter Pan, Marie Callender's, Slim Jim, Hebrew National, Wolf Brand Chili, Rosarita, Egg Beaters, Chef Boyardee, and more, and are in ninety nine percent of US households."
+        }
+      ],
+      "review_category": "scope_counter_unresolved"
+    },
+    "B0BMPP82HN": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "7fb390ba916f3d8da5a5f863cd8f7a7020b0087b8d15d81c69a5823f8d436e52",
+      "source_line": 201898,
+      "basis": "grain_plus_non_grain_set: 卫龙辣条礼包魔芋爽亲嘴烧大面筋Weilong Spicy Bar Gift Bag 22/43/64 bags零食礼包, casual snacks, hot bar gift bag Konjak, Weilong big gluten kiss and burn, delicious food (22 bags). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "卫龙辣条礼包魔芋爽亲嘴烧大面筋Weilong Spicy Bar Gift Bag 22/43/64 bags零食礼包, casual snacks, hot bar gift bag Konjak, Weilong big gluten kiss and burn, delicious food (22 bags)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Product name: Weilong Hot Bar Gift Bag"
+        },
+        {
+          "field": "features[1]",
+          "text": "Gift package: Konjak, kiss, big gluten, dry rice, bean skin, etc"
+        },
+        {
+          "field": "features[2]",
+          "text": "Package specification: about 300g for 22 packages, about 700g for 43 packages, and about 1060g for 64 packages"
+        },
+        {
+          "field": "features[3]",
+          "text": "Production date: recent (packing date is production date) Shelf life :120 days How to eat: Open the bag to eat"
+        },
+        {
+          "field": "features[4]",
+          "text": "Storage condition: room temperature, dry place"
+        },
+        {
+          "field": "description[0]",
+          "text": "Wei Long Kisses and Braises Konjac, which is cool, strong, hot and delicious, with both hot and sweet taste Package specification: about 300g for 22 packages, about 700g for 43 packages, and about 1060g for 64 packages Production date: latest (packaging date is production date) Shelf life: 120 days How to eat: Open the bag and eat Storage conditions: normal temperature, dry place"
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Spicy,Sweet"
+        }
+      ],
+      "review_category": "grain_plus_non_grain_set"
+    },
+    "B01MCYRZ9V": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "92d2344916cd27de6210db88ad2a136ad6afbb888692e7fe2cf909dc1bb66883",
+      "source_line": 204240,
+      "basis": "non_grain_or_prepared_sale: Gourmet Chicken Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Gourmet Chicken Tamales - One Dozen"
+        },
+        {
+          "field": "features[0]",
+          "text": "Hand-rolled in real corn husks at a USDA Inspected facility"
+        },
+        {
+          "field": "features[1]",
+          "text": "No Lard"
+        },
+        {
+          "field": "features[2]",
+          "text": "No MSG"
+        },
+        {
+          "field": "features[3]",
+          "text": "Gluten-Free"
+        },
+        {
+          "field": "features[4]",
+          "text": "Boil-in Bag"
+        },
+        {
+          "field": "description[0]",
+          "text": "These Chicken Tamales with Tomatillos, Poblano peppers, and Jalapenos are a favorite for gifts, holiday parties, or just your own family holiday tradition. Spicy Factor: 5 on a scale of 1 to 10"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B01H99SJUW": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "65c500788bce85c77ae4552551b0e45ca433c1bd7c3889c55c22f9b7f12376f2",
+      "source_line": 206815,
+      "basis": "actual_added_components: Poppin Popcorn Chicago Style (16.00 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn Chicago Style (16.00 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "GMO Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "A delicious mixture of sweet and salty! A Midwest Favorite! We perfected this flavor by combining our delicious gourmet buttery caramel popcorn and our cheesy cheddar popcorn to make the perfect snack! Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B07RY2FFBJ": {
+      "status": "pending",
+      "reason": "reviewed_scope_counter_unresolved",
+      "metadata_sha256": "e0f15b870500455289c5aab25e2f5a5fdf4f527efb9df8699b7a89833ae3f4e3",
+      "source_line": 216587,
+      "basis": "Kettle Corn is described as sweet, salty and crisp, without establishing an A dry-kernel sale; preserve processing uncertainty.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn Kettle Corn (17.00 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "GMO Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "Lightly sweet, a little salty, perfectly crisp and ready for every occasion, a delicious American tradition for 200 years. Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "scope_counter_unresolved"
+    },
+    "B07QJVMD96": {
+      "status": "pending",
+      "reason": "reviewed_scope_counter_unresolved",
+      "metadata_sha256": "feb0e344ef1819bb0087622bcd96f6f76309d809d483034e96f36a61cca34a2a",
+      "source_line": 236161,
+      "basis": "Title Mushroom kernels/Unpopped and details Flavor Caramel leave the flavor/form counter unresolved; no added ingredient is invented.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "TableTop King 50 lb. Extra Large Mushroom Popcorn Kernels"
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Caramel"
+        }
+      ],
+      "review_category": "scope_counter_unresolved"
+    },
+    "B095PTNQTB": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c6124a0ec335041516f71e1dcb2494b9277ea524738ffc2ad813903cc03209b8",
+      "source_line": 239129,
+      "basis": "non_grain_or_prepared_sale: SPICY ORGANIC Coriander Seeds - Pure USDA Organic - Non-GMO Coriander Seeds Whole - 16 Oz. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "SPICY ORGANIC Coriander Seeds - Pure USDA Organic - Non-GMO Coriander Seeds Whole - 16 Oz"
+        },
+        {
+          "field": "features[0]",
+          "text": "100% ORGANIC: Organic coriander seeds, certified organic by the Texas Department of Agriculture. Coriander is a very aromatic spice with a sweet, mild, and nutty flavor, which is best known as the major component of ground coriander. The spice is made from the dried fruit (called coriander seeds) of the plant Coriander sativum."
+        },
+        {
+          "field": "features[1]",
+          "text": "RECIPES & SPICE BLENDS: Our organic coriander seeds are a staple for many cuisines, used in everything from spicy curries to Mediterranean dishes. They are available whole or ground, and when used whole, they add a fragrant, earthy aroma and taste to food."
+        },
+        {
+          "field": "features[2]",
+          "text": "ADD CORIANDER FLAVOR: Organic coriander seeds. Add to chili, stew and curry dishes. Use it in place of dried coriander to flavor rice, soups, and stews. Sprinkle it on salads and cream cheese. In warmer climates, they can be grown as potherbs, like parsley or fennel."
+        },
+        {
+          "field": "features[3]",
+          "text": "AROMATIC AND FLAVORFUL: The organic coriander plant is well known for its distinctive citrus aroma and taste that provide a unique character to any food dish. Perfect for garnishing curries, ground meat dishes, and salads. The seeds spice up both your beverages and food, while the herb itself is known to keep insects away from the treated area."
+        },
+        {
+          "field": "features[4]",
+          "text": "USES: Organic coriander seeds are the dried fruit of a parsley-like herb. Its leaves, part of the carrot family, are used for flavoring in cooking. The seed is most commonly and extensively used in combination with other spices to flavor foods in South Asian and Middle Eastern cuisines."
+        },
+        {
+          "field": "description[0]",
+          "text": "Coriander seeds are a classic ingredient in the kitchen. Whether you are making curry, pickling or simply adding to a recipe, these coriander seeds deliver a distinctive flavor that is all their own. These whole coriander seeds are both pungent and flavorful. They have a strong, warm fragrance with citrus undertones. These whole seeds can be crushed using a mortar and pestle, or any other grinding device. Also referred to as cilantro seeds, their flavor can be used in various different types of cuisines around the world. Whether you want to add a dash or two of it to your curry, or want to marinade fish in this unique and highly fragrant spice blend, having fresh coriander seeds and using them fresh is a must!"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00BLBJOO0": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "58bb1f426aaf478b13351bb1c332351d323b2702132bd4afeade95fee125c487",
+      "source_line": 247193,
+      "basis": "non_grain_or_prepared_sale: Swad Whole Red Dried Chillies 3.5oz., 100 Grams/ Indian Groceries. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Swad Whole Red Dried Chillies 3.5oz., 100 Grams/ Indian Groceries"
+        },
+        {
+          "field": "features[0]",
+          "text": "Packing a lot of heat, this red chilli peppers are perfect for Indian/Asian stews, salads and other dishes."
+        },
+        {
+          "field": "description[0]",
+          "text": "Whole dried red chili peppers are often added on top of curries, meats, and rice dishes."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B01D34KRN4": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "5bf2303b4168a57b1686eb27cf2b7716887bdd1ba33654a18a469bdc7e9db16e",
+      "source_line": 263057,
+      "basis": "actual_added_components: Tilda Steamed Basmati Rice Coconut, Chilli & Lemongrass (250g) - Pack of 6. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Tilda Steamed Basmati Rice Coconut, Chilli & Lemongrass (250g) - Pack of 6"
+        },
+        {
+          "field": "features[0]",
+          "text": "Tilda Steamed Basmati Rice"
+        },
+        {
+          "field": "features[1]",
+          "text": "Coconut Chilli & Lemongrass Rice"
+        },
+        {
+          "field": "features[2]",
+          "text": "Tilda is one of the well known brands around the world that has the best Basmati Rice"
+        },
+        {
+          "field": "features[3]",
+          "text": "These microwavable steamed rice is perfect for dinner or a side snack and is prepared within 2 minutes"
+        },
+        {
+          "field": "features[4]",
+          "text": "This is a listing for a pack of 6 x 250g packets"
+        },
+        {
+          "field": "description[0]",
+          "text": "Creamy coconut, a hint of chilli and the delicate flavour of lemongrass give these Basmati grains a Thai twist. We love Basmati and for over 40 years we have been committed to guarding the quality and heritage of this legendary rice. Heat for 2 minutes in a microwave, Chosen with care, Gluten free (gluten content 0%), Contains no artificial flavourings, colours or preservatives, Suitable for vegetarians"
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B019QTRKV2": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "d87e6ef8824e673d5735da7a6538e341db09279f3c968aaf72c2cd5ad7ec6287",
+      "source_line": 263865,
+      "basis": "fully_cooked_sale: Minute Ready to Serve Natural Whole Grain Brown Rice 2 Cups 8.8 OZ (Pack of 4). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Minute Ready to Serve Natural Whole Grain Brown Rice 2 Cups 8.8 OZ (Pack of 4)"
+        },
+        {
+          "field": "features[0]",
+          "text": "2 Packages of 2 cups, 4 cups total. Natural Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "Minute Ready to Serve Brown Rice offers a fully cooked, natural whole grain flavor, gluten free dish thats ready to serve in as little as 60 seconds. 2 Packages of 2 cups, 4 cups total."
+        }
+      ],
+      "review_category": "fully_cooked_sale"
+    },
+    "B0166MGHL6": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "40eaafc16c4a1d00b575184ec17aa3395a7e46e4d69fff003eb54ebae7683086",
+      "source_line": 264040,
+      "basis": "actual_added_components: Spiced and Infused Popcorn, Chipotle Taco, 1.1 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Spiced and Infused Popcorn, Chipotle Taco, 1.1 Ounce (Pack of 12)"
+        },
+        {
+          "field": "features[0]",
+          "text": "A Smoky and Robust Combination of Spices"
+        },
+        {
+          "field": "features[1]",
+          "text": "Certified: Non-GMO, Gluten Free, Vegan, and Whole Grain"
+        },
+        {
+          "field": "features[2]",
+          "text": "No Artificial Flavors, Colors, Preservatives, Sugar, MSG or Cholesterol"
+        },
+        {
+          "field": "features[3]",
+          "text": "0g Trans Fat"
+        },
+        {
+          "field": "features[4]",
+          "text": "Good Source of Fiber"
+        },
+        {
+          "field": "description[0]",
+          "text": "Enjoy our Chipotle Taco popcorn which blends smoke-dried jalapeno pepper, tomato and pleasantly piquant spices!"
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Chipotle Taco"
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B0733MF6RF": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c8b3013047beb72efbaafbf48201a39e874dc78454e5385b9f2538ec74ca3859",
+      "source_line": 339265,
+      "basis": "actual_added_components: Vigo Farro,4 Cheese 7 Oz (Pack of 6). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Vigo Farro,4 Cheese 7 Oz (Pack of 6)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Pack of 6Specifications"
+        },
+        {
+          "field": "features[1]",
+          "text": "Capacity: 7 oz"
+        },
+        {
+          "field": "features[2]",
+          "text": "Weight: 3 lbs"
+        },
+        {
+          "field": "features[3]",
+          "text": "Package Quantity: 6"
+        },
+        {
+          "field": "features[4]",
+          "text": "Tastes Great."
+        },
+        {
+          "field": "description[0]",
+          "text": "Farro Four Cheese Farro known as the Mother of all wheat was so important to the Roman legion that it was sometimes used as currency This ancient Mediterranean grain was and is still a staple food prized not only for its taste but also for its nutritional value High in protein and fiber it is very easy to digest and can be enjoyed in a number of ways Features. Pack of 6Specifications. Capacity 7 oz. Weight 3 lbs"
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B07RWDTY8V": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "429296ff5bc3217c5d41093729788cb0a08e960d800813006e4e128d84a5f126",
+      "source_line": 350327,
+      "basis": "actual_added_components: Poppin Popcorn Jalapeno Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn Jalapeno Cheddar (9.50 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "GMO Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "A Delicious Popcorn with a kick of the southwest! Our secret duo of cheddar cheese combined with a touch of jalapeño delivers a bold flavor with just the right amount of heat! AWESOME! Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B00MWE7ATQ": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "a2f1158507c7c639982ec0f723f2377f61c8c36977513aacae07031a819375e3",
+      "source_line": 351951,
+      "basis": "non_grain_or_prepared_sale: Eden Mirin, Sweet and Savory Rice Cooking Wine, Traditionally Made Japanese Ajino-haha, Umami, 10.1 Fl Oz Glass Bottle, (3-Pack). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Eden Mirin, Sweet and Savory Rice Cooking Wine, Traditionally Made Japanese Ajino-haha, Umami, 10.1 Fl Oz Glass Bottle, (3-Pack)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Traditionally made in Japan using Lundberg Family Farm organic brown rice, sea salt, and koji."
+        },
+        {
+          "field": "features[1]",
+          "text": "Traditionally made in Japan using Lundberg Family Farm organic brown rice, sea salt, and koji."
+        },
+        {
+          "field": "features[2]",
+          "text": "No artificial ingredients. A multipurpose liquid seasoning which enhances the natural food flavors and eliminates the raw fragrance of meat and fish. Imparts wonderful umami flavors."
+        },
+        {
+          "field": "features[3]",
+          "text": "Naturally sweet from the fermentation of rice using koji; a complex carbohydrate grain sugar, or maltose, pairs well with soy sauce (shoyu) for many marinades, sauces, dressings, and soups."
+        },
+        {
+          "field": "features[4]",
+          "text": "Mirin's alcohol content, about ten percent, quickly evaporates when cooked with food or may be removed by heating it to the boiling point, and allowed to cool before adding to uncooked foods if desired."
+        },
+        {
+          "field": "features[5]",
+          "text": "Eden Foods is a principled natural food company, est. 1968. Healthy soil, long-term organic, non-GMO, skilled growers and handlers; a reliable alternative to commercial food. Uncompromised, pure, most delicious nutrient rich foods."
+        },
+        {
+          "field": "details.Flavor",
+          "text": "Sweet"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B00CJ8L5SM": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "fb5078cf41654851a95f46af8f7d98ee5bc6dadcb5586c2f2053383cfad85104",
+      "source_line": 361277,
+      "basis": "non_grain_or_prepared_sale: Jimmy Dean Delights Turkey Sausage Egg White and Cheese English Muffin Breakfast Sandwiches 4 Count (Frozen). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Jimmy Dean Delights Turkey Sausage Egg White and Cheese English Muffin Breakfast Sandwiches 4 Count (Frozen)"
+        },
+        {
+          "field": "features[0]",
+          "text": "One 4 count package of Jimmy Dean Delights Turkey Sausage, Egg White and Cheese English Muffin Breakfast Sandwiches"
+        },
+        {
+          "field": "features[1]",
+          "text": "This Jimmy Dean Delights breakfast sandwich has 18 grams of protein per serving"
+        },
+        {
+          "field": "features[2]",
+          "text": "Features savory turkey sausage, egg whites, and melty cheese on a toasty English muffin"
+        },
+        {
+          "field": "features[3]",
+          "text": "Each English muffin sandwich has 270 calories per sandwich"
+        },
+        {
+          "field": "features[4]",
+          "text": "Whole wheat English muffin is a good source of whole grains"
+        },
+        {
+          "field": "description[0]",
+          "text": "Help give more power to your mornings with a Jimmy Dean Delights Turkey Sausage, Egg White and Cheese English Muffin Breakfast Sandwich. Savory turkey sausage, fluffy egg whites and real cheese come together on a toasty, whole grain English muffin for a delicious, portable breakfast at home or on the go. With 18 grams of protein and 270 calories per serving, these whole wheat breakfast sandwiches are the perfect option to lighten up your breakfast routine. Simply heat and serve this English muffin sandwich for a delicious whole grain microwave breakfast. Jimmy Dean once said, \"Sausage is a great deal like life. You get out of it what you put in.\" Which pretty much sums up his magic formula for having a great day. Today is your day to shine on."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B08HV858MP": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "b136a35366c44f727d392dff600a4c98286ff218c7740543f49e4fb8faa5ccc5",
+      "source_line": 367639,
+      "basis": "actual_added_components: Angie's Boomchickapop Kettle Corn 4.5 Oz! Pumpkin Spice Drizzled Popcorn! Whole Grain, Non-GMO And Gluten Free! Simply, Deliciously And Crunchy Snack!. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Angie's Boomchickapop Kettle Corn 4.5 Oz! Pumpkin Spice Drizzled Popcorn! Whole Grain, Non-GMO And Gluten Free! Simply, Deliciously And Crunchy Snack!"
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B07RYWC62Q": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "177b5ad5bec2a78d06c0b7d208645dbde07e2ade456296d23e3b322424272026",
+      "source_line": 383584,
+      "basis": "actual_added_components: Poppin Popcorn White Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn White Cheddar (9.50 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "GMO Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "Our special blend of creamy white cheddar coats every inch of our fluffy white popcorn, so no bite lacks in cheesiness. Leaving your mouth in a state of complete and utter elation. Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B07R7R52HG": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "794206b80e5f93280659146e2e9ac614f5e6669f94907f22c9439ab47a0613a5",
+      "source_line": 432128,
+      "basis": "actual_added_components: Poppin Popcorn Buttery Caramel (23.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn Buttery Caramel (23.50 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "Gmo Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "A rich and buttery classic that is a favorite for many! Our family recipe used sweet brown sugar, creamy butter and a cooking temperature perfected to deliver the right caramelization of every kernel. Absolutely Amazing! Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B0BS5HSRNS": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "2d8867f1f81a3da61e893a6205826747c0fdd5061a63aff50d55a88c960e9e59",
+      "source_line": 458338,
+      "basis": "grain_plus_non_grain_set: Popcorn Gifts For Women Movie Night Gift Baskets Gifts For Her Gift Set For Women, 10 Piece Set, 5 Gourmet Popcorn Kernels and 5 Popcorn Seasoning Flavoring, Non-GMO, Gift Idea From Daughter, Wife, Mom, Son. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Popcorn Gifts For Women Movie Night Gift Baskets Gifts For Her Gift Set For Women, 10 Piece Set, 5 Gourmet Popcorn Kernels and 5 Popcorn Seasoning Flavoring, Non-GMO, Gift Idea From Daughter, Wife, Mom, Son"
+        },
+        {
+          "field": "features[0]",
+          "text": "MOVIE NIGHT POPCORN KIT: It just takes a little imagination (and some delicious popcorn!) to recreate the magic of your favorite theater at home. Cuddle up with someone special or invite your best buddies over to pop some delicious movie popcorn for movie night. Make your favorite flavors, mix and match, and get creative with the best of all foodie gifts and gifts for her."
+        },
+        {
+          "field": "features[1]",
+          "text": "5 DELICIOUS POPCORN FLAVORS: Make movie magic with 5 mouth-watering, savory popcorn seasonings: Classic Salted Butter, Cheesy Garlic Parmesan, Better White Cheddar, Creamy Dreamy Chive, and Fiery Hot Pepper. Our Movie Night Popcorn Set makes it easy to whip up a crunchy cinematic snack in no time. This popcorn seasoning variety pack is the best of all gift baskets."
+        },
+        {
+          "field": "features[2]",
+          "text": "PACKED WITH FUN: Add to the action on movie night with this delicious and festive popcorn gift set. Enjoy gourmet kernels in three different, natural earth tones: Golden Classic, Poppin’ Blue, and Ruby Crunch. Our Movie Night Popcorn Gift Set is sourced with the highest quality ingredients in mind. Whether you’re looking for memorable gifts for men who have everything or the best I love you gifts for her, there’s something for everyone in this tasty popcorn variety pack."
+        },
+        {
+          "field": "features[3]",
+          "text": "A GREAT GIFT: Everyone has a reason to love our Pop ‘n Dulge Movie Night Popcorn Gift Set. Looking for cute birthday gifts, thank you gifts, or birthday gifts for mom? This gourmet, hands-on popcorn gift is an exciting way to set the stage — for a fun-filled girls’ night, a romantic couples evening, or a cozy family movie night. This gift box is a truly thoughtful way to say I love you. Gourmet snacks like these popcorn kernels and savory popcorn seasonings make fabulous mom gifts."
+        },
+        {
+          "field": "features[4]",
+          "text": "ALL NATURAL, NON-GMO KERNELS: We care about the quality of our products, because your health matters. That’s why a whole lot of effort goes into ensuring that our food kits contain only the best ingredients and products out there. All our kernels and spices are naturally gluten free, non-GMO, free from trans fats, and sourced from farms in the USA. Get ready for guilt-free snacking!"
+        }
+      ],
+      "review_category": "grain_plus_non_grain_set"
+    },
+    "B00HC74QQS": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c49ff72220707c9833997622df25415afb6dec54b1eecabc0cbd1b1c5fe4ccf0",
+      "source_line": 460378,
+      "basis": "actual_added_components: Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Blueberry Blitz, 3 Ounce (Pack of 12). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Straw Propeller Gourmet Foods Natural Gourmet Oatmeal, Blueberry Blitz, 3 Ounce (Pack of 12)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Yogurt covered blueberries with more blueberries"
+        },
+        {
+          "field": "features[1]",
+          "text": "Rolled oats high fiber and protein"
+        },
+        {
+          "field": "features[2]",
+          "text": "Non-GMO ingredients"
+        },
+        {
+          "field": "features[3]",
+          "text": "10% of our profits go to charity"
+        },
+        {
+          "field": "features[4]",
+          "text": "On-the-go convenience - just add hot water or milk and enjoy"
+        },
+        {
+          "field": "features[5]",
+          "text": "Great for your CAMPING, FISHING, HIKING, etc Fun Days - READY TO EAT IN A CUP MEAL."
+        },
+        {
+          "field": "description[0]",
+          "text": "Straw Propeller Gourmet Foods is taking oatmeal and muesli to new heights. Straw Propeller was started by an active family that needed healthy and convenient eating options for any adventure they faced. Our on-the-go cups make it easy for you to take a healthy meal with you anywhere life leads you. Clean eating has never been more enjoyable than with our innovative flavors that will propel you through your day. Find your favorite flavor and you'll know why we say. We're spreading happiness one cup at a time."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B01MQ1EY2N": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "d54fa95c826326c726cede7284bad45c4419ee08604d0bd87f64107fa6f87570",
+      "source_line": 483099,
+      "basis": "non_grain_or_prepared_sale: One Half-Dozen (6) Gourmet Jalapeno and Cheese (Four Cheese) Tamales. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "One Half-Dozen (6) Gourmet Jalapeno and Cheese (Four Cheese) Tamales"
+        },
+        {
+          "field": "features[0]",
+          "text": "Hand-rolled in real corn husks at a USDA Inspected facility"
+        },
+        {
+          "field": "features[1]",
+          "text": "No Lard"
+        },
+        {
+          "field": "features[2]",
+          "text": "No MSG"
+        },
+        {
+          "field": "features[3]",
+          "text": "Gluten-Free"
+        },
+        {
+          "field": "features[4]",
+          "text": "Boil-in Bag"
+        },
+        {
+          "field": "description[0]",
+          "text": "Six (6) vegetarian jalapeno and cheese tamales, vacuum-sealed. These Four-Cheese Three-Pepper Tamales have a Five-Star taste. If you like lots of flavor and a little more kick, these could be your new favorites."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B01ID12UMI": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "c1e576ed5c53f0d8408cc215c789c2ad1363d201dee1d2cb67a3c2780bc9ac98",
+      "source_line": 503467,
+      "basis": "non_grain_or_prepared_sale: Delimex White Meat Chicken Corn Taquitos Frozen Snacks (33 ct Box). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Delimex White Meat Chicken Corn Taquitos Frozen Snacks (33 ct Box)"
+        },
+        {
+          "field": "features[0]",
+          "text": "One 33 ct. box of Delimex White Meat Chicken Corn Taquitos"
+        },
+        {
+          "field": "features[1]",
+          "text": "Delimex White Meat Chicken Corn Taquitos from America's #1 taquito brand"
+        },
+        {
+          "field": "features[2]",
+          "text": "Taquitos make a perfect appetizer for parties"
+        },
+        {
+          "field": "features[3]",
+          "text": "Tasty white meat chicken rolled corn taquitos"
+        },
+        {
+          "field": "features[4]",
+          "text": "Taquitos with spices and seasoning for delicious flavor"
+        },
+        {
+          "field": "features[5]",
+          "text": "Store in the freezer"
+        },
+        {
+          "field": "features[6]",
+          "text": "Microwaveable for quick and easy preparation"
+        },
+        {
+          "field": "description[0]",
+          "text": "Delimex White Meat Chicken Corn Taquitos are made by America's #1 taquito brand to deliver that authentic Mexican flavor your family craves. Serve up these quick and easy microwaveable taquitos as fun after school snacks for the kids, or make them a family meal on a busy weeknight. Delimex frozen taquitos also make a great party food when you're entertaining guests. Each of these white meat chicken taquitos is wrapped in a corn tortilla for delicious flavor. Simply microwave the easy appetizer for 1 minute and enjoy. Keep each 33 count box of Delimex White Meat Chicken Corn Taquitos frozen to lock in flavors."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B07RBQCRBL": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "5cd262544b5a07374bfd1bd9e139df3dcdf121e6e446ce215cf28ef65978a06c",
+      "source_line": 519514,
+      "basis": "actual_added_components: Poppin Popcorn Cheesy Cheddar (9.50 oz). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Poppin Popcorn Cheesy Cheddar (9.50 oz)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Gluten Free"
+        },
+        {
+          "field": "features[1]",
+          "text": "GMO Free Corn"
+        },
+        {
+          "field": "features[2]",
+          "text": "Trans Fat Free"
+        },
+        {
+          "field": "features[3]",
+          "text": "No Added Preservatives"
+        },
+        {
+          "field": "features[4]",
+          "text": "100% Whole Grain"
+        },
+        {
+          "field": "description[0]",
+          "text": "Our signature blend of kernels, mixed with our secret blend of gourmet cheeses provides the most delicious cheesy cheddar corn ever! A must try! Giant 1 gallon resealable bag."
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B01M29R9CO": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "78d95f678188ae9dbcc1da1c184d86ae624d72aac549988976b8ee6339e682c9",
+      "source_line": 536759,
+      "basis": "non_grain_or_prepared_sale: Gourmet Beef Tamales - One Dozen. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Gourmet Beef Tamales - One Dozen"
+        },
+        {
+          "field": "features[0]",
+          "text": "Hand-rolled in real corn husks at a USDA Inspected facility"
+        },
+        {
+          "field": "features[1]",
+          "text": "No Lard"
+        },
+        {
+          "field": "features[2]",
+          "text": "No MSG"
+        },
+        {
+          "field": "features[3]",
+          "text": "Gluten-Free"
+        },
+        {
+          "field": "features[4]",
+          "text": "Boil-in Bag"
+        },
+        {
+          "field": "description[0]",
+          "text": "A Homemade Mexican Tamale with Texas Beef -- you can't beat that! Spicy Factor: 3 on a scale of 1 to 10"
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    },
+    "B007UJ4F9G": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "a0876d681b4c6ab0f59d682b6c92964f6a5599431b35bcb9411288257ca2b341",
+      "source_line": 551975,
+      "basis": "grain_plus_non_grain_set: Wabash Valley Farms44; Inc 43601 Open-Fire Pop All-Inclusive Popping Kits - Singles. The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Wabash Valley Farms44; Inc 43601 Open-Fire Pop All-Inclusive Popping Kits - Singles"
+        },
+        {
+          "field": "features[0]",
+          "text": "All inclusive Real Theater Popping Kits made especially for the Open Fire Pop Popcorn Popper"
+        },
+        {
+          "field": "features[1]",
+          "text": "Includes oils, seasoning and popping kernels for the perfect fireside batch of buttery popcorn"
+        },
+        {
+          "field": "features[2]",
+          "text": "No measuring, no fuss when outside by the open fire"
+        },
+        {
+          "field": "features[3]",
+          "text": "Smaller 4 oz size for the popper`s 4 quart capacity"
+        },
+        {
+          "field": "features[4]",
+          "text": "Just snip off the top and pour"
+        },
+        {
+          "field": "description[0]",
+          "text": "No measuring, no fuss when outside by the open fire with these popping kits made for the Open Fire Pop! Just snip off the top and pour in the oils, seasoning and popping kernels for the perfect fireside batch of buttery popcorn."
+        }
+      ],
+      "review_category": "grain_plus_non_grain_set"
+    },
+    "B000PEPDOE": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "d84aaaa6e8dfb955f68102285329dca18722c7f73c3908db27ea3cb20f7074d4",
+      "source_line": 567598,
+      "basis": "actual_added_components: Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Karen's Naturals Just Hot Veggies, 8-Ounce Tubs (Pack of 3) (Packaging May Vary)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Pack of 3 (total 24 oz)"
+        },
+        {
+          "field": "features[1]",
+          "text": "Vine-ripened tomatoes, peas, carrots, corn, and jalapeno, all dried to perfection"
+        },
+        {
+          "field": "features[2]",
+          "text": "Absolutely nothing added; no sulfur or preservatives"
+        },
+        {
+          "field": "features[3]",
+          "text": "Wholesome and fiery snack; adds intense flavor to soups, eggs, and baked potatoes"
+        },
+        {
+          "field": "features[4]",
+          "text": "Gluten-free mix hand-picked at peak of ripeness; produced in the United States"
+        }
+      ],
+      "review_category": "actual_added_components",
+      "composition_status": "declared_outside_scope"
+    },
+    "B01A5KVADK": {
+      "status": "pending",
+      "reason": "reviewed_scope_counter_unresolved",
+      "metadata_sha256": "553562d53a10b2068d5aa69a454db5e90f62105958e78e3f494603f920fd08b2",
+      "source_line": 575873,
+      "basis": "Rolled whole-grain oat title and the cheddar-cheese product feature leave a key cross-field counter unresolved.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Hodgson Mill Oat Quick Rolled Whole Grain, 18 oz"
+        },
+        {
+          "field": "features[0]",
+          "text": "We use fine, aged white cheddar cheese for a deliciously different twist on the classic American standard"
+        }
+      ],
+      "review_category": "scope_counter_unresolved",
+      "composition_status": "unresolved"
+    },
+    "B085LRQFDQ": {
+      "status": "excluded",
+      "reason": "reviewed_outside_scope_sale",
+      "metadata_sha256": "81f5f1d20ed482b9ad3ce71390acf013aa5ec645dd88fad6226471a89422f094",
+      "source_line": 598318,
+      "basis": "non_grain_or_prepared_sale: Spicy Roll - Tuna 10pc (Brown Rice). The full cited sale fields identify the actual object or included components, not a recipe substitution. Applies only to this exact complete metadata snapshot; does not verify actual ingredients or supply-chain history.",
+      "evidence": [
+        {
+          "field": "title",
+          "text": "Spicy Roll - Tuna 10pc (Brown Rice)"
+        },
+        {
+          "field": "features[0]",
+          "text": "Hand-rolled daily by our Sushi Chefs, using only fresh vegetables and high-quality seafood."
+        },
+        {
+          "field": "features[1]",
+          "text": "We combine new flavors and recipes with traditional Japanese techniques to give sushi a modern twist."
+        },
+        {
+          "field": "features[2]",
+          "text": "At Wild Blue, we source sustainable seafood and high-quality ingredients for our sushi products. We have GFSI recognized schemes, and are certified for food safety standards"
+        },
+        {
+          "field": "features[3]",
+          "text": "Our products are packaged in sustainable packaging. Our sushi trays are produced with bagasse pulp while the lids are produced with PLA (polylactic acid)."
+        },
+        {
+          "field": "features[4]",
+          "text": "When you order Wild Blue, you will enjoy a freshly prepared, delicious, ready-made meal at your fingertips."
+        },
+        {
+          "field": "description[0]",
+          "text": "Our silky, melt-in-your mouth tuna combined with the fresh crunch of cucumber, rolled inside the slightly nuty taste of our brown rice, is then drizzled with our spicy sauce, to make a Brown Rice, Spicy Tuna Roll, a spicy lover's delight."
+        }
+      ],
+      "review_category": "non_grain_or_prepared_sale"
+    }
+  },
+  "reviewed_decision_policy": "Source-bound reviewed metadata can only exclude or retain pending; changed complete metadata remains pending. No forced admissions, review-based selection or invented composition/supply-chain facts."
+}

@@ -12,6 +12,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[3]
 VERSION = sys.argv[1] if len(sys.argv) > 1 else "grain-A-1.1.0"
 report = json.loads((ROOT / "records/catalog" / (VERSION + ".json")).read_text("utf-8"))
+reviewed = json.loads((ROOT / "config" / (VERSION + ".json")).read_text("utf-8")).get("reviewed_decisions", {})
 source = json.loads((ROOT / "records/sources/amazon-2023-grocery-metadata.json").read_text("utf-8"))
 prior = json.loads((ROOT / report["previous_record_path"]).read_text("utf-8"))
 assert report["status"] == "catalog_complete"
@@ -40,6 +41,7 @@ expected["B092DF65V1"] = "included"
 case_results = []
 counts, reasons, transitions, compositions, included_compositions, crops = (Counter() for _ in range(6))
 references = 0
+reviewed_checked = set()
 unknown_examples = {}
 declaration_examples = []
 with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_path"]).open(encoding="utf-8") as audit, (ROOT / prior["audit_path"]).open(encoding="utf-8") as old, (ROOT / report["migration_path"]).open(encoding="utf-8") as migration, (ROOT / report["pending_path"]).open(encoding="utf-8") as pending:
@@ -51,6 +53,15 @@ with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_pa
         assert decision["source_lines"] == change["source_lines"] == [number]  # Verified unique-parent source fact.
         assert change["source_sha256"] == decision["source_sha256"] == report["source_sha256"]
         assert decision["scope_version"] == VERSION
+        if parent in reviewed:
+            reviewed_checked.add(parent)
+            entry = reviewed[parent]
+            assert entry["status"] in ("excluded", "pending")
+            assert entry["source_line"] == number
+            assert hashlib.sha256(json.dumps(item, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest() == entry["metadata_sha256"]
+            assert decision["reviewed_decision"] == entry
+            assert decision["status"] == entry["status"] and decision["reason"] == entry["reason"]
+            assert decision["counter_evidence"] == entry["evidence"] and entry["evidence"]
         assert change["old"] == {k: previous[k] for k in ("status", "reason", "crop", "scope_version")}
         assert change["new"] == {k: decision[k] for k in ("status", "reason", "crop", "scope_version", "composition_status")}
         assert change["old_audit_line"] == change["new_audit_line"] == number
@@ -103,6 +114,7 @@ assert dict(counts) == report["counts"] and dict(reasons) == report["reasons"]
 assert dict(transitions) == report["migration_counts"]
 assert dict(compositions) == report["composition_counts"] and dict(included_compositions) == report["included_composition_counts"]
 assert len(included) == counts["included"] and len(case_results) == len(expected)
+assert reviewed_checked == set(reviewed)
 assert report["composition_verification"] == "source_declaration_only_not_independently_verified"
 assert report["supply_chain_verification"] == "not_performed"
 assert report["model_input_status"] == "not_released" and report["sample_sufficiency"] == "not_determined"
@@ -120,6 +132,7 @@ result = {"status": "independent_scope_revision_audit_passed", "checked_at_utc":
           "scope_version": VERSION, "source_rows": number, "counts": counts, "migration_counts": transitions,
           "composition_counts": compositions, "included_composition_counts": included_compositions, "included_crop_counts": crops,
           "literal_source_references_checked": references, "known_semantic_cases_checked": case_results,
+          "source_bound_reviewed_decisions_checked": len(reviewed_checked),
           "verification_program_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           "catalog_sha256": report["catalog_sha256"], "migration_sha256": report["migration_sha256"],
           "protected_files_unchanged": len(protection["protected_sha256"]), "original_materials_unchanged": 26,

@@ -1,0 +1,15 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full accounting passed; a newly sampled seasoned popcorn sale failed semantic acceptance. All 75 flagged inclusion records were subsequently read: cooked and non-grain sales, actual added ingredients and unresolved counters require source-bound reviewed decisions. No review extraction was run.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.14.json": "2b9d7860446866d51b83550a72abf7a23896fa0b8f9c6f3566ccb38e6fffece1",
+    "records/catalog/grain-A-1.1.14.json": "6316d07011b3841cafd61ee1a878b460f7f5199922c3e446a9b9a02c500764e0",
+    "data/catalog/grain-A-1.1.14/catalog.jsonl": "fb956df5196f2fcbeceba194980b1313366b6aa4ce3413d5adb4f827fa2fd6c9",
+    "data/catalog/grain-A-1.1.14/audit.jsonl": "d9fa27f580a33144219da4d3544058ecc8e75703253f0909e6c0d8e5e1d4c75c",
+    "data/catalog/grain-A-1.1.14/migration.jsonl": "d50ef4003bc107ef4fa40ab0faba9fb9ac17068485c477d3386326f4fec253d9",
+    "data/catalog/grain-A-1.1.14/pending.jsonl": "9d586746dfb119560cf9b56051ac634f0f7e69149c3e2792b631f6bcf4d581ab",
+    ".scratch/data-preparation/verification/grain-A-1.1.14-check.json": "bd418169e78e336c6e93e660ec7d743e81e2d1f3c3599d15cd2728f5056a047e",
+    "data/diagnostics/grain-A-1.1.14-semantic-sample.json": "5dc09c86c03012c7be9525fe3ed5d08c8223351662aea988b1dc46b590b84457",
+    "data/diagnostics/grain-A-1.1.14-sales-flag-review.json": "dc6355f80e78b7454d8a6f186863bbbe49fe38f3685da8267436470e854d5ea6"
+  }
+}

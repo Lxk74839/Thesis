@@ -1,0 +1,19 @@
+test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure (test_prepare_data.MetadataPreparationTests.test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 516, in test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure
+    self.assertEqual(audit[0]["composition_status"], "declared_single_grain")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unresolved' != 'declared_single_grain'
+- unresolved
++ declared_single_grain
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.380s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_identity_catalog_recipe_question_ends_single_ingredient_bag_disclosure -v` failed. (See above for error)

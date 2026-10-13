@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.tmp\check_preflight_samples.py", line 43, in <module>
+    assert row["composition_status"] == "declared_single_grain"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+ERROR conda.cli.main_run:execute(127): `conda run python .tmp/check_preflight_samples.py grain-A-1.1.15` failed. (See above for error)

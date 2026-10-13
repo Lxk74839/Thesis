@@ -1,0 +1,6 @@
+test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification (test_prepare_data.MetadataPreparationTests.test_identity_catalog_reviewed_added_component_is_disclosure_without_fact_verification) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.328s
+
+OK
