@@ -1,0 +1,6 @@
+test_identity_catalog_optional_coating_use_is_not_actual_product_addition (test_prepare_data.MetadataPreparationTests.test_identity_catalog_optional_coating_use_is_not_actual_product_addition) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.332s
+
+OK

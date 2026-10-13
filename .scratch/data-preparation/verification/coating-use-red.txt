@@ -1,0 +1,27 @@
+test_identity_catalog_optional_coating_use_is_not_actual_product_addition (test_prepare_data.MetadataPreparationTests.test_identity_catalog_optional_coating_use_is_not_actual_product_addition) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_optional_coating_use_is_not_actual_product_addition (test_prepare_data.MetadataPreparationTests.test_identity_catalog_optional_coating_use_is_not_actual_product_addition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 203, in test_identity_catalog_optional_coating_use_is_not_actual_product_addition
+    self.assertEqual([row["status"] for row in audit], ["included", "excluded"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'excluded'] != ['included', 'excluded']
+
+First differing element 0:
+'excluded'
+'included'
+
+- ['excluded', 'excluded']
+?   ^^
+
++ ['included', 'excluded']
+?   ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.345s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k optional_coating_use -v` failed. (See above for error)

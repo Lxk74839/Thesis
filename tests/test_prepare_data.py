@@ -192,6 +192,17 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded"])
 
+    def test_identity_catalog_optional_coating_use_is_not_actual_product_addition(self):
+        run = self.identity_catalog([
+            {"parent_asin": "USE", "title": "Raw rice kernels", "description": ["These raw rice grains can be coated or topped with salt after cooking."]},
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "description": ["These raw rice grains are coated with salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "excluded"])
+        self.assertTrue(audit[0]["context_evidence"])
+
     def test_identity_catalog_explicit_field_with_another_grain_is_a_mixture(self):
         run = self.identity_catalog([
             {"parent_asin": "MIX", "title": "Raw rice kernels", "features": ["Raw rice kernels with wheat."]},
@@ -201,6 +212,17 @@ class MetadataPreparationTests(unittest.TestCase):
         report = json.loads(run.stdout)
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+
+    def test_identity_catalog_addition_before_with_retains_real_mixture_evidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "MIX", "title": "Raw rice kernels", "features": ["This product is salt mixed with raw rice kernels."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "features": ["Recipe: salt mixed with raw rice kernels."]},
+            {"parent_asin": "NEGATIVE", "title": "Raw rice kernels", "features": ["No salt added with raw rice kernels."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included", "included"])
 
     def test_identity_catalog_numbered_quick_oats_name_supplies_sold_form(self):
         run = self.identity_catalog([

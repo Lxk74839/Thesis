@@ -1,0 +1,6 @@
+test_identity_catalog_addition_before_with_retains_real_mixture_evidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_addition_before_with_retains_real_mixture_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.337s
+
+OK
