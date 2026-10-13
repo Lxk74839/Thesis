@@ -203,6 +203,30 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in audit], ["included", "excluded"])
         self.assertTrue(audit[0]["context_evidence"])
 
+    def test_identity_catalog_actual_cooked_with_sale_is_not_a_cooking_suggestion(self):
+        run = self.identity_catalog([
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "description": ["This product is sold cooked with salt."]},
+            {"parent_asin": "CONDITIONAL", "title": "Raw rice kernels", "description": ["When cooked with salt, the rice is tasty."]},
+            {"parent_asin": "OPTIONAL", "title": "Raw rice kernels", "description": ["Rice can be cooked with salt."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "description": ["Recipe: this product is cooked with salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "included", "included"])
+        self.assertTrue(any(ref["text"] == "This product is sold cooked with salt." for ref in audit[0]["counter_evidence"]))
+
+    def test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CUSTOM", "title": "Raw barley kernels", "description": ["In East Asian cultures, barley is often cooked with brown rice."]},
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "description": ["This product is sold cooked with salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "pending"])
+        self.assertTrue(audit[0]["context_evidence"])
+
     def test_identity_catalog_explicit_field_with_another_grain_is_a_mixture(self):
         run = self.identity_catalog([
             {"parent_asin": "MIX", "title": "Raw rice kernels", "features": ["Raw rice kernels with wheat."]},

@@ -1,0 +1,27 @@
+test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked (test_prepare_data.MetadataPreparationTests.test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked (test_prepare_data.MetadataPreparationTests.test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 227, in test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked
+    self.assertEqual([row["status"] for row in audit], ["included", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'pending'] != ['included', 'pending']
+
+First differing element 0:
+'excluded'
+'included'
+
+- ['excluded', 'pending']
+?   ^^
+
++ ['included', 'pending']
+?   ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.353s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k customary_cooking -v` failed. (See above for error)

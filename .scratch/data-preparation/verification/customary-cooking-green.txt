@@ -1,0 +1,6 @@
+test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked (test_prepare_data.MetadataPreparationTests.test_identity_catalog_customary_cooking_does_not_claim_the_sold_product_is_cooked) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.329s
+
+OK

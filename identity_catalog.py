@@ -21,7 +21,7 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|cooked with|combined with|can be coated|can be topped|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|(?:can|should|to) be (?:cooked|combined)|often cooked with|can be coated|can be topped|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
         ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking|freshly cooked (?:luster|gloss|stickiness))\b"),
         ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
         ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in|known as the southern oatmeal|preferred over)\b"),

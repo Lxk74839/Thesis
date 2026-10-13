@@ -1,0 +1,48 @@
+{
+  "scope_version": "grain-A-1.1.12",
+  "source_cases": 41,
+  "counts": {
+    "excluded": 25,
+    "included": 8,
+    "pending": 8
+  },
+  "failures": [
+    {
+      "parent_asin": "B0019L8I58",
+      "expected": "included",
+      "actual": "pending",
+      "reason": "composition_declaration_conflict",
+      "counter_evidence": [
+        {
+          "field": "description[0]",
+          "text": "Considered medicinal in the Orient, this is an ancient whole grain that makes a wonderful side dish on its own or combined with other grains. In East Asian cultures, Hato Mugi is often cooked with brown rice, about four parts rice to one part Hato Mugi. Hato Mugi is a sturdy grain that can also be used to add flavor and body to any soups and stews that require lengthy cooking times."
+        },
+        {
+          "field": "description[0]",
+          "text": "Considered medicinal in the Orient, this is an ancient whole grain that makes a wonderful side dish on its own or combined with other grains. In East Asian cultures, Hato Mugi is often cooked with brown rice, about four parts rice to one part Hato Mugi. Hato Mugi is a sturdy grain that can also be used to add flavor and body to any soups and stews that require lengthy cooking times."
+        },
+        {
+          "declaration_parts": [
+            "HATO MUGI"
+          ],
+          "field": "features[0]",
+          "partial_declaration": false,
+          "text": "INGREDIENTS: HATO MUGI"
+        }
+      ]
+    }
+  ],
+  "source_case_file_sha256": "8d0f432fcff6699e50411524968a736950f5be7025c717f27d60b4abab7187a1",
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "56be86e439831bbf6595d6686bf27005d5afab046249845da485740ed289f18c",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "684e097840874cb4269587744ac60a85050912ccd86cbc61cc4490f6da20abc1"
+}
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.tmp\check_revision_cases.py", line 32, in <module>
+    assert len(audit) == len(expected) == 41 and not failures
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+ERROR conda.cli.main_run:execute(127): `conda run python .tmp/check_revision_cases.py grain-A-1.1.12` failed. (See above for error)
