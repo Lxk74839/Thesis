@@ -248,6 +248,35 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["status"] for row in audit], ["excluded", "included", "included"])
 
+    def test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict(self):
+        run = self.identity_catalog([
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "description": ["This product is sold mixed with salt."]},
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "description": ["This product is sold mixed with salt."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "OPTIONAL", "title": "Raw rice kernels", "description": ["This product can be mixed with salt."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "description": ["Recipe: this product is mixed with salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "pending", "included", "included"])
+        self.assertEqual([row["composition_status"] for row in audit],
+                         ["declared_outside_scope", "conflict", "not_disclosed", "not_disclosed"])
+        self.assertTrue(any(ref["text"] == "This product is sold mixed with salt." for ref in audit[0]["counter_evidence"]))
+
+    def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "details": {"Item Form": "Powder"}},
+            {"parent_asin": "POWDER", "title": "Raw Rice Powder"},
+            {"parent_asin": "POWDERED", "title": "Raw powdered rice"},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "description": ["Recipe: grind rice into powder."]},
+            {"parent_asin": "NEGATIVE", "title": "Raw rice kernels", "features": ["Not powder."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "excluded", "excluded", "included", "included"])
+        self.assertTrue(any(ref["text"] == "Powder" for ref in audit[0]["counter_evidence"]))
+
     def test_identity_catalog_numbered_quick_oats_name_supplies_sold_form(self):
         run = self.identity_catalog([
             {"parent_asin": "QUICK", "title": "Quaker Quick 1 Minute Oats, 5 Pounds", "features": ["Made from 100% whole grain oats"]},

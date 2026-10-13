@@ -1,0 +1,6 @@
+test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending (test_prepare_data.MetadataPreparationTests.test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.333s
+
+OK

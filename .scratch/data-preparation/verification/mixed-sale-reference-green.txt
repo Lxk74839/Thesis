@@ -1,0 +1,6 @@
+test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict (test_prepare_data.MetadataPreparationTests.test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.332s
+
+OK

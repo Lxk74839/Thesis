@@ -1,0 +1,23 @@
+test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict (test_prepare_data.MetadataPreparationTests.test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict (test_prepare_data.MetadataPreparationTests.test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 261, in test_identity_catalog_mixed_sale_uses_product_reference_and_retains_complete_claim_conflict
+    self.assertEqual([row["status"] for row in audit], ["excluded", "pending", "included", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included'] != ['excluded', 'pending', 'included', 'included']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'included', 'included', 'included']
++ ['excluded', 'pending', 'included', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.414s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k mixed_sale_uses_product -v` failed. (See above for error)

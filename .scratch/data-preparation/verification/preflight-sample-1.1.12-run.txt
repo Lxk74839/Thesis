@@ -36,9 +36,9 @@
   "failures": [],
   "producer_sha256": {
     "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
-    "identity_catalog.py": "f788db3be5e225a9c15db066f37de35e890c067eccc425e378ed22cc14d733ed",
+    "identity_catalog.py": "bd9e7dd0662300de5bd8a3086f5c97115aea86071799ebdad98a10051a2ecd5d",
     "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
   },
-  "scope_sha256": "684e097840874cb4269587744ac60a85050912ccd86cbc61cc4490f6da20abc1",
+  "scope_sha256": "2537534e930d09c234cb3dfb721b1b569a87f9b165d868e484297d46486cd4d2",
   "limitation": "Preflight semantic sample is not the final-version full-source reconciliation or exhaustive human adjudication."
 }

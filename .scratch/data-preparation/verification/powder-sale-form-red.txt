@@ -1,0 +1,23 @@
+test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending (test_prepare_data.MetadataPreparationTests.test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending (test_prepare_data.MetadataPreparationTests.test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 277, in test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending
+    self.assertEqual([row["status"] for row in audit], ["pending", "excluded", "excluded", "included", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included', 'included'] != ['pending', 'excluded', 'excluded', 'included', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included', 'included', 'included']
++ ['pending', 'excluded', 'excluded', 'included', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k powder_sale_is_outside -v` failed. (See above for error)
