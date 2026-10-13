@@ -66,7 +66,7 @@ def source_statements(item, config):
 def affirmative_composition(value, config):
     components = [alias for aliases in config["grains"].values() for alias in aliases]
     components += [*config["outside_crops"], *config["non_grain_ingredients"]]
-    negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
+    negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:mixed\s+with\s+)?(?:" + pattern(components).pattern + ")"
     value = re.sub(negative, " ", value, flags=re.I)
     return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
 

@@ -277,6 +277,20 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual(audit[0]["composition_status"], "not_disclosed")
         self.assertTrue(any(ref["text"] == "This product is not mixed with salt." for ref in audit[0]["context_evidence"]))
 
+    def test_identity_catalog_complete_claim_excludes_negated_mixture_from_components(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NEGATIVE", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with salt."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with salt."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "features": ["Ingredients: Rice, salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "excluded"])
+        self.assertEqual([row["composition_status"] for row in audit],
+                         ["declared_single_grain", "declared_single_grain", "declared_outside_scope"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["rice, not mixed with salt."])
+
     def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "details": {"Item Form": "Powder"}},

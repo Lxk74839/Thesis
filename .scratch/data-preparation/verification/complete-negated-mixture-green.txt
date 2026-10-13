@@ -1,0 +1,6 @@
+test_identity_catalog_complete_claim_excludes_negated_mixture_from_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_claim_excludes_negated_mixture_from_components) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.360s
+
+OK

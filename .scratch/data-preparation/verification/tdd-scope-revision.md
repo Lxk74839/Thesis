@@ -111,3 +111,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第24轮完整复审：Standards硬违反0／新增启发0，Spec P1两项。分别公共RED→GREEN：This product is sold mixed with salt 的直接本商品添加不需要重复粮种名；与完整Ingredients Rice冲突保持pending/conflict，而can be mixed和Recipe不成为真实组成。另项Powder／powdered是既有A粉类排除的字面形态，颗粒标题与Item Form Powder保持pending并保存双字段，明确粉类标题排除，食谱磨粉与Not powder控制保留。130项中间、131项最终回归均通过，最终42.778秒；随后41／86回放退出0、failures=[]，旧回放另存preflight-08。实际生产器bd9e7dd0…、配置2537534e…，仍待固定复审与全源验收，没有确认06参数。
 
 第25轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。not mixed with salt／wheat 否定本商品添加，公共RED→GREEN，整段已知否定混合短语不供肯定成分，保留原句／否定角色；实际mixed with salt仍排除，but contains wheat后面的真实肯定反证继续排除，没有整句截断。132项通过（43.477秒）后，41原例／86分层回放退出0、failures=[]，旧回放另存preflight-09。生产器021606f5…、配置2537534e…；1.1.12仍未正式全源生成，等待新固定复审及来源/评论独立验收。
+
+第26轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。完整Contains only rice, not mixed with salt声明不能把否定项当组成，公共RED→GREEN：肯定组成解释识别相同已知否定混合，原句和declaration_parts不改，与Ingredients Rice签名一致；真正Rice,salt仍排除。133项45.446秒通过后41／86回放均退出0、failures=[]，旧回放另存preflight-10。1.1.12尚未全源生成、06仍待确认；须新固定复审和全量独立验收。

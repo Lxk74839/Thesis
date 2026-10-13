@@ -1,0 +1,27 @@
+test_identity_catalog_complete_claim_excludes_negated_mixture_from_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_claim_excludes_negated_mixture_from_components) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_complete_claim_excludes_negated_mixture_from_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_claim_excludes_negated_mixture_from_components)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 289, in test_identity_catalog_complete_claim_excludes_negated_mixture_from_components
+    self.assertEqual([row["status"] for row in audit], ["included", "included", "excluded"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'pending', 'excluded'] != ['included', 'included', 'excluded']
+
+First differing element 0:
+'excluded'
+'included'
+
+- ['excluded', 'pending', 'excluded']
+?   ^^          ----  ^
+
++ ['included', 'included', 'excluded']
+?   ^^            ^^^^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.343s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k complete_claim_excludes_negated -v` failed. (See above for error)
