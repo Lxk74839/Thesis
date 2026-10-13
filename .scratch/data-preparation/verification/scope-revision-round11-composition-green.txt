@@ -1,0 +1,6 @@
+test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix (test_prepare_data.MetadataPreparationTests.test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.395s
+
+OK

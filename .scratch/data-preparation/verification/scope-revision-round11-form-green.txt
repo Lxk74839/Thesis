@@ -1,0 +1,6 @@
+test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.355s
+
+OK

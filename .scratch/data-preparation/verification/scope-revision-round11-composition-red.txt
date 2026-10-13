@@ -1,0 +1,27 @@
+test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix (test_prepare_data.MetadataPreparationTests.test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix (test_prepare_data.MetadataPreparationTests.test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 496, in test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix
+    self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     [("excluded", "declared_outside_scope"), ("excluded", "declared_outside_scope"), ("included", "not_disclosed")])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('included', 'not_disclosed'), ('excluded',[53 chars]ed')] != [('excluded', 'declared_outside_scope'), ('e[62 chars]ed')]
+
+First differing element 0:
+('included', 'not_disclosed')
+('excluded', 'declared_outside_scope')
+
+- [('included', 'not_disclosed'),
++ [('excluded', 'declared_outside_scope'),
+   ('excluded', 'declared_outside_scope'),
+   ('included', 'not_disclosed')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.366s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k actual_composition_contrast` failed. (See above for error)

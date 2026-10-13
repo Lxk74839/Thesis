@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full source scan reached EOF, but Round10 Spec and separate public REDs demonstrated prefix-free actual added composition can become unknown and modified grain negation can supply positive evidence. No independent acceptance is claimed. Six components retained; 1.1.7 fixes these semantics without changing A or research parameters.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.6.json": "e8d973102479a289cb0109f113d7969e50f10878b7cab39a08601898f2dc60d7",
+    "records/catalog/grain-A-1.1.6.json": "ef48a6cf3888b19b87d1215b044994049d856b17ca256f5b4698f304bcf13859",
+    "data/catalog/grain-A-1.1.6/catalog.jsonl": "437e665397c0027be63a0d7fa383bbbd37e897e7b9d3bac6b0295fa68070c8cd",
+    "data/catalog/grain-A-1.1.6/audit.jsonl": "4583a6a04f78577da5b0acda74c11f7cf3d23d786f71c677944bb22238122ac5",
+    "data/catalog/grain-A-1.1.6/pending.jsonl": "4c13f736156a1ecfc87412dd80c59c78302ccfe8dcf6aa7a84fc0b1eca5b1a79",
+    "data/catalog/grain-A-1.1.6/migration.jsonl": "c6e73e7d371ae49034a7442eb8b75c208afaa4c86b93243bb718723a6f63ccee"
+  }
+}

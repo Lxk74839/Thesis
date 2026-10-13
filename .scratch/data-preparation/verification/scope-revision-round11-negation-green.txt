@@ -1,0 +1,6 @@
+test_identity_catalog_negated_grain_with_form_modifiers_is_not_positive_evidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_grain_with_form_modifiers_is_not_positive_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.358s
+
+OK

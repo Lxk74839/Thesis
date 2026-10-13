@@ -1,0 +1,6 @@
+test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.348s
+
+OK

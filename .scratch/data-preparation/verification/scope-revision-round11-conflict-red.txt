@@ -1,0 +1,30 @@
+test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 538, in test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components
+    self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     [("pending", "conflict"), ("pending", "conflict"), ("pending", "conflict"), ("excluded", "declared_outside_scope")])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('excluded', 'declared_outside_scope'), ('e[111 chars]pe')] != [('pending', 'conflict'), ('pending', 'confl[66 chars]pe')]
+
+First differing element 0:
+('excluded', 'declared_outside_scope')
+('pending', 'conflict')
+
+- [('excluded', 'declared_outside_scope'),
+-  ('excluded', 'declared_outside_scope'),
+-  ('excluded', 'declared_outside_scope'),
++ [('pending', 'conflict'),
++  ('pending', 'conflict'),
++  ('pending', 'conflict'),
+   ('excluded', 'declared_outside_scope')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.358s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k complete_single_composition_conflicts` failed. (See above for error)

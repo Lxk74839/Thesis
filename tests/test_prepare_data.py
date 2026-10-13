@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.6.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.7.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -306,7 +306,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.6.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.7.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -483,6 +483,62 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([r["status"] for r in audit], ["pending", "included", "included"])
         self.assertTrue(audit[0]["counter_evidence"])
         self.assertTrue(all(r["context_evidence"] for r in audit))
+
+    def test_identity_catalog_actual_composition_contrast_does_not_need_ingredients_prefix(self):
+        run = self.identity_catalog([
+            {"parent_asin": "ADDED", "title": "Raw rice kernels", "features": ["Not only rice but salt."]},
+            {"parent_asin": "PREFIX", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Not only rice but salt."]},
+            {"parent_asin": "MARKETING", "title": "Raw rice kernels", "features": ["Not only nutritious; serve with salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
+                         [("excluded", "declared_outside_scope"), ("excluded", "declared_outside_scope"), ("included", "not_disclosed")])
+        self.assertTrue(audit[0]["counter_evidence"])
+
+    def test_identity_catalog_negated_grain_with_form_modifiers_is_not_positive_evidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NO", "title": "No whole grain rice"},
+            {"parent_asin": "FIELD", "title": "Pantry essentials", "features": ["This product is not whole grain rice."]},
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "features": ["This product is not whole grain rice."]},
+            {"parent_asin": "OTHER", "title": "Raw barley kernels", "features": ["This barley is not rice."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["pending", "pending", "pending", "included"])
+        self.assertTrue(all(not r["identity_evidence"] and not r["form_evidence"] for r in audit[:2]))
+        self.assertTrue(audit[2]["counter_evidence"])
+
+    def test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order(self):
+        run = self.identity_catalog([
+            {"parent_asin": "TITLE", "title": "Raw rice kernels", "features": ["Not raw."]},
+            {"parent_asin": "FIRST", "title": "Pantry essentials", "features": ["Not raw."], "description": ["Raw rice kernels."]},
+            {"parent_asin": "LAST", "title": "Pantry essentials", "features": ["Raw rice kernels."], "description": ["Not raw."]},
+            {"parent_asin": "OTHER_FORM", "title": "Raw rice kernels", "features": ["Not rolled."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["pending", "pending", "pending", "included"])
+        self.assertTrue(all(r["counter_evidence"] for r in audit[:3]))
+        self.assertTrue(all(r["context_evidence"] for r in audit))
+
+    def test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components(self):
+        run = self.identity_catalog([
+            {"parent_asin": "FIELD", "title": "Raw rice kernels", "details": {"Ingredients": "Rice"}, "features": ["Not only rice but salt."]},
+            {"parent_asin": "TITLE", "title": "Raw rice kernels with salt", "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "MULTIPLE", "title": "Raw rice and wheat grains", "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "DECLARATIONS", "title": "Raw rice kernels with salt", "details": {"Ingredients": "Rice"}, "features": ["Ingredients: Wheat"]},
+            {"parent_asin": "NO_COMPLETE", "title": "Raw rice kernels", "features": ["Not only rice but salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
+                         [("pending", "conflict"), ("pending", "conflict"), ("pending", "conflict"), ("pending", "conflict"), ("excluded", "declared_outside_scope")])
+        self.assertTrue(all(r["composition_evidence"] and r["counter_evidence"] for r in audit[:4]))
 
     def test_identity_catalog_preserves_purpose_and_texture_without_false_conflicts(self):
         run = self.identity_catalog([

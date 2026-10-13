@@ -1,0 +1,23 @@
+test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 524, in test_identity_catalog_negated_affirmed_form_is_a_conflict_independent_of_field_order
+    self.assertEqual([r["status"] for r in audit], ["pending", "pending", "pending", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included'] != ['pending', 'pending', 'pending', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included', 'included']
++ ['pending', 'pending', 'pending', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.361s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k negated_affirmed_form` failed. (See above for error)
