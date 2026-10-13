@@ -1,0 +1,44 @@
+{
+  "scope_version": "grain-A-1.1.12",
+  "sample_source_versions": [
+    "grain-A-1.1.10",
+    "grain-A-1.1.11"
+  ],
+  "sample_size": 86,
+  "sampling": "Union of both fully read deterministic per-crop unknown-composition samples plus all declared-single inclusions; not a probability sample.",
+  "counts": {
+    "included": 70,
+    "pending": 11,
+    "excluded": 5
+  },
+  "source_metadata_judgments": {
+    "excluded": [
+      "B001HTISYS",
+      "B00CR3TZHW",
+      "B00FWK2TFM",
+      "B00JNSZK5K",
+      "B08XZS7VRD"
+    ],
+    "pending": [
+      "B0033UE02S",
+      "B003I5A5IG",
+      "B005CD38KE",
+      "B0078DSUV8",
+      "B00838WFWM",
+      "B00IV6P4J2",
+      "B074D9F3T3",
+      "B07577CSJC",
+      "B076SGR756",
+      "B08KSY7NYN",
+      "B0BSZXZXZP"
+    ]
+  },
+  "failures": [],
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "ac06d61b5e99a27466bb4b2dacbbcf7ec7c29e9a4066a10c37bdf881dc85f350",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "2537534e930d09c234cb3dfb721b1b569a87f9b165d868e484297d46486cd4d2",
+  "limitation": "Preflight semantic sample is not the final-version full-source reconciliation or exhaustive human adjudication."
+}

@@ -1,0 +1,6 @@
+test_identity_catalog_negated_component_modifiers_do_not_create_real_mixtures (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_component_modifiers_do_not_create_real_mixtures) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.350s
+
+OK

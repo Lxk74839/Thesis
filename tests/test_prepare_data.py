@@ -307,6 +307,22 @@ class MetadataPreparationTests(unittest.TestCase):
                          ["declared_single_grain", "declared_single_grain", "declared_single_grain", "declared_outside_scope", "unresolved"])
         self.assertTrue(any("novel_additive" in ref["text"] for ref in audit[4]["composition_evidence"]))
 
+    def test_identity_catalog_negated_component_modifiers_do_not_create_real_mixtures(self):
+        run = self.identity_catalog([
+            {"parent_asin": "KNOWN", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with whole grain wheat."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with whole grain wheat."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "DIRECT", "title": "Raw rice kernels", "features": ["This rice is not mixed with whole grain wheat or organic barley."]},
+            {"parent_asin": "ACTUAL", "title": "Raw rice kernels", "features": ["This rice is mixed with whole grain wheat."]},
+            {"parent_asin": "LATER", "title": "Raw rice kernels", "features": ["This rice is not mixed with whole grain wheat but contains salt."]},
+            {"parent_asin": "UNKNOWN", "title": "Raw rice kernels", "features": ["Contains only rice, not mixed with novel_additive."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded", "excluded", "pending"])
+        self.assertEqual([row["composition_status"] for row in audit[:2]], ["declared_single_grain", "declared_single_grain"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["rice, not mixed with whole grain wheat."])
+
     def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "details": {"Item Form": "Powder"}},

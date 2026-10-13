@@ -36,7 +36,7 @@
   "failures": [],
   "producer_sha256": {
     "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
-    "identity_catalog.py": "ac06d61b5e99a27466bb4b2dacbbcf7ec7c29e9a4066a10c37bdf881dc85f350",
+    "identity_catalog.py": "5f3af59f6a36566ed6bc581a3832c7e8b17a858ae1342a6772870b0a69655231",
     "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
   },
   "scope_sha256": "2537534e930d09c234cb3dfb721b1b569a87f9b165d868e484297d46486cd4d2",

@@ -5,6 +5,15 @@ import re
 from catalog import classify_legacy, pattern, text_fields
 
 
+COMPONENT_SEPARATOR = r"\s*(?:,\s*(?:and|or)?|\band\b|\bor\b)\s*"
+
+
+def composition_component(config):
+    components = [*config["non_grain_ingredients"], *config["outside_crops"],
+                  *(alias for aliases in config["grains"].values() for alias in aliases)]
+    return r"(?:(?:" + pattern(config["composition_modifiers"]).pattern + r")[ -]+)*(?:" + pattern(components).pattern + ")"
+
+
 def narrow_grains(crops, config):
     return crops - {config["grain_parents"][crop] for crop in crops if crop in config["grain_parents"]}
 
@@ -33,9 +42,8 @@ def context_role(text):
 
 
 def source_statements(item, config):
-    components = [*config["non_grain_ingredients"], *config["outside_crops"],
-                  *(alias for aliases in config["grains"].values() for alias in aliases)]
-    continued_component = re.compile(r"\s*(?:,\s*(?:and|or)?|\band\b|\bor\b)\s*(?:" + pattern(components).pattern + ")", re.I)
+    component = composition_component(config)
+    continued_component = re.compile(COMPONENT_SEPARATOR + component, re.I)
     for field, text in text_fields(item):
         for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
             role = context_role(clause)
@@ -44,11 +52,9 @@ def source_statements(item, config):
                 if purpose and (not role or purpose.start() < role[1]):
                     role = ("use_comparison_or_brand_context", purpose.start())
             direct = clause[:role[1]] if role else clause
-            negative_terms = pattern([*config["processing_claims"], *config["non_grain_ingredients"],
+            negative_terms = re.compile(pattern([*config["processing_claims"], *config["non_grain_ingredients"],
                                       *config["excluded_forms"], *config["outside_form_statements"],
-                                      *config["nonfood"], *config["outside_crops"],
-                                      *("mixed with " + component for component in [*config["non_grain_ingredients"], *config["outside_crops"],
-                                                                                  *(alias for aliases in config["grains"].values() for alias in aliases)])])
+                                      *config["nonfood"], *config["outside_crops"]]).pattern + r"|mixed\s+with\s+" + component, re.I)
             negated_positions = []
             for negative in reversed(list(re.finditer(r"\b(?:not(?!\s+only\b)|no|without)\s+", direct, re.I))):
                 claim = negative_terms.match(direct, negative.end())
@@ -70,13 +76,11 @@ def source_statements(item, config):
 
 
 def affirmative_composition(value, config):
-    components = [alias for aliases in config["grains"].values() for alias in aliases]
-    components += [*config["outside_crops"], *config["non_grain_ingredients"]]
-    component = r"(?:" + pattern(components).pattern + ")"
-    component_list = component + r"(?:\s*(?:,\s*(?:and|or)?|\band\b|\bor\b)\s*" + component + ")*"
+    component = composition_component(config)
+    component_list = component + r"(?:" + COMPONENT_SEPARATOR + component + ")*"
     negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:mixed\s+with\s+)?" + component_list
     value = re.sub(negative, " ", value, flags=re.I)
-    return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
+    return re.sub(component + r"[- ]free\b", " ", value, flags=re.I)
 
 
 def affirmative_identity(text, config):
