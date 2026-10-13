@@ -21,8 +21,8 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
-        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
         ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
         ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in)\b"),
     ):
@@ -30,6 +30,16 @@ def context_role(text):
         if match:
             matches.append((role, match.start()))
     return min(matches, key=lambda match: match[1]) if matches else None
+
+
+def source_statements(item):
+    for field, text in text_fields(item):
+        if field == "title":
+            continue
+        for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
+            role = context_role(clause)
+            direct = clause[:role[1]] if role else clause
+            yield {"field": field, "text": text}, clause, re.sub(r"\b[\w]+[- ]free\b", " ", direct, flags=re.I), role
 
 
 def composition_disclosure(item, config):
@@ -54,7 +64,7 @@ def composition_disclosure(item, config):
                     values.append(active)
                 value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", fragment[match.end():], flags=re.I)
                 active = [] if match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value) else [value]
-            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or pattern(config["identity_negations"]).match(fragment)):
+            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or (pattern(config["identity_negations"]).match(fragment) and not re.match(r"not\s+only\b", fragment, re.I))):
                 values.append(active)
                 active = []
             elif active:
@@ -124,50 +134,59 @@ def classify_identity(item, config):
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
-    for field, text in text_fields(item):
-        if field == "title":
-            continue
-        for fragment in re.split(r"(?<=[.!?;])\s*|\n", text):
-            ref = {"field": field, "text": text}
-            role = context_role(fragment)
-            negated_use = re.search(r"\b(?:not|no|without)\s+", fragment, re.I)
-            if crops and (not role or role[0] != "allergen_or_facility") and pattern(config["nonfood"]).search(fragment) and not (negated_use and pattern(config["nonfood"]).match(fragment[negated_use.end():])):
-                decision.update(status="pending", reason="field_food_use_conflict",
-                                counter_evidence=[*decision["counter_evidence"], ref])
-            if role:
-                decision["context_evidence"].append({**ref, "role": role[0], "context_start": role[1]})
-                fragment = fragment[:role[1]]
-            if not fragment.strip():
-                continue
-            fragment = re.sub(r"\b[\w]+[- ]free\b", " ", fragment, flags=re.I)
-            if crops and pattern(config["outside_form_statements"]).search(fragment):
-                decision.update(status="excluded", reason="sold_form_outside_scope",
-                                counter_evidence=[*decision["counter_evidence"], ref])
-            found = grain_crops(fragment, config)
-            if crops and pattern(config["outside_crops"]).search(fragment):
-                decision.update(status="pending", reason="field_identity_conflict",
-                                counter_evidence=[*decision["counter_evidence"], ref])
-            if (crops or found) and re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) and (len(found) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(fragment)):
-                decision.update(status="excluded", reason="sold_mixture_outside_scope",
-                                composition_status="declared_outside_scope", counter_evidence=[*decision["counter_evidence"], ref])
-                continue
-            negative = re.search(r"\b(?:not|no|without)\s+(?:raw\s+)?", fragment, re.I)
-            if negative and pattern([alias for aliases in config["grains"].values() for alias in aliases]).match(fragment[negative.end():]):
-                if crops & found:
-                    decision.update(status="pending", reason="field_identity_conflict",
-                                    counter_evidence=[*decision["counter_evidence"], ref])
-                continue
-            if crops and pattern(config["excluded_forms"]).search(fragment):
-                decision.update(status="pending", reason="field_form_conflict",
-                                counter_evidence=[*decision["counter_evidence"], ref])
-            if crops and found and len(narrow_grains(crops | found, config)) > 1:
-                decision.update(status="pending", reason="field_identity_conflict",
-                                counter_evidence=[*decision["counter_evidence"], ref])
-            if (found or crops) and pattern(config["identity_forms"]).search(fragment):
-                crops.update(found)
-                decision["identity_evidence"].append(ref)
-                forms.append(ref)
+    statements = list(source_statements(item))
+    for _, _, fragment, _ in statements:
+        affirmative = pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0]
+        if pattern(config["identity_forms"]).search(affirmative):
+            crops.update(grain_crops(affirmative, config))
     crops = narrow_grains(crops, config)
+    outside_facts = []
+    for ref, clause, fragment, role in statements:
+        negated_use = re.search(r"\b(?:not|no|without)\s+", fragment, re.I)
+        if crops and (not role or role[0] != "allergen_or_facility") and pattern(config["nonfood"]).search(fragment) and not (negated_use and pattern(config["nonfood"]).match(fragment[negated_use.end():])):
+            decision.update(status="pending", reason="field_food_use_conflict",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        if role:
+            decision["context_evidence"].append({**ref, "role": role[0], "clause_text": clause, "context_start": role[1]})
+        if not fragment.strip():
+            continue
+        fragment = re.sub(r"\b[\w]+[- ]free\b", " ", fragment, flags=re.I)
+        if crops and pattern(config["processing_claims"]).search(fragment):
+            decision.update(status="pending", reason="field_processing_ambiguity",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        if crops and pattern(config["outside_form_statements"]).search(fragment):
+            outside_facts.append(("sold_form_outside_scope", ref))
+            decision.update(status="excluded", reason="sold_form_outside_scope",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        found = grain_crops(fragment, config)
+        if crops and pattern(config["outside_crops"]).search(fragment):
+            decision.update(status="pending", reason="field_identity_conflict",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        if (crops or found) and re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) and (len(found) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(fragment)):
+            outside_facts.append(("sold_mixture_outside_scope", ref))
+            decision.update(status="excluded", reason="sold_mixture_outside_scope",
+                            composition_status="declared_outside_scope", counter_evidence=[*decision["counter_evidence"], ref])
+            continue
+        negative = re.search(r"\b(?:not|no|without)\s+(?:raw\s+)?", fragment, re.I)
+        if negative and pattern([alias for aliases in config["grains"].values() for alias in aliases]).match(fragment[negative.end():]):
+            if crops & found:
+                decision.update(status="pending", reason="field_identity_conflict",
+                                counter_evidence=[*decision["counter_evidence"], ref])
+            continue
+        if crops and pattern(config["excluded_forms"]).search(fragment):
+            decision.update(status="pending", reason="field_form_conflict",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        if crops and found and len(narrow_grains(crops | found, config)) > 1:
+            decision.update(status="pending", reason="field_identity_conflict",
+                            counter_evidence=[*decision["counter_evidence"], ref])
+        if (found or crops) and pattern(config["identity_forms"]).search(fragment):
+            crops.update(found)
+            decision["identity_evidence"].append(ref)
+            forms.append(ref)
+    crops = narrow_grains(crops, config)
+    if outside_facts:
+        decision.update(status="excluded", reason=outside_facts[0][0],
+                        counter_evidence=[*decision["counter_evidence"], *(ref for _, ref in outside_facts)])
     categories = item.get("categories") or []
     if decision["reason"] == "category_identity_conflict" and categories:
         leaf = grain_crops(categories[-1], config)

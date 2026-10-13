@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Static Spec counterexamples confirmed by CLI RED, plus independent representative check failed. Full scan finished before attempted stop; no process was terminated.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.1.json": "2740c1919c3c28865287d4621948ab4e3a4b0e5d0735c61d7c484d2eeb419eb1",
+    "records/catalog/grain-A-1.1.1.json": "7329e11d8f7ac869e88eeba0f798847fcec71fc67925e95ed942247e7d2a0079",
+    "data/catalog/grain-A-1.1.1/catalog.jsonl": "952a290694ba1bc8b5b19c20ca63ad9cb32bcbf7857f195a1b99b6d972baf598",
+    "data/catalog/grain-A-1.1.1/audit.jsonl": "f95781e2d5041ffba4b0974dce618a889d955c8533078a4629283f2995b06ae3",
+    "data/catalog/grain-A-1.1.1/pending.jsonl": "a788345c5ab28581112a7ed75a7cd2263d1bc0ce16e35b0d2b337a5c14254021",
+    "data/catalog/grain-A-1.1.1/migration.jsonl": "2dc03d71bac054d7b3cffaceae33ab94e476f622795bcd8ef72d300e10a99e81"
+  }
+}

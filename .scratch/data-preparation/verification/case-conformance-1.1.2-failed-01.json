@@ -1,0 +1,23 @@
+{
+  "scope_version": "grain-A-1.1.2",
+  "source_cases": 41,
+  "counts": {
+    "excluded": 24,
+    "included": 9,
+    "pending": 8
+  },
+  "failures": [
+    {
+      "parent_asin": "B0040PSQFW",
+      "expected": "excluded",
+      "actual": "pending",
+      "reason": "category_form_conflict"
+    }
+  ],
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "e93d37ef728895a6685d5c7e856bf5bd9bae459cb38fbc2bd3b53d46145f148f",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "a1346befc1569ffbe67c69628bc54543e15bccc3912b61e2cfb5a06673337f90"
+}
