@@ -1,0 +1,6 @@
+test_identity_catalog_brand_ranges_and_dietary_advice_cannot_supply_sold_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_brand_ranges_and_dietary_advice_cannot_supply_sold_form) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+OK

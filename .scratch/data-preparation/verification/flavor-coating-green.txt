@@ -1,0 +1,6 @@
+test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.393s
+
+OK

@@ -1,0 +1,23 @@
+test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 393, in test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim
+    self.assertEqual([row["status"] for row in audit], ["excluded", "pending", "included", "included", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included', 'included'] != ['excluded', 'pending', 'included', 'included', 'included']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'included', 'included', 'included', 'included']
++ ['excluded', 'pending', 'included', 'included', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.359s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k direct_flavor_list_coating -v` failed. (See above for error)

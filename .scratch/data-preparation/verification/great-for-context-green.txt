@@ -1,0 +1,6 @@
+test_identity_catalog_great_for_serving_text_cannot_supply_product_identity_or_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_great_for_serving_text_cannot_supply_product_identity_or_form) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.358s
+
+OK

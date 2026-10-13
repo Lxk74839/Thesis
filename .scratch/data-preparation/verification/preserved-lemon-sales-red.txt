@@ -1,0 +1,23 @@
+test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope (test_prepare_data.MetadataPreparationTests.test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope (test_prepare_data.MetadataPreparationTests.test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 364, in test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope
+    self.assertEqual([row["status"] for row in audit], ["excluded", "excluded", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['pending', 'excluded', 'included'] != ['excluded', 'excluded', 'included']
+
+First differing element 0:
+'pending'
+'excluded'
+
+- ['pending', 'excluded', 'included']
++ ['excluded', 'excluded', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.354s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k preserved_lemon_sales -v` failed. (See above for error)

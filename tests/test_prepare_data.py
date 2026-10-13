@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.12.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.13.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -338,6 +338,61 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included", "included", "included"])
         self.assertTrue(any(ref["text"] == "This product is rice-free." for ref in audit[0]["counter_evidence"]))
         self.assertTrue(any(ref["role"] == "negative_identity_claim" for ref in audit[0]["context_evidence"]))
+
+    def test_identity_catalog_great_for_serving_text_cannot_supply_product_identity_or_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "USE", "title": "Unknown pantry product", "description": ["Also great for preserved lemon martinis, stews, poultry dishes and couscous, rice and grain dishes."]},
+            {"parent_asin": "GRAIN", "title": "Raw barley kernels", "description": ["Also great for wheat flakes, rice and grain dishes."]},
+            {"parent_asin": "DIRECT", "title": "Raw barley kernels", "description": ["This product is whole grain wheat."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "pending"])
+        self.assertFalse(audit[0]["form_evidence"])
+        self.assertTrue(any(ref["role"] == "use_comparison_or_brand_context" for ref in audit[0]["context_evidence"]))
+
+    def test_identity_catalog_preserved_lemon_sales_are_outside_grain_scope(self):
+        run = self.identity_catalog([
+            {"parent_asin": "LEMONS", "title": "Jansal Valley Lemons Naturally Preserved in Provencal Spring Water, 2.2 Pounds", "description": ["Also great for preserved lemon martinis, stews, poultry dishes and couscous, rice and grain dishes."]},
+            {"parent_asin": "REVERSED", "title": "Preserved Lemons"},
+            {"parent_asin": "PURPOSE", "title": "Raw rice kernels for serving with preserved lemons"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "excluded", "included"])
+        self.assertTrue(any(ref["field"] == "title" for ref in audit[0]["counter_evidence"]))
+
+    def test_identity_catalog_brand_ranges_and_dietary_advice_cannot_supply_sold_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "BRAND", "title": "Scottish Oatmeal", "features": ["Bob's Red Mill is the nation's leader in stone milling and offers the widest diversity of whole grains found anywhere."]},
+            {"parent_asin": "ADVICE", "title": "Scottish Oatmeal", "features": ["USDA guidelines recommend eating at least 3 servings of whole grains every day."]},
+            {"parent_asin": "DIRECT", "title": "Oatmeal", "features": ["This product is whole grain oats."]},
+            {"parent_asin": "TITLE", "title": "Raw oat groats", "features": ["USDA guidelines recommend eating at least 3 servings of whole grains every day."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included", "included"])
+        self.assertFalse(audit[0]["form_evidence"])
+        self.assertFalse(audit[1]["form_evidence"])
+
+    def test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim(self):
+        claim = "Our Fruit Rainbow popcorn brings the colors of the rainbow and the flavors of grape, lemon, orange, blue raspberry and cherry in a light, crunchy coating."
+        run = self.identity_catalog([
+            {"parent_asin": "FLAVORED", "title": "Raw popcorn kernels", "description": [claim]},
+            {"parent_asin": "CONFLICT", "title": "Raw popcorn kernels", "description": [claim], "details": {"Ingredients": "Corn"}},
+            {"parent_asin": "RECIPE", "title": "Raw popcorn kernels", "description": ["Recipe: create the flavors of grape and cherry in a light coating."]},
+            {"parent_asin": "OPTION", "title": "Raw popcorn kernels", "description": ["Popcorn can be coated with the flavors of grape in a light coating."]},
+            {"parent_asin": "NATURAL", "title": "Raw popcorn kernels", "description": ["This corn has a natural nutty flavor and a protective coating."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "pending", "included", "included", "included"])
+        self.assertEqual([row["composition_status"] for row in audit[:2]], ["declared_outside_scope", "conflict"])
+        self.assertTrue(any(ref["text"] == claim for ref in audit[0]["counter_evidence"]))
 
     def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
         run = self.identity_catalog([

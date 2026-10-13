@@ -1,0 +1,14 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full accounting passed; full-record semantic sample revealed sold-object, use and brand/nutrition boundary errors. No review extraction was run for this rejected version.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.12.json": "2537534e930d09c234cb3dfb721b1b569a87f9b165d868e484297d46486cd4d2",
+    "records/catalog/grain-A-1.1.12.json": "a5a4dfac85befa25fe7fc0f4a0387521fe9925f2753edd33c13b96c4c197991f",
+    "data/catalog/grain-A-1.1.12/catalog.jsonl": "84e320cc14dc61ed4bd47644ff5e2967c71159cdcea086db06abd2497a24037f",
+    "data/catalog/grain-A-1.1.12/audit.jsonl": "a62504ecf672858a02230a5bffb0da956b627fd4bfcc9e1243ea0372a2a1ed87",
+    "data/catalog/grain-A-1.1.12/migration.jsonl": "2e9090c4e32892b7fc6bfc67dfed9d4d26c504c7847dce921c41d92441fc7c54",
+    "data/catalog/grain-A-1.1.12/pending.jsonl": "81aaa8c5c4a5600e45ed4344c43f9e2bca969ac6482040c5bb96dd311fbbe7d7",
+    ".scratch/data-preparation/verification/grain-A-1.1.12-check.json": "4103eeb7e1700e1d3f880487d985f5c2f7b8f36a8497a46b46cdf57c29fe4001",
+    "data/diagnostics/grain-A-1.1.12-semantic-sample.json": "b1ccfd62f55e79510a9552a835a8a8d2cdd1dec84fd3797c7ffefd42e893bb2a"
+  }
+}

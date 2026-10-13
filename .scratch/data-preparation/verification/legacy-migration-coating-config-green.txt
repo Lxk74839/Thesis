@@ -1,0 +1,6 @@
+test_identity_catalog_records_every_old_new_decision_and_preserves_old_artifacts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_records_every_old_new_decision_and_preserves_old_artifacts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.362s
+
+OK

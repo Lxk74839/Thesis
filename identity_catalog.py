@@ -30,8 +30,8 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|(?:can|should|to) be (?:cooked|combined|mixed)|often cooked with|can be coated|can be topped|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
-        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking|freshly cooked (?:luster|gloss|stickiness))\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|(?:can|should|to) be (?:cooked|combined|mixed)|often cooked with|can be coated|can be topped|baking|make|making|perfect for|ideal for|great for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|offers the widest diversity|(?:USDA )?guidelines recommend eating|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking|freshly cooked (?:luster|gloss|stickiness))\b"),
         ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
         ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in|known as the southern oatmeal|preferred over)\b"),
     ):
@@ -283,7 +283,7 @@ def classify_identity(item, config):
                           for grain in pattern(grain_names).finditer(composition_fragment)
                           for join in re.finditer(r"\bwith\b", composition_fragment, re.I)
                           for addition in pattern([*grain_names, *config["non_grain_ingredients"], *config["outside_crops"]]).finditer(composition_fragment))
-        mixture = re.search(r"\b(?:blend|blended|mixture|mix|mixed|contains|consists of|made from|infused with)\b", fragment, re.I) or direct_with or (contrast and grain_crops(contrast[1], config))
+        mixture = re.search(r"\b(?:blend|blended|mixture|mix|mixed|contains|consists of|made from|infused with)\b", fragment, re.I) or direct_with or (contrast and grain_crops(contrast[1], config)) or (config.get("flavored_coating_pattern") and re.search(config["flavored_coating_pattern"], composition_fragment, re.I))
         mixture_text = composition_fragment if mixture else fragment
         if (crops or found) and mixture and (len(grain_crops(mixture_text, config)) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(mixture_text)):
             outside_facts.append(("sold_mixture_outside_scope", ref))
