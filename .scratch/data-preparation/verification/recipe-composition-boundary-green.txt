@@ -1,0 +1,6 @@
+test_identity_catalog_recipe_label_ends_composition_but_salt_continuation_does_not (test_prepare_data.MetadataPreparationTests.test_identity_catalog_recipe_label_ends_composition_but_salt_continuation_does_not) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.353s
+
+OK

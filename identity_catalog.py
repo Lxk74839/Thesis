@@ -80,7 +80,7 @@ def composition_disclosure(item, config):
             if not fragment:
                 continue
             match = pattern(config["composition_prefixes"]).match(fragment)
-            if not match and not active:
+            if not match:
                 inline = re.search(r"\bingredients?\s*:", fragment, re.I)
                 if inline and not context_role(fragment[:inline.start()]):
                     match = inline
@@ -97,7 +97,7 @@ def composition_disclosure(item, config):
                     values.append(active)
                 value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", fragment[match.end():], flags=re.I)
                 active = [] if match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value) else [value]
-            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or (pattern(config["identity_negations"]).match(fragment) and not re.match(r"not\s+only\b", fragment, re.I))):
+            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or (context_role(fragment) and context_role(fragment)[1] == 0) or (pattern(config["identity_negations"]).match(fragment) and not re.match(r"not\s+only\b", fragment, re.I))):
                 values.append(active)
                 active = []
             elif active:
