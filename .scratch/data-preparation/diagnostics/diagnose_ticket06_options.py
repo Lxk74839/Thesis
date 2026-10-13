@@ -22,6 +22,16 @@ refs = [json.loads(line) for line in (ROOT / record["references_path"]).read_tex
 rows = [(ref["source_line"], json.loads(line)) for ref, line in zip(refs, raw_path.read_text("utf-8").splitlines(), strict=True)]
 groups = [json.loads(line) for line in (ROOT / record["groups_path"]).read_text("utf-8").splitlines()]
 conflicted = {n for group in groups if group["kind"] in ("raw_quad", "same_product_equal_time") and group["conflicting_fields"] for n in group["source_lines"]}
+exact_excess = {n for group in groups if group["kind"] == "exact_object" for n in group["source_lines"][1:]}
+joint_removed = conflicted | exact_excess
+joint_text_rows = [(n, row) for n, row in rows if n not in joint_removed
+                   and row["text"].strip() and 1 <= row["rating"] <= 5]
+joint_text_option = {"rule": "Nonblank valid-rating text, exact-object dedup and both raw-quad/equal-time fact-conflict quarantine; diagnostic counts only.",
+                     "kept_reviews": len(joint_text_rows), "lost_reviews": len(rows) - len(joint_text_rows),
+                     "kept_accounts": len({r["user_id"] for _, r in joint_text_rows}),
+                     "kept_active_products": len({r["parent_asin"] for _, r in joint_text_rows}),
+                     "catalog_products_retained": len(record["product_review_counts"]),
+                     "formal_clean_view": "not_built"}
 
 
 def alternatives(values, minimum_rating):
@@ -67,6 +77,8 @@ assert len(cut_rows) <= len(rows)
 result = {"status": "hypothetical_options_not_approved", "scope_version": VERSION,
           "generated_at_utc": datetime.now(timezone.utc).isoformat(),
           "extract_sha256": record["extract_sha256"], "record_sha256": hashlib.sha256(record_path.read_bytes()).hexdigest(),
+          "producer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+          "joint_text_option": joint_text_option,
           "rating_options": ratings,
           "cutoff_alternative": {"timestamp_ms": cutoff, "endpoint": "exclusive", "utc": "2023-01-01T00:00:00Z",
                                  "justification": "Illustrates limiting retrospective data to the end of calendar 2022; does not claim later source observations are invalid or that 2022 coverage is complete.",

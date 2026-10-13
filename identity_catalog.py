@@ -61,6 +61,13 @@ def source_statements(item, config):
             yield {"field": field, "text": text}, clause, re.sub(r"\b[\w]+[- ]free\b", " ", direct, flags=re.I), role
 
 
+def affirmative_composition(value, config):
+    components = [alias for aliases in config["grains"].values() for alias in aliases]
+    components += [*config["outside_crops"], *config["non_grain_ingredients"]]
+    negative = r"(?:" + pattern(config["identity_negations"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
+    return re.sub(negative, " ", value, flags=re.I)
+
+
 def composition_disclosure(item, config):
     declarations = []
     for field, text in text_fields(item):
@@ -93,7 +100,7 @@ def composition_disclosure(item, config):
         if active:
             values.append(active)
         for fragments in values:
-            value = "\n".join(fragments).rstrip(".!?")
+            value = affirmative_composition("\n".join(fragments).rstrip(".!?"), config)
             crops = grain_crops(value, config)
             outside = pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(value)
             remainder = value
@@ -106,7 +113,7 @@ def composition_disclosure(item, config):
             declarations.append((status, crops, {"field": field, "text": text, "declaration_parts": fragments}))
     if not declarations:
         return "not_disclosed", set(), []
-    known = {(tuple(sorted(crops)), tuple(sorted(match.group().lower() for match in pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).finditer("\n".join(ref["declaration_parts"])))))
+    known = {(tuple(sorted(crops)), tuple(sorted(match.group().lower() for match in pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).finditer(affirmative_composition("\n".join(ref["declaration_parts"]), config)))))
              for status, crops, ref in declarations if status != "unresolved" and not (pattern(config["partial_composition_prefixes"]).search(ref["text"]) or re.search("|".join(config["partial_composition_patterns"]), ref["text"], re.I))}
     status = ("conflict" if len(known) > 1 or ({"declared_single_grain", "declared_outside_scope"} <= {status for status, _, _ in declarations}) else
               "unresolved" if any(status == "unresolved" for status, _, _ in declarations) else
@@ -208,7 +215,8 @@ def classify_identity(item, config):
                             counter_evidence=[*decision["counter_evidence"], ref])
         contrast = re.search(r"\bnot\s+only\s+(.+?)\s+but\b", fragment, re.I)
         mixture = re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) or (contrast and grain_crops(contrast[1], config))
-        if (crops or found) and mixture and (len(found) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(fragment)):
+        mixture_text = affirmative_composition(fragment, config) if mixture else fragment
+        if (crops or found) and mixture and (len(grain_crops(mixture_text, config)) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(mixture_text)):
             outside_facts.append(("sold_mixture_outside_scope", ref))
             decision.update(status="excluded", reason="sold_mixture_outside_scope",
                             composition_status="declared_outside_scope", counter_evidence=[*decision["counter_evidence"], ref])

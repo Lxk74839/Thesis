@@ -1,0 +1,6 @@
+test_identity_catalog_complete_composition_does_not_add_negated_components (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_composition_does_not_add_negated_components) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.365s
+
+OK

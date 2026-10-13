@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full source scan reached EOF. Round13 Spec and public CLI RED demonstrated negative components inside a complete disclosure are counted as additions and can manufacture conflict between consistent declarations. Six components preserved; no independent acceptance claimed. Separate 1.1.10 interprets negated known components without altering scheme A or research parameters.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.9.json": "195fa74ec32df26bf6a1ed354eadf9ccab789466e252a915962c6e4bacd4c27c",
+    "records/catalog/grain-A-1.1.9.json": "188347cc5291a319bdacd5571ebf2bdc2d08c829487d341dca395c63ffe84647",
+    "data/catalog/grain-A-1.1.9/catalog.jsonl": "ca24282dbb1478819a0dfc57e671711eedcf18c09ca772cdded2112a059fe190",
+    "data/catalog/grain-A-1.1.9/audit.jsonl": "2f38a48cf9f19af33a3cd300930a05584c6c9265dae0bfe6a3669ccbf3ca04e6",
+    "data/catalog/grain-A-1.1.9/pending.jsonl": "1da6c759c97287a4b2cf1e29a075fcd10625be636ca88b0735b7efbf48ef549f",
+    "data/catalog/grain-A-1.1.9/migration.jsonl": "d690814bc3b12b33e717b6793c8425351402df6ac7a7e52d1a6c51db5725e5ef"
+  }
+}

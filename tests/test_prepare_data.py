@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.9.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.10.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -336,7 +336,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.9.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.10.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -554,6 +554,22 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([r["status"] for r in audit], ["pending", "pending", "pending", "included"])
         self.assertTrue(all(r["counter_evidence"] for r in audit[:3]))
         self.assertTrue(all(r["context_evidence"] for r in audit))
+
+    def test_identity_catalog_complete_composition_does_not_add_negated_components(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NO_SALT", "title": "Raw rice kernels", "features": ["Contains only rice, no salt."]},
+            {"parent_asin": "NO_WHEAT", "title": "Raw rice kernels", "features": ["Contains only rice, no wheat."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Contains only rice, no salt."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "SALT", "title": "Raw rice kernels", "features": ["Contains rice and salt."]},
+            {"parent_asin": "UNKNOWN", "title": "Raw rice kernels", "features": ["Contains only rice, no unknown substance."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded", "pending"])
+        self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "declared_single_grain", "declared_single_grain", "declared_outside_scope", "unresolved"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["text"], "Contains only rice, no salt.")
+        self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["rice, no salt."])
 
     def test_identity_catalog_complete_single_composition_conflicts_with_explicit_added_components(self):
         run = self.identity_catalog([

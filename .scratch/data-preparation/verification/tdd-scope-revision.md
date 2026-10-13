@@ -75,3 +75,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第十一轮：Standards 0；Spec指出sugar在outside_objects早退，Raw rice kernels with sugar＋Ingredients Rice的公共夹具实际RED→GREEN；同商品明确添加状态不变成未披露，完整声明矛盾保留conflict，Rice Sauce＋单粮原料对照仍属A外形态而不滥判配方冲突。独立1.1.8全部95项通过（33.486秒），见 scope-revision-tests-round12.txt。1.1.7全源已结束，因本项拒绝且六摘要保留，未声称独立验收。A、论文核心及06未决参数不变。
 
 第十二轮：Standards硬违反0／possible Duplicated Code轻微建议1，已按简洁和最小修改原则评估保留局部更新，处理依据单独记录，不改写发现数。Spec两项分别公共CLI实际RED→GREEN：中文不含／不是不能供肯定粮种身份，其他粮种否定以及非转基因／无添加修饰对照保持正确；范围外Quinoa标题与直接Raw rice字段保留关键身份冲突，两字段依据均留存，Serve with配餐对照仍排除。独立1.1.9不扩展A、不补真实成分，1.1.8已全源但拒绝且六摘要保留，未声称独立验收。全套97项通过（见scope-revision-tests-round13.txt），所有运行显式Thesis，未新增依赖。
+
+第十三轮：Standards硬违反0／新增启发0，历史轻微重复建议1接受登记保留；Spec 1项P2。Contains only rice, no salt完整声明及与Ingredients: Rice的一致声明，通过公共入口实际RED→GREEN；已知否定成分不计作正向组成，原文与声明片段保留，多份签名也使用同一肯定组成解释。No wheat同义控制正确、真实Rice+salt和既有Not only添加仍排除；未知成分文字不因否定处理而改成已知。独立1.1.10，1.1.9全源EOF但拒绝且六摘要保留，没有独立验收声明。全套98项通过（scope-revision-tests-round14.txt）。06诊断追加联合文本条件的聚合数量，仍未批准、未创建正式清洗视图或用户任务。
