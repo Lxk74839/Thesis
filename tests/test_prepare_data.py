@@ -416,6 +416,20 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["Rice."])
         self.assertTrue(audit[0]["context_evidence"])
 
+    def test_identity_catalog_recipe_partial_wording_does_not_change_complete_product_declaration(self):
+        run = self.identity_catalog([
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Recipe: made with rice and salt."]},
+            {"parent_asin": "PARTIAL", "title": "Raw rice kernels", "features": ["Made with rice."]},
+            {"parent_asin": "CONTINUATION", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "pending", "excluded"])
+        self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "unresolved", "declared_outside_scope"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["Rice."])
+        self.assertTrue(audit[0]["context_evidence"])
+
     def test_identity_catalog_repeated_inline_ingredient_label_starts_a_new_declaration(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "features": ["Ingredients: Rice. Product ingredients: Wheat."]},

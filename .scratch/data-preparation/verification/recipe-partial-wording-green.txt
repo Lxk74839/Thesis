@@ -1,0 +1,6 @@
+test_identity_catalog_recipe_partial_wording_does_not_change_complete_product_declaration (test_prepare_data.MetadataPreparationTests.test_identity_catalog_recipe_partial_wording_does_not_change_complete_product_declaration) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.368s
+
+OK

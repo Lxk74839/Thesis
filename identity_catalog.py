@@ -75,6 +75,7 @@ def composition_disclosure(item, config):
         dedicated = field.lower() in ("details.ingredients", "details.ingredient")
         values = []
         active = []
+        active_partial = False
         for fragment in re.split(r"(?<=[.!?])\s*|\n", text):
             fragment = fragment.strip()
             if not fragment:
@@ -92,21 +93,23 @@ def composition_disclosure(item, config):
                 partial = re.search("|".join(config["partial_composition_patterns"]), fragment, re.I)
                 if partial and not context_role(fragment[:partial.start()]):
                     match = partial
+            boundary = context_role(fragment) if active and not match else None
             if match:
                 if active:
-                    values.append(active)
+                    values.append((active, active_partial))
                 value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", fragment[match.end():], flags=re.I)
                 active = [] if match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value) else [value]
-            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or (context_role(fragment) and context_role(fragment)[1] == 0) or (pattern(config["identity_negations"]).match(fragment) and not re.match(r"not\s+only\b", fragment, re.I))):
-                values.append(active)
+                active_partial = bool(pattern(config["partial_composition_prefixes"]).search(fragment) or re.search("|".join(config["partial_composition_patterns"]), fragment, re.I))
+            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or (boundary and boundary[1] == 0) or (pattern(config["identity_negations"]).match(fragment) and not re.match(r"not\s+only\b", fragment, re.I))):
+                values.append((active, active_partial))
                 active = []
             elif active:
                 active.append(fragment)
             elif dedicated and not values:
                 active = [fragment]
         if active:
-            values.append(active)
-        for fragments in values:
+            values.append((active, active_partial))
+        for fragments, partial in values:
             value = affirmative_composition("\n".join(fragments).rstrip(".!?"), config)
             crops = grain_crops(value, config)
             outside = pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(value)
@@ -116,12 +119,12 @@ def composition_disclosure(item, config):
             remainder = re.sub(r"100\s*%|[\s,;:().!\-]", "", remainder)
             components = {part.strip().lower() for part in re.split(r"[,;\n]", value) if part.strip()}
             status = ("declared_outside_scope" if outside or len(crops) > 1 else
-                      "unresolved" if not crops or remainder or len(components) > 1 or pattern(config["partial_composition_prefixes"]).search(text) or re.search("|".join(config["partial_composition_patterns"]), text, re.I) else "declared_single_grain")
-            declarations.append((status, crops, {"field": field, "text": text, "declaration_parts": fragments}))
+                      "unresolved" if not crops or remainder or len(components) > 1 or partial else "declared_single_grain")
+            declarations.append((status, crops, {"field": field, "text": text, "declaration_parts": fragments, "partial_declaration": partial}))
     if not declarations:
         return "not_disclosed", set(), []
     known = {(tuple(sorted(crops)), tuple(sorted(match.group().lower() for match in pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).finditer(affirmative_composition("\n".join(ref["declaration_parts"]), config)))))
-             for status, crops, ref in declarations if status != "unresolved" and not (pattern(config["partial_composition_prefixes"]).search(ref["text"]) or re.search("|".join(config["partial_composition_patterns"]), ref["text"], re.I))}
+             for status, crops, ref in declarations if status != "unresolved" and not ref["partial_declaration"]}
     status = ("conflict" if len(known) > 1 or ({"declared_single_grain", "declared_outside_scope"} <= {status for status, _, _ in declarations}) else
               "unresolved" if any(status == "unresolved" for status, _, _ in declarations) else
               "declared_outside_scope" if any(status == "declared_outside_scope" for status, _, _ in declarations) else
