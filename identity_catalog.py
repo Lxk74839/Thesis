@@ -34,10 +34,12 @@ def context_role(text):
 
 def source_statements(item, config):
     for field, text in text_fields(item):
-        if field == "title":
-            continue
         for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
             role = context_role(clause)
+            if field == "title":
+                purpose = re.search(r"\b(?:for|use with|great with|alternative to|substitute for)\b", clause, re.I)
+                if purpose and (not role or purpose.start() < role[1]):
+                    role = ("use_comparison_or_brand_context", purpose.start())
             direct = clause[:role[1]] if role else clause
             negative_terms = pattern([*config["processing_claims"], *config["non_grain_ingredients"],
                                       *config["excluded_forms"], *config["outside_form_statements"],
@@ -150,8 +152,7 @@ def classify_identity(item, config):
     forms = [{"field": "title", "text": title}] if crops and pattern(config["identity_forms"]).search(sold) else []
     if crops:
         decision["identity_evidence"] = [{"field": "title", "text": title}]
-    decision["context_evidence"] = ([{"field": "title", "text": title, "role": "brand_or_texture_context",
-                                      "clause_text": title, "context_start": re.search(r"\bwhen cooked\b", title, re.I).start()}] if title_use else [])
+    decision["context_evidence"] = []
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
@@ -201,8 +202,10 @@ def classify_identity(item, config):
                             counter_evidence=[*decision["counter_evidence"], ref])
         if (found or crops) and pattern(config["identity_forms"]).search(fragment):
             crops.update(found)
-            decision["identity_evidence"].append(ref)
-            forms.append(ref)
+            if ref not in decision["identity_evidence"]:
+                decision["identity_evidence"].append(ref)
+            if ref not in forms:
+                forms.append(ref)
     crops = narrow_grains(crops, config)
     if outside_facts:
         decision.update(status="excluded", reason=outside_facts[0][0],

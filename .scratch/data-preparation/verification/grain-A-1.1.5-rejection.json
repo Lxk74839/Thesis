@@ -1,0 +1,8 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "89 public tests passed, but Round9 Spec and public RED demonstrate a later independent title fact is hidden by when-cooked truncation. No full scan was started and no catalog record exists. Config retained; independent 1.1.6 evaluates title clauses through the same source-statement logic.",
+  "source_scan_completed": false,
+  "preserved_sha256": {
+    "config/grain-A-1.1.5.json": "00da41b264ed060e6e5c62a0da23965abe7c82e2cf6a40b22b261153f2fc660a"
+  }
+}

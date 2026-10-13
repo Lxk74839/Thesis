@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.5.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.6.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -306,7 +306,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.5.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.6.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -470,6 +470,19 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([r["status"] for r in audit], ["excluded", "excluded", "included", "pending", "included"])
         self.assertTrue(audit[2]["context_evidence"])
         self.assertTrue(audit[3]["counter_evidence"])
+
+    def test_identity_catalog_title_context_cannot_hide_later_product_facts(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Raw barley kernels; when cooked, serve with salt; this product is wheat grain."},
+            {"parent_asin": "USE", "title": "Raw barley kernels; when cooked, serve with salt."},
+            {"parent_asin": "FOR", "title": "Raw rice kernels for wheat bread."},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["pending", "included", "included"])
+        self.assertTrue(audit[0]["counter_evidence"])
+        self.assertTrue(all(r["context_evidence"] for r in audit))
 
     def test_identity_catalog_preserves_purpose_and_texture_without_false_conflicts(self):
         run = self.identity_catalog([

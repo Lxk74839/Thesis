@@ -1,0 +1,6 @@
+test_identity_catalog_title_context_cannot_hide_later_product_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_title_context_cannot_hide_later_product_facts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.375s
+
+OK

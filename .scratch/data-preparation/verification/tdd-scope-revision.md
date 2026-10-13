@@ -61,3 +61,7 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第八轮：Standards 0；Spec 1 项 P1。Cooked barley kernels／Cooked oat groats 与 Raw 标题＋本品 Cooked 字段的公共夹具实际 RED，分别误入选。独立1.1.5将明确 cooked 售卖形态按既有 A 熟制排除，字段与 Raw 矛盾继续待决；uncooked 和 when cooked 烹调描述仍可入选并保留角色。单项 GREEN。1.1.4 正在扫描时已核实 Thesis 解释器、命令及 PID 后停止本次计算，未覆盖其配置／部分产物；五项现有组件摘要留存，状态 aborted_pre_release，不声称完整扫描或独立验收。
 
 1.1.5 全套 89 项公共入口行为测试通过（31.566 秒），见 scope-revision-tests-round9.txt；没有新增依赖。
+
+第九轮：Standards 0；Spec 1 项 P1。Raw barley kernels; when cooked...; this product is wheat grain 的公共夹具实际 RED（错误 included）；独立1.1.6让标题的每个独立陈述与其他字段一起核对，单个用途句不能遮住下一句反证，GREEN。纯 when cooked 和 for wheat bread 仍按用途保存。1.1.5 未启动全量扫描，保留独立配置摘要并拒绝，未声称有目录或完整验收。标题用途原文角色统一由同一陈述逻辑记录，删去重复记录路径。
+
+新增标题检查后第一次90项回归实际失败1项：同一标题身份引用重复，既有公共角色测试捕获。原测试不改，避免重复引用的最小修复单项GREEN；全套90项最终通过（32.984秒），见 scope-revision-tests-round10-final.txt。失败日志保留，1.1.6 尚待固定复审和全量验收。

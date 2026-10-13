@@ -1,0 +1,6 @@
+test_identity_catalog_retains_real_counterevidence_but_ignores_context_roles (test_prepare_data.MetadataPreparationTests.test_identity_catalog_retains_real_counterevidence_but_ignores_context_roles) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.392s
+
+OK

@@ -1,0 +1,23 @@
+test_identity_catalog_title_context_cannot_hide_later_product_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_title_context_cannot_hide_later_product_facts) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_title_context_cannot_hide_later_product_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_title_context_cannot_hide_later_product_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 483, in test_identity_catalog_title_context_cannot_hide_later_product_facts
+    self.assertEqual([r["status"] for r in audit], ["pending", "included", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included'] != ['pending', 'included', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included']
++ ['pending', 'included', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k title_context` failed. (See above for error)
