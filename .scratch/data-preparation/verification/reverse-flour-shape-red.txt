@@ -1,0 +1,25 @@
+test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients (test_prepare_data.MetadataPreparationTests.test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients (test_prepare_data.MetadataPreparationTests.test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 122, in test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients
+    self.assertEqual([row["status"] for row in audit],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     ["pending", "pending", "excluded", "excluded", "excluded", "excluded"])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'excluded', 'excluded', 'excluded', 'excluded', 'excluded'] != ['pending', 'pending', 'excluded', 'excluded', 'excluded', 'excluded']
+
+First differing element 0:
+'excluded'
+'pending'
+
+- ['excluded', 'excluded', 'excluded', 'excluded', 'excluded', 'excluded']
++ ['pending', 'pending', 'excluded', 'excluded', 'excluded', 'excluded']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.350s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k reverse_flour -v` failed. (See above for error)

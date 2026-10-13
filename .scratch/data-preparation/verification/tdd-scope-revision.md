@@ -97,3 +97,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 独立候选1.1.12：①连字符专名 Otona-no-Furikake 遮住真实米饭调味料，公共 RED→GREEN，实际语言否定与专名分开，普通 No raw rice 仍未决；②Steel Cut／Corn Grits与Item Form Flaked的关键矛盾，公共 RED→GREEN，保留两方引用，rolled/flaked一致及食谱用途对照仍可入；③Bulgur名称的预处理歧义，结合实际USDA报告与元数据，公共 RED→GREEN，真正Raw Cracked Wheat和食谱用途不受影响。不扩A、不补真实加工事实。全套115项通过（42.705秒），41原例和两版已读分层样本的并集回放全部一致，原1.1.11回放不改写。独立验收按明确传入版本读取相应预检原文判定，下一版全源仍待执行。
 
 第19轮因会话中断没有两个完整报告，不记通过，见 scope-revision-round19-interrupted.md。Spec阶段消息定位bulgur只加入标题歧义项、遗漏非标题字段。公共 description／features／details 三种直接陈述实际 RED；加到processing_claims后直接字段正确，但食谱用途对照仍失败。旧判定器留下的反证实际使用 ambiguous_processing_or_mix 原因码；按既有新版分句流程重建该类反证，直接预处理陈述仍pending、已明确用途不供反证，第三次单项GREEN。两次中间失败及116项失败回归日志原样保留，未削弱测试。最终116项通过（38.065秒），41原例和86分层并集重新通过，上一配置摘要的预检另存preflight-01。1.1.12仍未正式全源生成，没有伪增版本或冻结06参数。
+
+第20轮也因会话中断没有最终报告，不记通过。阶段消息两项分别公共 RED→GREEN：Rice Flour 标题与直接米片销售字段的反向冲突保留 pending，专用配料、原料来源和食谱不提供售卖形态；whole grain／whole-grain 与 steel cut／steel-cut 的同义否定统一比较，原文保持原样，未主张的 rolled 否定不制造冲突。全部118项通过（39.829秒），41原例及86分层并集再次一致；旧回放 JSON 另存 preflight-02，旧日志可由固定提交 afc997f 和保留的日志恢复，不覆盖历史 Git 记录。仍为未全源生成的候选1.1.12，未确认06规则。

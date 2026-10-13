@@ -190,6 +190,15 @@ def classify_identity(item, config):
     if decision["reason"] == "excluded_form" and not pattern(config["excluded_forms"]).search(sold):
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     statements = list(source_statements(item, config))
+    if decision["reason"] == "excluded_form":
+        shapes = [ref for ref, _, fragment, _ in statements if ref["field"] != "title"
+                  and ref["field"].lower() not in ("details.ingredients", "details.ingredient")
+                  and not pattern(config["composition_prefixes"]).search(fragment)
+                  and not re.search(r"\b(?:ingredients?\s*:|made from|made of)\b", fragment, re.I)
+                  and pattern(config["solid_sale_shapes"]).search(affirmative_identity(fragment, config))]
+        if shapes:
+            decision.update(status="pending", reason="field_form_conflict",
+                            counter_evidence=[{"field": "title", "text": title}, *shapes])
     if decision["reason"] == "outside_crop":
         identities = [ref for ref, _, fragment, _ in statements if ref["field"] != "title"
                       and grain_crops(affirmative_identity(fragment, config), config)]
@@ -212,7 +221,7 @@ def classify_identity(item, config):
         for shape, terms in config.get("explicit_sale_shapes", {}).items():
             if pattern(terms).search(affirmative):
                 sale_shapes.setdefault(shape, []).append(ref)
-        form_names = {match.group().lower() for match in pattern(config["identity_forms"]).finditer(affirmative)}
+        form_names = {match.group().lower().replace("-", " ") for match in pattern(config["identity_forms"]).finditer(affirmative)}
         if form_names:
             affirmative_forms.update(form_names)
             crops.update(grain_crops(affirmative, config))
@@ -253,7 +262,7 @@ def classify_identity(item, config):
         negated = fragment[negative.end():] if negative else ""
         negated_forms = {"raw"} if negative and re.search(r"\braw\s*$", negative.group(), re.I) else set()
         while modifier := pattern(config["identity_forms"]).match(negated):
-            negated_forms.add(modifier.group().lower())
+            negated_forms.add(modifier.group().lower().replace("-", " "))
             negated = negated[modifier.end():].lstrip()
         negated_grain = pattern([alias for aliases in config["grains"].values() for alias in aliases]).match(negated)
         if negative and negated_grain:

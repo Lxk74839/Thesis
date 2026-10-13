@@ -459,6 +459,10 @@
     "cut_or_grits": ["steel cut", "steel-cut", "grits"],
     "flaked": ["rolled", "flakes", "flaked"]
   },
+  "solid_sale_shapes": [
+    "kernel", "kernels", "groats", "berries", "rolled", "steel cut", "steel-cut",
+    "flakes", "flaked", "grits", "flattened rice", "米粒", "麦粒", "燕麦片"
+  ],
   "outside_objects": [
     "sauce",
     "sauces",

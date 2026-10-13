@@ -1,0 +1,6 @@
+test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients (test_prepare_data.MetadataPreparationTests.test_identity_catalog_retains_reverse_flour_shape_conflict_without_using_ingredients) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.350s
+
+OK

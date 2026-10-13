@@ -1,0 +1,23 @@
+test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 138, in test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim
+    self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included'] != ['pending', 'pending', 'pending', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included', 'included']
++ ['pending', 'pending', 'pending', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.355s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k hyphenated_form_negations -v` failed. (See above for error)

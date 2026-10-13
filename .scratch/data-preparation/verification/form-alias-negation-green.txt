@@ -1,0 +1,6 @@
+test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_compares_hyphenated_form_negations_as_the_same_claim) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.351s
+
+OK
