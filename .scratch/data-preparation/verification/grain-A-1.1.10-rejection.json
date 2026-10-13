@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full production scan reached EOF, but independent raw-record QA failed on a confirmed milled rice: post-cooking texture prose was treated as sold cooked form. Public CLI RED reproduced the issue. Six components and failed QA retained. Separate 1.1.11 corrects evidenced context and declaration negation without changing scheme A; no independent acceptance of 1.1.10 claimed.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.10.json": "3d2f8c552b1263a4fd7fccd85fd40e3c0c407785836bde0a449df22bcfabac7a",
+    "records/catalog/grain-A-1.1.10.json": "6cdcbe94af9488881d13647883fc084c1644f87017fa134f2136e68347f9e778",
+    "data/catalog/grain-A-1.1.10/catalog.jsonl": "2f443dd1e231315c38290b1a2f260493f4ba34ee0ce11ada30d4ecf4e098c2b5",
+    "data/catalog/grain-A-1.1.10/audit.jsonl": "8d26915a3baed9c4e64a87ffb5440f9f38ca95d5467eff344d380edee77324fe",
+    "data/catalog/grain-A-1.1.10/pending.jsonl": "07190f8b7567af4b216410829679d8f0e8af5a788a9b7312b70836c219cf97bc",
+    "data/catalog/grain-A-1.1.10/migration.jsonl": "db4d25eee737538a58c0db691dba1561553666cb9f962b73f4623d7fe3fba484"
+  }
+}

@@ -77,3 +77,11 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第十二轮：Standards硬违反0／possible Duplicated Code轻微建议1，已按简洁和最小修改原则评估保留局部更新，处理依据单独记录，不改写发现数。Spec两项分别公共CLI实际RED→GREEN：中文不含／不是不能供肯定粮种身份，其他粮种否定以及非转基因／无添加修饰对照保持正确；范围外Quinoa标题与直接Raw rice字段保留关键身份冲突，两字段依据均留存，Serve with配餐对照仍排除。独立1.1.9不扩展A、不补真实成分，1.1.8已全源但拒绝且六摘要保留，未声称独立验收。全套97项通过（见scope-revision-tests-round13.txt），所有运行显式Thesis，未新增依赖。
 
 第十三轮：Standards硬违反0／新增启发0，历史轻微重复建议1接受登记保留；Spec 1项P2。Contains only rice, no salt完整声明及与Ingredients: Rice的一致声明，通过公共入口实际RED→GREEN；已知否定成分不计作正向组成，原文与声明片段保留，多份签名也使用同一肯定组成解释。No wheat同义控制正确、真实Rice+salt和既有Not only添加仍排除；未知成分文字不因否定处理而改成已知。独立1.1.10，1.1.9全源EOF但拒绝且六摘要保留，没有独立验收声明。全套98项通过（scope-revision-tests-round14.txt）。06诊断追加联合文本条件的聚合数量，仍未批准、未创建正式清洗视图或用户任务。
+
+第十四轮：Standards硬违反0／新增启发0，历史轻微建议1保留；Spec 1项P2。完整声明salt-free被当作实际盐，公共RED→GREEN；再核对同一已支持语义的free from／does not contain，扩展夹具实际RED2→GREEN2。否定原文、完整声明签名一致性和真实添加对照均保留。1.1.10独立原例验收失败于日本精米的煮后质地；公共Cooked texture夹具实际RED→GREEN，仅把明确质地／食用意愿归上下文，This product is freshly cooked rice实际形态仍冲突。1.1.10全源组件及失败QA保留，独立新1.1.11未正式扫描。
+
+41原例全量前回放随后暴露品牌蜂蜜pure and unfiltered被跨位and误当粮种添加；公共RED→GREEN，连接词须位于粮种与新增成分之间，Sugar and Rice实际组合控制仍冲突。41原例重新全部对齐，首轮失败及中间通过记录另存不覆盖。
+
+74条分层完整元数据检查进一步定位真实inline made with加盐／葡萄干、inline made of 100%完整声称、历史southern oatmeal昵称、蔬菜米／菌种售卖对象、Rice Dishes字段／Cold Cereal和Granola类别反证／Muesli歧义，以及pre-gelatinized、机械字段和菌种培养用途。七个新增公共行为逐个实际RED→最小GREEN，食谱、其他真实谷物、明确否定与干制包装对照保留。仅反证定位和成分声明解释更正，不扩展A；类别／预处理不证明实际熟制，保守待裁决。74条按元数据原文作预期，公共入口回放62入选／4排除／8待裁决全部一致，详见semantic-preflight-1.1.11.md。
+
+1.1.11全套108项通过（39.232秒），41原例及74条预检均通过，尚待固定复审及新版全量独立验收。未实施06正式规则、用户划分、模型输入或SIM材料。

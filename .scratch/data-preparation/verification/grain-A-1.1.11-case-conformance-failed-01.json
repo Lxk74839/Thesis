@@ -1,0 +1,52 @@
+{
+  "scope_version": "grain-A-1.1.11",
+  "source_cases": 41,
+  "counts": {
+    "excluded": 24,
+    "included": 9,
+    "pending": 8
+  },
+  "failures": [
+    {
+      "parent_asin": "B077HTZ3WL",
+      "expected": "excluded",
+      "actual": "pending",
+      "reason": "composition_declaration_conflict",
+      "counter_evidence": [
+        {
+          "field": "title",
+          "text": "Local Hive from L.R Rice, Raw Honey, Pure and Unfiltered, Amber, 16oz"
+        },
+        {
+          "declaration_parts": [
+            "PURE - Our raw honey is pure and unfiltered with nothing added and nothing removed, preserving the natural nutrients in every bottle"
+          ],
+          "field": "features[0]",
+          "text": "100% PURE - Our raw honey is pure and unfiltered with nothing added and nothing removed, preserving the natural nutrients in every bottle"
+        },
+        {
+          "declaration_parts": [
+            "pure, 100% honey - Local Hive, family run for four generations and locally made since 1924, provides raw, unfiltered honey.",
+            "Local Hive partners with beekeepers across America to provide honey from your own backyard, wherever that may be.",
+            "With distinct floral notes authentic to the unique flora of the region, each sweetly rich bottle provides a new tasting experience.",
+            "Derived exclusively in the United States, L.",
+            "R Rice Local Hive tests all honey to ensure it is free of antibiotics and pesticides to provide only the best natural, unaltered honey straight from the hive - as nature intended.",
+            "Use as a healthy, natural sugar substitute in baking, coffee, tea or cooking to enjoy the rich sweetness as well as the benefits of pure, unfiltered local honey.",
+            "Rich in vitamins, minerals, antioxidants, amino acids, enzymes and bee pollen; local honey may even be used to relieve seasonal allergies.",
+            "More than just a sweet treat, we also believe in giving back.",
+            "That’s why a portion of the proceeds from every bottle sold is donated to PACE (Pollinator Awareness Through Conservation & Education)."
+          ],
+          "field": "description[0]",
+          "text": "100% pure, 100% honey - Local Hive, family run for four generations and locally made since 1924, provides raw, unfiltered honey. Local Hive partners with beekeepers across America to provide honey from your own backyard, wherever that may be. With distinct floral notes authentic to the unique flora of the region, each sweetly rich bottle provides a new tasting experience. Derived exclusively in the United States, L.R Rice Local Hive tests all honey to ensure it is free of antibiotics and pesticides to provide only the best natural, unaltered honey straight from the hive - as nature intended. Use as a healthy, natural sugar substitute in baking, coffee, tea or cooking to enjoy the rich sweetness as well as the benefits of pure, unfiltered local honey. Rich in vitamins, minerals, antioxidants, amino acids, enzymes and bee pollen; local honey may even be used to relieve seasonal allergies. More than just a sweet treat, we also believe in giving back. That’s why a portion of the proceeds from every bottle sold is donated to PACE (Pollinator Awareness Through Conservation & Education)."
+        }
+      ]
+    }
+  ],
+  "source_case_file_sha256": "8d0f432fcff6699e50411524968a736950f5be7025c717f27d60b4abab7187a1",
+  "producer_sha256": {
+    "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+    "identity_catalog.py": "9395c3dee9c73fe11c8f2f50a6207475af145f730f1e7cea37be4b56ba4b1599",
+    "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+  },
+  "scope_sha256": "e58a87a313392ac09fe8b810037017d4bb8a153f64172e41107554934248ad88"
+}

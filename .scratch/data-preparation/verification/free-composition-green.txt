@@ -1,0 +1,6 @@
+test_identity_catalog_complete_composition_free_claim_is_not_an_added_component (test_prepare_data.MetadataPreparationTests.test_identity_catalog_complete_composition_free_claim_is_not_an_added_component) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.356s
+
+OK

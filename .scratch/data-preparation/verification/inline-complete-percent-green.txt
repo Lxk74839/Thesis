@@ -1,0 +1,6 @@
+test_identity_catalog_inline_complete_percent_is_a_source_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_complete_percent_is_a_source_composition_claim) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.403s
+
+OK

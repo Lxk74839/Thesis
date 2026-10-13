@@ -1,0 +1,6 @@
+test_identity_catalog_historical_nickname_cannot_supply_crop_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_historical_nickname_cannot_supply_crop_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.394s
+
+OK

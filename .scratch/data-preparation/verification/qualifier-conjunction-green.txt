@@ -1,0 +1,6 @@
+test_identity_catalog_qualifier_conjunction_does_not_turn_rice_brand_honey_into_grain (test_prepare_data.MetadataPreparationTests.test_identity_catalog_qualifier_conjunction_does_not_turn_rice_brand_honey_into_grain) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.346s
+
+OK

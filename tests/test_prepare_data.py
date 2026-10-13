@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.10.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.11.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -220,6 +220,19 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "form_not_verified"))
 
+    def test_identity_catalog_historical_nickname_cannot_supply_crop_identity(self):
+        run = self.identity_catalog([
+            {"parent_asin": "GRITS", "title": "Quaker Quick Grits", "features": ["Unbleached white hominy"], "description": ["Known as the southern oatmeal before air conditioning was invented, grits were preferred over oatmeal because they could withstand the heat and humidity."]},
+            {"parent_asin": "OATS", "title": "Raw oat groats", "description": ["Known as Irish oats."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included"])
+        self.assertIsNone(audit[0]["crop"])
+        self.assertEqual(audit[0]["identity_evidence"], [])
+        self.assertTrue(audit[0]["context_evidence"])
+
     def test_identity_catalog_uses_direct_fields_without_fixed_prefix(self):
         run = self.identity_catalog([
             {"parent_asin": "DIRECT", "title": "Pantry Essentials", "features": ["Contains 17.6 oz of uncooked rice"]},
@@ -230,6 +243,17 @@ class MetadataPreparationTests(unittest.TestCase):
         products = [json.loads(line) for line in (self.output / report["catalog_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([row["parent_asin"] for row in products], ["DIRECT"])
         self.assertEqual(products[0]["identity_evidence"][0]["field"], "features[0]")
+
+    def test_identity_catalog_vegetable_rice_and_mushroom_spawn_are_outside_sold_objects(self):
+        run = self.identity_catalog([
+            {"parent_asin": "VEGETABLE", "title": "Fullgreen Riced Broccoli & Cauliflower Rice", "features": ["Vegan, Grain/Gluten Free; Made from non-GMO riced cauliflower and broccoli."]},
+            {"parent_asin": "SPAWN", "title": "Grey Oyster Live Mushroom Spawn", "description": ["Live mushroom spawn on rye grains in one pound bags."]},
+            {"parent_asin": "RICE", "title": "Raw rice kernels for cooking vegetables"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "excluded", "included"])
 
     def test_identity_catalog_recognizes_the_sold_object_before_grain_words(self):
         rows = [
@@ -285,6 +309,19 @@ class MetadataPreparationTests(unittest.TestCase):
                          [("included", "declared_single_grain")] * 3 + [("excluded", "declared_outside_scope")])
         self.assertEqual([r["crop"] for r in audit[:3]], ["coix", "barnyard_millet", "fonio"])
 
+    def test_identity_catalog_keeps_explicit_processing_and_food_use_conflicts_pending(self):
+        run = self.identity_catalog([
+            {"parent_asin": "GEL", "title": "Rye Flakes", "features": ["Pre-gelatinized"]},
+            {"parent_asin": "MECHANICAL", "title": "Rye Flaked Grains", "features": ["Product Type :Mechanical Components"]},
+            {"parent_asin": "FUNGI", "title": "Organic red sorghum grain", "features": ["Grow mushrooms with ease"]},
+            {"parent_asin": "CONTROL", "title": "Raw rye grain", "features": ["No mechanical components. Not pre-gelatinized."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included"])
+        self.assertEqual([row["reason"] for row in audit[:3]], ["field_processing_ambiguity", "field_food_use_conflict", "field_food_use_conflict"])
+
     def test_identity_catalog_admits_dry_flakes_but_keeps_processing_counterevidence(self):
         run = self.identity_catalog([
             {"parent_asin": "FLAKES", "title": "TAJ Poha Flattened Rice Thick"},
@@ -336,7 +373,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.10.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.11.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -365,6 +402,41 @@ class MetadataPreparationTests(unittest.TestCase):
         report = json.loads(run.stdout)
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "field_food_use_conflict"))
+
+    def test_identity_catalog_inline_complete_percent_is_a_source_composition_claim(self):
+        run = self.identity_catalog([
+            {"parent_asin": "COMPLETE", "title": "Hulled millet whole grain", "features": ["Naturevibe Botanicals Hulled millet is made of 100% Pure hulled millet."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "description": ["Recipe: this dish is made of 100% rice."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included"])
+        self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "not_disclosed"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["text"], "Naturevibe Botanicals Hulled millet is made of 100% Pure hulled millet.")
+
+    def test_identity_catalog_fruit_mixed_with_grain_is_not_unknown_single_grain(self):
+        run = self.identity_catalog([
+            {"parent_asin": "RAISINS", "title": "Organic Raisin Bran Cereal", "description": ["Here's an organic twist on the classic cereal everyone loves, made with organic wheat bran flakes and plump organic raisins."]},
+            {"parent_asin": "RECIPE", "title": "Raw wheat berries", "description": ["Recipe: enjoy with raisins."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+        self.assertEqual(audit[0]["composition_status"], "declared_outside_scope")
+
+    def test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CORN", "title": "Organic Corn Flake Cereal", "description": ["These light and crispy flakes are made with simple pure ingredients - organically grown corn and sea salt and have no added sweeteners."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "description": ["Recipe: this dish is made with rice and salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+        self.assertEqual(audit[0]["composition_status"], "declared_outside_scope")
+        self.assertEqual(audit[1]["composition_status"], "not_disclosed")
 
     def test_identity_catalog_recognizes_explicit_partial_ingredient_information(self):
         run = self.identity_catalog([
@@ -555,6 +627,21 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertTrue(all(r["counter_evidence"] for r in audit[:3]))
         self.assertTrue(all(r["context_evidence"] for r in audit))
 
+    def test_identity_catalog_complete_composition_free_claim_is_not_an_added_component(self):
+        run = self.identity_catalog([
+            {"parent_asin": "FREE", "title": "Raw rice kernels", "features": ["Contains only rice, salt-free."]},
+            {"parent_asin": "CONSISTENT", "title": "Raw rice kernels", "features": ["Contains only rice, salt-free."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "FROM", "title": "Raw rice kernels", "features": ["Contains only rice, free from salt."]},
+            {"parent_asin": "DOES", "title": "Raw rice kernels", "features": ["Contains only rice, does not contain salt."]},
+            {"parent_asin": "SALT", "title": "Raw rice kernels", "features": ["Contains only rice, salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "included", "excluded"])
+        self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain"] * 4 + ["declared_outside_scope"])
+        self.assertEqual(audit[0]["composition_evidence"][0]["text"], "Contains only rice, salt-free.")
+
     def test_identity_catalog_complete_composition_does_not_add_negated_components(self):
         run = self.identity_catalog([
             {"parent_asin": "NO_SALT", "title": "Raw rice kernels", "features": ["Contains only rice, no salt."]},
@@ -586,6 +673,17 @@ class MetadataPreparationTests(unittest.TestCase):
                          [("pending", "conflict"), ("pending", "conflict"), ("pending", "conflict"), ("pending", "conflict"), ("excluded", "declared_outside_scope")])
         self.assertTrue(all(r["composition_evidence"] and r["counter_evidence"] for r in audit[:4]))
 
+    def test_identity_catalog_qualifier_conjunction_does_not_turn_rice_brand_honey_into_grain(self):
+        run = self.identity_catalog([
+            {"parent_asin": "HONEY", "title": "Local Hive from L.R Rice, Raw Honey, Pure and Unfiltered", "features": ["100% PURE - Our raw honey is pure and unfiltered with nothing added and nothing removed"], "description": ["100% pure, 100% honey - Local Hive provides raw, unfiltered honey."]},
+            {"parent_asin": "SUGAR", "title": "Sugar and raw rice kernels", "details": {"Ingredients": "Rice"}},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "pending"])
+        self.assertEqual(audit[1]["composition_status"], "conflict")
+
     def test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels with sugar", "details": {"Ingredients": "Rice"}},
@@ -598,6 +696,20 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
                          [("pending", "conflict"), ("excluded", "declared_outside_scope"), ("excluded", "declared_single_grain")])
         self.assertTrue(audit[0]["composition_evidence"] and audit[0]["counter_evidence"])
+
+    def test_identity_catalog_cooked_texture_does_not_change_the_sold_raw_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "TEXTURE", "title": "Milled white short grain rice", "description": ["Freshly cooked luster and stickiness. Deliciousness that makes you want to eat just freshly cooked white rice."]},
+            {"parent_asin": "COOKED", "title": "Raw rice kernels", "description": ["This product is freshly cooked rice."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "pending"])
+        self.assertEqual(audit[0]["composition_status"], "not_disclosed")
+        self.assertEqual(audit[0]["counter_evidence"], [])
+        self.assertTrue(audit[0]["context_evidence"])
+        self.assertIn({"field": "description[0]", "text": "This product is freshly cooked rice."}, audit[1]["counter_evidence"])
 
     def test_identity_catalog_preserves_purpose_and_texture_without_false_conflicts(self):
         run = self.identity_catalog([
@@ -631,6 +743,22 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertTrue(all(r["status"] != "included" for r in audit))
         self.assertTrue(all(not r["identity_evidence"] for r in audit))
+
+    def test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "DISH", "title": "Rice Whole Grain Spanish", "features": ["Rice Dishes"]},
+            {"parent_asin": "CEREAL", "title": "Whole grain rice flakes", "categories": ["Cold Cereal"], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "GRANOLA", "title": "Organic whole rye berries", "categories": ["Granola"]},
+            {"parent_asin": "MUESLI", "title": "High Fiber Muesli", "features": ["Contains famous German whole grain spelt"]},
+            {"parent_asin": "RICE", "title": "Raw rice kernels", "description": ["Perfect for Rice Dishes."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "pending", "included"])
+        self.assertIn({"field": "features[0]", "text": "Rice Dishes"}, audit[0]["counter_evidence"])
+        self.assertIn({"field": "categories[0]", "text": "Cold Cereal"}, audit[1]["counter_evidence"])
+        self.assertEqual(audit[1]["composition_status"], "declared_single_grain")
 
     def test_identity_catalog_keeps_head_ambiguity_and_category_conflict_after_field_identity(self):
         run = self.identity_catalog([

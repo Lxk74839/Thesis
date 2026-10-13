@@ -1,0 +1,6 @@
+test_identity_catalog_vegetable_rice_and_mushroom_spawn_are_outside_sold_objects (test_prepare_data.MetadataPreparationTests.test_identity_catalog_vegetable_rice_and_mushroom_spawn_are_outside_sold_objects) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.422s
+
+OK

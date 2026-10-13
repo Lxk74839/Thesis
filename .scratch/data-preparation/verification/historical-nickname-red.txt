@@ -1,0 +1,27 @@
+test_identity_catalog_historical_nickname_cannot_supply_crop_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_historical_nickname_cannot_supply_crop_identity) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_historical_nickname_cannot_supply_crop_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_historical_nickname_cannot_supply_crop_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 231, in test_identity_catalog_historical_nickname_cannot_supply_crop_identity
+    self.assertEqual([row["status"] for row in audit], ["pending", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included'] != ['pending', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included']
+?     ^^^^^^
+
++ ['pending', 'included']
+?   ++++  ^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.375s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k historical_nickname` failed. (See above for error)

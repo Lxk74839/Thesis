@@ -1,0 +1,6 @@
+test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.372s
+
+OK

@@ -1,0 +1,27 @@
+test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 377, in test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context
+    self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included'] != ['excluded', 'included']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'included']
+?   ^^
+
++ ['excluded', 'included']
+?   ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.390s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k inline_made_with` failed. (See above for error)

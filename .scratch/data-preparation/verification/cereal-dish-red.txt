@@ -1,0 +1,23 @@
+test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 734, in test_identity_catalog_keeps_cereal_and_dish_classification_counterevidence
+    self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "pending", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included', 'included'] != ['pending', 'pending', 'pending', 'pending', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included', 'included', 'included']
++ ['pending', 'pending', 'pending', 'pending', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.374s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k cereal_and_dish` failed. (See above for error)

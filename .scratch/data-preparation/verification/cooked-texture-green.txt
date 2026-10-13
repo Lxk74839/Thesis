@@ -1,0 +1,6 @@
+test_identity_catalog_cooked_texture_does_not_change_the_sold_raw_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_cooked_texture_does_not_change_the_sold_raw_form) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.384s
+
+OK

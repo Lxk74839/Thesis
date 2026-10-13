@@ -1,0 +1,6 @@
+test_identity_catalog_keeps_explicit_processing_and_food_use_conflicts_pending (test_prepare_data.MetadataPreparationTests.test_identity_catalog_keeps_explicit_processing_and_food_use_conflicts_pending) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.389s
+
+OK

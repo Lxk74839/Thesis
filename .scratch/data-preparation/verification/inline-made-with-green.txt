@@ -1,0 +1,6 @@
+test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_made_with_retains_actual_additions_and_recipe_context) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+OK

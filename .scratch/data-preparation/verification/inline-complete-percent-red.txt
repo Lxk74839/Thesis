@@ -1,0 +1,23 @@
+test_identity_catalog_inline_complete_percent_is_a_source_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_complete_percent_is_a_source_composition_claim) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_inline_complete_percent_is_a_source_composition_claim (test_prepare_data.MetadataPreparationTests.test_identity_catalog_inline_complete_percent_is_a_source_composition_claim)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 378, in test_identity_catalog_inline_complete_percent_is_a_source_composition_claim
+    self.assertEqual([row["composition_status"] for row in audit], ["declared_single_grain", "not_disclosed"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['not_disclosed', 'not_disclosed'] != ['declared_single_grain', 'not_disclosed']
+
+First differing element 0:
+'not_disclosed'
+'declared_single_grain'
+
+- ['not_disclosed', 'not_disclosed']
++ ['declared_single_grain', 'not_disclosed']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.381s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k inline_complete_percent` failed. (See above for error)

@@ -21,10 +21,10 @@ def context_role(text):
     matches = []
     for role, expression in (
         ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
-        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
-        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
+        ("use_comparison_or_brand_context", r"\b(?:serve|served|enjoy|enjoying|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts|want to eat)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|nutrition & flavor|nutty flavor|nutritional value|not sticky|high starch|high-starch|when cooked|while cooking|freshly cooked (?:luster|gloss|stickiness))\b"),
         ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
-        ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in)\b"),
+        ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in|known as the southern oatmeal|preferred over)\b"),
     ):
         match = re.search(expression, text, re.I)
         if match:
@@ -64,8 +64,9 @@ def source_statements(item, config):
 def affirmative_composition(value, config):
     components = [alias for aliases in config["grains"].values() for alias in aliases]
     components += [*config["outside_crops"], *config["non_grain_ingredients"]]
-    negative = r"(?:" + pattern(config["identity_negations"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
-    return re.sub(negative, " ", value, flags=re.I)
+    negative = r"(?:" + pattern([*config["identity_negations"], "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
+    value = re.sub(negative, " ", value, flags=re.I)
+    return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
 
 
 def composition_disclosure(item, config):
@@ -84,7 +85,13 @@ def composition_disclosure(item, config):
                 if inline and not context_role(fragment[:inline.start()]):
                     match = inline
             if not match and not active:
-                match = re.search("|".join(config["partial_composition_patterns"]), fragment, re.I)
+                complete = re.search(r"\b(?:made of|made from)\s+100\s*%", fragment, re.I)
+                if complete and not context_role(fragment[:complete.start()]):
+                    match = complete
+            if not match and not active:
+                partial = re.search("|".join(config["partial_composition_patterns"]), fragment, re.I)
+                if partial and not context_role(fragment[:partial.start()]):
+                    match = partial
             if match:
                 if active:
                     values.append(active)
@@ -137,7 +144,11 @@ def classify_identity(item, config):
     if pattern(config["outside_objects"]).search(sold):
         decision.update(status="excluded", reason="sold_object_outside_scope", crop=None,
                         identity_evidence=[], form_evidence=[], counter_evidence=[{"field": "title", "text": title}])
-        added_components = crops and re.search(r"\b(?:with|and|contains|added|infused with)\b", sold, re.I) and pattern(config["non_grain_ingredients"]).search(sold)
+        added_components = crops and any(
+            min(grain.end(), addition.end()) <= join.start() and join.end() <= max(grain.start(), addition.start())
+            for grain in pattern([alias for aliases in config["grains"].values() for alias in aliases]).finditer(sold)
+            for addition in pattern(config["non_grain_ingredients"]).finditer(sold)
+            for join in re.finditer(r"\b(?:with|and|contains|added|infused with)\b", sold, re.I))
         if added_components:
             decision["composition_status"] = "declared_outside_scope"
             if composition_status in ("declared_single_grain", "conflict"):
@@ -243,7 +254,7 @@ def classify_identity(item, config):
                 if ref not in decision["counter_evidence"]:
                     decision["counter_evidence"].append(ref)
             continue
-        if crops and pattern(config["excluded_forms"]).search(fragment):
+        if crops and (pattern(config["excluded_forms"]).search(fragment) or fragment.strip() in config["excluded_categories"]):
             decision.update(status="pending", reason="field_form_conflict",
                             counter_evidence=[*decision["counter_evidence"], ref])
         if crops and found and len(narrow_grains(crops | found, config)) > 1:
