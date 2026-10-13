@@ -180,6 +180,39 @@ class MetadataPreparationTests(unittest.TestCase):
                          ["declared_outside_scope", "declared_outside_scope", "not_disclosed", "conflict"])
         self.assertTrue(any(ref["text"] == "Raw rice kernels with salt." for ref in audit[0]["counter_evidence"]))
 
+    def test_identity_catalog_with_requires_direct_grain_addition_evidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "BRAND", "title": "Raw rice kernels", "features": ["Rani is a USA based company selling spices for over 40 years, buy with confidence!"]},
+            {"parent_asin": "USE", "title": "Raw rice kernels", "description": ["The lovely long grains can be coated or topped with sauces, spices, herbs and seasonings as a main or side dish."]},
+            {"parent_asin": "NEGATIVE", "title": "Raw rice kernels", "features": ["Raw rice kernels with no added sugar."]},
+            {"parent_asin": "SALT", "title": "Raw rice kernels", "features": ["Raw rice kernels with sea salt."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded"])
+
+    def test_identity_catalog_explicit_field_with_another_grain_is_a_mixture(self):
+        run = self.identity_catalog([
+            {"parent_asin": "MIX", "title": "Raw rice kernels", "features": ["Raw rice kernels with wheat."]},
+            {"parent_asin": "RECIPE", "title": "Raw rice kernels", "features": ["Serve raw rice with wheat."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+
+    def test_identity_catalog_numbered_quick_oats_name_supplies_sold_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "QUICK", "title": "Quaker Quick 1 Minute Oats, 5 Pounds", "features": ["Made from 100% whole grain oats"]},
+            {"parent_asin": "ORIGIN", "title": "Arborio Rice", "features": ["Made from 100% whole grain rice"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["included", "pending"])
+        self.assertTrue(any(ref["field"] == "title" for ref in audit[0]["form_evidence"]))
+
     def test_identity_catalog_keeps_explicit_uncooked_counterclaim_to_cooked_sale(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Cooked rice", "features": ["This product is uncooked rice."]},

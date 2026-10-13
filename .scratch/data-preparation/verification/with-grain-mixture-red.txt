@@ -1,0 +1,27 @@
+test_identity_catalog_explicit_field_with_another_grain_is_a_mixture (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_field_with_another_grain_is_a_mixture) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_explicit_field_with_another_grain_is_a_mixture (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_field_with_another_grain_is_a_mixture)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 203, in test_identity_catalog_explicit_field_with_another_grain_is_a_mixture
+    self.assertEqual([row["status"] for row in audit], ["excluded", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['pending', 'included'] != ['excluded', 'included']
+
+First differing element 0:
+'pending'
+'excluded'
+
+- ['pending', 'included']
+?   - ^ ^^^
+
++ ['excluded', 'included']
+?    ^^^^ ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.357s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k explicit_field_with_another -v` failed. (See above for error)

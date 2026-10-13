@@ -1,0 +1,6 @@
+test_identity_catalog_numbered_quick_oats_name_supplies_sold_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_numbered_quick_oats_name_supplies_sold_form) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.330s
+
+OK

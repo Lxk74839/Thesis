@@ -1,0 +1,27 @@
+test_identity_catalog_with_requires_direct_grain_addition_evidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_with_requires_direct_grain_addition_evidence) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_with_requires_direct_grain_addition_evidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_with_requires_direct_grain_addition_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 193, in test_identity_catalog_with_requires_direct_grain_addition_evidence
+    self.assertEqual([row["status"] for row in audit], ["included", "included", "included", "excluded"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'excluded', 'excluded', 'excluded'] != ['included', 'included', 'included', 'excluded']
+
+First differing element 0:
+'excluded'
+'included'
+
+- ['excluded', 'excluded', 'excluded', 'excluded']
+?   ^^          ^^          ^^
+
++ ['included', 'included', 'included', 'excluded']
+?   ^^          ^^          ^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.347s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k with_requires -v` failed. (See above for error)

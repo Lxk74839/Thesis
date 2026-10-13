@@ -64,7 +64,7 @@ def source_statements(item, config):
 def affirmative_composition(value, config):
     components = [alias for aliases in config["grains"].values() for alias in aliases]
     components += [*config["outside_crops"], *config["non_grain_ingredients"]]
-    negative = r"(?:" + pattern([*config["identity_negations"], "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
+    negative = r"(?:" + pattern([*config["identity_negations"], "no added", "free from", "free of", "does not contain", "contains no"]).pattern + r")\s*(?:" + pattern(components).pattern + ")"
     value = re.sub(negative, " ", value, flags=re.I)
     return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
 
@@ -253,8 +253,14 @@ def classify_identity(item, config):
             decision.update(status="pending", reason="field_identity_conflict",
                             counter_evidence=[*decision["counter_evidence"], ref])
         contrast = re.search(r"\bnot\s+only\s+(.+?)\s+but\b", fragment, re.I)
-        mixture = re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with|with)\b", fragment, re.I) or (contrast and grain_crops(contrast[1], config))
-        mixture_text = affirmative_composition(fragment, config) if mixture else fragment
+        composition_fragment = affirmative_composition(fragment, config)
+        grain_names = [alias for aliases in config["grains"].values() for alias in aliases]
+        direct_with = any(grain.end() <= join.start() < addition.start()
+                          for grain in pattern(grain_names).finditer(composition_fragment)
+                          for join in re.finditer(r"\bwith\b", composition_fragment, re.I)
+                          for addition in pattern([*grain_names, *config["non_grain_ingredients"], *config["outside_crops"]]).finditer(composition_fragment))
+        mixture = re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) or direct_with or (contrast and grain_crops(contrast[1], config))
+        mixture_text = composition_fragment if mixture else fragment
         if (crops or found) and mixture and (len(grain_crops(mixture_text, config)) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(mixture_text)):
             outside_facts.append(("sold_mixture_outside_scope", ref))
             decision.update(status="excluded", reason="sold_mixture_outside_scope",

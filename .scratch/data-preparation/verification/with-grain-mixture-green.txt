@@ -1,0 +1,6 @@
+test_identity_catalog_explicit_field_with_another_grain_is_a_mixture (test_prepare_data.MetadataPreparationTests.test_identity_catalog_explicit_field_with_another_grain_is_a_mixture) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+OK
