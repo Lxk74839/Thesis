@@ -20,10 +20,11 @@ def grain_crops(text, config):
 def context_role(text):
     matches = []
     for role, expression in (
-        ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in)\b"),
+        ("allergen_or_facility", r"\b(?:facility|allergen|may contain|manufactured in|free from|free of|does not contain|contains no|grain[- ]free)\b"),
         ("use_comparison_or_brand_context", r"\b(?:serve|served|recipe|recipes|pair|pairing|use with|cooked with|combined with|baking|make|making|perfect for|ideal for|ground into|alternative|alterative|easy to use|less sticky|our company|this is because|cooking instructions|directions|to cook|add|nutrition facts)\b"),
-        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
+        ("brand_or_texture_context", r"\b(?:founded|our story|we pride|our ability|began as|shop our other|our product line|not sticky|high starch|high-starch|when cooked|while cooking)\b"),
         ("storage_context", r"^\s*(?:store|keep|storage|refrigerate)\b|\b(?:keep refrigerated|refrigerate after)\b"),
+        ("botanical_or_comparison_context", r"\b(?:annual grain|species of|compared to|dry climate|growing in)\b"),
     ):
         match = re.search(expression, text, re.I)
         if match:
@@ -43,13 +44,17 @@ def composition_disclosure(item, config):
                 continue
             match = pattern(config["composition_prefixes"]).match(fragment)
             if not match and not active:
+                inline = re.search(r"\bingredients?\s*:", fragment, re.I)
+                if inline and not context_role(fragment[:inline.start()]):
+                    match = inline
+            if not match and not active:
                 match = re.search("|".join(config["partial_composition_patterns"]), fragment, re.I)
             if match:
                 if active:
                     values.append(active)
                 value = re.sub(r"^[\s:=-]*(?:is|are)?\s*", "", fragment[match.end():], flags=re.I)
                 active = [] if match.group().startswith("100") and pattern(config["percentage_quality_prefixes"]).match(value) else [value]
-            elif active and pattern(config["composition_end_prefixes"]).match(fragment):
+            elif active and (pattern(config["composition_end_prefixes"]).match(fragment) or pattern(config["identity_negations"]).match(fragment)):
                 values.append(active)
                 active = []
             elif active:
@@ -117,9 +122,8 @@ def classify_identity(item, config):
         decision["identity_evidence"] = [{"field": "title", "text": title}]
     decision["context_evidence"] = []
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
-        if all(all(context_role(fragment) for fragment in re.split(r"(?<=[.!?;])\s*|\n", ref["text"]) if fragment.strip())
-               for ref in decision["counter_evidence"]):
-            decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
+        # Legacy stores an entire field; rebuild these facts from each source clause below.
+        decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     for field, text in text_fields(item):
         if field == "title":
             continue
@@ -135,11 +139,15 @@ def classify_identity(item, config):
                 fragment = fragment[:role[1]]
             if not fragment.strip():
                 continue
+            fragment = re.sub(r"\b[\w]+[- ]free\b", " ", fragment, flags=re.I)
             if crops and pattern(config["outside_form_statements"]).search(fragment):
                 decision.update(status="excluded", reason="sold_form_outside_scope",
                                 counter_evidence=[*decision["counter_evidence"], ref])
             found = grain_crops(fragment, config)
-            if crops and re.search(r"\b(?:blend|mixture|mix|contains|consists of|made from)\b", fragment, re.I) and (len(found) > 1 or pattern(config["outside_crops"]).search(fragment)):
+            if crops and pattern(config["outside_crops"]).search(fragment):
+                decision.update(status="pending", reason="field_identity_conflict",
+                                counter_evidence=[*decision["counter_evidence"], ref])
+            if (crops or found) and re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) and (len(found) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(fragment)):
                 decision.update(status="excluded", reason="sold_mixture_outside_scope",
                                 composition_status="declared_outside_scope", counter_evidence=[*decision["counter_evidence"], ref])
                 continue
@@ -166,6 +174,15 @@ def classify_identity(item, config):
         if len(crops) == 1 and leaf and leaf <= crops | {config["grain_parents"][crop] for crop in crops if crop in config["grain_parents"]}:
             decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     decision["form_evidence"] = forms
+    if crops and decision["status"] != "excluded":
+        if pattern(config["ambiguous_forms"]).search(sold):
+            decision.update(status="pending", reason="ambiguous_processing_or_mix",
+                            counter_evidence=[*decision["counter_evidence"], {"field": "title", "text": title}])
+        if "Unpopped" not in categories:
+            for index, category in enumerate(categories):
+                if category in config["excluded_categories"]:
+                    decision.update(status="pending", reason="category_form_conflict",
+                                    counter_evidence=[*decision["counter_evidence"], {"field": f"categories[{index}]", "text": category}])
     if composition_status == "conflict":
         decision.update(status="pending", reason="composition_declaration_conflict", counter_evidence=[*decision["counter_evidence"], *composition])
     elif composition_status == "declared_outside_scope":

@@ -41,3 +41,9 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第三轮审查：Standards 0 项；Spec 2 项 P1。Perfect for dinner; this product is wheat 扩展夹具 Red 后按独立分号句保留事实，Green；Store dry／Keep dry 扩展夹具 Red 后采用存储指令头，Green。重新检查 41 条实际完整原记录，发现 Salt-Free 标题、high starch 质地、带拼写误差 alterative／EASY TO USE 的比较用途和部分配料列表的误解释；分别公共夹具实际 Red→最小 Green。部分配料列表不能按不同完整配方判冲突，但完整纯粮与真实添加声明仍冲突。全套 75 项通过（25.664 秒）。
 
 41 条历史代表记录的旧诊断保留不改写。其中 B08L737QS1 原 U 注释记 Almond & Vanilla 口味／配料线索及形态缺失；新版按明确标题风味组合（与 Apple Cinnamon 同一已确认 A 外原则）排除，不声称补齐完整配方或核实真实配料。独立 oracle 明列这一语义更正，其他 I／P、X、C／U 预期保留。仅代表案例对齐不是总体人工裁决，正式全量和新入选抽查仍需完成。
+
+2026-10-13 继续：第四轮 Standards 0 项；Spec 3 项（P1 1、P2 2）。非固定前缀 quinoa 身份反证、No sugar 否定成分、同字段身份＋Serve 配餐遗留反证，全部逐公共夹具实际 Red→Green。
+
+1.1.0 全源 603,274 行迁移／字面引用／摘要及 76 保护文件通过，但新增入选低 SHA 分层样本揭示品牌目录、否定列表、调味混合、罐装水浸、泛称 Old Fashioned 和植物学干旱描述等误入；拒绝正式验收，保留全部配置／产物／对账，见 grain-A-1.1.0-rejection.json。修订只对元数据证据，不依据评论数量。
+
+独立新配置 grain-A-1.1.1；品牌 inventory／free from、Blended 与后发现身份的类别冲突、We blend 实际添加／Canned in water、inline Ingredients、泛称风格／气候／malt／grain spawn／meal，分别建立公共行为夹具、实际 Red 后做最小修复并 Green。Old-Fashioned Oats 仍按已批准干片，普通金属罐保持可入；malt 等未明预处理保留待决，不扩大 A。全套 83 项通过（31.176 秒），旧 1.1.0 及旧 04／05 保持原字节，下一全量及独立语义复核尚待进行。

@@ -1,0 +1,13 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "New inclusion semantic spot checks found genuine false admissions; independent source accounting alone is insufficient.",
+  "scope_version": "grain-A-1.1.0",
+  "preserved_sha256": {
+    "config/grain-A-1.1.0.json": "43b47573fdd20419ccd95da654c3a42f665f8241489c0d50008fde150de0a5bb",
+    "records/catalog/grain-A-1.1.0.json": "84da98be45f28cc5d75470018e3ea02a690e6342efb4d706d65e8d222f0da272",
+    "data/catalog/grain-A-1.1.0/catalog.jsonl": "38229f4149e647ddd1ebb8c41f541bd25dbefbd4ddf31b420e9bc6e6b409af0d",
+    "data/catalog/grain-A-1.1.0/audit.jsonl": "a402eb9e02c2d29c9f67d6dc13a72e452483fa8c77487012d981f67468ffc741",
+    "data/catalog/grain-A-1.1.0/pending.jsonl": "232547bcfd4bde76f9a80a0b2403bc33443360fca6729b0dc6d5909f9b2cf517",
+    "data/catalog/grain-A-1.1.0/migration.jsonl": "fc1b25f69f4b1321c1fec17820ddd72a02db6433e1f37084e91295ab66940a67"
+  }
+}
