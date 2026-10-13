@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.8.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.9.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -106,6 +106,23 @@ class MetadataPreparationTests(unittest.TestCase):
         products = [json.loads(line) for line in (self.output / report["catalog_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([(row["parent_asin"], row["composition_status"]) for row in products],
                          [("RAW", "not_disclosed")])
+
+    def test_identity_catalog_chinese_negation_cannot_supply_identity(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NO", "title": "不含大米粒"},
+            {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "description": ["本品不是大米粒"]},
+            {"parent_asin": "OTHER", "title": "Raw barley kernels", "description": ["本品不是大米粒"]},
+            {"parent_asin": "GMO", "title": "非转基因大米粒"},
+            {"parent_asin": "ADDITIVES", "title": "无添加大米粒"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included", "included", "included"])
+        self.assertEqual(audit[0]["identity_evidence"], [])
+        self.assertIn({"field": "title", "text": "不含大米粒"}, audit[0]["counter_evidence"])
+        self.assertIn({"field": "description[0]", "text": "本品不是大米粒"}, audit[1]["counter_evidence"])
+        self.assertEqual([row["composition_status"] for row in audit[3:]], ["not_disclosed", "not_disclosed"])
 
     def test_identity_catalog_title_negation_cannot_supply_identity(self):
         run = self.identity_catalog([
@@ -128,6 +145,19 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "field_identity_conflict"))
         self.assertIn({"field": "description[0]", "text": "This product is wheat."}, audit[0]["counter_evidence"])
+
+    def test_identity_catalog_outside_title_cannot_hide_direct_field_identity(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Quinoa", "description": ["Raw rice grains"]},
+            {"parent_asin": "USE", "title": "Quinoa", "description": ["Serve with rice grains"]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "excluded"])
+        self.assertEqual(audit[0]["reason"], "field_identity_conflict")
+        self.assertIn({"field": "title", "text": "Quinoa"}, audit[0]["counter_evidence"])
+        self.assertIn({"field": "description[0]", "text": "Raw rice grains"}, audit[0]["identity_evidence"])
 
     def test_identity_catalog_checks_direct_outside_crop_without_a_fixed_prefix(self):
         run = self.identity_catalog([
@@ -306,7 +336,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.8.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.9.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]

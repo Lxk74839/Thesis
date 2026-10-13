@@ -1,0 +1,28 @@
+test_catalog_requires_form_and_retains_counterevidence_outside_title (test_prepare_data.MetadataPreparationTests.test_catalog_requires_form_and_retains_counterevidence_outside_title) ... ok
+test_identity_catalog_outside_title_cannot_hide_direct_field_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_outside_title_cannot_hide_direct_field_identity) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_outside_title_cannot_hide_direct_field_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_outside_title_cannot_hide_direct_field_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 157, in test_identity_catalog_outside_title_cannot_hide_direct_field_identity
+    self.assertEqual([row["status"] for row in audit], ["pending", "excluded"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['excluded', 'excluded'] != ['pending', 'excluded']
+
+First differing element 0:
+'excluded'
+'pending'
+
+- ['excluded', 'excluded']
+?    ^^^^ ^^
+
++ ['pending', 'excluded']
+?   + ^ ^^^
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.569s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k outside_title` failed. (See above for error)

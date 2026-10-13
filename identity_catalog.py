@@ -161,6 +161,13 @@ def classify_identity(item, config):
         return decision
     if decision["reason"] == "excluded_form" and not pattern(config["excluded_forms"]).search(sold):
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
+    statements = list(source_statements(item, config))
+    if decision["reason"] == "outside_crop":
+        identities = [ref for ref, _, fragment, _ in statements if ref["field"] != "title"
+                      and grain_crops(pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0], config)]
+        if identities:
+            decision.update(status="pending", reason="field_identity_conflict",
+                            identity_evidence=[*decision["identity_evidence"], *identities])
     if decision["status"] == "excluded" and decision["reason"] in ("nonfood", "excluded_form", "outside_crop", "no_scope_evidence"):
         return decision
     forms = [{"field": "title", "text": title}] if crops and pattern(config["identity_forms"]).search(sold) else []
@@ -170,7 +177,6 @@ def classify_identity(item, config):
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
-    statements = list(source_statements(item, config))
     affirmative_forms = set()
     for _, _, fragment, _ in statements:
         affirmative = pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0]
@@ -210,7 +216,7 @@ def classify_identity(item, config):
                 composition_status = "conflict"
                 decision["composition_status"] = "conflict"
             continue
-        negative = re.search(r"\b(?:not|no|without)\s+(?:raw\s+)?", fragment, re.I)
+        negative = re.search(r"(?:\b(?:not|no|without)\s+(?:raw\s+)?|不包含|不含|不是|并非)\s*", fragment, re.I)
         negated = fragment[negative.end():] if negative else ""
         negated_forms = {"raw"} if negative and re.search(r"\braw\s*$", negative.group(), re.I) else set()
         while modifier := pattern(config["identity_forms"]).match(negated):

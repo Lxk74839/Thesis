@@ -1,0 +1,6 @@
+test_identity_catalog_chinese_negation_cannot_supply_identity (test_prepare_data.MetadataPreparationTests.test_identity_catalog_chinese_negation_cannot_supply_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.364s
+
+OK
