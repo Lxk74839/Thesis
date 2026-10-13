@@ -43,7 +43,9 @@ def source_statements(item, config):
             direct = clause[:role[1]] if role else clause
             negative_terms = pattern([*config["processing_claims"], *config["non_grain_ingredients"],
                                       *config["excluded_forms"], *config["outside_form_statements"],
-                                      *config["nonfood"], *config["outside_crops"]])
+                                      *config["nonfood"], *config["outside_crops"],
+                                      *("mixed with " + component for component in [*config["non_grain_ingredients"], *config["outside_crops"],
+                                                                                  *(alias for aliases in config["grains"].values() for alias in aliases)])])
             negated_positions = []
             for negative in reversed(list(re.finditer(r"\b(?:not(?!\s+only\b)|no|without)\s+", direct, re.I))):
                 claim = negative_terms.match(direct, negative.end())

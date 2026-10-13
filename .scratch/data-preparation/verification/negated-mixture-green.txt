@@ -1,0 +1,6 @@
+test_identity_catalog_negated_mixture_does_not_create_an_addition_or_hide_later_facts (test_prepare_data.MetadataPreparationTests.test_identity_catalog_negated_mixture_does_not_create_an_addition_or_hide_later_facts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.394s
+
+OK

@@ -109,3 +109,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第23轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。明确 sold cooked with salt 不是烹调建议，公共RED→GREEN：撤去无条件 cooked with／combined with 用途捷径，保留显式 When cooked、can/should/to be cooked 和食谱。128项通过，但41原例实际失败1项定位Hato Mugi原文的文化食用习惯 often cooked with brown rice。独立习惯烹调与实际售卖对照RED→GREEN，习惯不能补造本商品已熟制／混粮；失败另存preflight-failed-07。最终129项通过（43.040秒），随后41原例／86分层回放均退出0／failures=[]，生产器f788db3b…、配置684e0978…；旧通过另存preflight-06。仍待固定两轴复审和1.1.12全源及评论独立验收。
 
 第24轮完整复审：Standards硬违反0／新增启发0，Spec P1两项。分别公共RED→GREEN：This product is sold mixed with salt 的直接本商品添加不需要重复粮种名；与完整Ingredients Rice冲突保持pending/conflict，而can be mixed和Recipe不成为真实组成。另项Powder／powdered是既有A粉类排除的字面形态，颗粒标题与Item Form Powder保持pending并保存双字段，明确粉类标题排除，食谱磨粉与Not powder控制保留。130项中间、131项最终回归均通过，最终42.778秒；随后41／86回放退出0、failures=[]，旧回放另存preflight-08。实际生产器bd9e7dd0…、配置2537534e…，仍待固定复审与全源验收，没有确认06参数。
+
+第25轮完整复审：Standards硬违反0／新增启发0，Spec剩余P1一项。not mixed with salt／wheat 否定本商品添加，公共RED→GREEN，整段已知否定混合短语不供肯定成分，保留原句／否定角色；实际mixed with salt仍排除，but contains wheat后面的真实肯定反证继续排除，没有整句截断。132项通过（43.477秒）后，41原例／86分层回放退出0、failures=[]，旧回放另存preflight-09。生产器021606f5…、配置2537534e…；1.1.12仍未正式全源生成，等待新固定复审及来源/评论独立验收。
