@@ -1,0 +1,14 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full accounting passed; all 75 semantic sample records were read. Corn flavoring borrowed dry form from inline storage directions; a GREAT FOR VEGAN heading hid an affirmative barley identity contrary to the millet title. No review extraction was run.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.13.json": "161b3ae713ff39d4b8eac2dc7cddd4deebe896afec0af3436fc20619cfe7bccf",
+    "records/catalog/grain-A-1.1.13.json": "69714668afc641ad612fe558ff6b5f42e762171b1b904e3321382d308e7df07a",
+    "data/catalog/grain-A-1.1.13/catalog.jsonl": "53f2135c1870dcb228815cbc3b944bf3948b79c66114e83cb7db4bc1cc5e531d",
+    "data/catalog/grain-A-1.1.13/audit.jsonl": "ae49dae87bce699dbf2a114f94279309862bd4a0d916797a913908900dbe1c4b",
+    "data/catalog/grain-A-1.1.13/migration.jsonl": "2d3d5b67dfd1825f41f73447f36267f68858971af05409b1a5f368341be35708",
+    "data/catalog/grain-A-1.1.13/pending.jsonl": "456ad10feaf6f6d01a6b42de6ce5e895060e586ffc3ee54ded15d551ba4cac44",
+    ".scratch/data-preparation/verification/grain-A-1.1.13-check.json": "31d50c0d1dc601dccda3468cef7237420c97e4256689c382b9d46aaedc8357f8",
+    "data/diagnostics/grain-A-1.1.13-semantic-sample.json": "c29dff7026d6e46ff86fec9ac7615e746853a992ba8361c09a7cbb2a62a98f36"
+  }
+}

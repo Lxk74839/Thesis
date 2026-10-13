@@ -1,0 +1,6 @@
+test_identity_catalog_feature_heading_preserves_our_product_identity_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_feature_heading_preserves_our_product_identity_counterevidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.451s
+
+OK

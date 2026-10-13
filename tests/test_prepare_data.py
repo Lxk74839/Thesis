@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.13.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.14.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -377,6 +377,44 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included", "included"])
         self.assertFalse(audit[0]["form_evidence"])
         self.assertFalse(audit[1]["form_evidence"])
+
+    def test_identity_catalog_flavoring_sales_are_outside_grain_scope(self):
+        run = self.identity_catalog([
+            {"parent_asin": "FLAVOR", "title": "Deiman Artificial Food Flavoring Corn Arte pan (4 fl.oz.)", "description": ["CORN. STORAGE Original container tightly capped, in a cool, dry place."]},
+            {"parent_asin": "SPELLING", "title": "Corn Food Flavouring"},
+            {"parent_asin": "USE", "title": "Raw corn kernels for flavoring soups"},
+            {"parent_asin": "NATURAL", "title": "Raw corn kernels", "features": ["This corn has a natural nutty flavor."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "excluded", "included", "included"])
+        self.assertTrue(any(ref["field"] == "title" for ref in audit[0]["counter_evidence"]))
+
+    def test_identity_catalog_inline_storage_does_not_supply_sold_dry_form(self):
+        run = self.identity_catalog([
+            {"parent_asin": "STORAGE", "title": "Corn", "description": ["CORN STORAGE Original container tightly capped, in a cool, dry place."]},
+            {"parent_asin": "DIRECT", "title": "Corn", "description": ["This product is dry corn kernels STORAGE Keep in a cool, dry place."]},
+            {"parent_asin": "TITLE", "title": "Raw corn kernels", "description": ["STORAGE Original container tightly capped, in a cool, dry place."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "included"])
+        self.assertFalse(audit[0]["form_evidence"])
+        self.assertTrue(any(ref["role"] == "storage_context" and ref["text"].endswith("dry place.") for ref in audit[0]["context_evidence"]))
+
+    def test_identity_catalog_feature_heading_preserves_our_product_identity_counterevidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "CONFLICT", "title": "Organic Hulled Little Millet Grain", "features": ["GREAT FOR VEGAN: Our organic barley is great to add to any vegan or vegetarian meal"]},
+            {"parent_asin": "DIRECT", "title": "Organic Hulled Little Millet Grain", "features": ["GREAT FOR VEGAN: Our organic little millet is great to add to any vegan or vegetarian meal"]},
+            {"parent_asin": "USE", "title": "Raw little millet grain", "features": ["Great for barley soup and rice dishes."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "included"])
+        self.assertTrue(any("Our organic barley" in ref["text"] for ref in audit[0]["counter_evidence"]))
 
     def test_identity_catalog_direct_flavor_list_coating_is_an_outside_composition_claim(self):
         claim = "Our Fruit Rainbow popcorn brings the colors of the rainbow and the flavors of grape, lemon, orange, blue raspberry and cherry in a light, crunchy coating."

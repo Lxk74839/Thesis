@@ -125,3 +125,7 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 1.1.13逐项公共RED→GREEN：①great for配餐不供身份／形态；②preserved lemons售卖对象按既有A外对象识别，for用途对照仍可入；③品牌offers the widest diversity和通用USDA膳食建议不供本品形态，直接whole grain oats及明确raw groats仍可入；④同商品直接flavors of…coating为A外调味声明，与完整Corn声明冲突pending，食谱／can be coated／自然风味对照保留。成分和供应链真实事实不补造。完成柠檬对象识别后，配餐测试的对象换为未识别的pantry商品，继续独立观察用途边界；实际完整腌柠檬记录由另一销售对象测试和原始样本回放确认排除。
 
 首轮140项失败1项捕获旧配置迁移夹具没有新增涂层模式键；不改旧配置或旧测试预期，将新声明模式显式视为可选既定规则字段，该原迁移测试GREEN。失败日志scope-revision-tests-round31.txt保留；最终140项通过（47.494秒，scope-revision-tests-round31-final.txt）。随后41原例、三版已读原文并集90条串行回放退出0、failures=[]，90条为71入选／12待裁决／7排除；1.1.12回放原样保留。生产器4ca6b765…、配置161b3ae7…，待新固定两轴复审和1.1.13完整元数据／评论验收；06正式规则尚未确认。
+
+第31轮固定4683a41两轴静态报告均无新增发现。1.1.13全量603,274行及独立对账通过，但全部75条原文抽核发现玉米香精借储存dry入选、GREAT FOR VEGAN功能标题隐藏Our organic barley本品身份反证两处错误。拒绝1.1.13，8组件摘要保留，未运行评论提取；详见semantic-sample-1.1.13-rejection.md。
+
+独立1.1.14按三项行为逐个公共RED→最小GREEN：①flavoring／flavouring售卖对象排除，用途和自然风味不误排；②行内STORAGE切断储存dry形态，本品明确dry kernels或raw标题仍保留；③GREAT FOR…:后明确Our／This product本品陈述不被标题掩盖，与millet冲突的barley原文保留pending，单纯barley配餐仍不造混粮。三份RED日志均真实失败，三份GREEN均退出0，原有期望不改。最终143项通过47.988秒（scope-revision-tests-round32.txt）；41原例9入／25排／7待裁决、四版已读原文并集94条73入／13待裁决／8排均退出0、failures=[]。生产器14725e87…、配置2b9d7860…；等待固定两轴审查与新目录及评论独立验收，06研究参数仍待确认。

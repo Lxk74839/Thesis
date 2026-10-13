@@ -1,0 +1,108 @@
+{
+  "status": "runtime_and_protection_passed",
+  "checked_at_utc": "2026-10-13T14:08:44.435404+00:00",
+  "environment_path": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+  "python": "3.13.16",
+  "explicit_environment_call": "conda run -p Thesis project prefix --no-capture-output python",
+  "environment_identity_check": "passed",
+  "dependencies_added_by_revision": 0,
+  "actual_conda_packages": [
+    {
+      "name": "bzip2",
+      "version": "1.0.8",
+      "build": "h2bbff1b_6"
+    },
+    {
+      "name": "ca-certificates",
+      "version": "2026.9.25",
+      "build": "haa95532_0"
+    },
+    {
+      "name": "libexpat",
+      "version": "2.9.0",
+      "build": "hd7fb8db_0"
+    },
+    {
+      "name": "libffi",
+      "version": "3.4.8",
+      "build": "h42d73b9_3"
+    },
+    {
+      "name": "libmpdec",
+      "version": "4.0.1",
+      "build": "h1c6eee0_0"
+    },
+    {
+      "name": "libzlib",
+      "version": "1.3.2",
+      "build": "h1c6eee0_0"
+    },
+    {
+      "name": "openssl",
+      "version": "3.5.9",
+      "build": "hbb43b14_0"
+    },
+    {
+      "name": "python",
+      "version": "3.13.16",
+      "build": "h2e1fde4_102_cp313"
+    },
+    {
+      "name": "python_abi",
+      "version": "3.13",
+      "build": "5_cp313"
+    },
+    {
+      "name": "sqlite",
+      "version": "3.53.4",
+      "build": "hee5a0db_0"
+    },
+    {
+      "name": "tk",
+      "version": "8.6.15",
+      "build": "hf199647_0"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026c",
+      "build": "he532380_0"
+    },
+    {
+      "name": "ucrt",
+      "version": "10.0.22621.0",
+      "build": "haa95532_0"
+    },
+    {
+      "name": "vc",
+      "version": "14.3",
+      "build": "h2df5915_12"
+    },
+    {
+      "name": "vc14_runtime",
+      "version": "14.44.35208",
+      "build": "h4927774_12"
+    },
+    {
+      "name": "vs2015_runtime",
+      "version": "14.44.35208",
+      "build": "ha6b5a95_12"
+    },
+    {
+      "name": "xz",
+      "version": "5.8.4",
+      "build": "hb851c79_0"
+    },
+    {
+      "name": "zlib",
+      "version": "1.3.2",
+      "build": "h1c6eee0_0"
+    }
+  ],
+  "protected_files_unchanged": 76,
+  "original_materials_unchanged": 26,
+  "rejected_version_components_unchanged": 74,
+  "raw_environment_originals_tracked": false,
+  "git_identity_scope": "repository-local",
+  "checked_commit": "4683a41420889368c4cd9a71be8d1851e6e4d904"
+}

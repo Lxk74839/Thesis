@@ -1,0 +1,6 @@
+test_identity_catalog_flavoring_sales_are_outside_grain_scope (test_prepare_data.MetadataPreparationTests.test_identity_catalog_flavoring_sales_are_outside_grain_scope) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.339s
+
+OK
