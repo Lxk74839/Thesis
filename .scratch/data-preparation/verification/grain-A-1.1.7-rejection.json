@@ -1,0 +1,12 @@
+{
+  "status": "rejected_pre_release",
+  "reason": "Full source scan reached EOF, but Round11 Spec and public RED demonstrated added sugar can bypass complete single-grain disclosure conflict through the outside-object branch. Six components retained; no independent acceptance claimed. Independent 1.1.8 preserves the conflict while distinguishing sauce form from added composition.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.7.json": "aeec2f81e61eb7d74cbbaf36e545ea8567f9f325f41f3d70f5d315c4f9e6b6a7",
+    "records/catalog/grain-A-1.1.7.json": "7d0b025377650e02adbb050e2ff9428a32ff3be75408bdb12d2ce4df47f1235a",
+    "data/catalog/grain-A-1.1.7/catalog.jsonl": "9b0eb3cd5f0c46c3052206a974ce5b16686d471d8863acee93551e1a465cac7f",
+    "data/catalog/grain-A-1.1.7/audit.jsonl": "9b7451ebd942bb0ca963c8b214f147745420da3bbde1dc6c7c532e56a3b4cac1",
+    "data/catalog/grain-A-1.1.7/pending.jsonl": "45a2775aa8e939db40d3a147f0f22667258dffbbafe0941c0b09eb9fb20259c9",
+    "data/catalog/grain-A-1.1.7/migration.jsonl": "d8f951654e4b93c474fd176268dfb762e8086f231aee2aa3b24af7e6407de0be"
+  }
+}

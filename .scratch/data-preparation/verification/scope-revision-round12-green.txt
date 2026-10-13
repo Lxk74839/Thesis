@@ -1,0 +1,6 @@
+test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch (test_prepare_data.MetadataPreparationTests.test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.344s
+
+OK

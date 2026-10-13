@@ -1,0 +1,32 @@
+test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch (test_prepare_data.MetadataPreparationTests.test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch (test_prepare_data.MetadataPreparationTests.test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 552, in test_identity_catalog_sugar_addition_conflict_survives_outside_object_branch
+    self.assertEqual([(r["status"], r["composition_status"]) for r in audit],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     [("pending", "conflict"), ("excluded", "declared_outside_scope"), ("excluded", "declared_single_grain")])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('excluded', 'declared_single_grain'), ('ex[60 chars]in')] != [('pending', 'conflict'), ('excluded', 'decl[55 chars]in')]
+
+First differing element 0:
+('excluded', 'declared_single_grain')
+('pending', 'conflict')
+
++ [('pending', 'conflict'),
+- [('excluded', 'declared_single_grain'),
+? ^                         ^^^  ^^^^^
+
++  ('excluded', 'declared_outside_scope'),
+? ^                       +++  ^  ^^^^^
+
+-  ('excluded', 'not_disclosed'),
+   ('excluded', 'declared_single_grain')]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.422s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k sugar_addition_conflict` failed. (See above for error)

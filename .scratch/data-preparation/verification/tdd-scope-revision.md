@@ -71,3 +71,5 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 进一步核对同一否定作用域，Raw与Not raw关键形态矛盾的公共夹具实际RED→GREEN；先收集全部肯定形态，再对照否定，字段顺序两种方向一致，“本品未称rolled而Not rolled”不被误作形态冲突。未开启1.1.7正式扫描，属于同一未冻结实现版本；所有范围、成分真实未知与06未决参数边界不变。
 
 上述追加形态行为后93项通过（31.755秒）。进一步检查同一明确添加与完整披露的交互：专用Ingredients单粮声明与字段Not only添加、标题明确加盐及多粮种组合的公共夹具实际RED→GREEN，保留为成分冲突；已有两项完整声明相冲突也不能被标题A外分支覆盖，追加控制实际RED2→GREEN2。无完整单粮声明的实际加盐仍排除。1.1.7全部94项通过（32.319秒），见 scope-revision-tests-round11-complete.txt；未改变测试接口或研究参数。
+
+第十一轮：Standards 0；Spec指出sugar在outside_objects早退，Raw rice kernels with sugar＋Ingredients Rice的公共夹具实际RED→GREEN；同商品明确添加状态不变成未披露，完整声明矛盾保留conflict，Rice Sauce＋单粮原料对照仍属A外形态而不滥判配方冲突。独立1.1.8全部95项通过（33.486秒），见 scope-revision-tests-round12.txt。1.1.7全源已结束，因本项拒绝且六摘要保留，未声称独立验收。A、论文核心及06未决参数不变。

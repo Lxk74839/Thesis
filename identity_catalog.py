@@ -126,15 +126,21 @@ def classify_identity(item, config):
     title_use = re.search(r"\bwhen cooked\b", sold, re.I)
     if title_use:
         sold = sold[:title_use.start()]
+    crops = grain_crops(sold, config)
     if pattern(config["outside_objects"]).search(sold):
         decision.update(status="excluded", reason="sold_object_outside_scope", crop=None,
                         identity_evidence=[], form_evidence=[], counter_evidence=[{"field": "title", "text": title}])
+        added_components = crops and re.search(r"\b(?:with|and|contains|added|infused with)\b", sold, re.I) and pattern(config["non_grain_ingredients"]).search(sold)
+        if added_components:
+            decision["composition_status"] = "declared_outside_scope"
+            if composition_status in ("declared_single_grain", "conflict"):
+                decision.update(status="pending", reason="composition_declaration_conflict", composition_status="conflict",
+                                counter_evidence=[*decision["counter_evidence"], *composition])
         categories = item.get("categories") or []
         if pattern(["sauce", "seasoning", "seasonings"]).search(sold) and categories and grain_crops(categories[-1], config):
             decision.update(status="pending", reason="category_form_conflict",
                             counter_evidence=[*decision["counter_evidence"], {"field": f"categories[{len(categories) - 1}]", "text": categories[-1]}])
         return decision
-    crops = grain_crops(sold, config)
     if crops and pattern([*config["non_grain_ingredients"], *config["outside_crops"]]).search(sold):
         decision.update(status="excluded", reason="sold_added_ingredient_or_outside_crop",
                         composition_status="declared_outside_scope", counter_evidence=[{"field": "title", "text": title}])
