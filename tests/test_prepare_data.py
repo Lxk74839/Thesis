@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.4.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.5.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -306,7 +306,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.4.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.5.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -455,6 +455,21 @@ class MetadataPreparationTests(unittest.TestCase):
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual([r["status"] for r in audit], ["included", "included", "excluded", "pending"])
         self.assertTrue(all(r["context_evidence"] for r in audit))
+
+    def test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain(self):
+        run = self.identity_catalog([
+            {"parent_asin": "BARLEY", "title": "Cooked barley kernels"},
+            {"parent_asin": "OATS", "title": "Cooked oat groats"},
+            {"parent_asin": "RAW", "title": "Uncooked barley kernels", "features": ["When cooked, serve with salt."]},
+            {"parent_asin": "CONFLICT", "title": "Raw barley kernels", "features": ["This product is cooked barley kernels."]},
+            {"parent_asin": "TITLE_USE", "title": "Raw barley kernels; when cooked, serve with salt."},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([r["status"] for r in audit], ["excluded", "excluded", "included", "pending", "included"])
+        self.assertTrue(audit[2]["context_evidence"])
+        self.assertTrue(audit[3]["counter_evidence"])
 
     def test_identity_catalog_preserves_purpose_and_texture_without_false_conflicts(self):
         run = self.identity_catalog([

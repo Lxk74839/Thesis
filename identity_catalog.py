@@ -119,6 +119,9 @@ def classify_identity(item, config):
     affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
     affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)
     sold = re.split(r"\b(?:for|use with|great with|alternative to|substitute for)\b", affirmative, maxsplit=1, flags=re.I)[0]
+    title_use = re.search(r"\bwhen cooked\b", sold, re.I)
+    if title_use:
+        sold = sold[:title_use.start()]
     if pattern(config["outside_objects"]).search(sold):
         decision.update(status="excluded", reason="sold_object_outside_scope", crop=None,
                         identity_evidence=[], form_evidence=[], counter_evidence=[{"field": "title", "text": title}])
@@ -140,12 +143,15 @@ def classify_identity(item, config):
         decision.update(status="excluded", reason="sold_multiple_grains", crop=None,
                         composition_status="declared_outside_scope", counter_evidence=[{"field": "title", "text": title}])
         return decision
+    if decision["reason"] == "excluded_form" and not pattern(config["excluded_forms"]).search(sold):
+        decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     if decision["status"] == "excluded" and decision["reason"] in ("nonfood", "excluded_form", "outside_crop", "no_scope_evidence"):
         return decision
     forms = [{"field": "title", "text": title}] if crops and pattern(config["identity_forms"]).search(sold) else []
     if crops:
         decision["identity_evidence"] = [{"field": "title", "text": title}]
-    decision["context_evidence"] = []
+    decision["context_evidence"] = ([{"field": "title", "text": title, "role": "brand_or_texture_context",
+                                      "clause_text": title, "context_start": re.search(r"\bwhen cooked\b", title, re.I).start()}] if title_use else [])
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])

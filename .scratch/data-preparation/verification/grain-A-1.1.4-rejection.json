@@ -1,0 +1,12 @@
+{
+  "status": "aborted_pre_release",
+  "reason": "Round8 Spec and public RED demonstrate cooked nonrice grain sales can be admitted. Verified Thesis process 19148 was stopped before changing its producer. Partial files retained; no full source accounting or independent acceptance is claimed for this version.",
+  "source_scan_completed": false,
+  "preserved_sha256": {
+    "config/grain-A-1.1.4.json": "7f4637ec775fcfd53d36fcb411340e371c96598dc799cdf28ec44033f18457f0",
+    "data/catalog/grain-A-1.1.4/audit.jsonl": "1f43a261064b41928e7de057f56d93f52a7fe6d89504e2edc2a979a943674a3a",
+    "data/catalog/grain-A-1.1.4/catalog.jsonl": "4bc52875cf6a748b81b5f980491e311b23e2fe138633d418abff54144685d34b",
+    "data/catalog/grain-A-1.1.4/migration.jsonl": "e49d584d05623f7cc9e08571ed78724442349dc25363d2adde4f0596215c8bff",
+    "data/catalog/grain-A-1.1.4/pending.jsonl": "4b90e3bd6706186caf45a0480dba50c2d2c06db956c89b7692510492ee28f33f"
+  }
+}

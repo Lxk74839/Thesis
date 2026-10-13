@@ -1,0 +1,6 @@
+test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain (test_prepare_data.MetadataPreparationTests.test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.385s
+
+OK

@@ -57,3 +57,7 @@ review_extract 复用行为补充公共入口回归：新身份目录保留完�
 第七轮：Standards 0；Spec 1 项 P2。This rice is not parboiled／No oil is added to this rice 的公共入口夹具实际 RED（两项错误 pending），按被否定的非身份对象移除肯定判据，同时保存完整原句和语义角色，GREEN。反证控制保留同句真实 contains salt 排除、but is malted 待决，既有 Not rice 和 Not only 不变。1.1.3 已全源结束但因本项拒绝验收，六组件摘要单独保留；未声称其已独立验收。独立 1.1.4 只更正版号与该语义，不批准工单06参数。
 
 1.1.4 全套 88 项公共 CLI 行为测试通过（30.783 秒），见 scope-revision-tests-round8-final.txt。此前同实现使用 1.1.3 夹具的 88 项通过日志亦保留，但不作为新版配置的最终记录。
+
+第八轮：Standards 0；Spec 1 项 P1。Cooked barley kernels／Cooked oat groats 与 Raw 标题＋本品 Cooked 字段的公共夹具实际 RED，分别误入选。独立1.1.5将明确 cooked 售卖形态按既有 A 熟制排除，字段与 Raw 矛盾继续待决；uncooked 和 when cooked 烹调描述仍可入选并保留角色。单项 GREEN。1.1.4 正在扫描时已核实 Thesis 解释器、命令及 PID 后停止本次计算，未覆盖其配置／部分产物；五项现有组件摘要留存，状态 aborted_pre_release，不声称完整扫描或独立验收。
+
+1.1.5 全套 89 项公共入口行为测试通过（31.566 秒），见 scope-revision-tests-round9.txt；没有新增依赖。

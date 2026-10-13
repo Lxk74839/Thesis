@@ -1,0 +1,23 @@
+test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain (test_prepare_data.MetadataPreparationTests.test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain (test_prepare_data.MetadataPreparationTests.test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 469, in test_identity_catalog_cooked_sales_are_outside_scope_for_every_grain
+    self.assertEqual([r["status"] for r in audit], ["excluded", "excluded", "included", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included'] != ['excluded', 'excluded', 'included', 'pending']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'included', 'included', 'included']
++ ['excluded', 'excluded', 'included', 'pending']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.373s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k cooked_sales` failed. (See above for error)
