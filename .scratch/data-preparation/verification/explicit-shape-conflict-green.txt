@@ -1,0 +1,6 @@
+test_identity_catalog_conflicting_explicit_sale_shapes_keep_all_source_fields (test_prepare_data.MetadataPreparationTests.test_identity_catalog_conflicting_explicit_sale_shapes_keep_all_source_fields) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.372s
+
+OK

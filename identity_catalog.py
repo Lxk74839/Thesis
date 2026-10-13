@@ -69,6 +69,13 @@ def affirmative_composition(value, config):
     return re.sub(r"(?:" + pattern(components).pattern + r")[- ]free\b", " ", value, flags=re.I)
 
 
+def affirmative_identity(text, config):
+    for negative in pattern(config["identity_negations"]).finditer(text):
+        if not negative.group().isascii() or ((negative.start() == 0 or text[negative.start() - 1] != "-") and text[negative.end():negative.end() + 1].isspace()):
+            return text[:negative.start()]
+    return text
+
+
 def composition_disclosure(item, config):
     declarations = []
     for field, text in text_fields(item):
@@ -137,7 +144,7 @@ def classify_identity(item, config):
     composition_status, composition_crops, composition = composition_disclosure(item, config)
     decision.update(composition_status=composition_status, composition_evidence=composition)
     title = item.get("title", "")
-    affirmative = pattern(config["identity_negations"]).split(title, maxsplit=1)[0]
+    affirmative = affirmative_identity(title, config)
     affirmative = re.sub(r"\b[\w]+[- ]free\b", " ", affirmative, flags=re.I)
     sold = re.split(r"\b(?:for|use with|great with|alternative to|substitute for)\b", affirmative, maxsplit=1, flags=re.I)[0]
     title_use = re.search(r"\bwhen cooked\b", sold, re.I)
@@ -185,7 +192,7 @@ def classify_identity(item, config):
     statements = list(source_statements(item, config))
     if decision["reason"] == "outside_crop":
         identities = [ref for ref, _, fragment, _ in statements if ref["field"] != "title"
-                      and grain_crops(pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0], config)]
+                      and grain_crops(affirmative_identity(fragment, config), config)]
         if identities:
             decision.update(status="pending", reason="field_identity_conflict",
                             identity_evidence=[*decision["identity_evidence"], *identities])
@@ -199,8 +206,12 @@ def classify_identity(item, config):
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     affirmative_forms = set()
-    for _, _, fragment, _ in statements:
-        affirmative = pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0]
+    sale_shapes = {}
+    for ref, _, fragment, _ in statements:
+        affirmative = affirmative_identity(fragment, config)
+        for shape, terms in config.get("explicit_sale_shapes", {}).items():
+            if pattern(terms).search(affirmative):
+                sale_shapes.setdefault(shape, []).append(ref)
         form_names = {match.group().lower() for match in pattern(config["identity_forms"]).finditer(affirmative)}
         if form_names:
             affirmative_forms.update(form_names)
@@ -263,7 +274,7 @@ def classify_identity(item, config):
         if crops and found and len(narrow_grains(crops | found, config)) > 1:
             decision.update(status="pending", reason="field_identity_conflict",
                             counter_evidence=[*decision["counter_evidence"], ref])
-        affirmative = pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0]
+        affirmative = affirmative_identity(fragment, config)
         positive = grain_crops(affirmative, config)
         if (positive or crops) and pattern(config["identity_forms"]).search(affirmative):
             crops.update(positive)
@@ -275,6 +286,9 @@ def classify_identity(item, config):
     if outside_facts:
         decision.update(status="excluded", reason=outside_facts[0][0],
                         counter_evidence=[*decision["counter_evidence"], *(ref for _, ref in outside_facts)])
+    if len(sale_shapes) > 1 and decision["status"] != "excluded":
+        decision.update(status="pending", reason="field_form_conflict",
+                        counter_evidence=[*decision["counter_evidence"], *(ref for values in sale_shapes.values() for ref in values)])
     categories = item.get("categories") or []
     if decision["reason"] == "category_identity_conflict" and categories:
         leaf = grain_crops(categories[-1], config)

@@ -1,0 +1,6 @@
+test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning (test_prepare_data.MetadataPreparationTests.test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.360s
+
+OK

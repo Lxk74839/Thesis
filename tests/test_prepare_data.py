@@ -94,7 +94,7 @@ class MetadataPreparationTests(unittest.TestCase):
         legacy = self.catalog(rows)
         self.assertEqual(legacy.returncode, 0, legacy.stderr)
         version = json.loads(legacy.stdout)["scope_version"]
-        return self.run_catalog(PROJECT / "config/grain-A-1.1.11.json",
+        return self.run_catalog(PROJECT / "config/grain-A-1.1.12.json",
                                 previous=self.output / "records/catalog" / (version + ".json"))
 
     def test_identity_catalog_admits_explicit_grain_with_unknown_composition(self):
@@ -373,7 +373,7 @@ class MetadataPreparationTests(unittest.TestCase):
         previous = self.output / "records/catalog" / (before["scope_version"] + ".json")
         old_record_bytes = previous.read_bytes()
         old_audit_bytes = (self.output / before["audit_path"]).read_bytes()
-        run = self.run_catalog(PROJECT / "config/grain-A-1.1.11.json", previous=previous)
+        run = self.run_catalog(PROJECT / "config/grain-A-1.1.12.json", previous=previous)
         self.assertEqual(run.returncode, 0, run.stderr)
         report = json.loads(run.stdout)
         changes = [json.loads(line) for line in (self.output / report["migration_path"]).read_text("utf-8").splitlines()]
@@ -402,6 +402,44 @@ class MetadataPreparationTests(unittest.TestCase):
         report = json.loads(run.stdout)
         audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
         self.assertEqual((audit[0]["status"], audit[0]["reason"]), ("pending", "field_food_use_conflict"))
+
+    def test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning(self):
+        run = self.identity_catalog([
+            {"parent_asin": "SEASONING", "title": "Nagatanien Otona-no-Furikake Dried Rice Seasoning | Seaweed and Bonito Flavor", "features": ["Dried Rice Seasoning", "Made in Japan"], "details": {"Item Form": "Powder"}},
+            {"parent_asin": "RAW", "title": "Otona-no Brand Raw Rice Kernels"},
+            {"parent_asin": "NEGATIVE", "title": "No raw rice kernels"},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["excluded", "included", "pending"])
+        self.assertTrue(audit[0]["counter_evidence"])
+
+    def test_identity_catalog_conflicting_explicit_sale_shapes_keep_all_source_fields(self):
+        run = self.identity_catalog([
+            {"parent_asin": "OATS", "title": "Organic Steel Cut Oats", "details": {"Item Form": "Flaked"}},
+            {"parent_asin": "CORN", "title": "White Corn Grits", "details": {"Item Form": "Flaked"}},
+            {"parent_asin": "SAME", "title": "Rolled Oats", "details": {"Item Form": "Flaked"}},
+            {"parent_asin": "USE", "title": "Steel Cut Oats", "features": ["Use with rolled oats in a recipe."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "included", "included"])
+        self.assertTrue(all(any(ref["field"] == "details.Item Form" for ref in row["counter_evidence"]) for row in audit[:2]))
+
+    def test_identity_catalog_bulgur_name_preserves_preprocessing_uncertainty(self):
+        run = self.identity_catalog([
+            {"parent_asin": "BULGUR", "title": "Heartland Bulgur Wheat", "description": ["Bulgur wheat is made from whole grain wheat."]},
+            {"parent_asin": "RAW", "title": "Raw Cracked Wheat Grain"},
+            {"parent_asin": "RECIPE", "title": "Raw Wheat Berries", "features": ["Use as an alternative to bulgur in a recipe."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "included", "included"])
+        self.assertTrue(audit[0]["counter_evidence"])
+        self.assertTrue(audit[2]["context_evidence"])
 
     def test_identity_catalog_recipe_label_ends_composition_but_salt_continuation_does_not(self):
         run = self.identity_catalog([

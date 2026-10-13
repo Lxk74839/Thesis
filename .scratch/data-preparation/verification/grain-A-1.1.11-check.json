@@ -1,0 +1,330 @@
+{
+  "status": "independent_scope_revision_audit_passed",
+  "checked_at_utc": "2026-10-13T08:03:51.555364+00:00",
+  "scope_version": "grain-A-1.1.11",
+  "source_rows": 603274,
+  "counts": {
+    "excluded": 568465,
+    "included": 1627,
+    "pending": 33182
+  },
+  "migration_counts": {
+    "excluded->excluded": 546486,
+    "pending->excluded": 21979,
+    "pending->included": 1622,
+    "pending->pending": 32608,
+    "excluded->pending": 566,
+    "included->included": 5,
+    "included->pending": 8
+  },
+  "composition_counts": {
+    "not_disclosed": 492809,
+    "declared_outside_scope": 52334,
+    "unresolved": 57121,
+    "conflict": 949,
+    "declared_single_grain": 61
+  },
+  "included_composition_counts": {
+    "not_disclosed": 1614,
+    "declared_single_grain": 13
+  },
+  "included_crop_counts": {
+    "rice": 799,
+    "oats": 337,
+    "sorghum": 4,
+    "fonio": 8,
+    "corn": 270,
+    "millet": 29,
+    "wheat": 132,
+    "barley": 19,
+    "little_millet": 1,
+    "rye": 6,
+    "finger_millet": 2,
+    "pearl_millet": 4,
+    "teff": 5,
+    "barnyard_millet": 5,
+    "kodo_millet": 3,
+    "coix": 1,
+    "foxtail_millet": 2
+  },
+  "literal_source_references_checked": 870774,
+  "known_semantic_cases_checked": [
+    {
+      "parent_asin": "B00KBRUYVM",
+      "status": "excluded",
+      "source_line": 3
+    },
+    {
+      "parent_asin": "B07TTJYHGX",
+      "status": "excluded",
+      "source_line": 12
+    },
+    {
+      "parent_asin": "B0BYLK9168",
+      "status": "included",
+      "source_line": 13
+    },
+    {
+      "parent_asin": "B0BDV6ZTHR",
+      "status": "excluded",
+      "source_line": 31
+    },
+    {
+      "parent_asin": "B09S8Q6FG5",
+      "status": "excluded",
+      "source_line": 69
+    },
+    {
+      "parent_asin": "B08Q44XV13",
+      "status": "included",
+      "source_line": 258
+    },
+    {
+      "parent_asin": "B00HU6WYJ2",
+      "status": "excluded",
+      "source_line": 282
+    },
+    {
+      "parent_asin": "B09TS94RVG",
+      "status": "included",
+      "source_line": 345
+    },
+    {
+      "parent_asin": "B0BMSZCYM7",
+      "status": "included",
+      "source_line": 416
+    },
+    {
+      "parent_asin": "B078RRSYFH",
+      "status": "excluded",
+      "source_line": 652
+    },
+    {
+      "parent_asin": "B0C1MM67QJ",
+      "status": "included",
+      "source_line": 1961
+    },
+    {
+      "parent_asin": "B07BXYMNFN",
+      "status": "excluded",
+      "source_line": 3420
+    },
+    {
+      "parent_asin": "B088PZLRK7",
+      "status": "included",
+      "source_line": 5817
+    },
+    {
+      "parent_asin": "B0C2QMVTW8",
+      "status": "excluded",
+      "source_line": 6682
+    },
+    {
+      "parent_asin": "B00838WFWM",
+      "status": "pending",
+      "source_line": 7608
+    },
+    {
+      "parent_asin": "B018ZORFSW",
+      "status": "excluded",
+      "source_line": 8788
+    },
+    {
+      "parent_asin": "B07WFR4WJ4",
+      "status": "pending",
+      "source_line": 13890
+    },
+    {
+      "parent_asin": "B07CVXGQN4",
+      "status": "excluded",
+      "source_line": 27947
+    },
+    {
+      "parent_asin": "B09H3TZL9L",
+      "status": "excluded",
+      "source_line": 29206
+    },
+    {
+      "parent_asin": "B00JM1DP32",
+      "status": "pending",
+      "source_line": 33250
+    },
+    {
+      "parent_asin": "B0BWMCLXRL",
+      "status": "pending",
+      "source_line": 37450
+    },
+    {
+      "parent_asin": "B09LPKJFSH",
+      "status": "excluded",
+      "source_line": 45260
+    },
+    {
+      "parent_asin": "B0BR1CCPC3",
+      "status": "pending",
+      "source_line": 83211
+    },
+    {
+      "parent_asin": "B0BSZXZXZP",
+      "status": "pending",
+      "source_line": 100693
+    },
+    {
+      "parent_asin": "B00ITTYJG0",
+      "status": "pending",
+      "source_line": 103805
+    },
+    {
+      "parent_asin": "B087C4WM17",
+      "status": "included",
+      "source_line": 110043
+    },
+    {
+      "parent_asin": "B07PXBNL92",
+      "status": "excluded",
+      "source_line": 121281
+    },
+    {
+      "parent_asin": "B092DF65V1",
+      "status": "included",
+      "source_line": 124908
+    },
+    {
+      "parent_asin": "B00KA8R6I6",
+      "status": "excluded",
+      "source_line": 134969
+    },
+    {
+      "parent_asin": "B00INBVK5C",
+      "status": "excluded",
+      "source_line": 136737
+    },
+    {
+      "parent_asin": "B0019L8I58",
+      "status": "included",
+      "source_line": 140996
+    },
+    {
+      "parent_asin": "B0078DSUV8",
+      "status": "pending",
+      "source_line": 148882
+    },
+    {
+      "parent_asin": "B00CQRIVX8",
+      "status": "excluded",
+      "source_line": 168099
+    },
+    {
+      "parent_asin": "B00355CC1M",
+      "status": "excluded",
+      "source_line": 187574
+    },
+    {
+      "parent_asin": "B07D6SRT34",
+      "status": "excluded",
+      "source_line": 204242
+    },
+    {
+      "parent_asin": "B00IV6P4J2",
+      "status": "pending",
+      "source_line": 292491
+    },
+    {
+      "parent_asin": "B00FWK2TFM",
+      "status": "excluded",
+      "source_line": 296697
+    },
+    {
+      "parent_asin": "B0040PSQFW",
+      "status": "excluded",
+      "source_line": 315995
+    },
+    {
+      "parent_asin": "B005CD38KE",
+      "status": "pending",
+      "source_line": 321798
+    },
+    {
+      "parent_asin": "B08LCK7VRG",
+      "status": "excluded",
+      "source_line": 337476
+    },
+    {
+      "parent_asin": "B008040JWM",
+      "status": "excluded",
+      "source_line": 401209
+    },
+    {
+      "parent_asin": "B074D9F3T3",
+      "status": "pending",
+      "source_line": 438493
+    },
+    {
+      "parent_asin": "B08KSY7NYN",
+      "status": "pending",
+      "source_line": 441489
+    },
+    {
+      "parent_asin": "B005Y2BNPK",
+      "status": "excluded",
+      "source_line": 441959
+    },
+    {
+      "parent_asin": "B00GO8T49A",
+      "status": "excluded",
+      "source_line": 496514
+    },
+    {
+      "parent_asin": "B077HTZ3WL",
+      "status": "excluded",
+      "source_line": 498068
+    },
+    {
+      "parent_asin": "B0033UE02S",
+      "status": "pending",
+      "source_line": 503128
+    },
+    {
+      "parent_asin": "B083F7F9FT",
+      "status": "pending",
+      "source_line": 505091
+    },
+    {
+      "parent_asin": "B001HTISYS",
+      "status": "excluded",
+      "source_line": 518799
+    },
+    {
+      "parent_asin": "B08XZS7VRD",
+      "status": "excluded",
+      "source_line": 530317
+    },
+    {
+      "parent_asin": "B08L737QS1",
+      "status": "excluded",
+      "source_line": 533306
+    },
+    {
+      "parent_asin": "B086KYRW35",
+      "status": "pending",
+      "source_line": 538370
+    },
+    {
+      "parent_asin": "B07K6THHFC",
+      "status": "included",
+      "source_line": 561586
+    },
+    {
+      "parent_asin": "B00JNSZK5K",
+      "status": "excluded",
+      "source_line": 568718
+    }
+  ],
+  "verification_program_sha256": "3393ee4a37c6c1092e25f052a1d8c06c806a3d98385c33cfd10a9696859fa8f7",
+  "catalog_sha256": "38a615be152e13d3d959ccac15f96074608ea403716bc5cefd900dc54b0ff0d5",
+  "migration_sha256": "7e7c8af924620df99e065bad8809ecaf2e50fc4fd20e0cf7955a1fc4206ccc92",
+  "protected_files_unchanged": 76,
+  "original_materials_unchanged": 26,
+  "rejected_version_components_unchanged": 60,
+  "limitations": "All source/migration accounting checked; fixed original cases plus documented preflight corrections checked. New population still requires documented semantic spot checks, not an assertion of exhaustive human adjudication."
+}

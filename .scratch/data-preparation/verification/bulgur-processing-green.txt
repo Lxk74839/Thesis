@@ -1,0 +1,6 @@
+test_identity_catalog_bulgur_name_preserves_preprocessing_uncertainty (test_prepare_data.MetadataPreparationTests.test_identity_catalog_bulgur_name_preserves_preprocessing_uncertainty) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.360s
+
+OK

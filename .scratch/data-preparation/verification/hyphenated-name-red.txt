@@ -1,0 +1,23 @@
+test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning (test_prepare_data.MetadataPreparationTests.test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning (test_prepare_data.MetadataPreparationTests.test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 415, in test_identity_catalog_hyphenated_name_token_does_not_hide_sold_seasoning
+    self.assertEqual([row["status"] for row in audit], ["excluded", "included", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'pending', 'pending'] != ['excluded', 'included', 'pending']
+
+First differing element 0:
+'included'
+'excluded'
+
+- ['included', 'pending', 'pending']
++ ['excluded', 'included', 'pending']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.530s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -v -k hyphenated_name_token` failed. (See above for error)

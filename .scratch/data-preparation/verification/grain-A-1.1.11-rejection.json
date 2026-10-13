@@ -1,0 +1,17 @@
+{
+  "status": "rejected_pre_release",
+  "checked_at_utc": "2026-10-13T08:12:15.124701+00:00",
+  "scope_version": "grain-A-1.1.11",
+  "source_scan_complete": true,
+  "full_accounting_audit": "passed",
+  "semantic_acceptance": "failed",
+  "reason": "Full-record sample found Otona-no- transliteration masking a rice seasoning sold object, conflicting explicit cut/grits versus flaked claims, and bulgur preprocessing ambiguity.",
+  "preserved_sha256": {
+    "config/grain-A-1.1.11.json": "ea2c78f58591ff91898560ad7e7dbe083bea4e4b96ae8f2f500cad161ceb05ef",
+    "records/catalog/grain-A-1.1.11.json": "df331b88a6fe8058438524f59a4acd05b49829bad464a746fcfe7c82d1178436",
+    "data/catalog/grain-A-1.1.11/catalog.jsonl": "38a615be152e13d3d959ccac15f96074608ea403716bc5cefd900dc54b0ff0d5",
+    "data/catalog/grain-A-1.1.11/audit.jsonl": "40351faa9a18c5c050d3d0d3b67c9c422fcdb1c8a589911b72682d464e8ed4be",
+    "data/catalog/grain-A-1.1.11/pending.jsonl": "984441467a5ccea0f0459bec3d161eef0e7d7d31e288fa2820c3081858ed6a3a",
+    "data/catalog/grain-A-1.1.11/migration.jsonl": "7e7c8af924620df99e065bad8809ecaf2e50fc4fd20e0cf7955a1fc4206ccc92"
+  }
+}

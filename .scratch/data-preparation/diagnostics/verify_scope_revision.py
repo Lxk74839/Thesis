@@ -33,7 +33,7 @@ expected = {r["parent_asin"]: ("included" if r["group"] in ("I", "P") else "excl
 # title under the approved seasoning exclusion, without inventing a full composition list.
 expected["B08L737QS1"] = "excluded"
 assert len(expected) == 41
-preflight = json.loads((ROOT / ".scratch/data-preparation/verification/grain-A-1.1.11-preflight-sample.json").read_text("utf-8"))
+preflight = json.loads((ROOT / ".scratch/data-preparation/verification" / (VERSION + "-preflight-sample.json")).read_text("utf-8"))
 for status, parents in preflight["source_metadata_judgments"].items():
     expected.update({parent: status for parent in parents})
 expected["B092DF65V1"] = "included"
