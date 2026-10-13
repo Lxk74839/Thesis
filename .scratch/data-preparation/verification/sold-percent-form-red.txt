@@ -1,0 +1,27 @@
+test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 165, in test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form
+    self.assertEqual([row["status"] for row in audit], ["included", "pending"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['pending', 'pending'] != ['included', 'pending']
+
+First differing element 0:
+'pending'
+'included'
+
+- ['pending', 'pending']
+?   ----  ^
+
++ ['included', 'pending']
+?     ^^^^^^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.352s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k whole_product_percent -v` failed. (See above for error)

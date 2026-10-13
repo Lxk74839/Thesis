@@ -7,8 +7,8 @@
   "sample_size": 86,
   "sampling": "Union of both fully read deterministic per-crop unknown-composition samples plus all declared-single inclusions; not a probability sample.",
   "counts": {
-    "included": 70,
-    "pending": 11,
+    "included": 69,
+    "pending": 12,
     "excluded": 5
   },
   "source_metadata_judgments": {
@@ -33,10 +33,18 @@
       "B0BSZXZXZP"
     ]
   },
-  "failures": [],
+  "failures": [
+    {
+      "parent_asin": "B00ID0PB4E",
+      "expected": "included",
+      "actual": "pending",
+      "reason": "form_not_verified",
+      "counter_evidence": []
+    }
+  ],
   "producer_sha256": {
     "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
-    "identity_catalog.py": "d5ded07cb0f9b43720ee9276d173f9409c145c5bb07b9a8dec78730e4722657a",
+    "identity_catalog.py": "f00eece854f1fcb921cc6c059027ce7402863acf338b74cdbc55122243efa276",
     "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
   },
   "scope_sha256": "10b1b7130ef95470fc9f7bf31be0ac14aec8cabc2374015cc107f9ce79d956d4",

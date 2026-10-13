@@ -76,6 +76,13 @@ def affirmative_identity(text, config):
     return text
 
 
+def sold_form_text(ref, fragment):
+    if ref["field"].lower() in ("details.ingredients", "details.ingredient"):
+        return ""
+    material = re.search(r"\bingredients?\b|\bmade (?:from|of|with)\b", fragment, re.I)
+    return fragment[:material.start()] if material else fragment
+
+
 def composition_disclosure(item, config):
     declarations = []
     for field, text in text_fields(item):
@@ -191,11 +198,9 @@ def classify_identity(item, config):
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
     statements = list(source_statements(item, config))
     if decision["reason"] == "excluded_form":
+        conflicting_shapes = [*config["solid_sale_shapes"], *(["raw", "uncooked"] if pattern(["cooked"]).search(sold) else [])]
         shapes = [ref for ref, _, fragment, _ in statements if ref["field"] != "title"
-                  and ref["field"].lower() not in ("details.ingredients", "details.ingredient")
-                  and not pattern(config["composition_prefixes"]).search(fragment)
-                  and not re.search(r"\b(?:ingredients?\s*:|made from|made of)\b", fragment, re.I)
-                  and pattern(config["solid_sale_shapes"]).search(affirmative_identity(fragment, config))]
+                  and pattern(conflicting_shapes).search(affirmative_identity(sold_form_text(ref, fragment), config))]
         if shapes:
             decision.update(status="pending", reason="field_form_conflict",
                             counter_evidence=[{"field": "title", "text": title}, *shapes])
@@ -217,7 +222,7 @@ def classify_identity(item, config):
     affirmative_forms = set()
     sale_shapes = {}
     for ref, _, fragment, _ in statements:
-        affirmative = affirmative_identity(fragment, config)
+        affirmative = affirmative_identity(sold_form_text(ref, fragment), config)
         for shape, terms in config.get("explicit_sale_shapes", {}).items():
             if pattern(terms).search(affirmative):
                 sale_shapes.setdefault(shape, []).append(ref)
@@ -248,7 +253,7 @@ def classify_identity(item, config):
             decision.update(status="pending", reason="field_identity_conflict",
                             counter_evidence=[*decision["counter_evidence"], ref])
         contrast = re.search(r"\bnot\s+only\s+(.+?)\s+but\b", fragment, re.I)
-        mixture = re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with)\b", fragment, re.I) or (contrast and grain_crops(contrast[1], config))
+        mixture = re.search(r"\b(?:blend|blended|mixture|mix|contains|consists of|made from|infused with|with)\b", fragment, re.I) or (contrast and grain_crops(contrast[1], config))
         mixture_text = affirmative_composition(fragment, config) if mixture else fragment
         if (crops or found) and mixture and (len(grain_crops(mixture_text, config)) > 1 or pattern([*config["outside_crops"], *config["non_grain_ingredients"]]).search(mixture_text)):
             outside_facts.append(("sold_mixture_outside_scope", ref))
@@ -283,7 +288,7 @@ def classify_identity(item, config):
         if crops and found and len(narrow_grains(crops | found, config)) > 1:
             decision.update(status="pending", reason="field_identity_conflict",
                             counter_evidence=[*decision["counter_evidence"], ref])
-        affirmative = affirmative_identity(fragment, config)
+        affirmative = affirmative_identity(sold_form_text(ref, fragment), config)
         positive = grain_crops(affirmative, config)
         if (positive or crops) and pattern(config["identity_forms"]).search(affirmative):
             crops.update(positive)
@@ -314,7 +319,8 @@ def classify_identity(item, config):
                     decision.update(status="pending", reason="category_form_conflict",
                                     counter_evidence=[*decision["counter_evidence"], {"field": f"categories[{index}]", "text": category}])
     if composition_status == "conflict":
-        decision.update(status="pending", reason="composition_declaration_conflict", counter_evidence=[*decision["counter_evidence"], *composition])
+        decision.update(status="pending", reason="composition_declaration_conflict", composition_status="conflict",
+                        counter_evidence=[*decision["counter_evidence"], *composition])
     elif composition_status == "declared_outside_scope":
         decision.update(status="excluded", reason="declared_outside_composition", counter_evidence=composition)
     elif composition_status == "unresolved":

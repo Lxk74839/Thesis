@@ -1,0 +1,6 @@
+test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form (test_prepare_data.MetadataPreparationTests.test_identity_catalog_whole_product_percent_claim_can_describe_its_sold_form) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.351s
+
+OK

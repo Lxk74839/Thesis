@@ -1,0 +1,6 @@
+test_identity_catalog_partial_lists_are_not_conflicting_complete_formulas (test_prepare_data.MetadataPreparationTests.test_identity_catalog_partial_lists_are_not_conflicting_complete_formulas) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.353s
+
+OK

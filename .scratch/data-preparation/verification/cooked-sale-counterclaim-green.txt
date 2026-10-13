@@ -1,0 +1,6 @@
+test_identity_catalog_keeps_explicit_uncooked_counterclaim_to_cooked_sale (test_prepare_data.MetadataPreparationTests.test_identity_catalog_keeps_explicit_uncooked_counterclaim_to_cooked_sale) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.342s
+
+OK

@@ -2,16 +2,79 @@
   "scope_version": "grain-A-1.1.12",
   "source_cases": 41,
   "counts": {
-    "excluded": 25,
-    "included": 9,
-    "pending": 7
+    "excluded": 28,
+    "included": 7,
+    "pending": 6
   },
-  "failures": [],
+  "failures": [
+    {
+      "parent_asin": "B0BMSZCYM7",
+      "expected": "included",
+      "actual": "excluded",
+      "reason": "sold_mixture_outside_scope",
+      "counter_evidence": [
+        {
+          "field": "description[0]",
+          "text": "Himalayan Chef is the finest quality with long grains with an aromatic flavour. Our Basmati rice is truly authentic and originates from the foothills of the Himalayas. It is non-sticky like other varieties of rice. The grain stays separate when cooked, allowing sauces to coat each individual grain with flavour. Traditional Basmati rice absorbs less water while cooking and that is why it makes such delicious dishes. Himalayan Chef long grain Basmati rice will add superior taste and perfection to every dish. Himalayan Chef Long Grain Basmati Rice, from the foothills of the Himalayas, is of the finest quality with extra-long grains and a lightly spicy nutty flavour and floral aroma. It is not sticky like other varieties of rice. The grains stay separate when cooked, allowing sauces to coat each individual grain with flavour. Traditional Basmati Rice absorbs less water while cooking and that is why it makes such delicious dishes. Himalayan Chef Long Grain Basmati Rice will add superior taste and perfection to every dish. Culinary Uses: Basmati Rice is typically used in pulao, curries, pilafs, and biryani as well as in many other cultural dishes. The lovely long grains can be coated or topped with sauces, spices, herbs and seasonings as a main or side dish. Himalayan Chef Long Grain Basmati Rice can be used instead of ordinary rice in any recipe such as paella and fried rice and will add its distinctive unique flavour to every meal. Cooking Instructions: Optional: Add 1 tablespoon oil or butter and a pinch of Himalayan Pink Salt per each cup of rice. bring water to a boil. Add rice and oil or butter and salt if using. Reduce heat to low and cover pot with a lid. Cook for 15-20 minutes or until all of the water is absorbed. Allow to sit for 5 minutes, then fluff with a fork and serve. Electric Rice Cooker: Use 2 cups of water per 1 cup of rice. See Rice Cooker manual for specific directions. Microwave Cooking: (200-watt rating ) Combine 2 1/4 cups water per 1 cup of rice in a microwave-safe bowl. Add oil or butter and salt if using. Cover tightly with a microwave-safe lid and cook on HIGH power for 15 minutes. Let sit for 5 minutes, then fluff with a fork and serve."
+        },
+        {
+          "field": "description[0]",
+          "text": "Himalayan Chef is the finest quality with long grains with an aromatic flavour. Our Basmati rice is truly authentic and originates from the foothills of the Himalayas. It is non-sticky like other varieties of rice. The grain stays separate when cooked, allowing sauces to coat each individual grain with flavour. Traditional Basmati rice absorbs less water while cooking and that is why it makes such delicious dishes. Himalayan Chef long grain Basmati rice will add superior taste and perfection to every dish. Himalayan Chef Long Grain Basmati Rice, from the foothills of the Himalayas, is of the finest quality with extra-long grains and a lightly spicy nutty flavour and floral aroma. It is not sticky like other varieties of rice. The grains stay separate when cooked, allowing sauces to coat each individual grain with flavour. Traditional Basmati Rice absorbs less water while cooking and that is why it makes such delicious dishes. Himalayan Chef Long Grain Basmati Rice will add superior taste and perfection to every dish. Culinary Uses: Basmati Rice is typically used in pulao, curries, pilafs, and biryani as well as in many other cultural dishes. The lovely long grains can be coated or topped with sauces, spices, herbs and seasonings as a main or side dish. Himalayan Chef Long Grain Basmati Rice can be used instead of ordinary rice in any recipe such as paella and fried rice and will add its distinctive unique flavour to every meal. Cooking Instructions: Optional: Add 1 tablespoon oil or butter and a pinch of Himalayan Pink Salt per each cup of rice. bring water to a boil. Add rice and oil or butter and salt if using. Reduce heat to low and cover pot with a lid. Cook for 15-20 minutes or until all of the water is absorbed. Allow to sit for 5 minutes, then fluff with a fork and serve. Electric Rice Cooker: Use 2 cups of water per 1 cup of rice. See Rice Cooker manual for specific directions. Microwave Cooking: (200-watt rating ) Combine 2 1/4 cups water per 1 cup of rice in a microwave-safe bowl. Add oil or butter and salt if using. Cover tightly with a microwave-safe lid and cook on HIGH power for 15 minutes. Let sit for 5 minutes, then fluff with a fork and serve."
+        }
+      ]
+    },
+    {
+      "parent_asin": "B0C1MM67QJ",
+      "expected": "included",
+      "actual": "excluded",
+      "reason": "sold_mixture_outside_scope",
+      "counter_evidence": [
+        {
+          "field": "categories[3]",
+          "text": "Millet"
+        },
+        {
+          "field": "features[2]",
+          "text": "VEGAN & CERTIFIED ORGANIC: Our fonio african supergrain is certified by the Soil Association and EU compliant. Non-GMO, gluten-free and dairy-free with no added sugar or preservatives to make the fonio grain organic as possible."
+        },
+        {
+          "field": "features[2]",
+          "text": "VEGAN & CERTIFIED ORGANIC: Our fonio african supergrain is certified by the Soil Association and EU compliant. Non-GMO, gluten-free and dairy-free with no added sugar or preservatives to make the fonio grain organic as possible."
+        }
+      ]
+    },
+    {
+      "parent_asin": "B0BWMCLXRL",
+      "expected": "pending",
+      "actual": "excluded",
+      "reason": "sold_mixture_outside_scope",
+      "counter_evidence": [
+        {
+          "field": "features[1]",
+          "text": "🌾100% Natural, No preservatives, Non-GMO, Gluten Friendly PREMIUM Gourmet Food Grade Flour."
+        },
+        {
+          "field": "features[2]",
+          "text": "🌾Rani is a USA based company selling spices for over 40 years, buy with confidence!"
+        },
+        {
+          "field": "features[2]",
+          "text": "🌾Rani is a USA based company selling spices for over 40 years, buy with confidence!"
+        }
+      ]
+    }
+  ],
   "source_case_file_sha256": "8d0f432fcff6699e50411524968a736950f5be7025c717f27d60b4abab7187a1",
   "producer_sha256": {
     "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
-    "identity_catalog.py": "d5ded07cb0f9b43720ee9276d173f9409c145c5bb07b9a8dec78730e4722657a",
+    "identity_catalog.py": "f00eece854f1fcb921cc6c059027ce7402863acf338b74cdbc55122243efa276",
     "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
   },
   "scope_sha256": "10b1b7130ef95470fc9f7bf31be0ac14aec8cabc2374015cc107f9ce79d956d4"
 }
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.tmp\check_revision_cases.py", line 32, in <module>
+    assert len(audit) == len(expected) == 41 and not failures
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+ERROR conda.cli.main_run:execute(127): `conda run python .tmp/check_revision_cases.py grain-A-1.1.12` failed. (See above for error)
