@@ -1,0 +1,263 @@
+{
+  "status": "independent_scope_revision_audit_passed",
+  "checked_at_utc": "2026-10-13T02:30:56.948752+00:00",
+  "scope_version": "grain-A-1.1.2",
+  "source_rows": 603274,
+  "counts": {
+    "excluded": 568292,
+    "included": 1880,
+    "pending": 33102
+  },
+  "migration_counts": {
+    "excluded->excluded": 546962,
+    "pending->excluded": 21330,
+    "pending->included": 1875,
+    "pending->pending": 33004,
+    "excluded->pending": 90,
+    "included->included": 5,
+    "included->pending": 8
+  },
+  "composition_counts": {
+    "not_disclosed": 521511,
+    "declared_outside_scope": 42985,
+    "unresolved": 38005,
+    "conflict": 728,
+    "declared_single_grain": 45
+  },
+  "included_composition_counts": {
+    "not_disclosed": 1868,
+    "declared_single_grain": 12
+  },
+  "included_crop_counts": {
+    "rice": 870,
+    "oats": 402,
+    "sorghum": 7,
+    "fonio": 8,
+    "wheat": 179,
+    "corn": 328,
+    "millet": 31,
+    "rye": 11,
+    "barley": 19,
+    "little_millet": 1,
+    "finger_millet": 2,
+    "pearl_millet": 4,
+    "teff": 7,
+    "barnyard_millet": 5,
+    "kodo_millet": 3,
+    "coix": 1,
+    "foxtail_millet": 2
+  },
+  "literal_source_references_checked": 790771,
+  "known_semantic_cases_checked": [
+    {
+      "parent_asin": "B00KBRUYVM",
+      "status": "excluded",
+      "source_line": 3
+    },
+    {
+      "parent_asin": "B07TTJYHGX",
+      "status": "excluded",
+      "source_line": 12
+    },
+    {
+      "parent_asin": "B0BYLK9168",
+      "status": "included",
+      "source_line": 13
+    },
+    {
+      "parent_asin": "B0BDV6ZTHR",
+      "status": "excluded",
+      "source_line": 31
+    },
+    {
+      "parent_asin": "B09S8Q6FG5",
+      "status": "excluded",
+      "source_line": 69
+    },
+    {
+      "parent_asin": "B08Q44XV13",
+      "status": "included",
+      "source_line": 258
+    },
+    {
+      "parent_asin": "B00HU6WYJ2",
+      "status": "excluded",
+      "source_line": 282
+    },
+    {
+      "parent_asin": "B09TS94RVG",
+      "status": "included",
+      "source_line": 345
+    },
+    {
+      "parent_asin": "B0BMSZCYM7",
+      "status": "included",
+      "source_line": 416
+    },
+    {
+      "parent_asin": "B078RRSYFH",
+      "status": "excluded",
+      "source_line": 652
+    },
+    {
+      "parent_asin": "B0C1MM67QJ",
+      "status": "included",
+      "source_line": 1961
+    },
+    {
+      "parent_asin": "B07BXYMNFN",
+      "status": "excluded",
+      "source_line": 3420
+    },
+    {
+      "parent_asin": "B088PZLRK7",
+      "status": "included",
+      "source_line": 5817
+    },
+    {
+      "parent_asin": "B0C2QMVTW8",
+      "status": "excluded",
+      "source_line": 6682
+    },
+    {
+      "parent_asin": "B018ZORFSW",
+      "status": "excluded",
+      "source_line": 8788
+    },
+    {
+      "parent_asin": "B07WFR4WJ4",
+      "status": "pending",
+      "source_line": 13890
+    },
+    {
+      "parent_asin": "B07CVXGQN4",
+      "status": "excluded",
+      "source_line": 27947
+    },
+    {
+      "parent_asin": "B09H3TZL9L",
+      "status": "excluded",
+      "source_line": 29206
+    },
+    {
+      "parent_asin": "B00JM1DP32",
+      "status": "pending",
+      "source_line": 33250
+    },
+    {
+      "parent_asin": "B0BWMCLXRL",
+      "status": "pending",
+      "source_line": 37450
+    },
+    {
+      "parent_asin": "B09LPKJFSH",
+      "status": "excluded",
+      "source_line": 45260
+    },
+    {
+      "parent_asin": "B0BR1CCPC3",
+      "status": "pending",
+      "source_line": 83211
+    },
+    {
+      "parent_asin": "B00ITTYJG0",
+      "status": "pending",
+      "source_line": 103805
+    },
+    {
+      "parent_asin": "B087C4WM17",
+      "status": "included",
+      "source_line": 110043
+    },
+    {
+      "parent_asin": "B07PXBNL92",
+      "status": "excluded",
+      "source_line": 121281
+    },
+    {
+      "parent_asin": "B00KA8R6I6",
+      "status": "excluded",
+      "source_line": 134969
+    },
+    {
+      "parent_asin": "B00INBVK5C",
+      "status": "excluded",
+      "source_line": 136737
+    },
+    {
+      "parent_asin": "B0019L8I58",
+      "status": "included",
+      "source_line": 140996
+    },
+    {
+      "parent_asin": "B00CQRIVX8",
+      "status": "excluded",
+      "source_line": 168099
+    },
+    {
+      "parent_asin": "B00355CC1M",
+      "status": "excluded",
+      "source_line": 187574
+    },
+    {
+      "parent_asin": "B07D6SRT34",
+      "status": "excluded",
+      "source_line": 204242
+    },
+    {
+      "parent_asin": "B0040PSQFW",
+      "status": "excluded",
+      "source_line": 315995
+    },
+    {
+      "parent_asin": "B08LCK7VRG",
+      "status": "excluded",
+      "source_line": 337476
+    },
+    {
+      "parent_asin": "B008040JWM",
+      "status": "excluded",
+      "source_line": 401209
+    },
+    {
+      "parent_asin": "B005Y2BNPK",
+      "status": "excluded",
+      "source_line": 441959
+    },
+    {
+      "parent_asin": "B00GO8T49A",
+      "status": "excluded",
+      "source_line": 496514
+    },
+    {
+      "parent_asin": "B077HTZ3WL",
+      "status": "excluded",
+      "source_line": 498068
+    },
+    {
+      "parent_asin": "B083F7F9FT",
+      "status": "pending",
+      "source_line": 505091
+    },
+    {
+      "parent_asin": "B08L737QS1",
+      "status": "excluded",
+      "source_line": 533306
+    },
+    {
+      "parent_asin": "B086KYRW35",
+      "status": "pending",
+      "source_line": 538370
+    },
+    {
+      "parent_asin": "B07K6THHFC",
+      "status": "included",
+      "source_line": 561586
+    }
+  ],
+  "catalog_sha256": "fb27606b11e2a91a8e611c55d2381320cbb7f63456bc68b4afb6ffb79e9711ea",
+  "migration_sha256": "7ea6da7ce65946a634029abeee79cd4ba2b1f2284bd0d6704ee96ce718ca5c63",
+  "protected_files_unchanged": 76,
+  "original_materials_unchanged": 26,
+  "limitations": "All source/migration accounting checked; 41 fixed semantic cases checked. New population still requires documented semantic spot checks, not an assertion of exhaustive human adjudication."
+}

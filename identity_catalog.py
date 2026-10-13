@@ -32,12 +32,15 @@ def context_role(text):
     return min(matches, key=lambda match: match[1]) if matches else None
 
 
-def source_statements(item):
+def source_statements(item, config):
     for field, text in text_fields(item):
         if field == "title":
             continue
         for clause in re.split(r"(?<=[.!?;])\s*|\n", text):
             role = context_role(clause)
+            negative = re.match(r"\s*(?:not|no|without)\b", clause, re.I)
+            if negative and not re.match(r"\s*not\s+only\b", clause, re.I) and not grain_crops(clause, config):
+                role = ("negative_nonidentity_claim", negative.start())
             direct = clause[:role[1]] if role else clause
             yield {"field": field, "text": text}, clause, re.sub(r"\b[\w]+[- ]free\b", " ", direct, flags=re.I), role
 
@@ -134,7 +137,7 @@ def classify_identity(item, config):
     if decision["reason"] in ("field_identity_conflict", "field_form_conflict") and decision["counter_evidence"]:
         # Legacy stores an entire field; rebuild these facts from each source clause below.
         decision.update(status="pending", reason="form_not_verified", counter_evidence=[])
-    statements = list(source_statements(item))
+    statements = list(source_statements(item, config))
     for _, _, fragment, _ in statements:
         affirmative = pattern(config["identity_negations"]).split(fragment, maxsplit=1)[0]
         if pattern(config["identity_forms"]).search(affirmative):
@@ -150,7 +153,6 @@ def classify_identity(item, config):
             decision["context_evidence"].append({**ref, "role": role[0], "clause_text": clause, "context_start": role[1]})
         if not fragment.strip():
             continue
-        fragment = re.sub(r"\b[\w]+[- ]free\b", " ", fragment, flags=re.I)
         if crops and pattern(config["processing_claims"]).search(fragment):
             decision.update(status="pending", reason="field_processing_ambiguity",
                             counter_evidence=[*decision["counter_evidence"], ref])

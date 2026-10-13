@@ -56,6 +56,9 @@ with gzip.open(ROOT / source["raw_path"], "rb") as raw, (ROOT / report["audit_pa
                 index = re.fullmatch(r"(features|description|categories)\[(\d+)\]", field)
                 original = item[index[1]][int(index[2])] if index else item["details"][field[8:]] if field.startswith("details.") else item[field]
                 assert ref["text"] == original
+                if "clause_text" in ref:
+                    assert ref["clause_text"] in original
+                    assert 0 <= ref["context_start"] <= len(ref["clause_text"])
                 for part in ref.get("declaration_parts", []):
                     assert part in original
                 references += 1
@@ -98,12 +101,19 @@ protection = json.loads((ROOT / ".scratch/data-preparation/verification/scope-re
 for relative, digest in protection["protected_sha256"].items():
     with (ROOT / relative).open("rb") as stream:
         assert hashlib.file_digest(stream, "sha256").hexdigest() == digest, relative
+rejected_components = 0
+for receipt in (ROOT / ".scratch/data-preparation/verification").glob("grain-A-1.1.*-rejection.json"):
+    for relative, digest in json.loads(receipt.read_text("utf-8"))["preserved_sha256"].items():
+        with (ROOT / relative).open("rb") as stream:
+            assert hashlib.file_digest(stream, "sha256").hexdigest() == digest, relative
+        rejected_components += 1
 result = {"status": "independent_scope_revision_audit_passed", "checked_at_utc": datetime.now(timezone.utc).isoformat(),
           "scope_version": VERSION, "source_rows": number, "counts": counts, "migration_counts": transitions,
           "composition_counts": compositions, "included_composition_counts": included_compositions, "included_crop_counts": crops,
           "literal_source_references_checked": references, "known_semantic_cases_checked": case_results,
           "catalog_sha256": report["catalog_sha256"], "migration_sha256": report["migration_sha256"],
           "protected_files_unchanged": len(protection["protected_sha256"]), "original_materials_unchanged": 26,
+          "rejected_version_components_unchanged": rejected_components,
           "limitations": "All source/migration accounting checked; 41 fixed semantic cases checked. New population still requires documented semantic spot checks, not an assertion of exhaustive human adjudication."}
 destination = ROOT / ".scratch/data-preparation/verification" / (VERSION + "-check.json")
 destination.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", "utf-8")
