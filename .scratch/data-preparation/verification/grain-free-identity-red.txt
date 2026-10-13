@@ -1,0 +1,23 @@
+test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence) ... FAIL
+
+======================================================================
+FAIL: test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 338, in test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence
+    self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included", "included", "included"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['included', 'included', 'included', 'included', 'included', 'included'] != ['pending', 'pending', 'pending', 'included', 'included', 'included']
+
+First differing element 0:
+'included'
+'pending'
+
+- ['included', 'included', 'included', 'included', 'included', 'included']
++ ['pending', 'pending', 'pending', 'included', 'included', 'included']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.359s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k grain_free_product_claims -v` failed. (See above for error)

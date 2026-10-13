@@ -323,6 +323,22 @@ class MetadataPreparationTests(unittest.TestCase):
         self.assertEqual([row["composition_status"] for row in audit[:2]], ["declared_single_grain", "declared_single_grain"])
         self.assertEqual(audit[0]["composition_evidence"][0]["declaration_parts"], ["rice, not mixed with whole grain wheat."])
 
+    def test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence(self):
+        run = self.identity_catalog([
+            {"parent_asin": "NEGATIVE", "title": "Raw rice kernels", "features": ["This product is rice-free."]},
+            {"parent_asin": "SPACE", "title": "Raw rice kernels", "description": ["This product is rice free."]},
+            {"parent_asin": "INGREDIENT", "title": "Raw rice kernels", "features": ["This product is rice-free."], "details": {"Ingredients": "Rice"}},
+            {"parent_asin": "OTHER", "title": "Wheat-free raw oat groats"},
+            {"parent_asin": "OTHER_FIELD", "title": "Raw rice kernels", "features": ["This product is wheat-free."]},
+            {"parent_asin": "FACILITY", "title": "Raw rice kernels", "features": ["Our facility is rice-free."]},
+        ])
+        self.assertEqual(run.returncode, 0, run.stderr)
+        report = json.loads(run.stdout)
+        audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+        self.assertEqual([row["status"] for row in audit], ["pending", "pending", "pending", "included", "included", "included"])
+        self.assertTrue(any(ref["text"] == "This product is rice-free." for ref in audit[0]["counter_evidence"]))
+        self.assertTrue(any(ref["role"] == "negative_identity_claim" for ref in audit[0]["context_evidence"]))
+
     def test_identity_catalog_powder_sale_is_outside_a_and_item_form_conflict_remains_pending(self):
         run = self.identity_catalog([
             {"parent_asin": "CONFLICT", "title": "Raw rice kernels", "details": {"Item Form": "Powder"}},

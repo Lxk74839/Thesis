@@ -1,0 +1,6 @@
+test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence (test_prepare_data.MetadataPreparationTests.test_identity_catalog_grain_free_product_claims_preserve_identity_counterevidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.356s
+
+OK

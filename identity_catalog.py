@@ -253,6 +253,16 @@ def classify_identity(item, config):
                             counter_evidence=[*decision["counter_evidence"], ref])
         if role:
             decision["context_evidence"].append({**ref, "role": role[0], "clause_text": clause, "context_start": role[1]})
+        boundary = context_role(clause)
+        free_direct = clause[:boundary[1]] if boundary else clause
+        free_claims = [(crop, match) for crop, aliases in config["grains"].items()
+                       if (match := re.search(r"(?:" + pattern(aliases).pattern + r")[- ]free\b", free_direct, re.I))]
+        if free_claims:
+            decision["context_evidence"].append({**ref, "role": "negative_identity_claim", "clause_text": clause,
+                                                 "context_start": min(match.start() for _, match in free_claims)})
+            if crops & {crop for crop, _ in free_claims}:
+                decision.update(status="pending", reason="field_identity_conflict",
+                                counter_evidence=[*decision["counter_evidence"], ref])
         if not fragment.strip():
             continue
         if crops and pattern(config["processing_claims"]).search(fragment):
