@@ -14,5 +14,11 @@ config/user-split-1.0.0.json -text
 records/splits/*.json -text
 .scratch/data-preparation/ticket07-* -text
 .scratch/data-preparation/verification/ticket07-* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Raw unittest output intentionally retains its original trailing progress spaces.
+.scratch/data-preparation/verification/ticket07-*.txt -text -whitespace
 .scratch/data-preparation/verification/user-split-1.0.0-* -text
 .scratch/data-preparation/diagnostics/verify_user_split07.py text eol=lf
+.scratch/data-preparation/verification/tdd-07.md -text
+.scratch/data-preparation/verification/code-review-07.md -text
+.scratch/data-preparation/verification/standards-07.md -text
+.scratch/data-preparation/verification/spec-07.md -text

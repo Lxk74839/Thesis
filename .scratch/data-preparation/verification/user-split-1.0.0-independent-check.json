@@ -1,0 +1,43 @@
+{
+  "all_assignments_match_independent_sql": true,
+  "all_exposure_rows_match_original_sources": true,
+  "challenge_workspace": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.tmp\\ticket07-independent-b1wzthhn",
+  "component_sha256": {
+    "accounts": "05fbfdfcb5829fe09c71279748d9707ac1e25c8af6d496113ed804c221c2cbb4",
+    "exposure": "3b3b69c5ce45e06909d75beae0d05ff257eed21353cdf5c7972c0f9cb27760ce"
+  },
+  "development_accounts": 320,
+  "exposure_set_order_invariant": true,
+  "forced_development": 16,
+  "full_qualification_coverage": true,
+  "hash_fill_development": 304,
+  "implementation_commit": "b6f79eaabe9f8c34c31ed46a35d1c4ac9c251ba0",
+  "intersection": 0,
+  "joint_package": "not_built",
+  "legacy_test_corpus_accounts_unknown": 70,
+  "observed_agent_accounts_lower_bound": 2,
+  "old_source_counts": {
+    "legacy_corpus": 7538,
+    "legacy_mechanism": 19,
+    "legacy_preference": 134,
+    "legacy_qualification": 165
+  },
+  "private_data_git_ignored": true,
+  "production_imports": false,
+  "protected_sources_unchanged": 70,
+  "public_record_and_log_contain_no_account_identifiers": true,
+  "qualified_accounts": 1603,
+  "reference_order_invariant": true,
+  "reference_projection_sha256": "29a7cfba74cc1e0cb0816c526db9b37e14925c33d71916abb4404aedbfd414bd",
+  "reference_rows_checked": 4809,
+  "references_inherit_group": true,
+  "review_baseline": "e2617ada7a182685fef00567dbf064fc096d46f4",
+  "sample_sufficiency": "not_determined",
+  "source_row_order_invariant": true,
+  "stable_components_byte_identical": true,
+  "status": "independent_checks_passed",
+  "test_accounts": 1283,
+  "unknown_agent_reading_accounts": 1601,
+  "unknown_human_reading_accounts": 1603,
+  "verifier_sha256": "420b157767af25569dfbc08523469a7291f235028a67a6e218339f0074dfa653"
+}
