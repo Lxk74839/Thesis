@@ -1,0 +1,8 @@
+# Preserve the exact bytes bound by ticket 07's stage-one confirmation.
+.scratch/data-preparation/diagnostics/diagnose_ticket07_stage1.py -text
+.scratch/data-preparation/ticket07-legacy-exposure-audit.md -text
+.scratch/data-preparation/ticket07-sample-diagnostics-stage1.md -text
+.scratch/data-preparation/ticket07-split-review-draft-stage1.md -text
+.scratch/data-preparation/ticket07-stage1-pending-decisions.md -text
+.scratch/data-preparation/verification/ticket07-stage1-aggregates.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+.scratch/data-preparation/verification/ticket07-stage1-check.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

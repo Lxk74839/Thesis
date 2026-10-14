@@ -1,0 +1,46 @@
+{
+  "status": "stage1_diagnostic_checks_passed_not_formal_split_acceptance",
+  "baseline": "e2617ada7a182685fef00567dbf064fc096d46f4",
+  "runtime": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+  "aggregate_semantic_rerun_equal": true,
+  "independent_hex_sort_policy_counts": {
+    "A_force_old_exploratory_development_20pct": {
+      "dev": 320,
+      "test": 1283,
+      "excluded": 0
+    },
+    "B_exclude_old_exploratory_20pct": {
+      "dev": 317,
+      "test": 1270,
+      "excluded": 16
+    },
+    "C_unrestricted_hash_20pct": {
+      "dev": 320,
+      "test": 1283,
+      "excluded": 0
+    },
+    "D_exclude_old_raw_corpus_20pct": {
+      "dev": 298,
+      "test": 1192,
+      "excluded": 113
+    },
+    "E_force_old_exploratory_development_30pct": {
+      "dev": 480,
+      "test": 1123,
+      "excluded": 0
+    }
+  },
+  "legacy_appendix_rerun": {
+    "shown_accounts_lower_bound": 8,
+    "current_qualified_overlap": 2
+  },
+  "legacy_log_prefix_sha256": "436cb895013f6aeac8a98d00b13c51fd5e1666d8a02e7be707241d888741d566",
+  "protected_files_unchanged": 639,
+  "diagnostic_source_digests_unchanged": 32,
+  "tracked_files_unchanged": true,
+  "local_markdown_links_resolve": true,
+  "report_raw_qualified_account_identifiers": 0,
+  "production_split_status": "not_built",
+  "analysis_code_sha256": "dc79cc4760885ad433df5ab66848651e8bf713b68384d64c85405699a99a1476",
+  "aggregate_artifact_sha256": "2042c2ee63b0196ca95ea9fd2e6129e1dc8dadef1d8d5ac6d5255ed3842f0e13"
+}

@@ -1,0 +1,802 @@
+{
+  "acceptance_dependency_count": 11,
+  "accepted_component_count": 6,
+  "account_exclusions": {
+    "insufficient_positive_history": 40331,
+    "latest_not_positive_text": 11366,
+    "latest_seen_product": 276
+  },
+  "analysis_code_sha256": "dc79cc4760885ad433df5ab66848651e8bf713b68384d64c85405699a99a1476",
+  "coverage": {
+    "all_prior_products": 440,
+    "catalog_products": 1494,
+    "history_only_products": 201,
+    "history_target_shared_products": 234,
+    "history_target_union_products": 562,
+    "positive_history_products": 435,
+    "target_only_products": 127,
+    "target_products": 361
+  },
+  "crops": [
+    {
+      "catalog_products": 18,
+      "crop": "barley",
+      "history_products": 4,
+      "target_accounts": 4,
+      "target_products": 4
+    },
+    {
+      "catalog_products": 5,
+      "crop": "barnyard_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 1,
+      "crop": "coix",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 223,
+      "crop": "corn",
+      "history_products": 83,
+      "target_accounts": 855,
+      "target_products": 80
+    },
+    {
+      "catalog_products": 2,
+      "crop": "finger_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 8,
+      "crop": "fonio",
+      "history_products": 2,
+      "target_accounts": 1,
+      "target_products": 1
+    },
+    {
+      "catalog_products": 2,
+      "crop": "foxtail_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 3,
+      "crop": "kodo_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 1,
+      "crop": "little_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 29,
+      "crop": "millet",
+      "history_products": 14,
+      "target_accounts": 28,
+      "target_products": 11
+    },
+    {
+      "catalog_products": 301,
+      "crop": "oats",
+      "history_products": 90,
+      "target_accounts": 212,
+      "target_products": 66
+    },
+    {
+      "catalog_products": 4,
+      "crop": "pearl_millet",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 765,
+      "crop": "rice",
+      "history_products": 209,
+      "target_accounts": 443,
+      "target_products": 174
+    },
+    {
+      "catalog_products": 5,
+      "crop": "rye",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 4,
+      "crop": "sorghum",
+      "history_products": 0,
+      "target_accounts": 0,
+      "target_products": 0
+    },
+    {
+      "catalog_products": 5,
+      "crop": "teff",
+      "history_products": 1,
+      "target_accounts": 3,
+      "target_products": 1
+    },
+    {
+      "catalog_products": 118,
+      "crop": "wheat",
+      "history_products": 32,
+      "target_accounts": 57,
+      "target_products": 24
+    }
+  ],
+  "hist_depth_frequency": {
+    "1": 1428,
+    "2": 135,
+    "3": 30,
+    "4": 6,
+    "5": 2,
+    "6": 2
+  },
+  "hist_depth_products": {
+    "max": 6,
+    "mean": 1.1441048034934498,
+    "median": 1,
+    "min": 1,
+    "n": 1603,
+    "p90_nearest_rank": 2,
+    "p95_nearest_rank": 2
+  },
+  "hist_reviews_all": {
+    "max": 6,
+    "mean": 1.1771678103555834,
+    "median": 1,
+    "min": 1,
+    "n": 1603,
+    "p90_nearest_rank": 2,
+    "p95_nearest_rank": 2
+  },
+  "hist_reviews_positive": {
+    "max": 6,
+    "mean": 1.150966936993138,
+    "median": 1,
+    "min": 1,
+    "n": 1603,
+    "p90_nearest_rank": 2,
+    "p95_nearest_rank": 2
+  },
+  "hist_span_days": {
+    "max": 4703.118742476852,
+    "mean": 532.0047413433074,
+    "median": 252.850186875,
+    "min": 1.1574074074074073e-05,
+    "n": 1603,
+    "p90_nearest_rank": 1539.246151412037,
+    "p95_nearest_rank": 2130.2687815277777
+  },
+  "history_concentration": {
+    "frequency": {
+      "1": 218,
+      "2": 82,
+      "3": 46,
+      "4": 20,
+      "5": 6,
+      "6": 15,
+      "7": 5,
+      "8": 2,
+      "9": 5,
+      "10": 3,
+      "11": 2,
+      "12": 1,
+      "13": 5,
+      "14": 1,
+      "16": 6,
+      "17": 1,
+      "18": 3,
+      "20": 1,
+      "23": 1,
+      "24": 1,
+      "29": 1,
+      "33": 1,
+      "37": 1,
+      "39": 1,
+      "43": 2,
+      "51": 1,
+      "56": 1,
+      "78": 1,
+      "93": 1,
+      "139": 1
+    },
+    "hhi": 0.016971919004767574,
+    "inverse_hhi": 58.92085625197071,
+    "products": 435,
+    "singletons": 218,
+    "top10": [
+      {
+        "count": 139,
+        "parent_asin": "B0BQD6GGZ5"
+      },
+      {
+        "count": 93,
+        "parent_asin": "B0BSJC93SP"
+      },
+      {
+        "count": 78,
+        "parent_asin": "B0BFRMSWF5"
+      },
+      {
+        "count": 56,
+        "parent_asin": "B004VLV6ES"
+      },
+      {
+        "count": 51,
+        "parent_asin": "B0BS8HG7T5"
+      },
+      {
+        "count": 43,
+        "parent_asin": "B07CT7T33K"
+      },
+      {
+        "count": 43,
+        "parent_asin": "B0BSLVFXLZ"
+      },
+      {
+        "count": 39,
+        "parent_asin": "B0852PVJ8R"
+      },
+      {
+        "count": 37,
+        "parent_asin": "B09WBWNXWD"
+      },
+      {
+        "count": 33,
+        "parent_asin": "B002YLGA0W"
+      }
+    ],
+    "top_counts": {
+      "1": 139,
+      "10": 612,
+      "20": 811,
+      "5": 417
+    },
+    "units": 1834
+  },
+  "inputs_sha256": {
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\reviews_grain.jsonl": "a60975f29b6ca7036b5c29eb77fb4eada7f4132f5dfe2e54e02318e16e755b85",
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\temporal_eligible_users.json": "fa56e6b3c35746854f41eb38e07e299070e4acfe3f872268c217bbb2563351be",
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\prototype_tasks.json": "6498668cdcb29709b5a3eb279534b4c33914f41571f8004c359c21b2b52f8de5",
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\reviews_grain.jsonl": "8f4254b98fecdeeecf8fabd92e7c1c86337e1092915e53150ea92b5622a11270",
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\repair_20261002\\protocol\\evaluation_labels.jsonl": "80f95d87836e42ba36b9a1a3688d306391ceffd146397d09623337559376eaf8",
+    "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\repair_20261002\\protocol\\split_manifest.jsonl": "320f710476a551bf226fff3fa5758aa1988eaa9cc72bb4fc105e908337ef5c32",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\issues\\07-user-split-diagnostics.md": "a5af4687b6f64e2e5d07892d998ed8a8abbe1ab5fd14a02228e1a46b1f4ae45b",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\spec.md": "2fa128e9a1d692468d56ad22035e25332573289be0e4d6f4c25821df0ed6f976",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\ticket06-acceptance-review-cleaning-1.0.0.md": "013de082ea5d5c02250cceb0efa3709a91508bea4fb27ecce2d6b652b5517f3e",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\code-review-06.md": "76b13a8e705b5e3b135211703d717a60ea09920bfb25c57e29e670e5617ca342",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\review-cleaning-1.0.0-independent-check.json": "fc043532250659deeb2a95a71492f403c17083a93166f3ddd4693c439d28a850",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\spec-06.md": "26212f936e675fc74a89379e19c0f7e51df54b5ceb1bbae372953fbf2147eb2b",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\standards-06.md": "ba0c2986b78e66aaf9541a7689fe770b3b735c20dea777a08ef4502ca4821b2d",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\tdd-06.md": "3d1a61bbc8ae8a2c127abba0069bb2a922e5d2cd0c65d779772b93cf87c1659f",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\verification\\ticket06-reproduction-check.json": "f729fb4d85f6f1ec38552806c66f84ceb5db66bda623f802867804f89c74a225",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\AGENTS.md": "6952781d094eca40d4d83662827790f18f394358d7d559271f5f8ab3378422c0",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\config\\review-cleaning-1.0.0.json": "f5ab966965014af4b85248b557fa5d3f4cb4a5ef0a99e6c8f25297a7d2aad999",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\catalog\\grain-A-1.1.15\\catalog.jsonl": "1fa80d0e969a73fc02ca3c6c815b8c597980d2aaa2e4a9d158d012d967799a84",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\account-eligibility.jsonl": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\products.jsonl": "dd49103afbe180e59f1a244e047415ddd9d4ef526d1a1394b28f4cefc44210be",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\quarantine.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\reviews.jsonl": "dbcd4b2ba7ef3bda6527005edc68ced8ddc647a8e05eaf58e4664afbeaa9e955",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\source-row-audit.jsonl": "fe3b7f6a6c76bcd854e845e03f58e1f56446dea1802667ba3e1d2592740d674c",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\cleaning\\grain-A-1.1.15\\review-cleaning-1.0.0\\valid-text.jsonl": "9602cbf4627fd3a07507ff04e9a423918f7903ac02b0ff5bf703168c58399ce1",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\reviews\\grain-A-1.1.15\\review-diagnostics-1.0.0\\raw-matched.jsonl": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\manuscript\\论文初稿_表达与实验结构修订版_20261010.docx": "b9f44938f7298a23e84a69bfed33f2398bb705a8433bd44f49866f8fbc2064b0",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\records\\catalog\\grain-A-1.1.15.json": "ff9d23d4c1147cfa75c3f979c77bbbfdb1f630b0ee3a78df4aa3c22fa238ccad",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\records\\cleaning\\grain-A-1.1.15-review-cleaning-1.0.0-acceptance.json": "11cb020b33ace568f6bb93d60e977e64444e4a0b63e6552514e1ac387a1df378",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\records\\cleaning\\grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json": "086982a25b091fb56936d40b3901edef7d4d4e7e4f180e647e237907f2cd53ab",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\records\\cleaning\\grain-A-1.1.15-review-cleaning-1.0.0.json": "087134e66aec971070aaca11eee837112fd39a0893993b16b94b2194b19d89a5",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\records\\reviews\\grain-A-1.1.15-review-diagnostics-1.0.0.json": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\research\\数据修复方案与验收草案_20261010.md": "40f3960a9cce38221367ef6f05074c61e22251e93ebb664bbad3077fefdb8a8d"
+  },
+  "legacy_paths": {
+    "initial_reviews": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\reviews_grain.jsonl",
+    "labels": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\repair_20261002\\protocol\\evaluation_labels.jsonl",
+    "manifest": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\repair_20261002\\protocol\\split_manifest.jsonl",
+    "prototype": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\prototype_tasks.json",
+    "qualification": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\temporal_eligible_users.json",
+    "raw_reviews": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\reviews_grain.jsonl"
+  },
+  "overlap": {
+    "exploratory_union": {
+      "in_current_qualified": 16,
+      "in_current_source": 71,
+      "old_total_accounts": 165
+    },
+    "initial_corpus": {
+      "in_current_qualified": 23,
+      "in_current_source": 100,
+      "old_total_accounts": 313
+    },
+    "legacy_dev_test_qualified": {
+      "dev": 2,
+      "test": 11
+    },
+    "mechanism19": {
+      "in_current_qualified": 4,
+      "in_current_source": 12,
+      "old_total_accounts": 19
+    },
+    "preference134": {
+      "in_current_qualified": 13,
+      "in_current_source": 58,
+      "old_total_accounts": 134
+    },
+    "preference_mechanism_intersection": 15,
+    "preference_targets_same_vs_changed": {
+      "changed": 12,
+      "same": 1
+    },
+    "qualification165": {
+      "in_current_qualified": 16,
+      "in_current_source": 71,
+      "old_total_accounts": 165
+    },
+    "raw_corpus": {
+      "in_current_qualified": 113,
+      "in_current_source": 1580,
+      "old_total_accounts": 7538
+    },
+    "task_union": {
+      "in_current_qualified": 14,
+      "in_current_source": 60,
+      "old_total_accounts": 138
+    },
+    "task_union_qualified_exclusion_reasons": {
+      "insufficient_positive_history": 43,
+      "latest_not_positive_text": 2,
+      "latest_seen_product": 1
+    }
+  },
+  "plans": {
+    "A_force_old_exploratory_development_20pct": {
+      "dev": {
+        "accounts": 320,
+        "history_depth_frequency": {
+          "1": 277,
+          "2": 30,
+          "3": 7,
+          "4": 4,
+          "6": 2
+        },
+        "old_exploratory_accounts": 16,
+        "old_raw_accounts": 43,
+        "old_task_accounts": 14,
+        "positive_history_products": 169,
+        "target_crops": {
+          "barley": 1,
+          "corn": 174,
+          "fonio": 1,
+          "millet": 5,
+          "oats": 38,
+          "rice": 92,
+          "wheat": 9
+        },
+        "target_products": 132,
+        "target_singletons": 81,
+        "target_top1_accounts": 27
+      },
+      "excluded": 0,
+      "forced_development": 16,
+      "included": 1603,
+      "shared_target_products": 91,
+      "test": {
+        "accounts": 1283,
+        "history_depth_frequency": {
+          "1": 1151,
+          "2": 105,
+          "3": 23,
+          "4": 2,
+          "5": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 70,
+        "old_task_accounts": 0,
+        "positive_history_products": 388,
+        "target_crops": {
+          "barley": 3,
+          "corn": 681,
+          "millet": 23,
+          "oats": 174,
+          "rice": 351,
+          "teff": 3,
+          "wheat": 48
+        },
+        "target_products": 320,
+        "target_singletons": 166,
+        "target_top1_accounts": 94
+      }
+    },
+    "B_exclude_old_exploratory_20pct": {
+      "dev": {
+        "accounts": 317,
+        "history_depth_frequency": {
+          "1": 277,
+          "2": 29,
+          "3": 7,
+          "4": 2,
+          "6": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 28,
+        "old_task_accounts": 0,
+        "positive_history_products": 159,
+        "target_crops": {
+          "barley": 1,
+          "corn": 182,
+          "fonio": 1,
+          "millet": 6,
+          "oats": 36,
+          "rice": 82,
+          "wheat": 9
+        },
+        "target_products": 126,
+        "target_singletons": 77,
+        "target_top1_accounts": 29
+      },
+      "excluded": 16,
+      "forced_development": 0,
+      "included": 1587,
+      "shared_target_products": 91,
+      "test": {
+        "accounts": 1270,
+        "history_depth_frequency": {
+          "1": 1141,
+          "2": 103,
+          "3": 22,
+          "4": 2,
+          "5": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 69,
+        "old_task_accounts": 0,
+        "positive_history_products": 386,
+        "target_crops": {
+          "barley": 3,
+          "corn": 672,
+          "millet": 22,
+          "oats": 174,
+          "rice": 349,
+          "teff": 3,
+          "wheat": 47
+        },
+        "target_products": 319,
+        "target_singletons": 166,
+        "target_top1_accounts": 92
+      }
+    },
+    "C_unrestricted_hash_20pct": {
+      "dev": {
+        "accounts": 320,
+        "history_depth_frequency": {
+          "1": 278,
+          "2": 29,
+          "3": 8,
+          "4": 3,
+          "6": 2
+        },
+        "old_exploratory_accounts": 4,
+        "old_raw_accounts": 32,
+        "old_task_accounts": 4,
+        "positive_history_products": 163,
+        "target_crops": {
+          "barley": 1,
+          "corn": 181,
+          "fonio": 1,
+          "millet": 6,
+          "oats": 37,
+          "rice": 85,
+          "wheat": 9
+        },
+        "target_products": 128,
+        "target_singletons": 79,
+        "target_top1_accounts": 29
+      },
+      "excluded": 0,
+      "forced_development": 0,
+      "included": 1603,
+      "shared_target_products": 93,
+      "test": {
+        "accounts": 1283,
+        "history_depth_frequency": {
+          "1": 1150,
+          "2": 106,
+          "3": 22,
+          "4": 3,
+          "5": 2
+        },
+        "old_exploratory_accounts": 12,
+        "old_raw_accounts": 81,
+        "old_task_accounts": 10,
+        "positive_history_products": 391,
+        "target_crops": {
+          "barley": 3,
+          "corn": 674,
+          "millet": 22,
+          "oats": 175,
+          "rice": 358,
+          "teff": 3,
+          "wheat": 48
+        },
+        "target_products": 326,
+        "target_singletons": 171,
+        "target_top1_accounts": 92
+      }
+    },
+    "D_exclude_old_raw_corpus_20pct": {
+      "dev": {
+        "accounts": 298,
+        "history_depth_frequency": {
+          "1": 263,
+          "2": 25,
+          "3": 7,
+          "4": 1,
+          "6": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 0,
+        "old_task_accounts": 0,
+        "positive_history_products": 143,
+        "target_crops": {
+          "barley": 1,
+          "corn": 184,
+          "fonio": 1,
+          "millet": 4,
+          "oats": 33,
+          "rice": 69,
+          "wheat": 6
+        },
+        "target_products": 112,
+        "target_singletons": 69,
+        "target_top1_accounts": 30
+      },
+      "excluded": 113,
+      "forced_development": 0,
+      "included": 1490,
+      "shared_target_products": 83,
+      "test": {
+        "accounts": 1192,
+        "history_depth_frequency": {
+          "1": 1075,
+          "2": 93,
+          "3": 20,
+          "4": 2,
+          "5": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 0,
+        "old_task_accounts": 0,
+        "positive_history_products": 362,
+        "target_crops": {
+          "barley": 2,
+          "corn": 658,
+          "millet": 20,
+          "oats": 166,
+          "rice": 303,
+          "teff": 3,
+          "wheat": 40
+        },
+        "target_products": 301,
+        "target_singletons": 164,
+        "target_top1_accounts": 90
+      }
+    },
+    "E_force_old_exploratory_development_30pct": {
+      "dev": {
+        "accounts": 480,
+        "history_depth_frequency": {
+          "1": 418,
+          "2": 45,
+          "3": 11,
+          "4": 4,
+          "6": 2
+        },
+        "old_exploratory_accounts": 16,
+        "old_raw_accounts": 47,
+        "old_task_accounts": 14,
+        "positive_history_products": 217,
+        "target_crops": {
+          "barley": 1,
+          "corn": 263,
+          "fonio": 1,
+          "millet": 9,
+          "oats": 59,
+          "rice": 134,
+          "teff": 1,
+          "wheat": 12
+        },
+        "target_products": 171,
+        "target_singletons": 100,
+        "target_top1_accounts": 40
+      },
+      "excluded": 0,
+      "forced_development": 16,
+      "included": 1603,
+      "shared_target_products": 108,
+      "test": {
+        "accounts": 1123,
+        "history_depth_frequency": {
+          "1": 1010,
+          "2": 90,
+          "3": 19,
+          "4": 2,
+          "5": 2
+        },
+        "old_exploratory_accounts": 0,
+        "old_raw_accounts": 66,
+        "old_task_accounts": 0,
+        "positive_history_products": 359,
+        "target_crops": {
+          "barley": 3,
+          "corn": 592,
+          "millet": 19,
+          "oats": 153,
+          "rice": 309,
+          "teff": 2,
+          "wheat": 45
+        },
+        "target_products": 298,
+        "target_singletons": 158,
+        "target_top1_accounts": 81
+      }
+    }
+  },
+  "positive_history_time_ms": {
+    "max": 1690130601506,
+    "min": 1269452357000
+  },
+  "row_counts": {
+    "clean": 56427,
+    "qualified_clean": 3490,
+    "qualified_prior_below4": 42,
+    "qualified_prior_clean": 1887,
+    "qualified_prior_positive_text": 1845,
+    "qualified_prior_valid_text": 1887,
+    "qualified_raw": 3505,
+    "raw": 56903,
+    "valid_text": 56363,
+    "valid_text_accounts": 53513,
+    "valid_text_products": 1493
+  },
+  "runtime": {
+    "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+    "python": "3.13.16"
+  },
+  "salt_proposal": "Thesis-ticket07-grain-A-1.1.15-review-cleaning-1.0.0-split-v1",
+  "seen_products": {
+    "max": 6,
+    "mean": 1.1690580162195883,
+    "median": 1,
+    "min": 1,
+    "n": 1603,
+    "p90_nearest_rank": 2,
+    "p95_nearest_rank": 2
+  },
+  "status": "diagnostic_only_unapproved_no_assignment_output",
+  "target_concentration": {
+    "frequency": {
+      "1": 183,
+      "2": 66,
+      "3": 28,
+      "4": 22,
+      "5": 17,
+      "6": 4,
+      "7": 6,
+      "8": 7,
+      "9": 2,
+      "10": 2,
+      "11": 2,
+      "12": 1,
+      "13": 3,
+      "15": 3,
+      "16": 1,
+      "19": 2,
+      "22": 1,
+      "23": 1,
+      "24": 2,
+      "28": 1,
+      "31": 1,
+      "47": 1,
+      "81": 1,
+      "82": 1,
+      "102": 1,
+      "114": 1,
+      "121": 1
+    },
+    "hhi": 0.024406436932622823,
+    "inverse_hhi": 40.9727975763374,
+    "products": 361,
+    "singletons": 183,
+    "top10": [
+      {
+        "count": 121,
+        "parent_asin": "B0BQD6GGZ5"
+      },
+      {
+        "count": 114,
+        "parent_asin": "B0BFRMSWF5"
+      },
+      {
+        "count": 102,
+        "parent_asin": "B0BSJC93SP"
+      },
+      {
+        "count": 82,
+        "parent_asin": "B07CT7T33K"
+      },
+      {
+        "count": 81,
+        "parent_asin": "B0BS8HG7T5"
+      },
+      {
+        "count": 47,
+        "parent_asin": "B0BSLVFXLZ"
+      },
+      {
+        "count": 31,
+        "parent_asin": "B08TJ355DN"
+      },
+      {
+        "count": 28,
+        "parent_asin": "B09WBWNXWD"
+      },
+      {
+        "count": 24,
+        "parent_asin": "B09WB516PK"
+      },
+      {
+        "count": 24,
+        "parent_asin": "B0B9GWKVXW"
+      }
+    ],
+    "top_counts": {
+      "1": 121,
+      "10": 654,
+      "20": 824,
+      "5": 500
+    },
+    "units": 1603
+  },
+  "target_time_utc": {
+    "max": 1690130767454,
+    "min": 1291124652000,
+    "year_frequency": {
+      "2010": 1,
+      "2011": 1,
+      "2012": 5,
+      "2013": 33,
+      "2014": 65,
+      "2015": 85,
+      "2016": 77,
+      "2017": 100,
+      "2018": 104,
+      "2019": 145,
+      "2020": 305,
+      "2021": 314,
+      "2022": 273,
+      "2023": 95
+    }
+  },
+  "verification": {
+    "all_account_histories_match": true,
+    "all_input_digests_match": true,
+    "no_assignment_manifest_written": true,
+    "qualified_unique_accounts": 1603,
+    "sql_history_depth_matches": true,
+    "sql_prior_clean_rows": 1887
+  }
+}
