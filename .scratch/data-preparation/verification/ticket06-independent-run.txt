@@ -1,0 +1,25 @@
+{
+  "status": "independent_cleaning_qualification_audit_passed",
+  "checked_at_utc": "2026-10-14T02:45:25.643279+00:00",
+  "rules_version": "review-cleaning-1.0.0",
+  "source_full_review_rows_reused": 14318520,
+  "rows_read_for_06": 56903,
+  "clean_reviews": 56427,
+  "text_reviews": 56363,
+  "catalog_products": 1494,
+  "raw_accounts": 53576,
+  "qualified_accounts": 1603,
+  "excluded_accounts": 51973,
+  "account_exclusions": {
+    "insufficient_positive_history": 40331,
+    "latest_not_positive_text": 11366,
+    "latest_seen_product": 276
+  },
+  "text_accounts": 53513,
+  "protected_files_unchanged": 47,
+  "original_materials_unchanged": 26,
+  "verification_program_sha256": "836857747d1f706fbcf0919517a215559fcd5858c6085c1eb7a43c6562f71314",
+  "cleaning_record_sha256": "087134e66aec971070aaca11eee837112fd39a0893993b16b94b2194b19d89a5",
+  "oracle": "Independent SQLite complete-object grouping, chronology and memberships; all output rows, references and source dispositions checked.",
+  "limitations": "Actual accepted 05 snapshot has no invalid facts or conflicts; negative cases covered by public CLI fixtures. Account qualification is not statistical sufficiency or a user split."
+}

@@ -1,0 +1,23 @@
+{
+  "status": "fresh_reproduction_format_and_protection_passed",
+  "checked_at_utc": "2026-10-14T02:52:40.709144+00:00",
+  "component_sha256": {
+    "clean": "dbcd4b2ba7ef3bda6527005edc68ced8ddc647a8e05eaf58e4664afbeaa9e955",
+    "text": "9602cbf4627fd3a07507ff04e9a423918f7903ac02b0ff5bf703168c58399ce1",
+    "quarantine": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "products": "dd49103afbe180e59f1a244e047415ddd9d4ef526d1a1394b28f4cefc44210be",
+    "accounts": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837",
+    "audit": "fe3b7f6a6c76bcd854e845e03f58e1f56446dea1802667ba3e1d2592740d674c"
+  },
+  "fresh_output_root": ".tmp/ticket06-reproduce-1.0.0",
+  "protected_files_unchanged": 47,
+  "original_materials_unchanged": 26,
+  "python": "3.13.16",
+  "interpreter": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+  "environment_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "installed_packages": 18,
+  "dependency_versions_unchanged": true,
+  "added_dependencies": 0,
+  "erratum_path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json",
+  "erratum_sha256": "086982a25b091fb56936d40b3901edef7d4d4e7e4f180e647e237907f2cd53ab"
+}

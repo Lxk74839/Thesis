@@ -1,0 +1,49 @@
+{
+  "affected_field": "stable_serialization",
+  "affected_record_path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0.json",
+  "affected_record_sha256": "087134e66aec971070aaca11eee837112fd39a0893993b16b94b2194b19d89a5",
+  "component_format_checks": {
+    "accounts": {
+      "ending": "CRLF",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/account-eligibility.jsonl",
+      "rows": 53576,
+      "sha256": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837"
+    },
+    "audit": {
+      "ending": "CRLF",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/source-row-audit.jsonl",
+      "rows": 56903,
+      "sha256": "fe3b7f6a6c76bcd854e845e03f58e1f56446dea1802667ba3e1d2592740d674c"
+    },
+    "clean": {
+      "ending": "CRLF",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/reviews.jsonl",
+      "rows": 56427,
+      "sha256": "dbcd4b2ba7ef3bda6527005edc68ced8ddc647a8e05eaf58e4664afbeaa9e955"
+    },
+    "products": {
+      "ending": "CRLF",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/products.jsonl",
+      "rows": 1494,
+      "sha256": "dd49103afbe180e59f1a244e047415ddd9d4ef526d1a1394b28f4cefc44210be"
+    },
+    "quarantine": {
+      "ending": "unobservable_empty_file",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/quarantine.jsonl",
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "text": {
+      "ending": "CRLF",
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/valid-text.jsonl",
+      "rows": 56363,
+      "sha256": "9602cbf4627fd3a07507ff04e9a423918f7903ac02b0ff5bf703168c58399ce1"
+    }
+  },
+  "created_at_utc": "2026-10-14T02:52:40.708671+00:00",
+  "effect": "Corrects serialization description only. Rules, rows, source references and all published component bytes/sha256 are unchanged. Use this erratum with the affected record.",
+  "effective_value": "UTF-8 without BOM, canonical sorted-key JSON, CRLF on the recorded Windows Thesis runtime; source order for reviews/audit, lexical order for products/accounts; no random sampling",
+  "original_value": "UTF-8 canonical JSON, sorted keys, LF; source order, lexical product/account order; no random sampling",
+  "rules_version": "review-cleaning-1.0.0",
+  "type": "metadata_erratum"
+}

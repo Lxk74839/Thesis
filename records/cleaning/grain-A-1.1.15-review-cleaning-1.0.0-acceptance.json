@@ -1,0 +1,64 @@
+{
+  "account_exclusions": {
+    "insufficient_positive_history": 40331,
+    "latest_not_positive_text": 11366,
+    "latest_seen_product": 276
+  },
+  "added_dependencies": 0,
+  "component_sha256": {
+    "accounts": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837",
+    "audit": "fe3b7f6a6c76bcd854e845e03f58e1f56446dea1802667ba3e1d2592740d674c",
+    "clean": "dbcd4b2ba7ef3bda6527005edc68ced8ddc647a8e05eaf58e4664afbeaa9e955",
+    "products": "dd49103afbe180e59f1a244e047415ddd9d4ef526d1a1394b28f4cefc44210be",
+    "quarantine": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "text": "9602cbf4627fd3a07507ff04e9a423918f7903ac02b0ff5bf703168c58399ce1"
+  },
+  "counts": {
+    "catalog_products": 1494,
+    "clean_reviews": 56427,
+    "qualified_accounts": 1603,
+    "quarantined_objects": 0,
+    "quarantined_source_rows": 0,
+    "raw_accounts": 53576,
+    "text_reviews": 56363
+  },
+  "dependencies_sha256": {
+    ".scratch/data-preparation/verification/code-review-06.md": "76b13a8e705b5e3b135211703d717a60ea09920bfb25c57e29e670e5617ca342",
+    ".scratch/data-preparation/verification/review-cleaning-1.0.0-independent-check.json": "fc043532250659deeb2a95a71492f403c17083a93166f3ddd4693c439d28a850",
+    ".scratch/data-preparation/verification/spec-06.md": "26212f936e675fc74a89379e19c0f7e51df54b5ceb1bbae372953fbf2147eb2b",
+    ".scratch/data-preparation/verification/standards-06.md": "ba0c2986b78e66aaf9541a7689fe770b3b735c20dea777a08ef4502ca4821b2d",
+    ".scratch/data-preparation/verification/tdd-06.md": "3d1a61bbc8ae8a2c127abba0069bb2a922e5d2cd0c65d779772b93cf87c1659f",
+    ".scratch/data-preparation/verification/ticket06-reproduction-check.json": "f729fb4d85f6f1ec38552806c66f84ceb5db66bda623f802867804f89c74a225",
+    "config/review-cleaning-1.0.0.json": "f5ab966965014af4b85248b557fa5d3f4cb4a5ef0a99e6c8f25297a7d2aad999",
+    "records/catalog/grain-A-1.1.15.json": "ff9d23d4c1147cfa75c3f979c77bbbfdb1f630b0ee3a78df4aa3c22fa238ccad",
+    "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json": "086982a25b091fb56936d40b3901edef7d4d4e7e4f180e647e237907f2cd53ab",
+    "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0.json": "087134e66aec971070aaca11eee837112fd39a0893993b16b94b2194b19d89a5",
+    "records/reviews/grain-A-1.1.15-review-diagnostics-1.0.0.json": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19"
+  },
+  "engineering_revision_rounds": 0,
+  "formal_package_status": "not_built",
+  "full_tests": 164,
+  "implementation_commit": "a76a75aebfe9869472d841d0d96f181ebd413296",
+  "model_input_status": "not_released",
+  "original_materials_unchanged": 26,
+  "protected_files_unchanged": 47,
+  "review_baseline": "34aa1491b71906ec6e47e63ea6c8ecaec72154f2",
+  "rules_version": "review-cleaning-1.0.0",
+  "sample_sufficiency": "not_determined",
+  "serialization_erratum_required": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json",
+  "sim_status": "not_built",
+  "spec": {
+    "blocking": 0,
+    "disposition": "bound_metadata_erratum",
+    "highest_severity": "P3",
+    "nonblocking": 1
+  },
+  "standards": {
+    "disposition": "assessed_retained",
+    "hard_violations": 0,
+    "heuristics": 1,
+    "highest_severity": "P3"
+  },
+  "status": "accepted_ticket06_cleaning_and_qualification_only",
+  "user_split_status": "not_built"
+}
