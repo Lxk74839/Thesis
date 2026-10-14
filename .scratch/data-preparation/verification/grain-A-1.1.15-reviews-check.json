@@ -1,0 +1,27 @@
+{
+  "candidate_potential_accounts": 41934,
+  "candidate_prior_positive_products": {
+    "0": 40331,
+    "1": 1428,
+    "2": 135,
+    "3": 30,
+    "4": 6,
+    "5": 2,
+    "6": 2
+  },
+  "catalog_products": 1494,
+  "checked_at_utc": "2026-10-13T16:22:31.687010+00:00",
+  "extract_sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+  "last_match_source_line": 14317797,
+  "limitations": "Account IDs do not prove independent natural people. Unapproved candidate results do not establish formal qualification or sample sufficiency.",
+  "matched_reviews": 56903,
+  "oracle": "Full-source parent selection with byte-by-byte extraction reconciliation; independent SQLite grouping, membership, losses and chronology.",
+  "original_material_count": 26,
+  "original_materials_unchanged": true,
+  "products_without_reviews": 0,
+  "scope_version": "grain-A-1.1.15",
+  "source_rows": 14318520,
+  "spec_unchanged": true,
+  "status": "independent_review_reconciliation_passed",
+  "unique_accounts": 53576
+}

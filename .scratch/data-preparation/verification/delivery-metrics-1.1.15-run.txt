@@ -1,0 +1,607 @@
+{
+  "scope_version": "grain-A-1.1.15",
+  "catalog": {
+    "counts": {
+      "excluded": 568261,
+      "included": 1494,
+      "pending": 33519
+    },
+    "scan": {
+      "conflicting_parents": 0,
+      "duplicate_parent_rows": 0,
+      "gzip_verified": true,
+      "rows": 603274,
+      "unique_parents": 603274
+    },
+    "reasons": {
+      "ambiguous_processing_or_mix": 1489,
+      "category_form_conflict": 4111,
+      "category_identity_conflict": 200,
+      "composition_declaration_conflict": 155,
+      "declared_outside_composition": 5400,
+      "excluded_form": 148041,
+      "field_food_use_conflict": 55,
+      "field_form_conflict": 1426,
+      "field_identity_conflict": 595,
+      "field_processing_ambiguity": 249,
+      "form_not_verified": 2698,
+      "identity_composition_conflict": 1,
+      "identity_form_declared_single_grain": 15,
+      "identity_form_not_disclosed": 1479,
+      "missing_composition": 1014,
+      "no_scope_evidence": 229170,
+      "nonfood": 1758,
+      "outside_crop": 5759,
+      "reviewed_outside_scope_sale": 38,
+      "reviewed_scope_counter_unresolved": 4,
+      "sold_added_ingredient_or_outside_crop": 4314,
+      "sold_form_outside_scope": 22,
+      "sold_mixture_outside_scope": 2956,
+      "sold_multiple_grains": 377,
+      "sold_object_outside_scope": 170426,
+      "title_identity_negation": 3,
+      "unresolved_composition": 6328,
+      "weak_identity": 15191
+    },
+    "migration_counts": {
+      "excluded->excluded": 544697,
+      "excluded->pending": 2355,
+      "included->included": 5,
+      "included->pending": 8,
+      "pending->excluded": 23564,
+      "pending->included": 1489,
+      "pending->pending": 31156
+    },
+    "composition_counts": {
+      "conflict": 977,
+      "declared_outside_scope": 53189,
+      "declared_single_grain": 61,
+      "not_disclosed": 491937,
+      "unresolved": 57110
+    },
+    "included_composition_counts": {
+      "declared_single_grain": 15,
+      "not_disclosed": 1479
+    },
+    "scope_sha256": "f7af94050789140709399eebd827b2336b0baa748672a227b7c14f054613cbff",
+    "catalog_sha256": "1fa80d0e969a73fc02ca3c6c815b8c597980d2aaa2e4a9d158d012d967799a84",
+    "audit_sha256": "866223cb2176ffe72513b8e6d5b52480e3b9c1cf8fb6c0178bc5800f64a1e70a",
+    "pending_sha256": "0bc1c7ccd583e60f468568c60fb80215d2a2ad1b515f5925cfd6288820585ec4",
+    "migration_sha256": "7d182fc6689c871f90fc982b6f48a9880319c556a1ba9b65447d6ab307fa892f",
+    "generated_at_utc": "2026-10-13T16:12:02.198250+00:00",
+    "producer_sha256": {
+      "catalog.py": "8c319e1e78bd596339fad5b7b8f9a0460b1b013a48e052c7fffce664115f6995",
+      "identity_catalog.py": "94abfdf977a9ed542f6d7ea470ae5701922f1734837a74e5392e13c0b3e9eac3",
+      "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc"
+    }
+  },
+  "scope_check": {
+    "checked_at_utc": "2026-10-13T16:12:46.695717+00:00",
+    "included_crop_counts": {
+      "rice": 765,
+      "oats": 301,
+      "sorghum": 4,
+      "fonio": 8,
+      "corn": 223,
+      "millet": 29,
+      "wheat": 118,
+      "barley": 18,
+      "little_millet": 1,
+      "rye": 5,
+      "finger_millet": 2,
+      "pearl_millet": 4,
+      "teff": 5,
+      "barnyard_millet": 5,
+      "kodo_millet": 3,
+      "coix": 1,
+      "foxtail_millet": 2
+    },
+    "literal_source_references_checked": 883516,
+    "protected_files_unchanged": 76,
+    "original_materials_unchanged": 26,
+    "rejected_version_components_unchanged": 91
+  },
+  "reviews": {
+    "raw": {
+      "catalog_products": 1494,
+      "products_with_reviews": 1494,
+      "products_without_reviews": 0,
+      "reviews": 56903,
+      "unique_accounts": 53576
+    },
+    "scan": {
+      "gzip_verified": true,
+      "invalid_json_rows": 0,
+      "invalid_parent_rows": 0,
+      "lines": 14318520,
+      "matched_rows": 56903,
+      "non_object_rows": 0,
+      "other_parent_rows": 14261617,
+      "records": 14318520
+    },
+    "history": {
+      "accounts_with_invalid_time": 0,
+      "accounts_without_valid_time": 0,
+      "basis": "All selected raw interactions; time distributions use representable timestamps. Unknown-time accounts cannot establish a reliable target.",
+      "distinct_products_per_account": {
+        "1": 51371,
+        "2": 1952,
+        "3": 199,
+        "4": 41,
+        "5": 8,
+        "6": 2,
+        "7": 3
+      },
+      "latest_unseen_products": {
+        "0": 276,
+        "1": 53300
+      },
+      "manuscript_positive_candidate": {
+        "approval": "not_approved",
+        "excluded_reasons": {
+          "latest_not_positive": 11366,
+          "latest_seen_product": 276
+        },
+        "minimum_prior_products": null,
+        "potential_accounts": 41934,
+        "prior_positive_products": {
+          "0": 40331,
+          "1": 1428,
+          "2": 135,
+          "3": 30,
+          "4": 6,
+          "5": 2,
+          "6": 2
+        },
+        "rating_min": 4
+      },
+      "multiple_latest_parent_accounts": 0,
+      "qualification_status": "not_determined",
+      "reviews_per_account": {
+        "1": 50716,
+        "2": 2502,
+        "3": 277,
+        "4": 63,
+        "5": 11,
+        "6": 4,
+        "7": 3
+      },
+      "strict_prior_products": {
+        "0": 51128,
+        "1": 2167,
+        "2": 224,
+        "3": 42,
+        "4": 10,
+        "5": 2,
+        "6": 3
+      },
+      "strict_prior_reviews": {
+        "0": 51128,
+        "1": 2119,
+        "2": 265,
+        "3": 47,
+        "4": 11,
+        "5": 3,
+        "6": 3
+      },
+      "unique_latest_unseen_accounts_with_known_time": 53300
+    },
+    "duplicates": {
+      "exact_object_duplicate_groups": 443,
+      "exact_object_excess_rows": 476,
+      "nfc_strip_quad": {
+        "conflict_groups": 0,
+        "conflict_member_rows": 0,
+        "duplicate_excess_rows": 476,
+        "duplicate_groups": 443,
+        "duplicate_member_rows": 919,
+        "ungroupable_rows": 0
+      },
+      "raw_quad": {
+        "conflict_groups": 0,
+        "conflict_member_rows": 0,
+        "duplicate_excess_rows": 476,
+        "duplicate_groups": 443,
+        "duplicate_member_rows": 919,
+        "ungroupable_rows": 0
+      },
+      "same_product_equal_time": {
+        "conflict_groups": 0,
+        "conflict_member_rows": 0,
+        "duplicate_excess_rows": 476,
+        "duplicate_groups": 443,
+        "duplicate_member_rows": 919,
+        "ungroupable_rows": 0
+      }
+    },
+    "time": {
+      "cutoff": null,
+      "cutoff_approval": "not_approved",
+      "max_raw": 1694143266647,
+      "max_utc": "2023-09-08T03:21:06.647+00:00",
+      "min_raw": 1108840250000,
+      "min_utc": "2005-02-19T19:10:50.000+00:00",
+      "timezone": "UTC",
+      "unit": "milliseconds",
+      "valid_rows": 56903
+    },
+    "candidate_cleaning": {
+      "approval": "not_approved",
+      "scenarios": {
+        "combined_nfc": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53513,
+          "kept_products_with_reviews": 1493,
+          "kept_reviews": 56363,
+          "lost_accounts": 63,
+          "lost_products_with_reviews": 1,
+          "lost_reviews": 540
+        },
+        "combined_raw": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53513,
+          "kept_products_with_reviews": 1493,
+          "kept_reviews": 56363,
+          "lost_accounts": 63,
+          "lost_products_with_reviews": 1,
+          "lost_reviews": 540
+        },
+        "equal_time_conflict_quarantine": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56903,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 0
+        },
+        "exact_object_dedup": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56427,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 476
+        },
+        "nfc_strip_quad_safe_dedup": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56427,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 476
+        },
+        "nonblank_text": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53513,
+          "kept_products_with_reviews": 1493,
+          "kept_reviews": 56839,
+          "lost_accounts": 63,
+          "lost_products_with_reviews": 1,
+          "lost_reviews": 64
+        },
+        "raw_quad_conflict_quarantine": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56903,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 0
+        },
+        "valid_identifiers": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56903,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 0
+        },
+        "valid_rating": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56903,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 0
+        },
+        "valid_time": {
+          "catalog_products_retained": 1494,
+          "kept_accounts": 53576,
+          "kept_products_with_reviews": 1494,
+          "kept_reviews": 56903,
+          "lost_accounts": 0,
+          "lost_products_with_reviews": 0,
+          "lost_reviews": 0
+        }
+      }
+    },
+    "candidate_normalization": {
+      "approval": "not_approved",
+      "changed_text_rows": 64,
+      "form": "NFC",
+      "strip_edges": true,
+      "unicode_version": "15.1.0"
+    },
+    "extract_sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+    "generated_at_utc": "2026-10-13T16:15:45.268962+00:00",
+    "producer_sha256": {
+      "prepare_data.py": "1f7c0d48b4944ea30ef59b4aef96d4a4c757fd178d6b190ca3f7d39b942162bc",
+      "review_diagnostics.py": "7f4d0c0458a1985070fb073698d7eb268c1f96c9c21d2cd90baa22b088cfde28"
+    }
+  },
+  "quality": {
+    "empty_text_rows": 64,
+    "invalid_identifier_rows": 0,
+    "invalid_rating_rows": 0,
+    "invalid_text_rows": 0,
+    "invalid_time_reasons": {},
+    "invalid_time_rows": 0,
+    "rating_values": {
+      "1.0": 6423,
+      "2.0": 2345,
+      "3.0": 3148,
+      "4.0": 4448,
+      "5.0": 40539
+    }
+  },
+  "review_check": {
+    "checked_at_utc": "2026-10-13T16:22:31.687010+00:00",
+    "last_match_source_line": 14317797,
+    "original_materials_unchanged": true,
+    "original_material_count": 26,
+    "spec_unchanged": true
+  },
+  "options": {
+    "status": "hypothetical_options_not_approved",
+    "scope_version": "grain-A-1.1.15",
+    "generated_at_utc": "2026-10-13T16:22:58.079150+00:00",
+    "extract_sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+    "record_sha256": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19",
+    "producer_sha256": "20cc3d26390b3d8bcbdedc487cbf0756954714bdbf6424a34e47638246cb5d50",
+    "joint_text_option": {
+      "rule": "Nonblank valid-rating text, exact-object dedup and both raw-quad/equal-time fact-conflict quarantine; diagnostic counts only.",
+      "kept_reviews": 56363,
+      "lost_reviews": 540,
+      "kept_accounts": 53513,
+      "kept_active_products": 1493,
+      "catalog_products_retained": 1494,
+      "formal_clean_view": "not_built"
+    },
+    "rating_options": {
+      "3": {
+        "latest_conditional_accounts": 44876,
+        "excluded_reasons": {
+          "latest_not_positive_text": 8424,
+          "latest_seen_product": 276
+        },
+        "history_impact": [
+          {
+            "minimum_distinct_prior_products": 0,
+            "accounts_with_valid_text_history": 44876,
+            "accounts_with_positive_text_history": 44876
+          },
+          {
+            "minimum_distinct_prior_products": 1,
+            "accounts_with_valid_text_history": 1939,
+            "accounts_with_positive_text_history": 1818
+          },
+          {
+            "minimum_distinct_prior_products": 2,
+            "accounts_with_valid_text_history": 225,
+            "accounts_with_positive_text_history": 210
+          },
+          {
+            "minimum_distinct_prior_products": 3,
+            "accounts_with_valid_text_history": 49,
+            "accounts_with_positive_text_history": 46
+          },
+          {
+            "minimum_distinct_prior_products": 5,
+            "accounts_with_valid_text_history": 5,
+            "accounts_with_positive_text_history": 5
+          }
+        ],
+        "prior_all_valid_text_depth": {
+          "0": 42937,
+          "1": 1714,
+          "2": 176,
+          "6": 3,
+          "3": 36,
+          "4": 8,
+          "5": 2
+        },
+        "prior_positive_depth": {
+          "0": 43058,
+          "1": 1608,
+          "2": 164,
+          "6": 3,
+          "3": 34,
+          "4": 7,
+          "5": 2
+        }
+      },
+      "4": {
+        "latest_conditional_accounts": 41934,
+        "excluded_reasons": {
+          "latest_not_positive_text": 11366,
+          "latest_seen_product": 276
+        },
+        "history_impact": [
+          {
+            "minimum_distinct_prior_products": 0,
+            "accounts_with_valid_text_history": 41934,
+            "accounts_with_positive_text_history": 41934
+          },
+          {
+            "minimum_distinct_prior_products": 1,
+            "accounts_with_valid_text_history": 1806,
+            "accounts_with_positive_text_history": 1603
+          },
+          {
+            "minimum_distinct_prior_products": 2,
+            "accounts_with_valid_text_history": 211,
+            "accounts_with_positive_text_history": 175
+          },
+          {
+            "minimum_distinct_prior_products": 3,
+            "accounts_with_valid_text_history": 46,
+            "accounts_with_positive_text_history": 40
+          },
+          {
+            "minimum_distinct_prior_products": 5,
+            "accounts_with_valid_text_history": 5,
+            "accounts_with_positive_text_history": 4
+          }
+        ],
+        "prior_all_valid_text_depth": {
+          "0": 40128,
+          "1": 1595,
+          "2": 165,
+          "6": 3,
+          "3": 34,
+          "4": 7,
+          "5": 2
+        },
+        "prior_positive_depth": {
+          "0": 40331,
+          "1": 1428,
+          "2": 135,
+          "6": 2,
+          "3": 30,
+          "4": 6,
+          "5": 2
+        }
+      },
+      "5": {
+        "latest_conditional_accounts": 37819,
+        "excluded_reasons": {
+          "latest_not_positive_text": 15481,
+          "latest_seen_product": 276
+        },
+        "history_impact": [
+          {
+            "minimum_distinct_prior_products": 0,
+            "accounts_with_valid_text_history": 37819,
+            "accounts_with_positive_text_history": 37819
+          },
+          {
+            "minimum_distinct_prior_products": 1,
+            "accounts_with_valid_text_history": 1610,
+            "accounts_with_positive_text_history": 1334
+          },
+          {
+            "minimum_distinct_prior_products": 2,
+            "accounts_with_valid_text_history": 181,
+            "accounts_with_positive_text_history": 136
+          },
+          {
+            "minimum_distinct_prior_products": 3,
+            "accounts_with_valid_text_history": 38,
+            "accounts_with_positive_text_history": 26
+          },
+          {
+            "minimum_distinct_prior_products": 5,
+            "accounts_with_valid_text_history": 5,
+            "accounts_with_positive_text_history": 2
+          }
+        ],
+        "prior_all_valid_text_depth": {
+          "0": 36209,
+          "1": 1429,
+          "6": 3,
+          "4": 5,
+          "2": 143,
+          "3": 28,
+          "5": 2
+        },
+        "prior_positive_depth": {
+          "0": 36485,
+          "1": 1198,
+          "5": 1,
+          "2": 110,
+          "3": 22,
+          "6": 1,
+          "4": 2
+        }
+      }
+    },
+    "cutoff_alternative": {
+      "timestamp_ms": 1672531200000,
+      "endpoint": "exclusive",
+      "utc": "2023-01-01T00:00:00Z",
+      "justification": "Illustrates limiting retrospective data to the end of calendar 2022; does not claim later source observations are invalid or that 2022 coverage is complete.",
+      "kept_reviews": 54358,
+      "lost_reviews": 2545,
+      "kept_accounts": 51218,
+      "kept_active_products": 1461,
+      "rating4_conditional": {
+        "latest_conditional_accounts": 40294,
+        "excluded_reasons": {
+          "latest_not_positive_text": 10654,
+          "latest_seen_product": 270
+        },
+        "history_impact": [
+          {
+            "minimum_distinct_prior_products": 0,
+            "accounts_with_valid_text_history": 40294,
+            "accounts_with_positive_text_history": 40294
+          },
+          {
+            "minimum_distinct_prior_products": 1,
+            "accounts_with_valid_text_history": 1708,
+            "accounts_with_positive_text_history": 1515
+          },
+          {
+            "minimum_distinct_prior_products": 2,
+            "accounts_with_valid_text_history": 207,
+            "accounts_with_positive_text_history": 173
+          },
+          {
+            "minimum_distinct_prior_products": 3,
+            "accounts_with_valid_text_history": 45,
+            "accounts_with_positive_text_history": 39
+          },
+          {
+            "minimum_distinct_prior_products": 5,
+            "accounts_with_valid_text_history": 3,
+            "accounts_with_positive_text_history": 2
+          }
+        ],
+        "prior_all_valid_text_depth": {
+          "0": 38586,
+          "1": 1501,
+          "2": 162,
+          "6": 3,
+          "3": 34,
+          "4": 8
+        },
+        "prior_positive_depth": {
+          "0": 38779,
+          "1": 1342,
+          "2": 134,
+          "6": 2,
+          "3": 30,
+          "4": 7
+        }
+      }
+    },
+    "limitations": [
+      "No cutoff, rating threshold or history requirement is approved.",
+      "All earlier interactions determine seen products, including low ratings and empty text.",
+      "Account IDs do not demonstrate independent people or statistical sufficiency.",
+      "No user split, private target labels, formal clean view or model input is generated."
+    ]
+  },
+  "record_sha256": {
+    "catalog": "ff9d23d4c1147cfa75c3f979c77bbbfdb1f630b0ee3a78df4aa3c22fa238ccad",
+    "reviews": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19",
+    "scope_check": "f27f91058625abf28ebedf9bfb0c446cced9c74af9cc60b9e398bd8472adba54",
+    "review_check": "0ce60e169dfcfa88eb1136d638b52747b556d6ac5978e0ba26ed5e16662c46d3",
+    "options": "b01a3edcb699c2cf3a7297e181d80cd1242839d814b3c54730706b1f6391ddb5"
+  }
+}

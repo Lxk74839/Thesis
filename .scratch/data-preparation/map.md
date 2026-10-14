@@ -18,7 +18,10 @@
 
 - 2026-10-12：[工单 05](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/05-review-diagnostics.md)验收关闭；完整 14,318,520 行复扫，13 个商品提取 260 条原始评论、256 个来源账户；3 条完全重复副本原样保留，条件归并不减少账户。181 个文稿正向条件候选中 180 个无正向历史、1 个有一个历史商品，资格与充分性均未确定。48 项公共入口测试、独立全源字节／分组／损失／时间核对通过，固定实现提交 b3a0dfe 的 Standards 与 Spec 均 0 项发现；26 份原材料及规格不变。[诊断说明](C:/Users/Kane/Documents/CodexProject/Thesis/docs/data-sources/selected-reviews.md)、[验收记录](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/verification/review-extract-05-check.json)、[审查记录](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/verification/code-review-05.md)。工单 06 的正式规则尚待用户确认。
 
+- 当前更新（2026-10-14）：[04／05证据修订闭环](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/scope-revision-execution.md)已resolved。grain-A-1.1.15全源及独立验收通过：1,494商品、56,903原始评论、53,576来源账户；条件正向历史≥1／2／3为1,603／175／40，非正式样本。固定实现d1b24dc、149项测试、两轴复审及保护摘要通过，旧版和原稿保留。[06草案](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/ticket06-rule-proposal-grain-A-1.1.15.md)待确认；06状态needs-info，未实施正式规则或联合实验，不因资格／充分性待决重开目录开发。以下历史进度保留追溯。
+
 ## Fog
+
 
 - D1—D12 的其余规则和参数继续待确认；依对应工单提供推荐、理由和用户明确结论。
 - 工单 04、05 已验收关闭；工单 06 的清洗、时间截断和用户资格规则待确认。正式用户任务或正式联合包尚未建立，不能宣称样本充分。下列“待确认／等待审查”历史进度条目仅表示当时状态。

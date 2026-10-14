@@ -1,0 +1,27 @@
+{
+  "status": "independent_review_reconciliation_passed",
+  "checked_at_utc": "2026-10-13T16:22:31.687010+00:00",
+  "source_rows": 14318520,
+  "matched_reviews": 56903,
+  "catalog_products": 1494,
+  "products_without_reviews": 0,
+  "unique_accounts": 53576,
+  "scope_version": "grain-A-1.1.15",
+  "last_match_source_line": 14317797,
+  "extract_sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+  "candidate_potential_accounts": 41934,
+  "candidate_prior_positive_products": {
+    "0": 40331,
+    "1": 1428,
+    "3": 30,
+    "2": 135,
+    "4": 6,
+    "6": 2,
+    "5": 2
+  },
+  "oracle": "Full-source parent selection with byte-by-byte extraction reconciliation; independent SQLite grouping, membership, losses and chronology.",
+  "original_materials_unchanged": true,
+  "original_material_count": 26,
+  "spec_unchanged": true,
+  "limitations": "Account IDs do not prove independent natural people. Unapproved candidate results do not establish formal qualification or sample sufficiency."
+}

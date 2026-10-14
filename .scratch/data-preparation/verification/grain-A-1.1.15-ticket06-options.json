@@ -1,0 +1,241 @@
+{
+  "status": "hypothetical_options_not_approved",
+  "scope_version": "grain-A-1.1.15",
+  "generated_at_utc": "2026-10-13T16:22:58.079150+00:00",
+  "extract_sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6",
+  "record_sha256": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19",
+  "producer_sha256": "20cc3d26390b3d8bcbdedc487cbf0756954714bdbf6424a34e47638246cb5d50",
+  "joint_text_option": {
+    "rule": "Nonblank valid-rating text, exact-object dedup and both raw-quad/equal-time fact-conflict quarantine; diagnostic counts only.",
+    "kept_reviews": 56363,
+    "lost_reviews": 540,
+    "kept_accounts": 53513,
+    "kept_active_products": 1493,
+    "catalog_products_retained": 1494,
+    "formal_clean_view": "not_built"
+  },
+  "rating_options": {
+    "3": {
+      "latest_conditional_accounts": 44876,
+      "excluded_reasons": {
+        "latest_not_positive_text": 8424,
+        "latest_seen_product": 276
+      },
+      "history_impact": [
+        {
+          "minimum_distinct_prior_products": 0,
+          "accounts_with_valid_text_history": 44876,
+          "accounts_with_positive_text_history": 44876
+        },
+        {
+          "minimum_distinct_prior_products": 1,
+          "accounts_with_valid_text_history": 1939,
+          "accounts_with_positive_text_history": 1818
+        },
+        {
+          "minimum_distinct_prior_products": 2,
+          "accounts_with_valid_text_history": 225,
+          "accounts_with_positive_text_history": 210
+        },
+        {
+          "minimum_distinct_prior_products": 3,
+          "accounts_with_valid_text_history": 49,
+          "accounts_with_positive_text_history": 46
+        },
+        {
+          "minimum_distinct_prior_products": 5,
+          "accounts_with_valid_text_history": 5,
+          "accounts_with_positive_text_history": 5
+        }
+      ],
+      "prior_all_valid_text_depth": {
+        "0": 42937,
+        "1": 1714,
+        "2": 176,
+        "6": 3,
+        "3": 36,
+        "4": 8,
+        "5": 2
+      },
+      "prior_positive_depth": {
+        "0": 43058,
+        "1": 1608,
+        "2": 164,
+        "6": 3,
+        "3": 34,
+        "4": 7,
+        "5": 2
+      }
+    },
+    "4": {
+      "latest_conditional_accounts": 41934,
+      "excluded_reasons": {
+        "latest_not_positive_text": 11366,
+        "latest_seen_product": 276
+      },
+      "history_impact": [
+        {
+          "minimum_distinct_prior_products": 0,
+          "accounts_with_valid_text_history": 41934,
+          "accounts_with_positive_text_history": 41934
+        },
+        {
+          "minimum_distinct_prior_products": 1,
+          "accounts_with_valid_text_history": 1806,
+          "accounts_with_positive_text_history": 1603
+        },
+        {
+          "minimum_distinct_prior_products": 2,
+          "accounts_with_valid_text_history": 211,
+          "accounts_with_positive_text_history": 175
+        },
+        {
+          "minimum_distinct_prior_products": 3,
+          "accounts_with_valid_text_history": 46,
+          "accounts_with_positive_text_history": 40
+        },
+        {
+          "minimum_distinct_prior_products": 5,
+          "accounts_with_valid_text_history": 5,
+          "accounts_with_positive_text_history": 4
+        }
+      ],
+      "prior_all_valid_text_depth": {
+        "0": 40128,
+        "1": 1595,
+        "2": 165,
+        "6": 3,
+        "3": 34,
+        "4": 7,
+        "5": 2
+      },
+      "prior_positive_depth": {
+        "0": 40331,
+        "1": 1428,
+        "2": 135,
+        "6": 2,
+        "3": 30,
+        "4": 6,
+        "5": 2
+      }
+    },
+    "5": {
+      "latest_conditional_accounts": 37819,
+      "excluded_reasons": {
+        "latest_not_positive_text": 15481,
+        "latest_seen_product": 276
+      },
+      "history_impact": [
+        {
+          "minimum_distinct_prior_products": 0,
+          "accounts_with_valid_text_history": 37819,
+          "accounts_with_positive_text_history": 37819
+        },
+        {
+          "minimum_distinct_prior_products": 1,
+          "accounts_with_valid_text_history": 1610,
+          "accounts_with_positive_text_history": 1334
+        },
+        {
+          "minimum_distinct_prior_products": 2,
+          "accounts_with_valid_text_history": 181,
+          "accounts_with_positive_text_history": 136
+        },
+        {
+          "minimum_distinct_prior_products": 3,
+          "accounts_with_valid_text_history": 38,
+          "accounts_with_positive_text_history": 26
+        },
+        {
+          "minimum_distinct_prior_products": 5,
+          "accounts_with_valid_text_history": 5,
+          "accounts_with_positive_text_history": 2
+        }
+      ],
+      "prior_all_valid_text_depth": {
+        "0": 36209,
+        "1": 1429,
+        "6": 3,
+        "4": 5,
+        "2": 143,
+        "3": 28,
+        "5": 2
+      },
+      "prior_positive_depth": {
+        "0": 36485,
+        "1": 1198,
+        "5": 1,
+        "2": 110,
+        "3": 22,
+        "6": 1,
+        "4": 2
+      }
+    }
+  },
+  "cutoff_alternative": {
+    "timestamp_ms": 1672531200000,
+    "endpoint": "exclusive",
+    "utc": "2023-01-01T00:00:00Z",
+    "justification": "Illustrates limiting retrospective data to the end of calendar 2022; does not claim later source observations are invalid or that 2022 coverage is complete.",
+    "kept_reviews": 54358,
+    "lost_reviews": 2545,
+    "kept_accounts": 51218,
+    "kept_active_products": 1461,
+    "rating4_conditional": {
+      "latest_conditional_accounts": 40294,
+      "excluded_reasons": {
+        "latest_not_positive_text": 10654,
+        "latest_seen_product": 270
+      },
+      "history_impact": [
+        {
+          "minimum_distinct_prior_products": 0,
+          "accounts_with_valid_text_history": 40294,
+          "accounts_with_positive_text_history": 40294
+        },
+        {
+          "minimum_distinct_prior_products": 1,
+          "accounts_with_valid_text_history": 1708,
+          "accounts_with_positive_text_history": 1515
+        },
+        {
+          "minimum_distinct_prior_products": 2,
+          "accounts_with_valid_text_history": 207,
+          "accounts_with_positive_text_history": 173
+        },
+        {
+          "minimum_distinct_prior_products": 3,
+          "accounts_with_valid_text_history": 45,
+          "accounts_with_positive_text_history": 39
+        },
+        {
+          "minimum_distinct_prior_products": 5,
+          "accounts_with_valid_text_history": 3,
+          "accounts_with_positive_text_history": 2
+        }
+      ],
+      "prior_all_valid_text_depth": {
+        "0": 38586,
+        "1": 1501,
+        "2": 162,
+        "6": 3,
+        "3": 34,
+        "4": 8
+      },
+      "prior_positive_depth": {
+        "0": 38779,
+        "1": 1342,
+        "2": 134,
+        "6": 2,
+        "3": 30,
+        "4": 7
+      }
+    }
+  },
+  "limitations": [
+    "No cutoff, rating threshold or history requirement is approved.",
+    "All earlier interactions determine seen products, including low ratings and empty text.",
+    "Account IDs do not demonstrate independent people or statistical sufficiency.",
+    "No user split, private target labels, formal clean view or model input is generated."
+  ]
+}
