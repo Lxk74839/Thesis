@@ -1,0 +1,27 @@
+test_clean_quarantines_all_raw_quad_fact_conflict_members (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_all_raw_quad_fact_conflict_members) ... FAIL
+
+======================================================================
+FAIL: test_clean_quarantines_all_raw_quad_fact_conflict_members (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_all_raw_quad_fact_conflict_members)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1474, in test_clean_quarantines_all_raw_quad_fact_conflict_members
+    self.assertEqual([r["review"]["parent_asin"] for r in clean], ["B"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['A', 'A', 'B'] != ['B']
+
+First differing element 0:
+'A'
+'B'
+
+First list contains 2 additional elements.
+First extra element 1:
+'A'
+
+- ['A', 'A', 'B']
++ ['B']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.617s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_quarantines_all_raw_quad -v` failed. (See above for error)

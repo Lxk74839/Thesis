@@ -1,0 +1,23 @@
+test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts (test_prepare_data.MetadataPreparationTests.test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts) ... FAIL
+
+======================================================================
+FAIL: test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts (test_prepare_data.MetadataPreparationTests.test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1530, in test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts
+    self.assertEqual(accounts["MULTI"]["reasons"], ["multiple_latest_parents"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['multiple_latest_parents']
+
+Second list contains 1 additional elements.
+First extra element 0:
+'multiple_latest_parents'
+
+- []
++ ['multiple_latest_parents']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.569s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_excludes_ambiguous_latest -v` failed. (See above for error)

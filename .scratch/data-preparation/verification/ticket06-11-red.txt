@@ -1,0 +1,16 @@
+test_clean_accounts_for_every_source_row_and_each_exclusion_stage (test_prepare_data.MetadataPreparationTests.test_clean_accounts_for_every_source_row_and_each_exclusion_stage) ... ERROR
+
+======================================================================
+ERROR: test_clean_accounts_for_every_source_row_and_each_exclusion_stage (test_prepare_data.MetadataPreparationTests.test_clean_accounts_for_every_source_row_and_each_exclusion_stage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1591, in test_clean_accounts_for_every_source_row_and_each_exclusion_stage
+    audit = [json.loads(line) for line in (self.output / report["audit_path"]).read_text("utf-8").splitlines()]
+                                                         ~~~~~~^^^^^^^^^^^^^^
+KeyError: 'audit_path'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.566s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_accounts_for_every_source_row -v` failed. (See above for error)

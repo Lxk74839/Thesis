@@ -1,0 +1,26 @@
+test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology) ... FAIL
+
+======================================================================
+FAIL: test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1573, in test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology
+    self.assertEqual(run.returncode, 0, run.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 260, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 37, in main
+    return clean_reviews(args.catalog_record, args.review_record, args.cleaning_config, root)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\review_cleaning.py", line 66, in clean_reviews
+    if row['timestamp'] < cutoff:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'NoneType' and 'int'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.559s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_quarantines_invalid_facts -v` failed. (See above for error)

@@ -1,0 +1,16 @@
+test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting (test_prepare_data.MetadataPreparationTests.test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting) ... ERROR
+
+======================================================================
+ERROR: test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting (test_prepare_data.MetadataPreparationTests.test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1497, in test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting
+    text = [json.loads(line) for line in (self.output / report["text_path"]).read_text("utf-8").splitlines()]
+                                                        ~~~~~~^^^^^^^^^^^^^
+KeyError: 'text_path'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.583s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_keeps_low_empty -v` failed. (See above for error)

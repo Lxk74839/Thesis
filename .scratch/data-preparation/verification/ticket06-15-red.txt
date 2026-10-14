@@ -1,0 +1,16 @@
+test_clean_versions_artifacts_reproduces_fresh_outputs_and_does_not_enter_later_stages (test_prepare_data.MetadataPreparationTests.test_clean_versions_artifacts_reproduces_fresh_outputs_and_does_not_enter_later_stages) ... ERROR
+
+======================================================================
+ERROR: test_clean_versions_artifacts_reproduces_fresh_outputs_and_does_not_enter_later_stages (test_prepare_data.MetadataPreparationTests.test_clean_versions_artifacts_reproduces_fresh_outputs_and_does_not_enter_later_stages)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1653, in test_clean_versions_artifacts_reproduces_fresh_outputs_and_does_not_enter_later_stages
+    record_path = self.output / report["record_path"]
+                                ~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'record_path'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.544s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_versions_artifacts -v` failed. (See above for error)

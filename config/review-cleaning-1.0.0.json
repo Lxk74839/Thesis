@@ -1,0 +1,15 @@
+{
+  "version": "review-cleaning-1.0.0",
+  "approval": "approved",
+  "cutoff_exclusive_ms": 1694550038852,
+  "time_unit": "milliseconds",
+  "timezone": "UTC",
+  "text_policy": "original",
+  "deduplication": "complete_object",
+  "conflict_groups": ["raw_quad", "same_product_equal_time"],
+  "positive_min_rating": 4,
+  "minimum_prior_positive_products": 1,
+  "latest_interaction": "windowed_raw",
+  "seen_products": "all_strict_prior_raw",
+  "catalog_policy": "retain_all"
+}

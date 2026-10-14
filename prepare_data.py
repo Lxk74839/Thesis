@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -23,11 +23,22 @@ def main():
     parser.add_argument("--catalog-record", type=Path)
     parser.add_argument("--previous-catalog-record", type=Path)
     parser.add_argument("--review-record", type=Path)
+    parser.add_argument("--cleaning-config", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
     if root != project and project not in root.parents:
         parser.error("output-root must remain inside the Thesis project")
+    if args.stage == "review_clean":
+        if args.catalog_record is None or args.review_record is None or args.cleaning_config is None:
+            parser.error("review_clean requires catalog-record, review-record and cleaning-config")
+        from review_cleaning import clean_reviews
+        try:
+            return clean_reviews(args.catalog_record, args.review_record, args.cleaning_config, root)
+        except (OSError, ValueError) as exc:
+            print(json.dumps({"stage": "review_clean", "status": "cleaning_incomplete",
+                              "error": {"kind": type(exc).__name__, "message": str(exc)}}))
+            return 2
     if args.stage == "review_extract":
         if args.catalog_record is None or args.review_record is None:
             parser.error("review_extract requires catalog-record and review-record")

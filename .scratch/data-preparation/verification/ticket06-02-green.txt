@@ -1,0 +1,7 @@
+test_clean_deduplicates_only_complete_objects_and_preserves_all_references (test_prepare_data.MetadataPreparationTests.test_clean_deduplicates_only_complete_objects_and_preserves_all_references) ... ok
+test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.121s
+
+OK

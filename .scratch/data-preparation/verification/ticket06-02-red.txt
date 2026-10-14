@@ -1,0 +1,29 @@
+test_clean_deduplicates_only_complete_objects_and_preserves_all_references (test_prepare_data.MetadataPreparationTests.test_clean_deduplicates_only_complete_objects_and_preserves_all_references) ... FAIL
+
+======================================================================
+FAIL: test_clean_deduplicates_only_complete_objects_and_preserves_all_references (test_prepare_data.MetadataPreparationTests.test_clean_deduplicates_only_complete_objects_and_preserves_all_references)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1464, in test_clean_deduplicates_only_complete_objects_and_preserves_all_references
+    self.assertEqual([r["review"]["text"] for r in clean], ["", " Keep  ", "Keep"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['', '', ' Keep  ', 'Keep'] != ['', ' Keep  ', 'Keep']
+
+First differing element 1:
+''
+' Keep  '
+
+First list contains 1 additional elements.
+First extra element 3:
+'Keep'
+
+- ['', '', ' Keep  ', 'Keep']
+?       ----
+
++ ['', ' Keep  ', 'Keep']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.547s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_deduplicates_only -v` failed. (See above for error)

@@ -4,7 +4,7 @@
 
 **Blocked by:** 05：提取全部匹配评论并诊断清洗影响
 
-**Status:** needs-info
+**Status:** claimed
 
 - [ ] 逐项展示推荐规则、理由、替代方案及样本损失；已有论文数值只作为待审候选，不自动沿用。
 - [ ] 明确去重键和文本归一化，区分重复与事实冲突；同商品等时评价不得任意选择最后一条。
@@ -26,3 +26,5 @@
 ## Comments
 
 - 2026-10-14：新版04／05已验收，前置来源及诊断完成。已提交[规则审核草案](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/ticket06-rule-proposal-grain-A-1.1.15.md)，逐项推荐D2窗口、D3原文／去重／两类冲突与用途、D4正向代理及最低历史，并展示真实数量影响。本状态等待用户选择，验收勾选及正式实现尚未执行，D10统计充分性仍待工单12。
+
+- 2026-10-14：用户明确批准完整固定窗口、排他上界1694550038852、原文完全对象去重及两类冲突隔离、所有此前原始交互已见集合、严格最后时点唯一未见≥4非空目标及至少1个不同正向历史商品。随后明确批准同一prepare_data.py新增review_clean阶段及cleaning-config参数，catalog-record／review-record／output-root复用；review-record消费05已验收提取记录，不重扫大原料。审查起点固定34aa1491b71906ec6e47e63ea6c8ecaec72154f2，仅实施06，最多一次真实阻塞修订，不进入分组、模型输入或SIM。配置review-cleaning-1.0.0按此次确认写入；既有草案及正式规格原文保留，未决D5以后及D10充分性不关闭。

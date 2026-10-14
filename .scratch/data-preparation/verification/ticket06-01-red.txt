@@ -1,0 +1,25 @@
+test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds) ... FAIL
+
+======================================================================
+FAIL: test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1449, in test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds
+    self.assertEqual(run.returncode, 0, run.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: prepare_data.py [-h] --stage {metadata,reviews,catalog,review_extract}
+                       [--source-manifest SOURCE_MANIFEST]
+                       --output-root OUTPUT_ROOT
+                       [--metadata-record METADATA_RECORD]
+                       [--scope-config SCOPE_CONFIG]
+                       [--catalog-record CATALOG_RECORD]
+                       [--previous-catalog-record PREVIOUS_CATALOG_RECORD]
+                       [--review-record REVIEW_RECORD]
+prepare_data.py: error: argument --stage: invalid choice: 'review_clean' (choose from 'metadata', 'reviews', 'catalog', 'review_extract')
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.727s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_uses_approved_exclusive_window -v` failed. (See above for error)

@@ -1,0 +1,16 @@
+test_clean_requires_distinct_strict_prior_positive_history_after_quarantine (test_prepare_data.MetadataPreparationTests.test_clean_requires_distinct_strict_prior_positive_history_after_quarantine) ... ERROR
+
+======================================================================
+ERROR: test_clean_requires_distinct_strict_prior_positive_history_after_quarantine (test_prepare_data.MetadataPreparationTests.test_clean_requires_distinct_strict_prior_positive_history_after_quarantine)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1559, in test_clean_requires_distinct_strict_prior_positive_history_after_quarantine
+    self.assertEqual(accounts["REPEAT"]["prior_positive_parent_asins"], ["A"])
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'prior_positive_parent_asins'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.574s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_requires_distinct_strict_prior -v` failed. (See above for error)

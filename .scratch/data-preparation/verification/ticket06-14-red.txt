@@ -1,0 +1,16 @@
+test_clean_rejects_mismatched_catalog_or_false_source_line_provenance (test_prepare_data.MetadataPreparationTests.test_clean_rejects_mismatched_catalog_or_false_source_line_provenance) ... FAIL
+
+======================================================================
+FAIL: test_clean_rejects_mismatched_catalog_or_false_source_line_provenance (test_prepare_data.MetadataPreparationTests.test_clean_rejects_mismatched_catalog_or_false_source_line_provenance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1635, in test_clean_rejects_mismatched_catalog_or_false_source_line_provenance
+    self.assertEqual(self.run_clean().returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.536s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_rejects_mismatched_catalog -v` failed. (See above for error)

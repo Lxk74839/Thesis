@@ -1,0 +1,23 @@
+test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions (test_prepare_data.MetadataPreparationTests.test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions) ... FAIL
+
+======================================================================
+FAIL: test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions (test_prepare_data.MetadataPreparationTests.test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1544, in test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions
+    self.assertEqual([r["reasons"] for r in accounts], [["latest_seen_product"], ["latest_seen_product"]])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [[], []] != [['latest_seen_product'], ['latest_seen_product']]
+
+First differing element 0:
+[]
+['latest_seen_product']
+
+- [[], []]
++ [['latest_seen_product'], ['latest_seen_product']]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.558s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_seen_products -v` failed. (See above for error)

@@ -1,0 +1,9 @@
+test_clean_deduplicates_only_complete_objects_and_preserves_all_references (test_prepare_data.MetadataPreparationTests.test_clean_deduplicates_only_complete_objects_and_preserves_all_references) ... ok
+test_clean_quarantines_all_raw_quad_fact_conflict_members (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_all_raw_quad_fact_conflict_members) ... ok
+test_clean_quarantines_equal_time_conflicts_even_when_quad_texts_differ (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_equal_time_conflicts_even_when_quad_texts_differ) ... ok
+test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.119s
+
+OK

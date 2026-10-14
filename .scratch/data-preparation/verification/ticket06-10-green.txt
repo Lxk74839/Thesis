@@ -1,0 +1,15 @@
+test_clean_deduplicates_only_complete_objects_and_preserves_all_references (test_prepare_data.MetadataPreparationTests.test_clean_deduplicates_only_complete_objects_and_preserves_all_references) ... ok
+test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts (test_prepare_data.MetadataPreparationTests.test_clean_excludes_ambiguous_latest_parents_and_unresolved_latest_facts) ... ok
+test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting (test_prepare_data.MetadataPreparationTests.test_clean_keeps_low_empty_raw_reviews_and_all_products_in_text_view_accounting) ... ok
+test_clean_qualifies_latest_raw_target_without_searching_back (test_prepare_data.MetadataPreparationTests.test_clean_qualifies_latest_raw_target_without_searching_back) ... ok
+test_clean_quarantines_all_raw_quad_fact_conflict_members (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_all_raw_quad_fact_conflict_members) ... ok
+test_clean_quarantines_equal_time_conflicts_even_when_quad_texts_differ (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_equal_time_conflicts_even_when_quad_texts_differ) ... ok
+test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology (test_prepare_data.MetadataPreparationTests.test_clean_quarantines_invalid_facts_and_does_not_infer_unknown_chronology) ... ok
+test_clean_requires_distinct_strict_prior_positive_history_after_quarantine (test_prepare_data.MetadataPreparationTests.test_clean_requires_distinct_strict_prior_positive_history_after_quarantine) ... ok
+test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions (test_prepare_data.MetadataPreparationTests.test_clean_seen_products_include_low_blank_and_quarantined_prior_interactions) ... ok
+test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 5.341s
+
+OK

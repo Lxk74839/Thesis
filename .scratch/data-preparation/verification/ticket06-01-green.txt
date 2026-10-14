@@ -1,0 +1,6 @@
+test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds (test_prepare_data.MetadataPreparationTests.test_clean_uses_approved_exclusive_window_and_preserves_raw_milliseconds) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.538s
+
+OK

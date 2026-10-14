@@ -1,0 +1,16 @@
+test_clean_unapproved_or_changed_research_rules_do_not_publish_formal_views (test_prepare_data.MetadataPreparationTests.test_clean_unapproved_or_changed_research_rules_do_not_publish_formal_views) ... FAIL
+
+======================================================================
+FAIL: test_clean_unapproved_or_changed_research_rules_do_not_publish_formal_views (test_prepare_data.MetadataPreparationTests.test_clean_unapproved_or_changed_research_rules_do_not_publish_formal_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_prepare_data.py", line 1623, in test_clean_unapproved_or_changed_research_rules_do_not_publish_formal_views
+    self.assertEqual(run.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.547s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_prepare_data.py -k test_clean_unapproved_or_changed -v` failed. (See above for error)
