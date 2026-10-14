@@ -22,12 +22,14 @@
 
 - 2026-10-14：[工单06](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/06-cleaning-eligibility.md)已resolved。用户明确确认D2—D4本轮政策及公共入口最小扩展；review-cleaning-1.0.0正式清洗56,427对象、有效文本56,363、资格账户1,603，所有1,494商品保留。164项回归、独立SQL、六类产物新目录字节复现及47保护文件／26原材料摘要通过。固定实现a76a75a、两轴0阻塞，各1P3已评估／附绑定格式勘误，未重开工程修订。[06验收](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/ticket06-acceptance-review-cleaning-1.0.0.md)与records/cleaning接受清单保留实际依据。本轮停止于06，不进入07分组、模型输入或SIM，D10充分性待判定。
 
+- 2026-10-14：[工单07](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/issues/07-user-split-diagnostics.md)已resolved。第一阶段诊断及方案A／接口确认保存于13448a7，实现b6f79ea，独立证据cd984f7；user-split-1.0.0复用06合格1,603账号，开发320（旧16强制＋哈希补304）、测试1,283。独立SQL逐账号一致、交集0且完整覆盖，新目录稳定组件字节复现及资格／暴露／引用行序不变性、4,809条引用继承通过；178项回归通过，固定e2617ad起点的Standards／Spec首轮均0发现，阻塞修订0轮。70项保护来源不变；未知暴露保持未知，未宣称新盲测。D5本轮政策生效；只发布分组组件，不进入08、模型输入、SIM或D10结论。[正式验收与交付索引](C:/Users/Kane/Documents/CodexProject/Thesis/.scratch/data-preparation/ticket07-acceptance-user-split-1.0.0.md)。
+
 ## Fog
 
 
 
 - D1—D12 的其余规则和参数继续待确认；依对应工单提供推荐、理由和用户明确结论。
-- 工单04／05／06已验收关闭；D2—D4仅用户明确确认子项生效，D5分组、D6输入及其余实验规则继续待确认。正式用户任务和联合包未建立，充分性未判定；下列历史“待确认／等待审查”条目仅表示当时状态。
+- 工单04／05／06／07已验收关闭；D2—D5仅用户明确确认子项生效，D6输入及其余实验规则继续待确认。正式用户任务和联合包未建立，D10充分性未判定；历史“待确认／等待审查”条目仅表示当时状态。本轮止于07，不自动推进其他工单。
 
 2026-10-12 更新：首轮审查 Standards 0 项、Spec 2 项；两项经 TDD 修复，版本升至 grain-A-1.0.3。完整来源重跑入选 14、排除 547,604、待裁决 55,656，32 项测试通过；490,461 个证据引用、目录摘要、机械候选去向及 26 份原材料均独立对账通过。工单 04 等待修复后的两轴复审。
 

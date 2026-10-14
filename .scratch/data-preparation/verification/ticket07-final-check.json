@@ -1,0 +1,15 @@
+{
+  "blocking_revision_rounds": 0,
+  "full_regression_passed": 178,
+  "implementation_commit": "b6f79eaabe9f8c34c31ed46a35d1c4ac9c251ba0",
+  "private_component_hashes_match_formal_record": true,
+  "private_components_git_ignored": true,
+  "producer_hashes_match_formal_record": true,
+  "protected_sources_unchanged": 70,
+  "review_baseline": "e2617ada7a182685fef00567dbf064fc096d46f4",
+  "reviewed_head": "cd984f7303ccb5efb2c001d68b32baa31fd73b40",
+  "rules_and_fact_hashes_match_formal_record": true,
+  "spec_blocking": 0,
+  "standards_blocking": 0,
+  "status": "final_delivery_checks_passed"
+}
