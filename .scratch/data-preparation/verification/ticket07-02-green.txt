@@ -1,0 +1,7 @@
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.209s
+
+OK

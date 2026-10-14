@@ -1,0 +1,16 @@
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... FAIL
+
+======================================================================
+FAIL: test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 23, in test_split_requires_explicit_cleaning_record_and_rules
+    self.assertIn('user_split requires cleaning-record and split-config', result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'user_split requires cleaning-record and split-config' not found in "usage: prepare_data.py [-h]\n                       --stage {metadata,reviews,catalog,review_extract,review_clean}\n                       [--source-manifest SOURCE_MANIFEST]\n                       --output-root OUTPUT_ROOT\n                       [--metadata-record METADATA_RECORD]\n                       [--scope-config SCOPE_CONFIG]\n                       [--catalog-record CATALOG_RECORD]\n                       [--previous-catalog-record PREVIOUS_CATALOG_RECORD]\n                       [--review-record REVIEW_RECORD]\n                       [--cleaning-config CLEANING_CONFIG]\nprepare_data.py: error: argument --stage: invalid choice: 'user_split' (choose from 'metadata', 'reviews', 'catalog', 'review_extract', 'review_clean')\n"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.077s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_user_split.py -v` failed. (See above for error)

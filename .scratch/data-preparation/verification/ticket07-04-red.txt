@@ -1,0 +1,110 @@
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) ... 
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='clean.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='text.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='quarantine.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='products.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='accounts.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='audit.jsonl') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='exposure.json') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='acceptance.json') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='erratum.json') ... FAIL
+  test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='catalog.jsonl') ... FAIL
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+test_unapproved_rule_changes_cannot_publish_a_split (test_user_split.UserSplitTests.test_unapproved_rule_changes_cannot_publish_a_split) ... ok
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='clean.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='text.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='quarantine.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='products.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='accounts.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 117, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertIn('checksum',json.loads(result.stdout)['error']['message'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'checksum' not found in 'Expecting value: line 1 column 2 (char 1)'
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='audit.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='exposure.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='acceptance.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='erratum.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 116, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) (component='catalog.jsonl')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 117, in test_bound_source_and_component_bytes_cannot_be_changed
+    self.assertIn('checksum',json.loads(result.stdout)['error']['message'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'checksum' not found in 'Expecting value: line 1 column 2 (char 1)'
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.129s
+
+FAILED (failures=10)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_user_split.py -v` failed. (See above for error)

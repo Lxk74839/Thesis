@@ -1,0 +1,51 @@
+test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning (test_user_split.UserSplitTests.test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning) ... ok
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) ... ok
+test_exposure_facts_are_validated_and_unknown_reading_is_preserved (test_user_split.UserSplitTests.test_exposure_facts_are_validated_and_unknown_reading_is_preserved) ... ok
+test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool (test_user_split.UserSplitTests.test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool) ... ok
+test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) ... ok
+test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) ... 
+  test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='target_parent_asin') ... FAIL
+  test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='prior_positive_product_count') ... FAIL
+  test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='seen_parent_asins') ... FAIL
+test_legacy_development_over_quota_blocks_instead_of_changing_ratio (test_user_split.UserSplitTests.test_legacy_development_over_quota_blocks_instead_of_changing_ratio) ... ok
+test_references_inherit_accounts_and_never_increase_account_counts (test_user_split.UserSplitTests.test_references_inherit_accounts_and_never_increase_account_counts) ... ok
+test_same_version_reuses_verified_bytes_and_rejects_changes_or_damage (test_user_split.UserSplitTests.test_same_version_reuses_verified_bytes_and_rejects_changes_or_damage) ... ok
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+test_unapproved_rule_changes_cannot_publish_a_split (test_user_split.UserSplitTests.test_unapproved_rule_changes_cannot_publish_a_split) ... ok
+
+======================================================================
+FAIL: test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='target_parent_asin')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 287, in test_invalid_qualification_product_relations_fail_without_disclosing_labels
+    self.assertEqual(json.loads(result.stdout)['error']['message'],'qualification_catalog_mismatch')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "'PRIVATE_TARGET_MARKER'" != 'qualification_catalog_mismatch'
+- 'PRIVATE_TARGET_MARKER'
++ qualification_catalog_mismatch
+
+
+======================================================================
+FAIL: test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='prior_positive_product_count')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 286, in test_invalid_qualification_product_relations_fail_without_disclosing_labels
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_invalid_qualification_product_relations_fail_without_disclosing_labels (test_user_split.UserSplitTests.test_invalid_qualification_product_relations_fail_without_disclosing_labels) (field='seen_parent_asins')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 286, in test_invalid_qualification_product_relations_fail_without_disclosing_labels
+    self.assertEqual(result.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 12 tests in 5.581s
+
+FAILED (failures=3)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_user_split.py -v` failed. (See above for error)

@@ -1,0 +1,66 @@
+test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning (test_user_split.UserSplitTests.test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning) ... ok
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) ... ok
+test_exposure_facts_are_validated_and_unknown_reading_is_preserved (test_user_split.UserSplitTests.test_exposure_facts_are_validated_and_unknown_reading_is_preserved) ... ok
+test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool (test_user_split.UserSplitTests.test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool) ... ok
+test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) ... 
+  test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--cleaning-record') ... FAIL
+  test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--split-config') ... FAIL
+  test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--group-refs') ... FAIL
+test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) ... FAIL
+test_legacy_development_over_quota_blocks_instead_of_changing_ratio (test_user_split.UserSplitTests.test_legacy_development_over_quota_blocks_instead_of_changing_ratio) ... ok
+test_references_inherit_accounts_and_never_increase_account_counts (test_user_split.UserSplitTests.test_references_inherit_accounts_and_never_increase_account_counts) ... ok
+test_same_version_reuses_verified_bytes_and_rejects_changes_or_damage (test_user_split.UserSplitTests.test_same_version_reuses_verified_bytes_and_rejects_changes_or_damage) ... ok
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+test_unapproved_rule_changes_cannot_publish_a_split (test_user_split.UserSplitTests.test_unapproved_rule_changes_cannot_publish_a_split) ... ok
+
+======================================================================
+FAIL: test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--cleaning-record')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 258, in test_initial_input_paths_and_output_root_must_stay_in_project
+    self.assertEqual(json.loads(result.stdout)['error']['message'],'input_path_outside_project')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "[Errno 2] No such file or directory: 'C:[82 chars]son'" != 'input_path_outside_project'
+- [Errno 2] No such file or directory: 'C:\\Users\\Kane\\Documents\\CodexProject\\outside-input-must-not-be-read.json'
++ input_path_outside_project
+
+
+======================================================================
+FAIL: test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--split-config')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 258, in test_initial_input_paths_and_output_root_must_stay_in_project
+    self.assertEqual(json.loads(result.stdout)['error']['message'],'input_path_outside_project')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "[Errno 2] No such file or directory: 'C:[82 chars]son'" != 'input_path_outside_project'
+- [Errno 2] No such file or directory: 'C:\\Users\\Kane\\Documents\\CodexProject\\outside-input-must-not-be-read.json'
++ input_path_outside_project
+
+
+======================================================================
+FAIL: test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project) (flag='--group-refs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 258, in test_initial_input_paths_and_output_root_must_stay_in_project
+    self.assertEqual(json.loads(result.stdout)['error']['message'],'input_path_outside_project')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "[Errno 2] No such file or directory: 'C:[82 chars]son'" != 'input_path_outside_project'
+- [Errno 2] No such file or directory: 'C:\\Users\\Kane\\Documents\\CodexProject\\outside-input-must-not-be-read.json'
++ input_path_outside_project
+
+
+======================================================================
+FAIL: test_initial_input_paths_and_output_root_must_stay_in_project (test_user_split.UserSplitTests.test_initial_input_paths_and_output_root_must_stay_in_project)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 265, in test_initial_input_paths_and_output_root_must_stay_in_project
+    self.assertEqual(changed.returncode,2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 11 tests in 4.947s
+
+FAILED (failures=4)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_user_split.py -v` failed. (See above for error)

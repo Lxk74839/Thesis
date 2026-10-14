@@ -1,0 +1,8 @@
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+test_unapproved_rule_changes_cannot_publish_a_split (test_user_split.UserSplitTests.test_unapproved_rule_changes_cannot_publish_a_split) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.159s
+
+OK

@@ -1,0 +1,49 @@
+{
+  "status": "approved_exposure_snapshot_frozen",
+  "snapshot_path": "data/split-inputs/grain-A-1.1.15/legacy-exposure-1.0.0.json",
+  "snapshot_sha256": "f3d3965350b999b705bac5780a1a2a09f88ebc4d9679564327d058ec920a80e3",
+  "account_component_sha256": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837",
+  "source_account_counts": {
+    "legacy_qualification": 165,
+    "legacy_mechanism": 19,
+    "legacy_corpus": 7538,
+    "legacy_preference": 134
+  },
+  "observed_source_accounts_lower_bound": 8,
+  "observed_current_accounts_lower_bound": 2,
+  "current_exploratory_overlap": 16,
+  "source_evidence": {
+    "legacy_qualification": {
+      "path": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\temporal_eligible_users.json",
+      "sha256": "fa56e6b3c35746854f41eb38e07e299070e4acfe3f872268c217bbb2563351be",
+      "account_count": 165
+    },
+    "legacy_mechanism": {
+      "path": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\prototype_tasks.json",
+      "sha256": "6498668cdcb29709b5a3eb279534b4c33914f41571f8004c359c21b2b52f8de5",
+      "account_count": 19
+    },
+    "legacy_corpus": {
+      "path": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\feasibility\\expanded\\reviews_grain.jsonl",
+      "sha256": "a60975f29b6ca7036b5c29eb77fb4eada7f4132f5dfe2e54e02318e16e755b85",
+      "account_count": 7538
+    },
+    "legacy_preference": {
+      "path": "C:\\Users\\Kane\\Documents\\CodexPlan\\Plan_Thesis\\repair_20261002\\protocol\\split_manifest.jsonl",
+      "sha256": "320f710476a551bf226fff3fa5758aa1988eaa9cc72bb4fc105e908337ef5c32",
+      "account_count": 134
+    },
+    "legacy_log_2257": {
+      "path": "C:\\Users\\Kane\\.codex\\sessions\\2026\\09\\21\\rollout-2026-09-21T10-40-45-01a0c1d6-59c8-7c31-8cf8-cf428333a080.jsonl",
+      "line": 2257,
+      "prefix_sha256": "436cb895013f6aeac8a98d00b13c51fd5e1666d8a02e7be707241d888741d566",
+      "shown_account_lower_bound": 8,
+      "kind": "deterministic_prototype_result_returned_to_agent"
+    },
+    "current_aggregate": {
+      "path": ".scratch/data-preparation/ticket07-sample-diagnostics-stage1.md",
+      "sha256": "8f63a7fb8cc6ad1a84100f73cbbb92e57d16840b69045d47be315e05322f38ee",
+      "kind": "account_cohort_aggregate_review"
+    }
+  }
+}

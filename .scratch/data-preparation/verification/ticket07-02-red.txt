@@ -1,0 +1,24 @@
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ERROR
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+
+======================================================================
+ERROR: test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_user_split.py", line 83, in test_approved_split_preserves_old_account_and_fills_floor_development_slots
+    report = json.loads(result.stdout)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.292s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_user_split.py -v` failed. (See above for error)

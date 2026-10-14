@@ -1,0 +1,14 @@
+test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning (test_user_split.UserSplitTests.test_acceptance_erratum_and_exposure_must_bind_the_same_cleaning) ... ok
+test_approved_split_preserves_old_account_and_fills_floor_development_slots (test_user_split.UserSplitTests.test_approved_split_preserves_old_account_and_fills_floor_development_slots) ... ok
+test_bound_source_and_component_bytes_cannot_be_changed (test_user_split.UserSplitTests.test_bound_source_and_component_bytes_cannot_be_changed) ... ok
+test_exposure_facts_are_validated_and_unknown_reading_is_preserved (test_user_split.UserSplitTests.test_exposure_facts_are_validated_and_unknown_reading_is_preserved) ... ok
+test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool (test_user_split.UserSplitTests.test_illegal_or_duplicate_source_identities_cannot_disappear_from_pool) ... ok
+test_legacy_development_over_quota_blocks_instead_of_changing_ratio (test_user_split.UserSplitTests.test_legacy_development_over_quota_blocks_instead_of_changing_ratio) ... ok
+test_references_inherit_accounts_and_never_increase_account_counts (test_user_split.UserSplitTests.test_references_inherit_accounts_and_never_increase_account_counts) ... ok
+test_split_requires_explicit_cleaning_record_and_rules (test_user_split.UserSplitTests.test_split_requires_explicit_cleaning_record_and_rules) ... ok
+test_unapproved_rule_changes_cannot_publish_a_split (test_user_split.UserSplitTests.test_unapproved_rule_changes_cannot_publish_a_split) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 4.373s
+
+OK

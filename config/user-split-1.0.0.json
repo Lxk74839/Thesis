@@ -1,0 +1,25 @@
+{
+  "approval": "approved",
+  "cleaning_acceptance": {
+    "path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-acceptance.json",
+    "sha256": "11cb020b33ace568f6bb93d60e977e64444e4a0b63e6552514e1ac387a1df378"
+  },
+  "cleaning_erratum": {
+    "path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json",
+    "sha256": "086982a25b091fb56936d40b3901edef7d4d4e7e4f180e647e237907f2cd53ab"
+  },
+  "development_divisor": 5,
+  "exposure_manifest": {
+    "path": "data/split-inputs/grain-A-1.1.15/legacy-exposure-1.0.0.json",
+    "sha256": "f3d3965350b999b705bac5780a1a2a09f88ebc4d9679564327d058ec920a80e3"
+  },
+  "hash": "sha256",
+  "hash_input": "utf8_salt_nul_exact_user_id",
+  "legacy_policy": "force_exploratory_to_dev",
+  "rounding": "floor",
+  "salt": "Thesis-ticket07-grain-A-1.1.15-review-cleaning-1.0.0-split-v1",
+  "scheme": "A",
+  "sort": "digest_bytes_then_user_id_utf8_bytes",
+  "unknown_reading_policy": "retain_unknown_allow_other_legacy",
+  "version": "user-split-1.0.0"
+}

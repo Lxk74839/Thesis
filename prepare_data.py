@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -24,11 +24,24 @@ def main():
     parser.add_argument("--previous-catalog-record", type=Path)
     parser.add_argument("--review-record", type=Path)
     parser.add_argument("--cleaning-config", type=Path)
+    parser.add_argument("--cleaning-record", type=Path)
+    parser.add_argument("--split-config", type=Path)
+    parser.add_argument("--group-refs", type=Path)
     args = parser.parse_args()
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
     if root != project and project not in root.parents:
         parser.error("output-root must remain inside the Thesis project")
+    if args.stage == "user_split":
+        if args.cleaning_record is None or args.split_config is None:
+            parser.error("user_split requires cleaning-record and split-config")
+        from user_splitting import split_users
+        try:
+            return split_users(args.cleaning_record, args.split_config, root, args.group_refs)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print(json.dumps({"stage": "user_split", "status": "split_incomplete",
+                              "error": {"kind": type(exc).__name__, "message": str(exc)}}))
+            return 2
     if args.stage == "review_clean":
         if args.catalog_record is None or args.review_record is None or args.cleaning_config is None:
             parser.error("review_clean requires catalog-record, review-record and cleaning-config")
