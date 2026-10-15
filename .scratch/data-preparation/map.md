@@ -26,6 +26,8 @@
 
 - 2026-10-15：[工单08](issues/08-preference-task-isolation.md)已resolved。用户C1—C9／输入schema／公共接口确认先保存于06cf2b6；实现480551b，首轮1.0.0因失败明细junction旁路拒绝保留，仅一轮集中修订f3adc26后验收preference-task-1.0.1。text_portrait_trial_v1／finite-text-1.0.0完整保留1494商品标题／粮种、1603根任务（320开发／1283测试）、1845合格较早正文及真实评分，历史标题关闭。197项回归、2393008候选统计全行SQL／文本追溯、26次API分派探测、真实开发目标私有副本变更不变性、6稳定组件新目录字节复现与707保护摘要通过。固定90ecec3双轴复审Standards 0阻塞／1P3、Spec 0发现，修订轮数1。D6仅本轮文本试制与A通道生效；未调用推荐模型、不进入SIM／互动训练／正式联合实验，D10待判定。[正式验收与交付索引](ticket08-acceptance-preference-task-1.0.1.md)。
 
+2026-10-15当前更新：[工单09](issues/09-evidence-protocol.md)已作为规则确认类工单resolved，协议sim-evidence-protocol-1.0.0绑定原草案摘要，C1—C11总体方案/适用边界获用户确认；具体配置值尚未批准。下一项为[工单10实施前确认稿](ticket10-preimplementation-confirmation-20261015.md)，未启动正常SIM实现；工单11分配、12统计及后续模型/账本接入不在本轮推进。以下旧状态保留为历史。
+
 ## Fog
 
 

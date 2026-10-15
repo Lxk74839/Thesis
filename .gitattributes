@@ -22,3 +22,7 @@ records/splits/*.json -text
 .scratch/data-preparation/verification/code-review-07.md -text
 .scratch/data-preparation/verification/standards-07.md -text
 .scratch/data-preparation/verification/spec-07.md -text
+# Preserve exact bytes for the confirmed ticket 09 protocol and ticket 10 contract.
+.scratch/data-preparation/issues/09-evidence-protocol.md -text
+.scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md -text whitespace=-blank-at-eof
+.scratch/data-preparation/ticket10-preimplementation-confirmation-20261015.md -text
