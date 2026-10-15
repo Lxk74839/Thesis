@@ -1,0 +1,19 @@
+{
+  "at_utc": "2026-10-15T14:24:32.518225+00:00",
+  "conda_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "exit_code": 0,
+  "git_head_sha": "f04b94880ec66bd11fab95dadf51b7d05b8bf44b",
+  "log_sha256": "6f665df7f45f9c25600ca2fb2ac899f56321e4739158d34b32a062fe55615a5a",
+  "python": "3.13.16 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:20:25) [MSC v.1942 64 bit (AMD64)]",
+  "sources": {
+    ".scratch/data-preparation/diagnostics/verify_sim11.py": "9c8bd7f7256b39712f3edd7a2ee6e6d605d663fb1976defad56088b03352cc8a",
+    ".scratch/data-preparation/verification/ticket11_delivery_checks.py": "dc85a2b0ab8e5c671b423dd09b586ba8c4f665cd09d3590b6828f5257e5a0355",
+    "prepare_data.py": "0a8c93027eb0a2803607483aa6f7a0c1785bb00c73d4e508b0589a63f47b546f",
+    "sim_normal.py": "f68ccefab60f4acaf3b77dcc0acd624900415a6d4b8910cd0b45ebcc5a8389f0",
+    "sim_scenarios.py": "43b8ef5c3ba3e8e2e79d47b5ebb6215cca8a7b7dd4b8f1f617af01a3dfc0c609",
+    "tests/test_sim_scenarios.py": "a6a014c9e0f349a562fccf7f98ae2ead0a1e6aafb1f89369ab8754f868e8a9a6"
+  },
+  "status": "passed",
+  "tests": 267,
+  "wall_seconds": 163.529
+}
