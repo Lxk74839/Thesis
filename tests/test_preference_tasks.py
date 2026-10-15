@@ -483,6 +483,23 @@ class PreferenceTasksTests(unittest.TestCase):
         self.assertEqual(list(target.iterdir()), [])
         self.assertFalse((output / 'records').exists())
 
+    def test_19_failure_trace_junction_cannot_redirect_private_writes(self):
+        self.fixture()
+        self.catalog[0]['metadata']['title'] = 'rice current price $39'
+        self.refresh()
+        output = self.root / 'output'
+        (output / 'data').mkdir(parents=True)
+        target = self.root / 'private-failure-target'
+        target.mkdir()
+        link = output / 'data/preference-failures'
+        made = subprocess.run(['cmd', '/c', 'mklink', '/J', str(link), str(target)], capture_output=True)
+        self.assertEqual(made.returncode, 0, made.stderr)
+        result = self.run_tasks()
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(len(list(target.iterdir())), 0, 'private failures must not follow a junction')
+        self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_task')
+        self.assertFalse((output / 'records').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

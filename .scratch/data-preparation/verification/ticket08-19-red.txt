@@ -1,0 +1,16 @@
+test_19_failure_trace_junction_cannot_redirect_private_writes (test_preference_tasks.PreferenceTasksTests.test_19_failure_trace_junction_cannot_redirect_private_writes) ... FAIL
+
+======================================================================
+FAIL: test_19_failure_trace_junction_cannot_redirect_private_writes (test_preference_tasks.PreferenceTasksTests.test_19_failure_trace_junction_cannot_redirect_private_writes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 499, in test_19_failure_trace_junction_cannot_redirect_private_writes
+    self.assertEqual(len(list(target.iterdir())), 0, 'private failures must not follow a junction')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : private failures must not follow a junction
+
+----------------------------------------------------------------------
+Ran 1 test in 0.182s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_19 -v` failed. (See above for error)

@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 398, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 373, in main
+    audit, evaluations, qualifications, clean, valid = full_audit(main_record)
+                                                       ~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 185, in full_audit
+    raw, processed = audit_text(original['metadata']['title'], product['title'], trace, 'product_title')
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 102, in audit_text
+    expected, stages = reference_text(source, kind, user)
+                       ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 85, in reference_text
+    assert all(re.fullmatch(r'<br\s*/?\s*>', tag, re.I) for tag in tags), 'reference_text_has_unexpected_tag'
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: reference_text_has_unexpected_tag
+ERROR conda.cli.main_run:execute(127): `conda run python .scratch/data-preparation/diagnostics/verify_preference08.py` failed. (See above for error)

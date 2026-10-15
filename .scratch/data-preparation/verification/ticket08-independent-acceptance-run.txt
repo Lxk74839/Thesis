@@ -1,0 +1,19 @@
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 400}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 800}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 1200}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 1600}
+{"checkpoint": "full_row_audit_passed", "counts": {"rating_5": 1651, "root_tasks": 1603, "test_accounts": 1283, "history_events": 1845, "candidate_references": 2393008, "rating_4": 194, "dev_accounts": 320}}
+{"checkpoint": "fresh_root_byte_reproduction_passed", "components": 6}
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 399, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 385, in main
+    mutation = target_mutation(main_record,evaluations,qualifications,clean,valid,temporary)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 361, in target_mutation
+    result = invoke(clean_path,split_path,config_path,output,ROOT/PROBE,'ticket08-target-mutation-cli.json')
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_preference08.py", line 132, in invoke
+    assert result.returncode == 0, 'independent_cli_challenge_failed_see_aggregate_log'
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: independent_cli_challenge_failed_see_aggregate_log
+ERROR conda.cli.main_run:execute(127): `conda run python .scratch/data-preparation/diagnostics/verify_preference08.py` failed. (See above for error)
