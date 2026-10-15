@@ -1,0 +1,8 @@
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 400}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 800}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 1200}
+{"checkpoint": "full_row_sql_and_text", "roots_checked": 1600}
+{"checkpoint": "full_row_audit_passed", "counts": {"rating_5": 1651, "root_tasks": 1603, "test_accounts": 1283, "history_events": 1845, "candidate_references": 2393008, "dev_accounts": 320, "rating_4": 194}}
+{"checkpoint": "fresh_root_byte_reproduction_passed", "components": 6}
+{"checkpoint": "private_target_mutation_passed", "all_model_components_identical": true}
+{"status": "independent_acceptance_checks_passed", "protected_files": 707, "model_calls": 0}
