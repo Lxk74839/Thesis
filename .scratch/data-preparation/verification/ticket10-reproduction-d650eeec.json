@@ -1,0 +1,75 @@
+{
+  "components": {
+    "batches.jsonl": {
+      "bytes": 551668,
+      "equal": true,
+      "reproduction_sha256": "e7d213e937cb31f541da739311f8ef1cea7f686658c1728c6c0b9f0c922be8ed",
+      "sha256": "e7d213e937cb31f541da739311f8ef1cea7f686658c1728c6c0b9f0c922be8ed"
+    },
+    "events.jsonl": {
+      "bytes": 3963582,
+      "equal": true,
+      "reproduction_sha256": "be848bc925cf868ccde0759be867b7c8a4533d0b84eeaa5368f519988d3ae754",
+      "sha256": "be848bc925cf868ccde0759be867b7c8a4533d0b84eeaa5368f519988d3ae754"
+    },
+    "materials.jsonl": {
+      "bytes": 7634722,
+      "equal": true,
+      "reproduction_sha256": "6b114ad8d5b10f42b9fd95f1a0d9dfe9d0290ab5da299b4fc3a4bdb0d94fd00b",
+      "sha256": "6b114ad8d5b10f42b9fd95f1a0d9dfe9d0290ab5da299b4fc3a4bdb0d94fd00b"
+    },
+    "policy.json": {
+      "bytes": 1570,
+      "equal": true,
+      "reproduction_sha256": "a12353bba475aca63fbdae287226eee18932c465cd2415b1ceae821dc2128712",
+      "sha256": "a12353bba475aca63fbdae287226eee18932c465cd2415b1ceae821dc2128712"
+    },
+    "registrations.jsonl": {
+      "bytes": 15834258,
+      "equal": true,
+      "reproduction_sha256": "24e99814e6c75158f9c5b35b2fef5e980e739a4a3f4b17d013f828d53a39a80e",
+      "sha256": "24e99814e6c75158f9c5b35b2fef5e980e739a4a3f4b17d013f828d53a39a80e"
+    },
+    "snapshot.json": {
+      "bytes": 1326,
+      "equal": true,
+      "reproduction_sha256": "cda8cfb8160e803e2d92115b5b0369aa24dbb6d445beed640ccb5fda8961c096",
+      "sha256": "cda8cfb8160e803e2d92115b5b0369aa24dbb6d445beed640ccb5fda8961c096"
+    }
+  },
+  "counts": {
+    "batches": 1494,
+    "events": 8964,
+    "materials": 11952,
+    "parents": 1494,
+    "registrations": 22410
+  },
+  "fresh_check": {
+    "bytes": 891,
+    "path": ".tmp/ticket10-fresh-v0jheyj2/private-reference/check.json",
+    "sha256": "2c938b950cfd3a5c4c2227982601439b64865ddde851af56896043c24e301bb9"
+  },
+  "fresh_root": ".tmp/ticket10-fresh-v0jheyj2",
+  "generation_record": {
+    "bytes": 3199,
+    "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+    "sha256": "8694d35a342f6c198bc1db1a0d2ee4b5cad8e09a17e13aed72dacd23eb907715"
+  },
+  "git_head_sha": "d650eeec72fc3ad7b4c97503c4b37f54b08c0400",
+  "phase": "reproduction",
+  "program": {
+    "bytes": 7850,
+    "path": ".scratch/data-preparation/verification/ticket10_delivery_checks.py",
+    "sha256": "449adb4396f5ff2900e48071d91da4c675cbcdd1e0257c608f524657586b28e5"
+  },
+  "reference_sha256": "8b9a31b191b696f7593cb7637db92bf98df84a0ca6c5f7bb7342f057f972cc6b",
+  "reproduced_reference_sha256": "8b9a31b191b696f7593cb7637db92bf98df84a0ca6c5f7bb7342f057f972cc6b",
+  "reused_record_bytes_unchanged": true,
+  "runtime": {
+    "at_utc": "2026-10-15T09:08:52.533046+00:00",
+    "conda_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+    "python_version": "3.13.16"
+  },
+  "snapshot_id": "n_2ad7a0d31bf06e9fc706ed0fa3478c07c22eac8c583d4138279ef317d811c99b",
+  "status": "passed"
+}

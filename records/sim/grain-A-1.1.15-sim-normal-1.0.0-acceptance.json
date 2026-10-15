@@ -1,0 +1,155 @@
+{
+  "accepted_at_utc": "2026-10-15T09:13:14.789534+00:00",
+  "approved_contract": {
+    "config": {
+      "path": "config/sim-normal-1.0.0.json",
+      "sha256": "f58de2f0de17eff32ce461184c28a879560f1d97cfbc8836c2be391cd4572ba3"
+    },
+    "confirmation": {
+      "path": ".scratch/data-preparation/ticket10-preimplementation-confirmation-20261015.md",
+      "sha256": "fb9470a7bca87ef8b3167e5f0d69dcc1508e21ddf5a3b378a3feeb985a8156ad"
+    },
+    "integer_followup_authorization": {
+      "path": ".scratch/data-preparation/verification/ticket10-integer-authorization.md",
+      "sha256": "5b704944e817c38c383cbe73694e5d50d91b036b316fac217a4981d49db75a69"
+    },
+    "protocol_draft": {
+      "path": ".scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md",
+      "sha256": "6ae2dd42b943b65eda899560be8cffa68fac8570ad362439b2a100de76720461"
+    },
+    "protocol_record": {
+      "path": ".scratch/data-preparation/issues/09-evidence-protocol.md",
+      "sha256": "ef7f34e0868c879963287c4085418ed2748939f394ea61ea1751635b4da7abc6"
+    },
+    "protocol_version": "sim-evidence-protocol-1.0.0",
+    "user_confirmation": {
+      "path": ".scratch/data-preparation/ticket10-implementation-authorization-20261015.md",
+      "sha256": "c08cdc17b5f2d9512d35182669ed410d642890d1818b8a732b307b27e3499a5e"
+    }
+  },
+  "catalog_version": "grain-A-1.1.15",
+  "components": {
+    "batches.jsonl": {
+      "bytes": 551668,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/batches.jsonl",
+      "records": 1494,
+      "sha256": "e7d213e937cb31f541da739311f8ef1cea7f686658c1728c6c0b9f0c922be8ed"
+    },
+    "events.jsonl": {
+      "bytes": 3963582,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/events.jsonl",
+      "records": 8964,
+      "sha256": "be848bc925cf868ccde0759be867b7c8a4533d0b84eeaa5368f519988d3ae754"
+    },
+    "materials.jsonl": {
+      "bytes": 7634722,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/materials.jsonl",
+      "records": 11952,
+      "sha256": "6b114ad8d5b10f42b9fd95f1a0d9dfe9d0290ab5da299b4fc3a4bdb0d94fd00b"
+    },
+    "policy.json": {
+      "bytes": 1570,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/policy.json",
+      "records": 1,
+      "sha256": "a12353bba475aca63fbdae287226eee18932c465cd2415b1ceae821dc2128712"
+    },
+    "registrations.jsonl": {
+      "bytes": 15834258,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/registrations.jsonl",
+      "records": 22410,
+      "sha256": "24e99814e6c75158f9c5b35b2fef5e980e739a4a3f4b17d013f828d53a39a80e"
+    },
+    "snapshot.json": {
+      "bytes": 1326,
+      "path": "data/sim/grain-A-1.1.15/sim-normal-1.0.0/snapshot.json",
+      "records": 1,
+      "sha256": "cda8cfb8160e803e2d92115b5b0369aa24dbb6d445beed640ccb5fda8961c096"
+    }
+  },
+  "generation_record": {
+    "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+    "sha256": "8694d35a342f6c198bc1db1a0d2ee4b5cad8e09a17e13aed72dacd23eb907715"
+  },
+  "independent_reference": {
+    "audited_batches": 1494,
+    "check": {
+      "path": "data/sim-reference/grain-A-1.1.15/sim-normal-1.0.0/r1-reference-1.0.0/check.json",
+      "sha256": "57d2e64ee73ad8c712d996555766c9f13b5d149188cc589439b91cd6b47d70ae"
+    },
+    "program": {
+      "path": ".scratch/data-preparation/diagnostics/verify_sim10.py",
+      "sha256": "51e646413664377bd914509def58c55f82ca7d354c719416e244ac43138f0a1e"
+    },
+    "reference": {
+      "path": "data/sim-reference/grain-A-1.1.15/sim-normal-1.0.0/r1-reference-1.0.0/reference-r1.jsonl",
+      "sha256": "8b9a31b191b696f7593cb7637db92bf98df84a0ca6c5f7bb7342f057f972cc6b"
+    },
+    "reference_rule_version": "r1-reference-1.0.0",
+    "state_counts": {
+      "Conflict": 0,
+      "Pending": 0,
+      "Refuted": 0,
+      "Supported": 1494
+    }
+  },
+  "limitations": {
+    "formal_package_status": "not_built",
+    "ledger_deployment_status": "not_deployed",
+    "model_execution_status": "not_run",
+    "sample_sufficiency": "not_determined"
+  },
+  "reviews": {
+    "Spec": {
+      "blocking_findings": 0,
+      "nonblocking_findings": 0,
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-integer-spec.md",
+        "sha256": "9ebcc42ffe9a559e3027ecf8dcab2b67ba53c6514db91f9d9248978e245b6978"
+      }
+    },
+    "Standards": {
+      "blocking_findings": 0,
+      "nonblocking_findings": 1,
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-integer-standards.md",
+        "sha256": "687e9e233cfe38aad7111605da48c7bfed0b720de39e0cb1079b0a5bfa7c4b91"
+      }
+    },
+    "base_sha": "755f277e9a971a517e8b4a5bb94e747b46f3f640",
+    "review_head_sha": "cf97cb108c57c92beab0e70459cd777decb8605e"
+  },
+  "schema_version": "sim-normal-acceptance-1.0.0",
+  "sim_version": "sim-normal-1.0.0",
+  "status": "accepted_ticket10_normal_sim_component_only",
+  "validation": {
+    "fresh_reproduction": {
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-reproduction-d650eeec.json",
+        "sha256": "818d02b3572bebb5ed607bb4efd4e385d42de58c21dd00fe5f90d07271225589"
+      },
+      "status": "passed"
+    },
+    "independent_full_check": {
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-independent-full-check.json",
+        "sha256": "57d2e64ee73ad8c712d996555766c9f13b5d149188cc589439b91cd6b47d70ae"
+      },
+      "status": "passed"
+    },
+    "public_cli_tests": {
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-regression-cf97cb10.json",
+        "sha256": "f1523f835526b5fc4d167f432a73b6ecdc6a92b9e78913a96d957570e8081017"
+      },
+      "status": "passed",
+      "tests": 226
+    },
+    "upstream_protection": {
+      "report": {
+        "path": ".scratch/data-preparation/verification/ticket10-protection-d650eeec.json",
+        "sha256": "da6a27ce1a8ef70c34e40aa9caaea649871711df34afae00cfa9eb50ed3521a0"
+      },
+      "status": "passed"
+    }
+  }
+}

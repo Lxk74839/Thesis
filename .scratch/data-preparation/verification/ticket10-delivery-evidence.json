@@ -1,0 +1,41 @@
+{
+  "acceptance_record": {
+    "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0-acceptance.json",
+    "sha256": "831c951af0e09f0d041354579d0fa3713cb3deeb52c8328fe8574e347a0a338c"
+  },
+  "actual_counts": {
+    "batches": 1494,
+    "events": 8964,
+    "materials": 11952,
+    "parents": 1494,
+    "registrations": 22410
+  },
+  "archived_at_utc": "2026-10-15T09:13:14.795762+00:00",
+  "generation_code_state": {
+    "git_head_sha": "d650eeec72fc3ad7b4c97503c4b37f54b08c0400",
+    "worktree_dirty": false
+  },
+  "generation_record_bytes_unchanged": true,
+  "limitations": {
+    "formal_package_status": "not_built",
+    "ledger_deployment_status": "not_deployed",
+    "model_execution_status": "not_run",
+    "sample_sufficiency": "not_determined"
+  },
+  "review_base_sha": "755f277e9a971a517e8b4a5bb94e747b46f3f640",
+  "review_head_sha": "cf97cb108c57c92beab0e70459cd777decb8605e",
+  "source_matches_review": {
+    ".scratch/data-preparation/diagnostics/verify_sim10.py": "51e646413664377bd914509def58c55f82ca7d354c719416e244ac43138f0a1e",
+    ".scratch/data-preparation/verification/ticket10_delivery_checks.py": "449adb4396f5ff2900e48071d91da4c675cbcdd1e0257c608f524657586b28e5",
+    "prepare_data.py": "d6affb5f9a696d1cb6e61d480f5759c8abfa480f9dec9b16711358734b044efe",
+    "sim_normal.py": "f68ccefab60f4acaf3b77dcc0acd624900415a6d4b8910cd0b45ebcc5a8389f0",
+    "tests/test_sim_normal.py": "8d97eed99ec1e08ad4d904de68da017ce55f42d1385d52ef883e376626b0e5c0"
+  },
+  "state_counts": {
+    "Conflict": 0,
+    "Pending": 0,
+    "Refuted": 0,
+    "Supported": 1494
+  },
+  "status": "accepted_ticket10_normal_sim_component_only"
+}

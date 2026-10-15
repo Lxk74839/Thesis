@@ -1,0 +1,6 @@
+2026-10-15: launching reproduction and protection concurrently through conda run with the same project TMP collided before protection Python started.
+The process cannot access the file because it is being used by another process.
+The system cannot find the file C:\Users\Kane\Documents\CodexProject\Thesis\.tmp\__conda_tmp_28807.txt.
+Failed to run 'conda activate "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis"'.
+ERROR conda.cli.main_run:execute(127): conda run python .scratch/data-preparation/verification/ticket10_delivery_checks.py --phase protection failed.
+The protection report had not been created. Reproduction completed successfully. Protection was retried sequentially in the same Thesis environment; no production code or data was changed for the retry.

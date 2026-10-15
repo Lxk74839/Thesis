@@ -1,0 +1,33 @@
+{
+  "acceptance_record_sha256": "831c951af0e09f0d041354579d0fa3713cb3deeb52c8328fe8574e347a0a338c",
+  "bindings": [
+    "config/sim-normal-1.0.0.json",
+    ".scratch/data-preparation/ticket10-preimplementation-confirmation-20261015.md",
+    ".scratch/data-preparation/verification/ticket10-integer-authorization.md",
+    ".scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md",
+    ".scratch/data-preparation/issues/09-evidence-protocol.md",
+    ".scratch/data-preparation/ticket10-implementation-authorization-20261015.md",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/batches.jsonl",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/events.jsonl",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/materials.jsonl",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/policy.json",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/registrations.jsonl",
+    "data/sim/grain-A-1.1.15/sim-normal-1.0.0/snapshot.json",
+    "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+    "data/sim-reference/grain-A-1.1.15/sim-normal-1.0.0/r1-reference-1.0.0/check.json",
+    ".scratch/data-preparation/diagnostics/verify_sim10.py",
+    "data/sim-reference/grain-A-1.1.15/sim-normal-1.0.0/r1-reference-1.0.0/reference-r1.jsonl",
+    ".scratch/data-preparation/verification/ticket10-integer-spec.md",
+    ".scratch/data-preparation/verification/ticket10-integer-standards.md",
+    ".scratch/data-preparation/verification/ticket10-reproduction-d650eeec.json",
+    ".scratch/data-preparation/verification/ticket10-independent-full-check.json",
+    ".scratch/data-preparation/verification/ticket10-regression-cf97cb10.json",
+    ".scratch/data-preparation/verification/ticket10-protection-d650eeec.json"
+  ],
+  "conda_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "issue_status": "resolved",
+  "reviewed_code_unchanged": true,
+  "status": "passed",
+  "summary_links": 8,
+  "verified_bindings": 22
+}

@@ -32,4 +32,6 @@ $env:TEMP=$env:TMP
 
 本轮不建设异常场景、正式联合任务、模型工具或账本部署；不作食品安全、当前现实品质、真实独立机构佐证或样本充分性结论。正常SIM组件通过与正式联合实验完成分别报告。
 
-当前状态（2026-10-15）：候选2d3953b尚未被接受。S2存在policy组件records布尔值漏检，正常组件不能仅凭其passed宣称通过；一次集中修订后仍有Spec P2，已停止正式发布。真实1494包/正式参考/接受记录均未创建，详细证据见`.scratch/data-preparation/ticket10-blocked-sim-normal-1.0.0.md`。
+历史失败：2d3953b曾因S2整数漏检停止接受，原证据保留于ticket10-blocked-sim-normal-1.0.0.md。
+
+当前接受（2026-10-15）：本次授权修复后，sim-normal-1.0.0实际1494父商品/1494批/8964事件/11952材料/22410登记，独立R1 Supported=1494，其余0。226项完整回归、固定755f277两轴无阻塞、六稳定组件及参考新空根字节复现和上游保护通过；独立接受记录为records/sim/grain-A-1.1.15-sim-normal-1.0.0-acceptance.json。生成主记录仍保留pending_separate_record原字节，正式联合实验尚未完成。
