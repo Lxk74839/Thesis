@@ -1,0 +1,316 @@
+test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) ... 
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=True) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=2.0) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=-1) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=9007199254740992) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=True) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=2.0) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=-1) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=9007199254740992) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=True) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=12.0) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=-1) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=9007199254740992) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=True) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=16.0) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=-1) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=9007199254740992) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=True) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=30.0) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=-1) ... FAIL
+  test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=9007199254740992) ... FAIL
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=2.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 640, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='parents', value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=2.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 640, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='batches', value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=12.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 640, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='events', value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=16.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 640, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='materials', value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=30.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 640, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+======================================================================
+FAIL: test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) (field='registrations', value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 641, in test_main_counts_require_integer_types_before_expected_counts
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['full_counts'] != ['integer_type']
+
+First differing element 0:
+'full_counts'
+'integer_type'
+
+- ['full_counts']
++ ['integer_type']
+
+----------------------------------------------------------------------
+Ran 1 test in 1.885s
+
+FAILED (failures=20)

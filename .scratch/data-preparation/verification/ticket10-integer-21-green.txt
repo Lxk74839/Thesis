@@ -1,0 +1,6 @@
+test_binding_byte_counts_are_typed_before_length_or_digest_comparison (test_sim_normal.SimNormalTests.test_binding_byte_counts_are_typed_before_length_or_digest_comparison) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.684s
+
+OK

@@ -1,0 +1,482 @@
+test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) ... 
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='batches.jsonl', kind=None, path=('version',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='batches.jsonl', kind=None, path=('created_at_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('version',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('event_start_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('event_end_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('version',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('sequence',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('registered_at_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('version',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('issued_at_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='harvest_record', path=('facts', 'harvested_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='packaging_binding', path=('facts', 'packaged_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='packaging_binding', path=('facts', 'quantity_units')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'coverage_start_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'coverage_end_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('facts', 'sampled_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_report', path=('facts', 'test_started_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_report', path=('facts', 'test_completed_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_dispatch', path=('facts', 'departed_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_dispatch', path=('facts', 'quantity_units')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_receipt', path=('facts', 'arrived_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_receipt', path=('facts', 'quantity_units')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('facts', 'observed_at_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('facts', 'stock_units')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'segments', 0, 'start_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'segments', 0, 'end_ms')) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('valid_from_ms',)) ... FAIL
+  test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('valid_to_ms',)) ... FAIL
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='batches.jsonl', kind=None, path=('version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='batches.jsonl', kind=None, path=('created_at_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('event_start_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='events.jsonl', kind=None, path=('event_end_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('sequence',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='registrations.jsonl', kind=None, path=('registered_at_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('issued_at_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='harvest_record', path=('facts', 'harvested_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='packaging_binding', path=('facts', 'packaged_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='packaging_binding', path=('facts', 'quantity_units'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'coverage_start_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'coverage_end_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_sample', path=('facts', 'sampled_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_report', path=('facts', 'test_started_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='inspection_report', path=('facts', 'test_completed_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_dispatch', path=('facts', 'departed_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_dispatch', path=('facts', 'quantity_units'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_receipt', path=('facts', 'arrived_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='transport_receipt', path=('facts', 'quantity_units'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('facts', 'observed_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('facts', 'stock_units'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'segments', 0, 'start_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='storage_log', path=('facts', 'segments', 0, 'end_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('valid_from_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) (component='materials.jsonl', kind='retail_status', path=('valid_to_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 736, in test_original_and_receipt_integers_are_typed_before_relationship_checks
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+----------------------------------------------------------------------
+Ran 1 test in 3.046s
+
+FAILED (failures=28)

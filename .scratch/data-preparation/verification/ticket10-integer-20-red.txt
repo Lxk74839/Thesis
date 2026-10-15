@@ -1,0 +1,110 @@
+test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) ... 
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=True) ... FAIL
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=1.0) ... FAIL
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=-1) ... FAIL
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=9007199254740992) ... FAIL
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value='1') ... FAIL
+  test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=None) ... FAIL
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 600, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=1.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 602, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(check['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['primitive_type'] != ['integer_type']
+
+First differing element 0:
+'primitive_type'
+'integer_type'
+
+- ['primitive_type']
++ ['integer_type']
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=-1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 602, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(check['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['integer_range'] != ['integer_type']
+
+First differing element 0:
+'integer_range'
+'integer_type'
+
+- ['integer_range']
+?           ^^^^
+
++ ['integer_type']
+?           ^^^
+
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=9007199254740992)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 602, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(check['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['integer_range'] != ['integer_type']
+
+First differing element 0:
+'integer_range'
+'integer_type'
+
+- ['integer_range']
+?           ^^^^
+
++ ['integer_type']
+?           ^^^
+
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value='1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 602, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(check['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['snapshot_components'] != ['integer_type']
+
+First differing element 0:
+'snapshot_components'
+'integer_type'
+
+- ['snapshot_components']
++ ['integer_type']
+
+======================================================================
+FAIL: test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) (value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 602, in test_snapshot_record_counts_are_strict_integers_before_binding_equality
+    self.assertEqual(check['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['snapshot_components'] != ['integer_type']
+
+First differing element 0:
+'snapshot_components'
+'integer_type'
+
+- ['snapshot_components']
++ ['integer_type']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.829s
+
+FAILED (failures=6)

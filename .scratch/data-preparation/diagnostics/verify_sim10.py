@@ -107,14 +107,26 @@ def audit(record_path):
     check(record_path.parent.name == 'sim' and record_path.parent.parent.name == 'records', 'record_layout')
     generation_root = record_path.parents[2]
     record = parse(record_path.read_bytes())
+    for count in record['counts'].values():
+        integer(count)
+    integer(record['sim_verify_at_ms'])
     check(record['stage'] == 'sim_normal' and record['status'] == 'normal_sim_prepared', 'record_status')
     cv, sv = record['catalog_version'], record['sim_version']
     check(record_path.name == f'{cv}-{sv}.json', 'record_layout')
     keys(record['inputs'], 'config protocol_record protocol_draft catalog_record catalog')
     for source in record['inputs'].values():
         keys(source, 'path sha256 bytes')
+        integer(source['bytes'])
         check(binding(location(source['path'])) == source, 'input_binding')
     config = parse(location(record['inputs']['config']['path']).read_bytes())
+    integer(config['catalog_binding']['expected_parent_count'])
+    integer(config['facts']['quantity_units'])
+    for value in config['clock'].values():
+        integer(value)
+    for schedule in (config['events'], config['materials']):
+        for times in schedule.values():
+            for value in times.values():
+                integer(value)
     check(config['schema_version'] == 'sim-normal-config-1.0.0' and config['profile'] == 'normal_six_stage_v1'
           and config['version'] == sv and config['catalog_binding']['version'] == cv, 'config_version')
     check(record['protocol_version'] == config['protocol_binding']['version'] == 'sim-evidence-protocol-1.0.0', 'protocol_version')
@@ -128,6 +140,7 @@ def audit(record_path):
     core = {key: record[key] for key in ('stage', 'catalog_version', 'sim_version', 'profile', 'protocol_version', 'inputs', 'producer_sha256')}
     check(sha(wire(core)) == record['reuse_fingerprint_sha256'], 'fingerprint')
     catalog_record = parse(location(record['inputs']['catalog_record']['path']).read_bytes())
+    integer(catalog_record['counts']['included'])
     cb = config['catalog_binding']
     check(catalog_record['stage'] == 'catalog' and catalog_record['status'] == 'catalog_complete'
           and catalog_record['scope_version'] == cv, 'catalog_status')
@@ -142,6 +155,8 @@ def audit(record_path):
     keys(record['components'], 'batches.jsonl events.jsonl materials.jsonl registrations.jsonl policy.json snapshot.json')
     for name, spec in record['components'].items():
         keys(spec, 'path sha256 bytes records')
+        integer(spec['bytes'])
+        integer(spec['records'])
         expected_path = f'data/sim/{cv}/{sv}/{name}'
         check(spec['path'] == expected_path, 'component_path')
         raw = location(generation_root / spec['path']).read_bytes()
@@ -151,6 +166,25 @@ def audit(record_path):
         check(len(lines) == spec['records'], 'component_count')
         values = [parse(line) for line in lines]
         for line, obj in zip(lines, values):
+            if name in ('batches.jsonl', 'events.jsonl', 'materials.jsonl', 'registrations.jsonl'):
+                integer(obj['version'])
+                for field, value in obj.items():
+                    if field.endswith('_ms') or field == 'sequence':
+                        integer(value)
+            if name == 'materials.jsonl':
+                for field, value in obj['facts'].items():
+                    if field.endswith('_ms') or field in ('quantity_units', 'stock_units'):
+                        integer(value)
+                if obj['kind'] == 'storage_log':
+                    for segment in obj['facts']['segments']:
+                        integer(segment['start_ms'])
+                        integer(segment['end_ms'])
+            if name == 'snapshot.json':
+                for field in ('cutoff_sequence', 'sealed_at_ms', 'verify_at_ms'):
+                    integer(obj[field])
+                for component in obj['components'].values():
+                    integer(component['bytes'])
+                    integer(component['records'])
             primitives(obj)
             check(wire(obj) == line, 'canonical_bytes')
             extra = ' valid_from_ms valid_to_ms' if name == 'materials.jsonl' and obj['kind'] == 'retail_status' else ''

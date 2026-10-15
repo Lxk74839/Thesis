@@ -557,6 +557,199 @@ class SimNormalTests(unittest.TestCase):
         self.assertEqual(check['state_counts']['Supported'], 2)
         self.assertIn('normal_r1_facts:DEMO-P001', check['errors'])
 
+    def reseal_snapshot_fixture(self, record, snapshot):
+        """Rebind fixture envelopes without normalizing deliberately invalid field types."""
+        snapshot = dict(snapshot)
+        snapshot.pop('snapshot_id')
+        snapshot['snapshot_id'] = 'n_' + hashlib.sha256(b'Thesis-SIM-1:snapshot\0' + encoded(snapshot)).hexdigest()
+        path = self.output / record['components']['snapshot.json']['path']
+        path.write_bytes(encoded(snapshot) + b'\n')
+        record['snapshot_id'] = snapshot['snapshot_id']
+        record['components']['snapshot.json'].update(sha256=hashlib.sha256(path.read_bytes()).hexdigest(), bytes=path.stat().st_size)
+        core = {key: record[key] for key in ('stage', 'catalog_version', 'sim_version', 'profile',
+                                           'protocol_version', 'inputs', 'producer_sha256')}
+        record['reuse_fingerprint_sha256'] = hashlib.sha256(encoded(core)).hexdigest()
+        path = self.output / 'records/sim/grain-A-1.1.15-sim-normal-1.0.0.json'
+        path.write_bytes(encoded(record) + b'\n')
+
+    def test_resealed_boolean_policy_record_count_is_a_type_error(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        record = json.loads(generated.stdout)
+        snapshot = json.loads((self.output / record['components']['snapshot.json']['path']).read_bytes())
+        record['components']['policy.json']['records'] = True
+        snapshot['components']['policy.json']['records'] = True
+        self.reseal_snapshot_fixture(record, snapshot)
+        result = self.run_audit()
+        self.assertEqual(result.returncode, 2, result.stdout)
+        check = json.loads((self.root / 'audit/check.json').read_bytes())
+        self.assertEqual(check['errors'], ['integer_type'])
+        self.assertFalse((self.root / 'audit/reference-r1.jsonl').exists())
+
+    def test_snapshot_record_counts_are_strict_integers_before_binding_equality(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original_record = json.loads(generated.stdout)
+        original_snapshot = json.loads((self.output / original_record['components']['snapshot.json']['path']).read_bytes())
+        for index, value in enumerate((True, 1.0, -1, 2**53, '1', None)):
+            with self.subTest(value=value):
+                record, snapshot = copy.deepcopy(original_record), copy.deepcopy(original_snapshot)
+                snapshot['components']['policy.json']['records'] = value
+                self.reseal_snapshot_fixture(record, snapshot)
+                result = self.run_audit(audit=self.root / f'audit-{index}')
+                self.assertEqual(result.returncode, 2, result.stdout)
+                check = json.loads((self.root / f'audit-{index}/check.json').read_bytes())
+                self.assertEqual(check['errors'], ['integer_type'])
+
+    def test_binding_byte_counts_are_typed_before_length_or_digest_comparison(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original_record = json.loads(generated.stdout)
+        original_snapshot = json.loads((self.output / original_record['components']['snapshot.json']['path']).read_bytes())
+        index = 0
+        for place in ('input', 'component', 'snapshot'):
+            for value in (True, 'bad', None, -1, 2**53, 'integral_float'):
+                with self.subTest(place=place, value=value):
+                    record, snapshot = copy.deepcopy(original_record), copy.deepcopy(original_snapshot)
+                    target = (record['inputs']['protocol_record'] if place == 'input' else
+                              record['components']['policy.json'] if place == 'component' else
+                              snapshot['components']['policy.json'])
+                    target['bytes'] = float(target['bytes']) if value == 'integral_float' else value
+                    self.reseal_snapshot_fixture(record, snapshot)
+                    audit = self.root / f'bytes-audit-{index}'
+                    index += 1
+                    result = self.run_audit(audit=audit)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+
+    def test_main_counts_require_integer_types_before_expected_counts(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original = json.loads(generated.stdout)
+        snapshot = json.loads((self.output / original['components']['snapshot.json']['path']).read_bytes())
+        index = 0
+        for field in ('parents', 'batches', 'events', 'materials', 'registrations'):
+            for value in (True, float(original['counts'][field]), -1, 2**53):
+                with self.subTest(field=field, value=value):
+                    record = copy.deepcopy(original)
+                    record['counts'][field] = value
+                    self.reseal_snapshot_fixture(record, snapshot)
+                    audit = self.root / f'count-audit-{index}'
+                    index += 1
+                    result = self.run_audit(audit=audit)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+
+    def test_snapshot_cutoff_and_audit_times_reject_noninteger_types_first(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original_record = json.loads(generated.stdout)
+        original_snapshot = json.loads((self.output / original_record['components']['snapshot.json']['path']).read_bytes())
+        index = 0
+        for field in ('cutoff_sequence', 'sealed_at_ms', 'verify_at_ms', 'sim_verify_at_ms'):
+            original_value = original_record[field] if field == 'sim_verify_at_ms' else original_snapshot[field]
+            for value in (True, float(original_value), -1, 2**53):
+                with self.subTest(field=field, value=value):
+                    record, snapshot = copy.deepcopy(original_record), copy.deepcopy(original_snapshot)
+                    target = record if field == 'sim_verify_at_ms' else snapshot
+                    target[field] = value
+                    self.reseal_snapshot_fixture(record, snapshot)
+                    audit = self.root / f'time-audit-{index}'
+                    index += 1
+                    result = self.run_audit(audit=audit)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+
+    def test_bound_configuration_numbers_are_checked_before_semantic_equality(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original_record = json.loads(generated.stdout)
+        snapshot = json.loads((self.output / original_record['components']['snapshot.json']['path']).read_bytes())
+        paths = [('clock', 'verify_at_ms'), ('events', 'harvest', 'start_ms'),
+                 ('materials', 'inspection_sample', 'issued_at_ms'), ('facts', 'quantity_units'),
+                 ('catalog_binding', 'expected_parent_count')]
+        index = 0
+        for path in paths:
+            for variant in ('float', 'bool', 'negative', 'overflow'):
+                with self.subTest(path=path, variant=variant):
+                    config, record = copy.deepcopy(self.config), copy.deepcopy(original_record)
+                    target = config
+                    for key in path[:-1]:
+                        target = target[key]
+                    value = target[path[-1]]
+                    target[path[-1]] = {'float': float(value), 'bool': True, 'negative': -1, 'overflow': 2**53}[variant]
+                    self.write('inputs/config.json', config)
+                    record['inputs']['config'].update(sha256=hashlib.sha256(self.config_path.read_bytes()).hexdigest(),
+                                                       bytes=self.config_path.stat().st_size)
+                    self.reseal_snapshot_fixture(record, snapshot)
+                    audit = self.root / f'config-audit-{index}'
+                    index += 1
+                    result = self.run_audit(audit=audit)
+                    self.assertEqual(result.returncode, 2, result.stdout)
+                    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+
+    def test_original_and_receipt_integers_are_typed_before_relationship_checks(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        original = json.loads(generated.stdout)
+        files = {name: (self.output / spec['path']).read_bytes() for name, spec in original['components'].items()}
+        cases = [('batches.jsonl', None, (key,)) for key in ('version', 'created_at_ms')]
+        cases += [('events.jsonl', None, (key,)) for key in ('version', 'event_start_ms', 'event_end_ms')]
+        cases += [('registrations.jsonl', None, (key,)) for key in ('version', 'sequence', 'registered_at_ms')]
+        cases += [('materials.jsonl', 'inspection_sample', ('version',)),
+                  ('materials.jsonl', 'inspection_sample', ('issued_at_ms',))]
+        fact_fields = {
+            'harvest_record': ('harvested_at_ms',),
+            'packaging_binding': ('packaged_at_ms', 'quantity_units'),
+            'storage_log': ('coverage_start_ms', 'coverage_end_ms'),
+            'inspection_sample': ('sampled_at_ms',),
+            'inspection_report': ('test_started_at_ms', 'test_completed_at_ms'),
+            'transport_dispatch': ('departed_at_ms', 'quantity_units'),
+            'transport_receipt': ('arrived_at_ms', 'quantity_units'),
+            'retail_status': ('observed_at_ms', 'stock_units'),
+        }
+        cases += [('materials.jsonl', kind, ('facts', field)) for kind, fields in fact_fields.items() for field in fields]
+        cases += [('materials.jsonl', 'storage_log', ('facts', 'segments', 0, field)) for field in ('start_ms', 'end_ms')]
+        cases += [('materials.jsonl', 'retail_status', (field,)) for field in ('valid_from_ms', 'valid_to_ms')]
+        for index, (name, kind, path) in enumerate(cases):
+            with self.subTest(component=name, kind=kind, path=path):
+                for component, payload in files.items():
+                    (self.output / original['components'][component]['path']).write_bytes(payload)
+                record = copy.deepcopy(original)
+                rows = [json.loads(line) for line in files[name].splitlines()]
+                changed = next(row for row in rows if kind is None or row.get('kind') == kind)
+                target = changed
+                for key in path[:-1]:
+                    target = target[key]
+                target[path[-1]] = float(target[path[-1]])
+                (self.output / record['components'][name]['path']).write_bytes(b''.join(encoded(row) + b'\n' for row in rows))
+                if name != 'registrations.jsonl':
+                    key = {'batches.jsonl': 'sim_batch_id', 'events.jsonl': 'event_id', 'materials.jsonl': 'evidence_id'}[name]
+                    receipts = [json.loads(line) for line in files['registrations.jsonl'].splitlines()]
+                    receipt = next(row for row in receipts if row['target_id'] == changed[key])
+                    receipt['content_sha256'] = hashlib.sha256(encoded(changed)).hexdigest()
+                    (self.output / record['components']['registrations.jsonl']['path']).write_bytes(b''.join(encoded(row) + b'\n' for row in receipts))
+                self.reseal_fixture(record)
+                audit = self.root / f'original-audit-{index}'
+                result = self.run_audit(audit=audit)
+                self.assertEqual(result.returncode, 2, result.stdout)
+                self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+
+    def test_legal_integer_endpoints_keep_sim_policy_booleans_valid(self):
+        self.config['clock']['batch_created_at_ms'] = 0
+        self.config['clock']['retail_valid_to_ms'] = 2**53 - 1
+        self.write('inputs/config.json', self.config)
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0, generated.stdout)
+        record = json.loads(generated.stdout)
+        policy = json.loads((self.output / record['components']['policy.json']['path']).read_bytes())
+        rights = [subject['may_create_batch'] for subject in policy['issuers']]
+        self.assertEqual(rights, [True, False, False, False, False, False, False, False])
+        self.assertTrue(all(type(value) is bool for value in rights))
+        audited = self.run_audit()
+        self.assertEqual(audited.returncode, 0, audited.stdout + audited.stderr)
+        self.assertEqual(json.loads((self.root / 'audit/check.json').read_bytes())['state_counts']['Supported'], 2)
+
 
 if __name__ == '__main__':
     unittest.main()

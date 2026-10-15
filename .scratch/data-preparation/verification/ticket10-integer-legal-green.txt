@@ -1,0 +1,6 @@
+test_legal_integer_endpoints_keep_sim_policy_booleans_valid (test_sim_normal.SimNormalTests.test_legal_integer_endpoints_keep_sim_policy_booleans_valid) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.287s
+
+OK

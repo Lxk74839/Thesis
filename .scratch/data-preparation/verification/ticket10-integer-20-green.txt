@@ -1,0 +1,6 @@
+test_snapshot_record_counts_are_strict_integers_before_binding_equality (test_sim_normal.SimNormalTests.test_snapshot_record_counts_are_strict_integers_before_binding_equality) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.706s
+
+OK

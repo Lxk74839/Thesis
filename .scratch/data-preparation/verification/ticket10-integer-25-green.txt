@@ -1,0 +1,6 @@
+test_original_and_receipt_integers_are_typed_before_relationship_checks (test_sim_normal.SimNormalTests.test_original_and_receipt_integers_are_typed_before_relationship_checks) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 3.034s
+
+OK

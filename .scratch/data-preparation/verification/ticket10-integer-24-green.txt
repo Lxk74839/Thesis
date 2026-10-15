@@ -1,0 +1,6 @@
+test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.912s
+
+OK

@@ -51,7 +51,7 @@ def main():
     result = {'phase': args.phase, 'status': 'failed', 'git_head_sha': head,
               'program': info(Path(__file__)), 'runtime': {'conda_prefix': sys.prefix,
               'python_version': platform.python_version(), 'at_utc': datetime.now(timezone.utc).isoformat()}}
-    suffix = head[:8] if args.phase == 'regression' else 'final'
+    suffix = head[:8]
     report = EVIDENCE / f'ticket10-{args.phase}-{suffix}.json'
     try:
         if args.phase == 'regression':
@@ -118,6 +118,15 @@ def main():
                 raise ValueError('upstream_protection_failed')
             result.update(before_manifest=info(before_path), protected_files=len(before['files']),
                           byte_unchanged_files=unchanged, authorized_archival_changes=authorized, changed_protected_files=[])
+            followup_path = EVIDENCE / 'ticket10-integer-protection-before.json'
+            followup = json.loads(followup_path.read_bytes())
+            followup_changed = [name for name, expected in followup['files'].items()
+                                if not Path(name).is_file() or sha(Path(name)) != expected['sha256']
+                                or Path(name).stat().st_size != expected['bytes']]
+            result.update(followup_before_manifest=info(followup_path),
+                          followup_protected_files=len(followup['files']), followup_changed_files=followup_changed)
+            if followup_changed:
+                raise ValueError('followup_history_protection_failed')
         result['status'] = 'passed'
     except (ValueError, OSError, KeyError, TypeError) as exc:
         result['error'] = str(exc)

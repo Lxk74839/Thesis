@@ -1,0 +1,6 @@
+test_main_counts_require_integer_types_before_expected_counts (test_sim_normal.SimNormalTests.test_main_counts_require_integer_types_before_expected_counts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.687s
+
+OK

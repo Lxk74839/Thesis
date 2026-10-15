@@ -1,0 +1,6 @@
+test_snapshot_cutoff_and_audit_times_reject_noninteger_types_first (test_sim_normal.SimNormalTests.test_snapshot_cutoff_and_audit_times_reject_noninteger_types_first) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.719s
+
+OK

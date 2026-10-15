@@ -1,0 +1,6 @@
+test_resealed_boolean_policy_record_count_is_a_type_error (test_sim_normal.SimNormalTests.test_resealed_boolean_policy_record_count_is_a_type_error) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.266s
+
+OK

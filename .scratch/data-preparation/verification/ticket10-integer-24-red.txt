@@ -1,0 +1,316 @@
+test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) ... 
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='float') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='bool') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='negative') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='overflow') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='float') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='bool') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='negative') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='overflow') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='float') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='bool') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='negative') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='overflow') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='float') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='bool') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='negative') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='overflow') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='float') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='bool') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='negative') ... FAIL
+  test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='overflow') ... FAIL
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='float')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 688, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='bool')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['snapshot_time'] != ['integer_type']
+
+First differing element 0:
+'snapshot_time'
+'integer_type'
+
+- ['snapshot_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='negative')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['snapshot_time'] != ['integer_type']
+
+First differing element 0:
+'snapshot_time'
+'integer_type'
+
+- ['snapshot_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('clock', 'verify_at_ms'), variant='overflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['snapshot_time'] != ['integer_type']
+
+First differing element 0:
+'snapshot_time'
+'integer_type'
+
+- ['snapshot_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='float')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 688, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='bool')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['event_time'] != ['integer_type']
+
+First differing element 0:
+'event_time'
+'integer_type'
+
+- ['event_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='negative')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['event_time'] != ['integer_type']
+
+First differing element 0:
+'event_time'
+'integer_type'
+
+- ['event_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('events', 'harvest', 'start_ms'), variant='overflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['event_time'] != ['integer_type']
+
+First differing element 0:
+'event_time'
+'integer_type'
+
+- ['event_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='float')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 688, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='bool')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['material_registration_time'] != ['integer_type']
+
+First differing element 0:
+'material_registration_time'
+'integer_type'
+
+- ['material_registration_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='negative')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['material_registration_time'] != ['integer_type']
+
+First differing element 0:
+'material_registration_time'
+'integer_type'
+
+- ['material_registration_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('materials', 'inspection_sample', 'issued_at_ms'), variant='overflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['material_registration_time'] != ['integer_type']
+
+First differing element 0:
+'material_registration_time'
+'integer_type'
+
+- ['material_registration_time']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='float')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 688, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='bool')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['quantity_binding'] != ['integer_type']
+
+First differing element 0:
+'quantity_binding'
+'integer_type'
+
+- ['quantity_binding']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='negative')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['quantity_binding'] != ['integer_type']
+
+First differing element 0:
+'quantity_binding'
+'integer_type'
+
+- ['quantity_binding']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('facts', 'quantity_units'), variant='overflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['quantity_binding'] != ['integer_type']
+
+First differing element 0:
+'quantity_binding'
+'integer_type'
+
+- ['quantity_binding']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='float')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 688, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='bool')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['catalog_count'] != ['integer_type']
+
+First differing element 0:
+'catalog_count'
+'integer_type'
+
+- ['catalog_count']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='negative')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['catalog_count'] != ['integer_type']
+
+First differing element 0:
+'catalog_count'
+'integer_type'
+
+- ['catalog_count']
++ ['integer_type']
+
+======================================================================
+FAIL: test_bound_configuration_numbers_are_checked_before_semantic_equality (test_sim_normal.SimNormalTests.test_bound_configuration_numbers_are_checked_before_semantic_equality) (path=('catalog_binding', 'expected_parent_count'), variant='overflow')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 689, in test_bound_configuration_numbers_are_checked_before_semantic_equality
+    self.assertEqual(json.loads((audit / 'check.json').read_bytes())['errors'], ['integer_type'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['catalog_count'] != ['integer_type']
+
+First differing element 0:
+'catalog_count'
+'integer_type'
+
+- ['catalog_count']
++ ['integer_type']
+
+----------------------------------------------------------------------
+Ran 1 test in 1.943s
+
+FAILED (failures=20)
