@@ -1,0 +1,72 @@
+{
+  "actual_formal_counts": null,
+  "archived_at_utc": "2026-10-15T08:51:21.856366+00:00",
+  "base_sha": "755f277e9a971a517e8b4a5bb94e747b46f3f640",
+  "blocker_proof": {
+    "path": ".scratch/data-preparation/verification/ticket10-remaining-blocker-proof.json",
+    "sha256": "29be3d8b1bf5ba8959e025e8535492af3464da208040851c4d3a1fbe2bf4eace"
+  },
+  "candidate_sha": "2d3953b6223c33b694a26cbc7d86618d72bd8f0f",
+  "concentrated_revision_rounds": 1,
+  "formal_fresh_reproduction": "not_run",
+  "formal_generation": "not_run",
+  "formal_package_status": "not_built",
+  "formal_paths_absent": {
+    "acceptance_record": true,
+    "formal_reference": true,
+    "generation_record": true,
+    "normal_components": true
+  },
+  "ledger_deployment_status": "not_deployed",
+  "model_execution_status": "not_run",
+  "next_production_changes_require_separate_authorization": true,
+  "normal_component_status": "not_accepted",
+  "public_regression": {
+    "path": ".scratch/data-preparation/verification/ticket10-regression-2d3953b6.json",
+    "sha256": "36fd053f746d62bf2fb0233121861e63f7b1ce2887b544e8e512e3c136f9cb1e",
+    "status": "passed",
+    "tests": 218
+  },
+  "required_target_counts_not_actual": {
+    "batches": 1494,
+    "events": 8964,
+    "materials": 11952,
+    "parents": 1494,
+    "registrations": 22410
+  },
+  "reviews": {
+    "Spec": {
+      "blocking": 1,
+      "nonblocking": 0,
+      "path": ".scratch/data-preparation/verification/ticket10-spec-final.md",
+      "sha256": "eba251b2953da6c487a7a4de428b3f0a8f66ead291ffcb2a0a327ee0d4384c3f"
+    },
+    "Standards": {
+      "blocking": 0,
+      "nonblocking": 1,
+      "path": ".scratch/data-preparation/verification/ticket10-standards-final.md",
+      "sha256": "2ea7dadc9badadb43ecaeee71a56fbca0dabd859ad70632d56332323f28925fb"
+    }
+  },
+  "sample_sufficiency": "not_determined",
+  "schema_version": "ticket10-blocked-evidence-1.0.0",
+  "status": "not_accepted_after_one_concentrated_revision",
+  "unexpected_passed_check": {
+    "path": ".scratch/data-preparation/verification/ticket10-remaining-blocker-unexpected-passed-check.json",
+    "sha256": "8f3620343c42a8a7f7ff3796612087eb104c2d01655d6f8bd8d338f8aa7e9919"
+  },
+  "upstream_protection": {
+    "authorized_archival_changes": [
+      {
+        "after_sha256": "c1dca799ad5333c58ba98cb657a7dc544633dcc469e322cb335fd3c333a9b1c6",
+        "before_sha256": "62bbde5aa83e08acea3328dde73d9359941778b0acb40b6210df78b6eeb5233e",
+        "path": ".gitattributes",
+        "reason": "append byte attributes for new ticket10 files only"
+      }
+    ],
+    "byte_unchanged_files": 918,
+    "path": ".scratch/data-preparation/verification/ticket10-protection-final.json",
+    "sha256": "eed79cbc36ac273b9f96852bf56464ee35300313cfdd52387dc0a64ac027fcc9",
+    "status": "passed"
+  }
+}

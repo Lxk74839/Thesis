@@ -1,0 +1,31 @@
+{
+  "authorized_archival_changes": [
+    {
+      "after_sha256": "c1dca799ad5333c58ba98cb657a7dc544633dcc469e322cb335fd3c333a9b1c6",
+      "before_sha256": "62bbde5aa83e08acea3328dde73d9359941778b0acb40b6210df78b6eeb5233e",
+      "path": ".gitattributes",
+      "reason": "append byte attributes for new ticket10 files only"
+    }
+  ],
+  "before_manifest": {
+    "bytes": 217751,
+    "path": ".scratch/data-preparation/verification/ticket10-protection-before.json",
+    "sha256": "26a0b0fb86c257943acd41066abb2e84b04824d0b023a6db5a4327c3e0a959e0"
+  },
+  "byte_unchanged_files": 918,
+  "changed_protected_files": [],
+  "git_head_sha": "2d3953b6223c33b694a26cbc7d86618d72bd8f0f",
+  "phase": "protection",
+  "program": {
+    "bytes": 7189,
+    "path": ".scratch/data-preparation/verification/ticket10_delivery_checks.py",
+    "sha256": "7a1001f4a7fcac19cb37256c93b9977d7b262f527fe1dfaaf44c05477a627b1a"
+  },
+  "protected_files": 919,
+  "runtime": {
+    "at_utc": "2026-10-15T08:49:39.212320+00:00",
+    "conda_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+    "python_version": "3.13.16"
+  },
+  "status": "passed"
+}
