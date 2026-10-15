@@ -323,10 +323,11 @@ def build_package(staging, baseline, files, rows):
               'registration_rows': 0, 'change_action_rows': 0}
 
     def write(name, raw, count):
-        path = staging / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_bytes(raw)
-        require(path.read_bytes() == raw, 'publication_incomplete')
+        if staging is not None:
+            path = staging / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(raw)
+            require(path.read_bytes() == raw, 'publication_incomplete')
         info = {'bytes': len(raw), 'records': count, 'sha256': digest(raw)}
         components[name] = info
         return info
@@ -361,12 +362,13 @@ def build_package(staging, baseline, files, rows):
                 'base_snapshot_id': baseline['snapshot_id'], 'counts': totals, 'components': copy.deepcopy(components)}
     write('manifest.json', json_bytes(manifest) + b'\n', 1)
     private_raw = encoded_rows(plans)
-    (staging / 'private').mkdir()
-    (staging / 'private/mutation-plan.jsonl').write_bytes(private_raw)
+    if staging is not None:
+        (staging / 'private').mkdir()
+        (staging / 'private/mutation-plan.jsonl').write_bytes(private_raw)
     return components, totals, {'bytes': len(private_raw), 'records': 16, 'sha256': digest(private_raw)}
 
 
-def reuse_record(record_path, destination, output_root, relative, core, parent_count):
+def reuse_record(record_path, destination, output_root, relative, core, baseline, files, rows):
     try:
         old = read_json(record_path)
         require(set(old) == set(core) | {'schema_version', 'status', 'reuse_fingerprint_sha256', 'components',
@@ -381,19 +383,20 @@ def reuse_record(record_path, destination, output_root, relative, core, parent_c
             require(old[name] == expected)
         check_shape(old['counts'], {key: int for key in ('business_parents', 'business_batches', 'views',
             'request_profiles', 'batch_rows', 'event_rows', 'material_rows', 'registration_rows', 'change_action_rows')})
-        m = (parent_count + 9) // 10
-        require(old['counts'] == {'business_parents': parent_count, 'business_batches': parent_count,
-            'views': 16, 'request_profiles': 2, 'batch_rows': 16 * parent_count, 'event_rows': 96 * parent_count,
-            'material_rows': 128 * parent_count + 5 * m - 2 * (m // 2),
-            'registration_rows': 240 * parent_count + 10 * m - m // 2, 'change_action_rows': 4 * m})
+        expected, counts, private = build_package(None, baseline, files, rows)
+        require(old['counts'] == counts)
         check_shape(old['code_state'], {'git_head_sha': str, 'worktree_dirty': bool})
+        require(len(old['code_state']['git_head_sha']) == 40
+                and all(c in '0123456789abcdef' for c in old['code_state']['git_head_sha']))
         check_shape(old['runtime'], {'python_version': str, 'conda_prefix': str, 'generated_at_utc': str})
-        require(len(old['components']) == 115 and set(old['audit_private']) == {'mutation-plan.jsonl'})
+        require(set(old['components']) == set(expected) and set(old['audit_private']) == {'mutation-plan.jsonl'})
         specs = {**old['components'], 'private/mutation-plan.jsonl': old['audit_private']['mutation-plan.jsonl']}
+        expected['private/mutation-plan.jsonl'] = private
         expected_paths = set()
         for name, info in specs.items():
             check_shape(info, {'path': str, 'sha256': str, 'bytes': int, 'records': int})
             require(info['path'] == (relative / name).as_posix())
+            require({key: info[key] for key in ('sha256', 'bytes', 'records')} == expected[name])
             path = safe_path(output_root / info['path'])
             raw = path.read_bytes()
             require(len(raw) == info['bytes'] and digest(raw) == info['sha256']
@@ -429,7 +432,7 @@ def prepare_scenarios(sim_record, config_path, output_root):
                 'scenario_version': VERSION, 'protocol_version': PROTOCOL['version'], 'profile': config['profile'],
                 'inputs': inputs, 'producer_sha256': producers}
         if record_path.exists():
-            old = reuse_record(record_path, destination, output_root, relative, core, len(rows['batches.jsonl']))
+            old = reuse_record(record_path, destination, output_root, relative, core, baseline, files, rows)
             print(json_bytes(old).decode())
             return 0
         require(not destination.exists(), 'output_conflict')

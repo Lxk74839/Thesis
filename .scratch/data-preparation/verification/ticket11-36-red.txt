@@ -1,0 +1,14 @@
+E
+======================================================================
+ERROR: test_check_reports_outer_integrity_and_inner_rejection_observation_counts (tests.test_sim_scenarios.ScenarioTests.test_check_reports_outer_integrity_and_inner_rejection_observation_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 499, in test_check_reports_outer_integrity_and_inner_rejection_observation_counts
+    self.assertEqual(check['outer_integrity'], {'status': 'passed', 'public_components': 115, 'views': 16})
+                     ~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'outer_integrity'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.069s
+
+FAILED (errors=1)

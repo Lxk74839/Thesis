@@ -1,0 +1,18 @@
+{
+  "candidate": "ada0f6bdfbdfada78699ccde5164789f85376df2",
+  "runtime": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "results": [
+    {
+      "field": "test_scope",
+      "expected_state": "Supported",
+      "observed_exit_code": 0,
+      "observed_state": "Pending"
+    },
+    {
+      "field": "sample_id",
+      "expected_state": "Supported",
+      "observed_exit_code": 0,
+      "observed_state": "Pending"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+FF
+======================================================================
+FAIL: test_cross_scope_revision_actions_cannot_remove_the_original_claim (tests.test_sim_scenarios.ScenarioTests.test_cross_scope_revision_actions_cannot_remove_the_original_claim) (field='sample_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 630, in test_cross_scope_revision_actions_cannot_remove_the_original_claim
+    self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, 0, 'Pending') != (1, 0, 'Supported')
+
+First differing element 0:
+0
+1
+
+- (0, 0, 'Pending')
++ (1, 0, 'Supported')
+
+======================================================================
+FAIL: test_cross_scope_revision_actions_cannot_remove_the_original_claim (tests.test_sim_scenarios.ScenarioTests.test_cross_scope_revision_actions_cannot_remove_the_original_claim) (field='test_scope')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 630, in test_cross_scope_revision_actions_cannot_remove_the_original_claim
+    self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, 0, 'Pending') != (1, 0, 'Supported')
+
+First differing element 0:
+0
+1
+
+- (0, 0, 'Pending')
++ (1, 0, 'Supported')
+
+----------------------------------------------------------------------
+Ran 1 test in 1.774s
+
+FAILED (failures=2)

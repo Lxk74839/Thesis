@@ -1,0 +1,19 @@
+{
+  "candidate": "ada0f6bdfbdfada78699ccde5164789f85376df2",
+  "runtime": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "results": [
+    {
+      "probe": "resealed_changed_output",
+      "expected_exit_code": 2,
+      "observed_exit_code": 0,
+      "observed_status": "evidence_scenarios_prepared"
+    },
+    {
+      "probe": "unrequested_sample",
+      "expected_state": "Supported",
+      "observed_exit_code": 0,
+      "observed_state": "Conflict",
+      "stderr": ""
+    }
+  ]
+}

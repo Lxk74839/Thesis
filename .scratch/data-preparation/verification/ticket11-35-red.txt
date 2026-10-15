@@ -1,0 +1,41 @@
+FFFF
+======================================================================
+FAIL: test_request_versions_and_metadata_strings_are_validated_as_closed_types (tests.test_sim_scenarios.ScenarioTests.test_request_versions_and_metadata_strings_are_validated_as_closed_types) (mode='request_schema')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 939, in test_request_versions_and_metadata_strings_are_validated_as_closed_types
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_request_versions_and_metadata_strings_are_validated_as_closed_types (tests.test_sim_scenarios.ScenarioTests.test_request_versions_and_metadata_strings_are_validated_as_closed_types) (mode='git_head_integer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 939, in test_request_versions_and_metadata_strings_are_validated_as_closed_types
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_request_versions_and_metadata_strings_are_validated_as_closed_types (tests.test_sim_scenarios.ScenarioTests.test_request_versions_and_metadata_strings_are_validated_as_closed_types) (mode='git_head_format')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 928, in test_request_versions_and_metadata_strings_are_validated_as_closed_types
+    self.assertEqual(reused.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_request_versions_and_metadata_strings_are_validated_as_closed_types (tests.test_sim_scenarios.ScenarioTests.test_request_versions_and_metadata_strings_are_validated_as_closed_types) (mode='denial_target_integer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 939, in test_request_versions_and_metadata_strings_are_validated_as_closed_types
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 2.946s
+
+FAILED (failures=4)

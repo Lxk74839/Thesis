@@ -454,6 +454,21 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual(damaged.read_bytes(), wrong_bytes)
         self.assertEqual(record_path.read_bytes(), saved)
 
+    def test_resealed_changed_outputs_cannot_be_reused_as_the_fixed_profile(self):
+        self.fixture()
+        self.prepared()
+        materials = self.rows('V00', 'materials.jsonl')
+        report = next(r for r in materials if r['parent_asin'] == 'PX3' and r['kind'] == 'inspection_report')
+        report['facts']['conclusion'] = 'fail'
+        self.replace_rows('V00', 'materials.jsonl', materials)
+        self.rebind_original('V00', report)
+        self.reseal()
+        saved = self.capture_public()
+        result = self.cli()
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertEqual(json.loads(result.stdout)['error']['code'], 'output_conflict')
+        self.assertEqual(self.capture_public(), saved)
+
     def test_independent_reference_rederives_normal_support_and_rejects_container_damage(self):
         self.fixture()
         self.prepared()
@@ -475,6 +490,18 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual(json.loads((failed_root / 'check.json').read_bytes())['status'], 'failed')
         self.assertFalse((failed_root / 'reference.jsonl').exists())
 
+    def test_check_reports_outer_integrity_and_inner_rejection_observation_counts(self):
+        self.fixture()
+        self.prepared()
+        result, audit = self.audit()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        check = json.loads((audit / 'check.json').read_bytes())
+        self.assertEqual(check['outer_integrity'], {'status': 'passed', 'public_components': 115, 'views': 16})
+        self.assertEqual(check['rejection_count_unit'], 'clause_trace_occurrence')
+        for reason in ('unavailable', 'digest_mismatch', 'access_denied', 'revoked'):
+            self.assertEqual(check['rejection_reason_counts'][reason], 2)
+        self.assertTrue(all(type(v) is int and v > 0 for v in check['rejection_reason_counts'].values()))
+
     def test_reference_distinguishes_missing_invalid_negative_and_independent_conflict(self):
         self.fixture()
         self.prepared()
@@ -490,6 +517,50 @@ class ScenarioTests(unittest.TestCase):
         digest_clause = refs['V03', 'R1_SIM_Q1', 'PX3']['clauses'][0]
         self.assertEqual((digest_clause['s'], digest_clause['r']), (0, 0))
         self.assertIn('digest_mismatch', [r['reason'] for r in digest_clause['rejected']])
+
+    def test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for other_event in (False, True):
+            with self.subTest(other_event=other_event):
+                self.restore_public(saved)
+                materials = self.rows('V00', 'materials.jsonl')
+                receipts = self.rows('V00', 'registrations.jsonl')
+                sample = copy.deepcopy(next(r for r in materials if r['parent_asin'] == 'PX3' and r['kind'] == 'inspection_sample'))
+                report = copy.deepcopy(self.report('V00'))
+                event_id = sample['event_id']
+                if other_event:
+                    events = self.rows('V00', 'events.jsonl')
+                    event = copy.deepcopy(next(r for r in events if r['event_id'] == event_id))
+                    receipt = copy.deepcopy(next(r for r in receipts if r['target_id'] == event_id))
+                    event_id = event['event_id'] = 'e_' + hashlib.sha256(b'other-inspection-event').hexdigest()
+                    receipt.update(target_id=event_id, event_id=event_id, content_sha256=hashlib.sha256(wire(event)).hexdigest(),
+                                   registration_id='g_' + hashlib.sha256(b'other-event-receipt').hexdigest())
+                    receipts.append(receipt)
+                    self.replace_rows('V00', 'events.jsonl', events + [event])
+                for index, original in enumerate((sample, report)):
+                    receipt = copy.deepcopy(next(r for r in receipts if r['target_id'] == original['evidence_id']))
+                    original.update(evidence_id='d_' + hashlib.sha256(f'other-sample-evidence-{index}'.encode()).hexdigest(),
+                                    event_id=event_id)
+                    original['facts']['sample_id'] = 'another-sample'
+                    if original['kind'] == 'inspection_report':
+                        original['facts']['conclusion'] = 'fail'
+                    receipt.update(target_id=original['evidence_id'], event_id=event_id,
+                        content_sha256=hashlib.sha256(wire(original)).hexdigest(),
+                        registration_id='g_' + hashlib.sha256(f'other-sample-receipt-{index}'.encode()).hexdigest())
+                    materials.append(original)
+                    receipts.append(receipt)
+                self.replace_rows('V00', 'materials.jsonl', materials)
+                self.replace_rows('V00', 'registrations.jsonl', receipts)
+                self.order_receipts('V00')
+                self.reseal()
+                result, audit = self.audit('other-sample-' + str(other_event))
+                self.assertEqual(result.returncode, 0, result.stdout)
+                refs = self.references(audit)
+                for profile in ('R1_SIM_Q1', 'R1_AND_R5_SIM_Q1_ON_SALE'):
+                    clause = refs['V00', profile, 'PX3']['clauses'][0]
+                    self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
 
     def test_reference_requires_authorized_sampling_and_compatible_test_times(self):
         self.fixture()
@@ -551,6 +622,27 @@ class ScenarioTests(unittest.TestCase):
         row = self.references(missing_root)['V09', 'R1_SIM_Q1', 'PX3']
         self.assertEqual(row['candidate_state'], 'Pending')
         self.assertIn(2, [head['head_version'] for head in row['clauses'][0]['version_heads']])
+
+    def test_cross_scope_revision_actions_cannot_remove_the_original_claim(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for field, value in (('sample_id', 'another-sample'), ('test_scope', ['SIM-OTHER'])):
+            with self.subTest(field=field):
+                self.restore_public(saved)
+                rows = self.rows('V09', 'materials.jsonl')
+                report = next(r for r in rows if r['parent_asin'] == 'PX3' and r['kind'] == 'inspection_report' and r['version'] == 2)
+                report['facts'][field] = value
+                self.replace_rows('V09', 'materials.jsonl', rows)
+                self.rebind_original('V09', report)
+                self.reseal()
+                result, audit = self.audit('cross-scope-' + field)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                clause = self.references(audit)['V09', 'R1_SIM_Q1', 'PX3']['clauses'][0]
+                self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
+                head = next(h for h in clause['version_heads'] if h['evidence_id'] == report['evidence_id'])
+                self.assertEqual(head['head_version'], 1)
+                self.assertIn('revision_scope_mismatch', [a['reason'] for a in head['actions']])
 
     def test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans(self):
         self.fixture()
@@ -826,6 +918,39 @@ class ScenarioTests(unittest.TestCase):
                              (fresh_root / fresh_record['components'][name]['path']).read_bytes())
         for filename in ('prepare_data.py', 'sim_scenarios.py'):
             self.assertNotIn(b'PRIVATE_TARGET', (PROJECT / filename).read_bytes())
+
+    def test_request_versions_and_metadata_strings_are_validated_as_closed_types(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for index, mode in enumerate(('request_schema', 'git_head_integer', 'git_head_format', 'denial_target_integer')):
+            with self.subTest(mode=mode):
+                self.restore_public(saved)
+                if mode == 'request_schema':
+                    requests = [json.loads(line) for line in (self.package / 'requests.jsonl').read_bytes().splitlines()]
+                    requests[0]['schema_version'] = 'sim-scenario-request-2.0.0'
+                    self.write(self.package / 'requests.jsonl', requests, rows=True)
+                    self.reseal()
+                elif mode.startswith('git_head'):
+                    record_path = self.output / 'records/sim-scenarios/grain-A-1.1.15-sim-scenarios-1.0.0.json'
+                    record = json.loads(record_path.read_bytes())
+                    record['code_state']['git_head_sha'] = 0 if mode.endswith('integer') else 'not-a-commit'
+                    self.write(record_path, record)
+                    reused = self.cli()
+                    self.assertEqual(reused.returncode, 2)
+                    self.assertEqual(json.loads(reused.stdout)['error']['code'], 'output_conflict')
+                else:
+                    policy = self.rows('V11', 'policy.json')[0]
+                    policy['read_denials'][0]['target_id'] = 0
+                    policy.pop('policy_id')
+                    policy['policy_id'] = 'p_' + hashlib.sha256(wire(policy)).hexdigest()
+                    self.replace_rows('V11', 'policy.json', [policy])
+                    self.snapshot_update('V11', policy_id=policy['policy_id'])
+                    self.reseal()
+                result, audit = self.audit('metadata-types-' + str(index))
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(json.loads((audit / 'check.json').read_bytes())['status'], 'failed')
+                self.assertFalse((audit / 'reference.jsonl').exists())
 
     def test_unknown_wire_schema_fails_but_untrusted_receipts_and_unknown_values_are_pending(self):
         self.fixture()

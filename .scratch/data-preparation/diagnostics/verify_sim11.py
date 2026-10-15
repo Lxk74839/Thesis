@@ -106,7 +106,8 @@ def validate_row(filename, row):
     primitives(row)
     insist(type(row) is dict, 'record_object')
     version_tags = {'batches.jsonl': 'sim-batch-1.0.0', 'events.jsonl': 'sim-event-1.0.0',
-                    'materials.jsonl': 'sim-material-1.0.0', 'change-actions.jsonl': 'sim-change-action-1.0.0'}
+                    'materials.jsonl': 'sim-material-1.0.0', 'change-actions.jsonl': 'sim-change-action-1.0.0',
+                    'requests.jsonl': 'sim-scenario-request-1.0.0'}
     if filename in version_tags:
         insist(row.get('schema_version') == version_tags[filename], 'unsupported_schema')
     if filename == 'registrations.jsonl':
@@ -217,6 +218,8 @@ def public_package(record_path):
         and record['protocol_version'] == 'sim-evidence-protocol-1.0.0' and record['profile'] == 'paired_evidence_views_v1', 'record_version')
     fields(record['counts'], 'business_parents business_batches views request_profiles batch_rows event_rows material_rows registration_rows change_action_rows')
     fields(record['code_state'], 'git_head_sha worktree_dirty')
+    atom_strings(record['code_state'], ('worktree_dirty',))
+    insist(re.fullmatch('[0-9a-f]{40}', record['code_state']['git_head_sha']) is not None, 'git_head_format')
     fields(record['runtime'], 'python_version conda_prefix generated_at_utc')
     atom_strings(record['runtime'])
     fields(record['producer_sha256'], 'prepare_data.py sim_scenarios.py sim_normal.py')
@@ -241,6 +244,21 @@ def public_package(record_path):
     base_policy_raw = location(base_path.parents[2] / base_policy_spec['path']).read_bytes()
     insist(sha(base_policy_raw) == base_policy_spec['sha256'], 'base_policy_binding')
     base_policy = decode(base_policy_raw)
+    base = {name: read_bound(base_path.parents[2], base_record['components'][name])[0]
+            for name in ('batches.jsonl', 'events.jsonl', 'materials.jsonl')}
+    request_bindings = {}
+    for batch in base['batches.jsonl']:
+        scope = batch['parent_asin'], batch['sim_batch_id']
+        binding = {}
+        for stage in ('inspection', 'retail'):
+            events = [r for r in base['events.jsonl'] if (r['parent_asin'], r['sim_batch_id']) == scope and r['stage'] == stage]
+            insist(len(events) == 1, 'baseline_request_scope')
+            binding[stage] = events[0]['event_id']
+        samples = [r['facts']['sample_id'] for r in base['materials.jsonl'] if r['kind'] == 'inspection_sample'
+            and (r['parent_asin'], r['sim_batch_id']) == scope and r['event_id'] == binding['inspection']]
+        insist(len(set(samples)) == 1, 'baseline_request_scope')
+        binding['sample_id'] = samples[0]
+        request_bindings[scope] = binding
     relative = Path('data/sim-scenarios') / record['catalog_version'] / record['scenario_version']
     parsed, originals = {}, {}
     for name, spec in record['components'].items():
@@ -315,6 +333,7 @@ def public_package(record_path):
             insist(policy['policy_id'] == 'p_' + sha(canonical({k: v for k, v in policy.items() if k != 'policy_id'})), 'policy_id')
             for denial in policy['read_denials']:
                 fields(denial, 'principal_id target_kind target_id version')
+                atom_strings(denial)
                 integer(denial['version'], positive=True)
                 insist(denial['principal_id'] == base_policy['read_principal_id'] and denial['target_kind'] == 'material', 'denial_scope')
         insist(sha(originals[prefix + 'snapshot.json'][0] + b'\n') == view['snapshot_sha256'], 'snapshot_binding')
@@ -344,7 +363,7 @@ def public_package(record_path):
                 ('change_action_rows', 'change-actions.jsonl')]:
             counts[field] += len(data[filename])
     insist(counts == record['counts'], 'actual_counts')
-    return record, parsed['requests.jsonl'], views, record['components']['manifest.json']['sha256']
+    return record, parsed['requests.jsonl'], views, record['components']['manifest.json']['sha256'], request_bindings
 
 
 def state(support, refutation, complete):
@@ -356,8 +375,9 @@ def state(support, refutation, complete):
 
 
 class EvidenceView:
-    def __init__(self, snapshot, data, originals, prefix):
+    def __init__(self, snapshot, data, originals, prefix, request_bindings):
         self.snapshot, self.data, self.prefix = snapshot, data, prefix
+        self.request_bindings = request_bindings
         self.objects, self.receipts, self.scopes, self.cache = {}, defaultdict(list), defaultdict(set), {}
         self.head_cache, self.actions_by_target = {}, defaultdict(list)
         self.events = defaultdict(list)
@@ -501,7 +521,25 @@ class EvidenceView:
                     if previous is None or previous >= action['target_version'] or previous not in records:
                         observation = {**observation, 'reason': 'invalid_revision_chain'}
                     else:
-                        edges[previous].add(action['target_version'])
+                        known = []
+                        for version in (previous, action['target_version']):
+                            key = 'material', identity, version
+                            _, material_observation = self.original(key)
+                            if material_observation['checks']['digest_match'] is True:
+                                known.append(self.objects[key][0])
+                        same_scope = True
+                        if len(known) == 2:
+                            old, new = known
+                            same_scope = all(old[field] == new[field] for field in
+                                ('parent_asin', 'sim_batch_id', 'event_id', 'kind', 'issuer_id', 'temporal_mode'))
+                            if same_scope and old['kind'] in ('inspection_sample', 'inspection_report'):
+                                same_scope = old['facts']['sample_id'] == new['facts']['sample_id']
+                            if same_scope and old['kind'] == 'inspection_report':
+                                same_scope = set(old['facts']['test_scope']) == set(new['facts']['test_scope'])
+                        if not same_scope:
+                            observation = {**observation, 'reason': 'revision_scope_mismatch'}
+                        else:
+                            edges[previous].add(action['target_version'])
                 elif action['action_type'] == 'revokes' and action['supersedes_version'] is None:
                     revoked.add(action['target_version'])
                 else:
@@ -526,7 +564,9 @@ class EvidenceView:
     def claim(self, clause, batch):
         is_inspection = clause['predicate'] == 'inspection_report_conclusion'
         stage = 'inspection' if is_inspection else 'retail'
-        events = self.events[batch['parent_asin'], batch['sim_batch_id'], stage]
+        binding = self.request_bindings[batch['parent_asin'], batch['sim_batch_id']]
+        events = [r for r in self.events[batch['parent_asin'], batch['sim_batch_id'], stage]
+                  if r['event_id'] == binding[stage]]
         relevant = self.scopes[batch['parent_asin'], batch['sim_batch_id'], events[0]['event_id']] if len(events) == 1 else set()
         accepted, rejected, combinations, heads = [], [], [], {}
         usable, reads_complete, versions_complete = [], True, True
@@ -561,6 +601,9 @@ class EvidenceView:
                 rejected.append(observation)
                 reads_complete &= observation['reason'] not in ('unavailable', 'access_denied')
             elif row['kind'] in (('inspection_sample', 'inspection_report') if is_inspection else ('retail_status',)):
+                if is_inspection and row['facts']['sample_id'] != binding['sample_id']:
+                    rejected.append({**observation, 'reason': 'outside_request_sample'})
+                    continue
                 usable.append((row, observation))
                 accepted.append(observation)
         support, refutation = False, False
@@ -597,10 +640,10 @@ class EvidenceView:
                 'combinations': combinations, 'version_heads': [heads[key] for key in sorted(heads)]}
 
 
-def calculate(requests, views, manifest_sha):
+def calculate(requests, views, manifest_sha, request_bindings):
     result = []
     for view, snapshot, data, originals in views:
-        context = EvidenceView(snapshot, data, originals, 'views/' + view['view_id'] + '/')
+        context = EvidenceView(snapshot, data, originals, 'views/' + view['view_id'] + '/', request_bindings)
         for request in requests:
             for batch in data['batches.jsonl']:
                 clauses = [context.claim(c, batch) for c in request['necessary_clauses']]
@@ -635,11 +678,18 @@ def main():
         insist(not target.exists(), 'audit_root_exists')
         target.mkdir(parents=True)
         audit_root = target
-        record, requests, views, manifest_sha = public_package(record_path)
-        reference = calculate(requests, views, manifest_sha)
+        record, requests, views, manifest_sha, request_bindings = public_package(record_path)
+        reference = calculate(requests, views, manifest_sha, request_bindings)
         raw = b''.join(canonical(row) + b'\n' for row in reference)
         (audit_root / 'reference.jsonl').write_bytes(raw)
+        rejections = Counter()
+        for row in reference:
+            for clause in row['clauses']:
+                observations = clause['rejected'] + [action for head in clause['version_heads'] for action in head['actions']]
+                rejections.update(item['reason'] for item in observations if item.get('reason') is not None)
         report = {'status': 'scenario_reference_complete', 'errors': [], 'reference_rows': len(reference),
+            'outer_integrity': {'status': 'passed', 'public_components': len(record['components']), 'views': len(views)},
+            'rejection_count_unit': 'clause_trace_occurrence', 'rejection_reason_counts': dict(sorted(rejections.items())),
             'state_counts': dict(Counter(row['candidate_state'] for row in reference)),
             'reference_sha256': sha(raw), 'reference_rule_version': 'scenario-reference-1.0.0',
             'program_sha256': sha(Path(__file__).read_bytes()), 'public_fact_manifest_sha256': manifest_sha,

@@ -1,0 +1,37 @@
+FF
+======================================================================
+FAIL: test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample (tests.test_sim_scenarios.ScenarioTests.test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample) (other_event=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 551, in test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample
+    self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (1, 1, 'Conflict') != (1, 0, 'Supported')
+
+First differing element 1:
+1
+0
+
+- (1, 1, 'Conflict')
++ (1, 0, 'Supported')
+
+======================================================================
+FAIL: test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample (tests.test_sim_scenarios.ScenarioTests.test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample) (other_event=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 551, in test_reference_keeps_the_request_bound_to_the_baseline_event_and_sample
+    self.assertEqual((clause['s'], clause['r'], clause['state']), (1, 0, 'Supported'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, 0, 'Pending') != (1, 0, 'Supported')
+
+First differing element 0:
+0
+1
+
+- (0, 0, 'Pending')
++ (1, 0, 'Supported')
+
+----------------------------------------------------------------------
+Ran 1 test in 1.749s
+
+FAILED (failures=2)

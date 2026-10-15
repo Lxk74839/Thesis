@@ -1,0 +1,18 @@
+{
+  "candidate": "ada0f6bdfbdfada78699ccde5164789f85376df2",
+  "runtime": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "results": [
+    {
+      "mode": "request_schema",
+      "expected_exit_code": 2,
+      "observed_exit_code": 0,
+      "reference_written": true
+    },
+    {
+      "mode": "git_head_type",
+      "expected_exit_code": 2,
+      "observed_exit_code": 0,
+      "reference_written": true
+    }
+  ]
+}
