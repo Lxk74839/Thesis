@@ -1,0 +1,67 @@
+test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) ... 
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='profile') ... FAIL
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='unknown_config') ... FAIL
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='clean_bytes') ... FAIL
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='erratum') ... FAIL
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='split_acceptance') ... FAIL
+  test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='split_clean_binding') ... FAIL
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='profile')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='unknown_config')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='clean_bytes')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='erratum')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='split_acceptance')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) (kind='split_clean_binding')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 199, in test_04_only_the_approved_bound_upstream_chain_is_consumed
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.736s
+
+FAILED (failures=6)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_04 -v` failed. (See above for error)

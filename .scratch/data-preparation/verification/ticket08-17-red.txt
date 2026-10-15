@@ -1,0 +1,16 @@
+test_17_receipt_reports_scope_loss_and_bound_private_provenance (test_preference_tasks.PreferenceTasksTests.test_17_receipt_reports_scope_loss_and_bound_private_provenance) ... ERROR
+
+======================================================================
+ERROR: test_17_receipt_reports_scope_loss_and_bound_private_provenance (test_preference_tasks.PreferenceTasksTests.test_17_receipt_reports_scope_loss_and_bound_private_provenance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 457, in test_17_receipt_reports_scope_loss_and_bound_private_provenance
+    self.assertEqual(report['model_input_status'], 'prepared_not_executed')
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'model_input_status'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.166s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_17 -v` failed. (See above for error)

@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", required=True, type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -27,7 +27,24 @@ def main():
     parser.add_argument("--cleaning-record", type=Path)
     parser.add_argument("--split-config", type=Path)
     parser.add_argument("--group-refs", type=Path)
+    parser.add_argument("--split-record", type=Path)
+    parser.add_argument("--task-config", type=Path)
+    parser.add_argument("--access-probe", type=Path)
     args = parser.parse_args()
+    if args.stage == "preference_tasks":
+        from preference_tasks import prepare_tasks, TaskError
+        try:
+            if args.cleaning_record is None or args.split_record is None or args.task_config is None:
+                raise TaskError('invalid_task')
+            return prepare_tasks(args.cleaning_record, args.split_record, args.task_config,
+                                 args.output_root, args.access_probe)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            code = exc.code if isinstance(exc, TaskError) else 'invalid_task'
+            print(json.dumps({"stage": "preference_tasks",
+                              "status": "needs_confirmation" if code == 'unapproved_protocol' else "preference_tasks_incomplete",
+                              "error": {"code": code},
+                              "affected": exc.counts if isinstance(exc, TaskError) else {}}))
+            return 2
     root = args.output_root.resolve()
     project = Path(__file__).resolve().parent
     if root != project and project not in root.parents:

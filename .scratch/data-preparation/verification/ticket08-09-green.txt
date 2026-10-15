@@ -1,0 +1,6 @@
+test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.543s
+
+OK

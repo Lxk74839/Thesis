@@ -1,0 +1,16 @@
+test_10_private_hmac_identity_and_target_changes_do_not_change_model_data (test_preference_tasks.PreferenceTasksTests.test_10_private_hmac_identity_and_target_changes_do_not_change_model_data) ... FAIL
+
+======================================================================
+FAIL: test_10_private_hmac_identity_and_target_changes_do_not_change_model_data (test_preference_tasks.PreferenceTasksTests.test_10_private_hmac_identity_and_target_changes_do_not_change_model_data)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 317, in test_10_private_hmac_identity_and_target_changes_do_not_change_model_data
+    self.assertRegex(first_id, '^[0-9a-f]{64}$')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Regex didn't match: '^[0-9a-f]{64}$' not found in 'root-0000'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.146s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_10 -v` failed. (See above for error)

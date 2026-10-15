@@ -1,0 +1,17 @@
+test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift (test_preference_tasks.PreferenceTasksTests.test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift) ... 
+  test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift (test_preference_tasks.PreferenceTasksTests.test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift) (kind='changed_split') ... FAIL
+
+======================================================================
+FAIL: test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift (test_preference_tasks.PreferenceTasksTests.test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift) (kind='changed_split')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 432, in test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.438s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_15 -v` failed. (See above for error)

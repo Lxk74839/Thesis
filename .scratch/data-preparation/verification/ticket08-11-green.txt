@@ -1,0 +1,6 @@
+test_11_real_api_channel_constructs_requests_and_denies_host_capabilities (test_preference_tasks.PreferenceTasksTests.test_11_real_api_channel_constructs_requests_and_denies_host_capabilities) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.288s
+
+OK

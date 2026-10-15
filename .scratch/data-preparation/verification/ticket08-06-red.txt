@@ -1,0 +1,23 @@
+test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order (test_preference_tasks.PreferenceTasksTests.test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order) ... FAIL
+
+======================================================================
+FAIL: test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order (test_preference_tasks.PreferenceTasksTests.test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 230, in test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order
+    self.assertEqual(task['candidate_parent_asins'], ['P004', 'P005', 'P006'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != ['P004', 'P005', 'P006']
+
+Second list contains 3 additional elements.
+First extra element 0:
+'P004'
+
+- []
++ ['P004', 'P005', 'P006']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.144s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_06 -v` failed. (See above for error)

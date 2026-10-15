@@ -1,0 +1,6 @@
+test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.921s
+
+OK

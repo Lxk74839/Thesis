@@ -1,0 +1,19 @@
+test_02_unapproved_profile_never_publishes (test_preference_tasks.PreferenceTasksTests.test_02_unapproved_profile_never_publishes) ... FAIL
+
+======================================================================
+FAIL: test_02_unapproved_profile_never_publishes (test_preference_tasks.PreferenceTasksTests.test_02_unapproved_profile_never_publishes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 162, in test_02_unapproved_profile_never_publishes
+    self.assertEqual(json.loads(result.stdout)['status'], 'needs_confirmation')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'preference_tasks_incomplete' != 'needs_confirmation'
+- preference_tasks_incomplete
++ needs_confirmation
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.199s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_02 -v` failed. (See above for error)

@@ -1,0 +1,6 @@
+test_08_finite_text_retains_history_and_records_private_trace_without_truncation (test_preference_tasks.PreferenceTasksTests.test_08_finite_text_retains_history_and_records_private_trace_without_truncation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.293s
+
+OK

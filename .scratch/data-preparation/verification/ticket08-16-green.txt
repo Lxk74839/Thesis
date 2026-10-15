@@ -1,0 +1,6 @@
+test_16_path_escape_and_junction_do_not_gain_output_permissions (test_preference_tasks.PreferenceTasksTests.test_16_path_escape_and_junction_do_not_gain_output_permissions) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.374s
+
+OK

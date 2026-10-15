@@ -1,0 +1,6 @@
+test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff (test_preference_tasks.PreferenceTasksTests.test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.315s
+
+OK

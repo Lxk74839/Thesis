@@ -1,0 +1,6 @@
+test_10_private_hmac_identity_and_target_changes_do_not_change_model_data (test_preference_tasks.PreferenceTasksTests.test_10_private_hmac_identity_and_target_changes_do_not_change_model_data) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.561s
+
+OK

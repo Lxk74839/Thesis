@@ -1,0 +1,6 @@
+test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.816s
+
+OK

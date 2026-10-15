@@ -1,0 +1,34 @@
+test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff (test_preference_tasks.PreferenceTasksTests.test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff) ... FAIL
+
+======================================================================
+FAIL: test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff (test_preference_tasks.PreferenceTasksTests.test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 247, in test_07_background_excludes_every_evaluation_account_and_uses_each_cutoff
+    self.assertEqual(tasks[ids[self.users[0]]]['background_statistics'], expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [{'parent_asin': 'P004', 'interaction_coun[247 chars]: 0}]
+
+Second list contains 3 additional elements.
+First extra element 0:
+{'parent_asin': 'P004', 'interaction_count': 2, 'account_count': 2, 'positive_account_count': 1}
+
+- []
++ [{'account_count': 2,
++   'interaction_count': 2,
++   'parent_asin': 'P004',
++   'positive_account_count': 1},
++  {'account_count': 1,
++   'interaction_count': 1,
++   'parent_asin': 'P005',
++   'positive_account_count': 1},
++  {'account_count': 0,
++   'interaction_count': 0,
++   'parent_asin': 'P006',
++   'positive_account_count': 0}]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.149s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_07 -v` failed. (See above for error)

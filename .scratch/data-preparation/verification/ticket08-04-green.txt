@@ -1,0 +1,6 @@
+test_04_only_the_approved_bound_upstream_chain_is_consumed (test_preference_tasks.PreferenceTasksTests.test_04_only_the_approved_bound_upstream_chain_is_consumed) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.743s
+
+OK

@@ -1,0 +1,24 @@
+test_16_path_escape_and_junction_do_not_gain_output_permissions (test_preference_tasks.PreferenceTasksTests.test_16_path_escape_and_junction_do_not_gain_output_permissions) ... ERROR
+
+======================================================================
+ERROR: test_16_path_escape_and_junction_do_not_gain_output_permissions (test_preference_tasks.PreferenceTasksTests.test_16_path_escape_and_junction_do_not_gain_output_permissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 442, in test_16_path_escape_and_junction_do_not_gain_output_permissions
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_task')
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.116s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_16 -v` failed. (See above for error)

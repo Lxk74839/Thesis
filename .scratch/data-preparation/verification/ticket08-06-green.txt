@@ -1,0 +1,6 @@
+test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order (test_preference_tasks.PreferenceTasksTests.test_06_all_unseen_candidates_include_zero_data_and_ignore_source_order) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.321s
+
+OK

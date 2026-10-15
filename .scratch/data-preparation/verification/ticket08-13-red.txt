@@ -1,0 +1,16 @@
+test_13_versioned_components_reproduce_and_existing_versions_are_never_overwritten (test_preference_tasks.PreferenceTasksTests.test_13_versioned_components_reproduce_and_existing_versions_are_never_overwritten) ... ERROR
+
+======================================================================
+ERROR: test_13_versioned_components_reproduce_and_existing_versions_are_never_overwritten (test_preference_tasks.PreferenceTasksTests.test_13_versioned_components_reproduce_and_existing_versions_are_never_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 382, in test_13_versioned_components_reproduce_and_existing_versions_are_never_overwritten
+    record_path = self.root / 'output' / first['record_path']
+                                         ~~~~~^^^^^^^^^^^^^^^
+KeyError: 'record_path'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.154s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_13 -v` failed. (See above for error)

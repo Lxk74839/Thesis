@@ -1,0 +1,6 @@
+test_17_receipt_reports_scope_loss_and_bound_private_provenance (test_preference_tasks.PreferenceTasksTests.test_17_receipt_reports_scope_loss_and_bound_private_provenance) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.168s
+
+OK

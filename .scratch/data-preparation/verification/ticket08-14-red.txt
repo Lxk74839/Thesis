@@ -1,0 +1,50 @@
+test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) ... 
+  test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=0) ... FAIL
+  test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=2) ... FAIL
+  test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=3) ... FAIL
+  test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=4) ... FAIL
+
+======================================================================
+FAIL: test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 415, in test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=2)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 416, in test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_probe')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'invalid_task' != 'invalid_probe'
+- invalid_task
++ invalid_probe
+
+
+======================================================================
+FAIL: test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=3)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 415, in test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data (test_preference_tasks.PreferenceTasksTests.test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data) (i=4)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 415, in test_14_invalid_probe_never_publishes_a_complete_bundle_or_echoes_private_data
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.725s
+
+FAILED (failures=4)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_14 -v` failed. (See above for error)

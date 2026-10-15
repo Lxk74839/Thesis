@@ -1,0 +1,6 @@
+test_02_unapproved_profile_never_publishes (test_preference_tasks.PreferenceTasksTests.test_02_unapproved_profile_never_publishes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.125s
+
+OK

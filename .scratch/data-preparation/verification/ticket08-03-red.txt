@@ -1,0 +1,19 @@
+test_03_catalog_is_a_complete_title_crop_projection (test_preference_tasks.PreferenceTasksTests.test_03_catalog_is_a_complete_title_crop_projection) ... FAIL
+
+======================================================================
+FAIL: test_03_catalog_is_a_complete_title_crop_projection (test_preference_tasks.PreferenceTasksTests.test_03_catalog_is_a_complete_title_crop_projection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 167, in test_03_catalog_is_a_complete_title_crop_projection
+    report = self.record(self.run_tasks())
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 138, in record
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"stage": "preference_tasks", "status": "preference_tasks_incomplete", "error": {"code": "invalid_task"}, "affected": {}}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.125s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_03 -v` failed. (See above for error)

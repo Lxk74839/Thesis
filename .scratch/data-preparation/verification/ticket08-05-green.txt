@@ -1,0 +1,6 @@
+test_05_strict_positive_foreground_and_private_targets_stay_separate (test_preference_tasks.PreferenceTasksTests.test_05_strict_positive_foreground_and_private_targets_stay_separate) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.147s
+
+OK

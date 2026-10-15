@@ -1,0 +1,23 @@
+test_01_required_parameters_have_private_safe_failure (test_preference_tasks.PreferenceTasksTests.test_01_required_parameters_have_private_safe_failure) ... ERROR
+
+======================================================================
+ERROR: test_01_required_parameters_have_private_safe_failure (test_preference_tasks.PreferenceTasksTests.test_01_required_parameters_have_private_safe_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 26, in test_01_required_parameters_have_private_safe_failure
+    report = json.loads(result.stdout)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.184s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_01 -v` failed. (See above for error)

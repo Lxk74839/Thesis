@@ -1,0 +1,6 @@
+test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift (test_preference_tasks.PreferenceTasksTests.test_15_accepted_catalog_and_split_totals_cannot_shrink_or_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.441s
+
+OK

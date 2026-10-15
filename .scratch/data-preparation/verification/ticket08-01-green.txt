@@ -1,0 +1,6 @@
+test_01_required_parameters_have_private_safe_failure (test_preference_tasks.PreferenceTasksTests.test_01_required_parameters_have_private_safe_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.092s
+
+OK

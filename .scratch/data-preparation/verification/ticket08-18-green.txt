@@ -1,0 +1,6 @@
+test_18_existing_output_ancestor_junction_is_rejected_before_writing (test_preference_tasks.PreferenceTasksTests.test_18_existing_output_ancestor_junction_is_rejected_before_writing) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.223s
+
+OK

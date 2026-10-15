@@ -1,0 +1,6 @@
+test_03_catalog_is_a_complete_title_crop_projection (test_preference_tasks.PreferenceTasksTests.test_03_catalog_is_a_complete_title_crop_projection) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.128s
+
+OK

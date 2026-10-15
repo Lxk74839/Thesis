@@ -1,0 +1,16 @@
+test_18_existing_output_ancestor_junction_is_rejected_before_writing (test_preference_tasks.PreferenceTasksTests.test_18_existing_output_ancestor_junction_is_rejected_before_writing) ... FAIL
+
+======================================================================
+FAIL: test_18_existing_output_ancestor_junction_is_rejected_before_writing (test_preference_tasks.PreferenceTasksTests.test_18_existing_output_ancestor_junction_is_rejected_before_writing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 481, in test_18_existing_output_ancestor_junction_is_rejected_before_writing
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.179s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_18 -v` failed. (See above for error)

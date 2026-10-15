@@ -1,0 +1,21 @@
+test_08_finite_text_retains_history_and_records_private_trace_without_truncation (test_preference_tasks.PreferenceTasksTests.test_08_finite_text_retains_history_and_records_private_trace_without_truncation) ... FAIL
+
+======================================================================
+FAIL: test_08_finite_text_retains_history_and_records_private_trace_without_truncation (test_preference_tasks.PreferenceTasksTests.test_08_finite_text_retains_history_and_records_private_trace_without_truncation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 276, in test_08_finite_text_retains_history_and_records_private_trace_without_truncation
+    self.assertEqual(tasks[ids[self.users[0]]]['history'][0]['text'], '好米5星，当时$12，也想试试P005。\n\n[LINK] [EMAIL]')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '<p>好米5星，当时$12，也想试试P005。</p><p>https://exa[38 chars]</p>' != '好米5星，当时$12，也想试试P005。\n\n[LINK] [EMAIL]'
+- <p>好米5星，当时$12，也想试试P005。</p><p>https://example.invalid/rice rice@example.invalid</p>
++ 好米5星，当时$12，也想试试P005。
++ 
++ [LINK] [EMAIL]
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.197s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_08 -v` failed. (See above for error)

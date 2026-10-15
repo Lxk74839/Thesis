@@ -1,0 +1,57 @@
+test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) ... 
+  test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='seen_target') ... FAIL
+  test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='missing_split') ... ERROR
+  test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='duplicate_account') ... FAIL
+  test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='lost_positive_history') ... FAIL
+  test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='wrong_latest') ... FAIL
+
+======================================================================
+ERROR: test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='missing_split')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 376, in test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired
+    self.assertGreaterEqual(report['affected']['accounts'], 1)
+                            ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'accounts'
+
+======================================================================
+FAIL: test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='seen_target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 373, in test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='duplicate_account')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 373, in test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='lost_positive_history')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 375, in test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired
+    self.assertIn(report['error']['code'], ('invalid_task', 'invalid_time_or_candidate'))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unsafe_model_view' not found in ('invalid_task', 'invalid_time_or_candidate')
+
+======================================================================
+FAIL: test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired (test_preference_tasks.PreferenceTasksTests.test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired) (kind='wrong_latest')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 377, in test_12_inconsistent_qualification_or_split_cannot_be_silently_repaired
+    self.assertTrue(list((self.root / kind / 'data/preference-failures').glob('*.jsonl')))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.986s
+
+FAILED (failures=4, errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_12 -v` failed. (See above for error)

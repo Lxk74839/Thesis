@@ -1,0 +1,37 @@
+test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) ... 
+  test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='empty_histories') ... FAIL
+  test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='link_only') ... FAIL
+  test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='unhandled_title') ... FAIL
+
+======================================================================
+FAIL: test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='empty_histories')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 301, in test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='link_only')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 301, in test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them (test_preference_tasks.PreferenceTasksTests.test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them) (kind='unhandled_title')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 301, in test_09_unconstructible_text_reports_all_affected_inputs_without_dropping_them
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.693s
+
+FAILED (failures=3)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_09 -v` failed. (See above for error)

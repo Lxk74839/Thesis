@@ -1,0 +1,16 @@
+test_11_real_api_channel_constructs_requests_and_denies_host_capabilities (test_preference_tasks.PreferenceTasksTests.test_11_real_api_channel_constructs_requests_and_denies_host_capabilities) ... ERROR
+
+======================================================================
+ERROR: test_11_real_api_channel_constructs_requests_and_denies_host_capabilities (test_preference_tasks.PreferenceTasksTests.test_11_real_api_channel_constructs_requests_and_denies_host_capabilities)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_preference_tasks.py", line 348, in test_11_real_api_channel_constructs_requests_and_denies_host_capabilities
+    self.assertEqual(report['access_probe_status'], 'completed')
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'access_probe_status'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.270s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -m unittest discover -s tests -p test_preference_tasks.py -k test_11 -v` failed. (See above for error)
