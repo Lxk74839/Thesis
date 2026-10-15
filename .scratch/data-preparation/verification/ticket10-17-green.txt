@@ -1,0 +1,6 @@
+test_independent_audit_rejects_boolean_registration_version (test_sim_normal.SimNormalTests.test_independent_audit_rejects_boolean_registration_version) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.273s
+
+OK

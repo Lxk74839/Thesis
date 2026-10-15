@@ -1,0 +1,25 @@
+{
+  "confirmation_sha256": "fb9470a7bca87ef8b3167e5f0d69dcc1508e21ddf5a3b378a3feeb985a8156ad",
+  "demo_batch_id": "b_3b7d6d7e781b47b69ab0cc7f62561ac1a00afa3df573e7458a3831bff3c98c04",
+  "demo_material_hashes": {
+    "harvest_record": "d55ec406a50a23fa3f264ea1c0104acd3a0500b8596eafec58ac3e80555dca08",
+    "inspection_report": "b2666c82d25aa867050b78ca64c457caf3edd5ddfcf021a361b3609733580b5d",
+    "inspection_sample": "defc69f661bc92ee5a92f16b2bb9f956b74066409bad558ce1ff22896c6e97d8",
+    "packaging_binding": "d6a2793d1f5cb3b2a0b5859175561299467bd1febfd8d5ca9088971488086e81",
+    "retail_status": "6a41537c7d7b15d28b979d81403dd788df68309605f6e240600f4520053baa8a",
+    "storage_log": "800a0621f2241fdadb6ca45917ad25029da34ef899fb53896500ffa3d357dd86",
+    "transport_dispatch": "4e190c9f203bf3709055855adc556cf8aaf7831ed242ec31dd1f64970ec6b899",
+    "transport_receipt": "66a08a43c1843630b5d4ea7f7e2b9ae2e3dabe8b0704e3cc3ab49f371a272e3c"
+  },
+  "demo_originals": 15,
+  "external_expert_review": false,
+  "protocol_literal_hash_vectors": [
+    "07932e3073970272dfc723fa285d1b3fb3640e3503a4c5aa7658dc15342c2237",
+    "565fcc999c1b22d8dee58a1bb7e074a961eca8e3e0edad3875c8be5ff227b141",
+    "5aecc79d426ad7cfb9de05db5b9dd7b1186cb960d5d9c50e1dd93603872284a8",
+    "6228dc019aee49409ff4acf04e37a8684b9d57892f991b5922d00b4c2ecb2306",
+    "39e3d7ea1978632226a9c70cf994c8c770584c0e745632377124af80e0270f6a",
+    "3721e39da81d56ffec1e462d8e615d6cfc0117446ab5b1c4c56f506cf6b7c519"
+  ],
+  "status": "passed"
+}

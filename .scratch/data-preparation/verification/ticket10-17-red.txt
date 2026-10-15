@@ -1,0 +1,16 @@
+test_independent_audit_rejects_boolean_registration_version (test_sim_normal.SimNormalTests.test_independent_audit_rejects_boolean_registration_version) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_rejects_boolean_registration_version (test_sim_normal.SimNormalTests.test_independent_audit_rejects_boolean_registration_version)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 533, in test_independent_audit_rejects_boolean_registration_version
+    self.assertEqual(audited.returncode, 2, audited.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.270s
+
+FAILED (failures=1)

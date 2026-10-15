@@ -1,0 +1,31 @@
+{
+  "command": [
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "git_head_sha": "732a9771c01845b1d24465ba0957810c13e42208",
+  "log": {
+    "bytes": 41916,
+    "path": ".scratch/data-preparation/verification/ticket10-regression-732a9771.txt",
+    "sha256": "9cf32536400068790a334d5e82c4de6c038a1c28c6fbe353f0a9b3f3310cfa3a"
+  },
+  "phase": "regression",
+  "program": {
+    "bytes": 7189,
+    "path": ".scratch/data-preparation/verification/ticket10_delivery_checks.py",
+    "sha256": "7a1001f4a7fcac19cb37256c93b9977d7b262f527fe1dfaaf44c05477a627b1a"
+  },
+  "runtime": {
+    "at_utc": "2026-10-15T08:39:24.472077+00:00",
+    "conda_prefix": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+    "python_version": "3.13.16"
+  },
+  "seconds": 96.583,
+  "status": "passed",
+  "tests": 216
+}

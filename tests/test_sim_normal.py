@@ -520,6 +520,43 @@ class SimNormalTests(unittest.TestCase):
         self.assertEqual(path.read_bytes(), corrupted)
         self.assertFalse((self.root / 'audit/reference-r1.jsonl').exists())
 
+    def test_independent_audit_rejects_boolean_registration_version(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        record = json.loads(generated.stdout)
+        path = self.output / record['components']['registrations.jsonl']['path']
+        receipts = [json.loads(line) for line in path.read_bytes().splitlines()]
+        receipts[0]['version'] = True
+        path.write_bytes(b''.join(encoded(row) + b'\n' for row in receipts))
+        self.reseal_fixture(record)
+        audited = self.run_audit()
+        self.assertEqual(audited.returncode, 2, audited.stdout)
+        self.assertIn('integer_type', json.loads((self.root / 'audit/check.json').read_bytes())['errors'])
+        self.assertFalse((self.root / 'audit/reference-r1.jsonl').exists())
+
+    def test_independent_normal_audit_rejects_extra_report_projects(self):
+        generated = self.run_cli()
+        self.assertEqual(generated.returncode, 0)
+        record = json.loads(generated.stdout)
+        path = self.output / record['components']['materials.jsonl']['path']
+        materials = [json.loads(line) for line in path.read_bytes().splitlines()]
+        changed = next(row for row in materials if row['parent_asin'] == 'DEMO-P001' and row['kind'] == 'inspection_report')
+        changed['facts']['test_scope'].append('UNAPPROVED')
+        path.write_bytes(b''.join(encoded(row) + b'\n' for row in materials))
+        receipt_path = self.output / record['components']['registrations.jsonl']['path']
+        receipts = [json.loads(line) for line in receipt_path.read_bytes().splitlines()]
+        receipt = next(row for row in receipts if row['target_id'] == changed['evidence_id'])
+        receipt['content_sha256'] = hashlib.sha256(encoded(changed)).hexdigest()
+        receipt_path.write_bytes(b''.join(encoded(row) + b'\n' for row in receipts))
+        self.reseal_fixture(record)
+        audited = self.run_audit()
+        self.assertEqual(audited.returncode, 2, audited.stdout)
+        check = json.loads((self.root / 'audit/check.json').read_bytes())
+        self.assertEqual(check['status'], 'failed')
+        # Coverage can support R1 while the fixed normal component contract fails.
+        self.assertEqual(check['state_counts']['Supported'], 2)
+        self.assertIn('normal_r1_facts:DEMO-P001', check['errors'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -235,6 +235,7 @@ def audit(record_path):
     ordered = sorted(registrations, key=lambda r: (r['registered_at_ms'], ['batch', 'event', 'material'].index(r['target_kind']), r['target_id'].encode(), r['version']))
     check(ordered == registrations, 'registration_order')
     for sequence, receipt in enumerate(registrations, 1):
+        integer(receipt['version'])
         integer(receipt['registered_at_ms'])
         integer(receipt['sequence'])
         check(receipt['sequence'] == sequence and receipt['registered_at_ms'] <= seal, 'registration_time_sequence')
@@ -340,7 +341,8 @@ def audit(record_path):
         support = binding_ok and authorized and same_sample and covered and time_ok and report['conclusion'] == request['required_conclusion']
         refute = binding_ok and authorized and same_sample and covered and time_ok and report['conclusion'] == 'fail'
         state = 'Conflict' if support and refute else 'Refuted' if refute else 'Supported' if support and complete else 'Pending'
-        if not same_sample or not covered or report['conclusion'] != facts['report_conclusion']:
+        if (not same_sample or not covered or report['test_scope'] != facts['test_scope']
+                or report['conclusion'] != facts['report_conclusion']):
             normal_errors.append('normal_r1_facts:' + asin)
         references.append({'schema_version': 'sim-r1-reference-1.0.0', 'source': 'SIM', 'reference_rule_version': 'r1-reference-1.0.0',
             'parent_asin': asin, 'sim_batch_id': bid, 'snapshot_id': snapshot['snapshot_id'], 'request_profile_id': request['profile_id'],

@@ -1,0 +1,6 @@
+test_independent_normal_audit_rejects_extra_report_projects (test_sim_normal.SimNormalTests.test_independent_normal_audit_rejects_extra_report_projects) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.301s
+
+OK
