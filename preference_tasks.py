@@ -475,7 +475,7 @@ def prepare_tasks(cleaning_record, split_record, task_config, root, access_probe
         return _prepare_tasks(cleaning_record, split_record, task_config, root, access_probe)
     except TaskError as exc:
         if exc.failures:
-            path = project_path(root) / 'data/preference-failures' / (sha256(task_config) + '.jsonl')
+            path = project_path(Path(root) / 'data/preference-failures' / (sha256(task_config) + '.jsonl'))
             if not path.exists():
                 write_rows(path, exc.failures)
         raise

@@ -1,0 +1,6 @@
+test_19_failure_trace_junction_cannot_redirect_private_writes (test_preference_tasks.PreferenceTasksTests.test_19_failure_trace_junction_cannot_redirect_private_writes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.190s
+
+OK

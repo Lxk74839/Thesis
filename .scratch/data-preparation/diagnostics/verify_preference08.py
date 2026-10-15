@@ -21,11 +21,11 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[3]
 VERIFY = ROOT / '.scratch/data-preparation/verification'
-MAIN = 'records/preference-tasks/grain-A-1.1.15-preference-task-1.0.0.json'
+MAIN = 'records/preference-tasks/grain-A-1.1.15-preference-task-1.0.1.json'
 CLEAN = 'records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0.json'
 SPLIT = 'records/splits/grain-A-1.1.15-user-split-1.0.0.json'
-CONFIG = 'config/preference-task-1.0.0.json'
-PROBE = 'data/task-inputs/preference-task-1.0.0/access-probe-1.0.0.jsonl'
+CONFIG = 'config/preference-task-1.0.1.json'
+PROBE = 'data/task-inputs/preference-task-1.0.1/access-probe-1.0.0.jsonl'
 
 
 def load(path):
@@ -263,7 +263,7 @@ def full_audit(main):
         assert all(main['text_summary'][kind][k] == v for k,v in lengths.items()), 'receipt_text_totals_mismatch'
     probes, requests = list(rows(ROOT / main['components']['access_probe']['path'])), list(rows(ROOT / PROBE))
     assert len(probes) == len(requests) == 26, 'probe_coverage_mismatch'
-    canaries = [(ROOT / 'data/task-inputs/preference-task-1.0.0' / name).read_text('utf-8').strip()
+    canaries = [(ROOT / 'data/task-inputs/preference-task-1.0.1' / name).read_text('utf-8').strip()
                 for name in ('private-canary.txt','old-index/canary.txt','old-cache/canary.txt')]
     for expected, actual in zip(requests, probes):
         if expected['operation'] == 'model_request' and expected['arguments'] == {} and expected['session_task_id'] in wire_tasks:
@@ -362,7 +362,7 @@ def target_mutation(main, evaluations, qualifications, clean, valid, temporary):
     config_path = source / CONFIG
     save(config_path,config)
     output = temporary / 'mutated-output'
-    result = invoke(clean_path,split_path,config_path,output,ROOT/PROBE,'ticket08-target-mutation-cli.json')
+    result = invoke(clean_path,split_path,config_path,output,ROOT/PROBE,'ticket08-1.0.1-target-mutation-cli.json')
     compared = compare_components(ROOT,main,output,result,('catalog','tasks','model_manifest','access_probe'))
     assert digest(ROOT/main['components']['evaluation']['path']) != digest(output/result['components']['evaluation']['path']), 'mutation_did_not_change_private_evaluation'
     return {'status':'passed','mutated_accounts':1,'fixture_origin':'private_copy_of_real_dev_target',
@@ -378,33 +378,33 @@ def main():
     assert sys.argv[1:] in ([],['--resume-target']), 'unknown_diagnostic_arguments'
     resume = bool(sys.argv[1:])
     if resume:
-        assert load(VERIFY/'ticket08-independent-full-check.json')['status'] == 'passed'
-        assert load(VERIFY/'ticket08-reproduction-check.json')['status'] == 'passed'
+        assert load(VERIFY/'ticket08-1.0.1-independent-full-check.json')['status'] == 'passed'
+        assert load(VERIFY/'ticket08-1.0.1-reproduction-check.json')['status'] == 'passed'
         cleaning = load(ROOT/CLEAN)
         evaluations = {r['task_id']:r for r in rows(ROOT/main_record['components']['evaluation']['path'])}
         qualifications = {r['user_id']:r for r in rows(ROOT/cleaning['accounts_path']) if r['status']=='qualified'}
         clean,valid = [list(rows(ROOT/cleaning[n+'_path'])) for n in ('clean','text')]
     else:
         audit, evaluations, qualifications, clean, valid = full_audit(main_record)
-        save(VERIFY/'ticket08-independent-full-check.json',audit)
+        save(VERIFY/'ticket08-1.0.1-independent-full-check.json',audit)
         print(json.dumps({'checkpoint':'full_row_audit_passed','counts':audit['counts']}),flush=True)
     with tempfile.TemporaryDirectory(prefix='ticket08-independent-',dir=ROOT/'.tmp') as temp:
         temporary = Path(temp)
         if not resume:
             output = temporary / 'fresh-output'
-            reproduction = invoke(ROOT/CLEAN,ROOT/SPLIT,ROOT/CONFIG,output,ROOT/PROBE,'ticket08-reproduction-cli.json')
+            reproduction = invoke(ROOT/CLEAN,ROOT/SPLIT,ROOT/CONFIG,output,ROOT/PROBE,'ticket08-1.0.1-reproduction-cli.json')
             compared = compare_components(ROOT,main_record,output,reproduction)
-            save(VERIFY/'ticket08-reproduction-check.json', {'status':'passed','fresh_empty_root':True,
+            save(VERIFY/'ticket08-1.0.1-reproduction-check.json', {'status':'passed','fresh_empty_root':True,
                  'same_frozen_key':True,'stable_components':compared,'runtime_metadata_compared':False})
             print(json.dumps({'checkpoint':'fresh_root_byte_reproduction_passed','components':len(compared)}),flush=True)
         mutation = target_mutation(main_record,evaluations,qualifications,clean,valid,temporary)
-        save(VERIFY/'ticket08-target-mutation-check.json',mutation)
+        save(VERIFY/'ticket08-1.0.1-target-mutation-check.json',mutation)
         print(json.dumps({'checkpoint':'private_target_mutation_passed','all_model_components_identical':True}),flush=True)
     protection = load(ROOT/'.tmp/ticket08-implementation-protection.json')
     changed = [p for p,h in protection['sha256'].items() if not Path(p).is_file() or digest(p) != h]
     assert not changed and len(protection['sha256']) == 707, 'protected_source_changed'
     assert digest(ROOT/'.scratch/data-preparation/ticket08-stage1-field-isolation-review-draft-20261015.md') == '21c7cf2aa1b06c520564c5cfc18cd45eaab6d9f1e403bb7731ad94d58930b22a', 'approved_draft_changed'
-    save(VERIFY/'ticket08-protection-check.json', {'status':'passed','protected_files':707,'changed_files':0,
+    save(VERIFY/'ticket08-1.0.1-protection-check.json', {'status':'passed','protected_files':707,'changed_files':0,
          'approved_draft_sha256':'21c7cf2aa1b06c520564c5cfc18cd45eaab6d9f1e403bb7731ad94d58930b22a',
          'baseline':protection['baseline'],'authorized_existing_changes':protection['authorized_existing_changes']})
     print(json.dumps({'status':'independent_acceptance_checks_passed','protected_files':707,'model_calls':0}),flush=True)

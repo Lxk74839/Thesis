@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import json
 from pathlib import Path
-import secrets
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -21,13 +20,11 @@ def save(path, value):
 
 
 def main():
-    version = 'preference-task-1.0.0'
+    version = 'preference-task-1.0.1'
     private = ROOT / 'data/task-inputs' / version
     private.mkdir(parents=True, exist_ok=True)
-    key_path = private / 'id-key.bin'
-    if not key_path.exists():
-        with key_path.open('xb') as stream:
-            stream.write(secrets.token_bytes(32))
+    # Patch release reuses the original frozen private key; never regenerate it.
+    key_path = ROOT / 'data/task-inputs/preference-task-1.0.0/id-key.bin'
     key = key_path.read_bytes()
     assert len(key) == 32
     split = json.loads((ROOT / 'records/splits/grain-A-1.1.15-user-split-1.0.0.json').read_text('utf-8'))
@@ -43,7 +40,7 @@ def main():
     probes = [{'session_task_id': ids[0], 'operation': 'model_request', 'arguments': {}}]
     paths = ['data/raw', 'data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/reviews.jsonl',
              split['accounts_path'], split['exposure_path'], str(key_path),
-             'data/preference-tasks/grain-A-1.1.15/preference-task-1.0.0/private/evaluation.jsonl',
+             'data/preference-tasks/grain-A-1.1.15/' + version + '/private/evaluation.jsonl',
              '../private/evaluation.jsonl', 'C:/unknown/no-file', 'https://example.invalid',
              *[str(private / p) for p in ('private-canary.txt', 'old-index/canary.txt', 'old-cache/canary.txt')]]
     probes += [{'session_task_id': ids[0], 'operation': 'read_resource', 'arguments': {'path': p}} for p in paths]
@@ -71,7 +68,7 @@ def main():
                   'cleaning_erratum': 'records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json',
                   'split': 'records/splits/grain-A-1.1.15-user-split-1.0.0-acceptance.json'}.items()},
               'identity_key': binding(key_path.relative_to(ROOT).as_posix()),
-              'contract_version': {'version': version,
+              'contract_version': {'version': 'preference-task-1.0.0',
                   'approved_document_sha256': '21c7cf2aa1b06c520564c5cfc18cd45eaab6d9f1e403bb7731ad94d58930b22a'}}
     config_path = ROOT / 'config' / (version + '.json')
     if config_path.exists():
