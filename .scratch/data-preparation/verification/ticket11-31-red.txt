@@ -1,0 +1,31 @@
+F
+======================================================================
+FAIL: test_nonobject_originals_and_malformed_component_maps_fail_with_a_check_record (tests.test_sim_scenarios.ScenarioTests.test_nonobject_originals_and_malformed_component_maps_fail_with_a_check_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 903, in test_nonobject_originals_and_malformed_component_maps_fail_with_a_check_record
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_sim11.py", line 657, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_sim11.py", line 634, in main
+    record, requests, views, manifest_sha = public_package(record_path)
+                                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_sim11.py", line 246, in public_package
+    parsed[name], originals[name] = read_bound(root, spec)
+                                    ~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_sim11.py", line 202, in read_bound
+    validate_row(Path(spec['path']).name, row)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.scratch\data-preparation\diagnostics\verify_sim11.py", line 110, in validate_row
+    insist(row.get('schema_version') == version_tags[filename], 'unsupported_schema')
+           ^^^^^^^
+AttributeError: 'int' object has no attribute 'get'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.192s
+
+FAILED (failures=1)

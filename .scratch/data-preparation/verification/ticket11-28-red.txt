@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_reference_excludes_future_and_unauthorized_revision_actions (tests.test_sim_scenarios.ScenarioTests.test_reference_excludes_future_and_unauthorized_revision_actions) (mode='future_effect')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 673, in test_reference_excludes_future_and_unauthorized_revision_actions
+    self.assertIn('not_current_version', [r['reason'] for r in row['clauses'][0]['rejected']])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'not_current_version' not found in ['superseded']
+
+----------------------------------------------------------------------
+Ran 1 test in 2.850s
+
+FAILED (failures=1)

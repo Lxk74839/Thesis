@@ -1,0 +1,19 @@
+F
+======================================================================
+FAIL: test_view_identity_uses_nul_delimited_seed_without_answer_names (tests.test_sim_scenarios.ScenarioTests.test_view_identity_uses_nul_delimited_seed_without_answer_names)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 153, in test_view_identity_uses_nul_delimited_seed_without_answer_names
+    self.assertEqual(self.view_by_name['V00']['view_id'],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     'q_286b0847b020a9d2cb5baa04a756d4fac00299e9f17fa1756df55ca7a32a03f8')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'q_584f5bb805d27cae74383470f1be9540d009eecdbaeaa6a726438a7f006ed4ad' != 'q_286b0847b020a9d2cb5baa04a756d4fac00299e9f17fa1756df55ca7a32a03f8'
+- q_584f5bb805d27cae74383470f1be9540d009eecdbaeaa6a726438a7f006ed4ad
++ q_286b0847b020a9d2cb5baa04a756d4fac00299e9f17fa1756df55ca7a32a03f8
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.654s
+
+FAILED (failures=1)

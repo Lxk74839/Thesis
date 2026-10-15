@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_valid_negative_retains_full_binding_and_has_its_own_digest (tests.test_sim_scenarios.ScenarioTests.test_valid_negative_retains_full_binding_and_has_its_own_digest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 206, in test_valid_negative_retains_full_binding_and_has_its_own_digest
+    self.assertEqual(negative, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'eve[183 chars]n': 'pass', 'sample_id': 's_9191c9d76a2139cb5d[445 chars]': 1} != {'eve[183 chars]n': 'fail', 'sample_id': 's_9191c9d76a2139cb5d[445 chars]': 1}
+Diff is 875 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.660s
+
+FAILED (failures=1)

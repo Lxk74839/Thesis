@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_conflict_adds_an_independent_fully_bound_report_without_replacing_pass (tests.test_sim_scenarios.ScenarioTests.test_conflict_adds_an_independent_fully_bound_report_without_replacing_pass)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 217, in test_conflict_adds_an_independent_fully_bound_report_without_replacing_pass
+    self.assertEqual(len(reports), 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.659s
+
+FAILED (failures=1)

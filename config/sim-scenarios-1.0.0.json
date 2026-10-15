@@ -1,0 +1,88 @@
+{
+  "approval_binding": {
+    "draft_path": ".scratch/data-preparation/ticket11-stage1-evidence-scenarios-review-draft-20261015.md",
+    "draft_sha256": "a79381ac48041ff7fd3e6b4e6ddc5a36a30cfd17e9f8ce813e631f5c9ffe0931",
+    "record_path": ".scratch/data-preparation/ticket11-implementation-authorization-20261015.md",
+    "record_sha256": "3083e41636d7845aa2410eb65cf04762cc2e4c4a2695ba2efb8aae8e5ec05895"
+  },
+  "byte_contract": "sim-jsonl-utf8-lf-1.0.0",
+  "clock": {
+    "action_effective_from_ms": 1791372120000,
+    "action_issued_at_ms": 1791372120000,
+    "action_registered_at_ms": 1791372180000,
+    "expired_retail_valid_to_ms": 1791417600000,
+    "new_report_issued_at_ms": 1791372000000,
+    "new_report_registered_at_ms": 1791372060000,
+    "sealed_at_ms": 1791375000000,
+    "verify_at_ms": 1791417600000
+  },
+  "identity": {
+    "additional_report_slot": "record-2",
+    "new_issuers": [],
+    "read_principal_id": "SIM-VERIFIER",
+    "registrar_id": "SIM-REGISTRY",
+    "status_change_authority": "issuer_own_lineage_only"
+  },
+  "normal_binding": {
+    "acceptance": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0-acceptance.json",
+      "sha256": "831c951af0e09f0d041354579d0fa3713cb3deeb52c8328fe8574e347a0a338c"
+    },
+    "config": {
+      "path": "config/sim-normal-1.0.0.json",
+      "sha256": "f58de2f0de17eff32ce461184c28a879560f1d97cfbc8836c2be391cd4572ba3"
+    },
+    "record": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+      "sha256": "8694d35a342f6c198bc1db1a0d2ee4b5cad8e09a17e13aed72dacd23eb907715"
+    }
+  },
+  "profile": "paired_evidence_views_v1",
+  "protocol_binding": {
+    "draft_path": ".scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md",
+    "draft_sha256": "6ae2dd42b943b65eda899560be8cffa68fac8570ad362439b2a100de76720461",
+    "record_path": ".scratch/data-preparation/issues/09-evidence-protocol.md",
+    "record_sha256": "ef7f34e0868c879963287c4085418ed2748939f394ea61ea1751635b4da7abc6",
+    "version": "sim-evidence-protocol-1.0.0"
+  },
+  "publication": {
+    "extra_replicates": 0,
+    "layout": "self_contained_full_views_v1",
+    "overwrite": false,
+    "repeat_count": 1
+  },
+  "request_profile_ids": [
+    "R1_SIM_Q1",
+    "R1_AND_R5_SIM_Q1_ON_SALE"
+  ],
+  "schema_version": "sim-scenarios-config-1.0.0",
+  "selection": {
+    "algorithm": "sha256-order-v1",
+    "denominator": 10,
+    "donor_rule": "next_disjoint_block",
+    "numerator": 1,
+    "population": "baseline_parent_asin",
+    "rounding": "ceil",
+    "seed": "20261015",
+    "shared_set": true
+  },
+  "version": "sim-scenarios-1.0.0",
+  "view_ids": [
+    "V00",
+    "V01",
+    "V02",
+    "V03",
+    "V04",
+    "V05",
+    "V06",
+    "V07",
+    "V08",
+    "V09",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15"
+  ]
+}

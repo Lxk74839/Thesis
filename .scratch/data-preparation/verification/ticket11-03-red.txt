@@ -1,0 +1,18 @@
+F
+======================================================================
+FAIL: test_publishes_the_normal_anchor_in_sixteen_sealed_views (tests.test_sim_scenarios.ScenarioTests.test_publishes_the_normal_anchor_in_sixteen_sealed_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 126, in test_publishes_the_normal_anchor_in_sixteen_sealed_views
+    self.prepared()
+    ~~~~~~~~~~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 79, in prepared
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"stage": "evidence_scenarios", "status": "evidence_scenarios_incomplete", "error": {"code": "invalid_baseline"}}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.343s
+
+FAILED (failures=1)

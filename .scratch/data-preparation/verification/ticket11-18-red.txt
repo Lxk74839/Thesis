@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_identical_reuse_keeps_record_bytes_and_damage_is_never_overwritten (tests.test_sim_scenarios.ScenarioTests.test_identical_reuse_keeps_record_bytes_and_damage_is_never_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 330, in test_identical_reuse_keeps_record_bytes_and_damage_is_never_overwritten
+    self.assertEqual(second.returncode, 0, second.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"stage": "evidence_scenarios", "status": "evidence_scenarios_incomplete", "error": {"code": "output_conflict"}}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.852s
+
+FAILED (failures=1)

@@ -1,0 +1,17 @@
+F
+======================================================================
+FAIL: test_registry_identity_error_does_not_change_the_original (tests.test_sim_scenarios.ScenarioTests.test_registry_identity_error_does_not_change_the_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 197, in test_registry_identity_error_does_not_change_the_original
+    self.assertEqual(receipt['issuer_id'], 'SIM-RETAIL')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SIM-LAB' != 'SIM-RETAIL'
+- SIM-LAB
++ SIM-RETAIL
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.696s
+
+FAILED (failures=1)

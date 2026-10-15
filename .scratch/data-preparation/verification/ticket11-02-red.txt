@@ -1,0 +1,133 @@
+FFFFFFFF
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"version":"a","version":"b"}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"x":NaN}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='invalid_config', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+======================================================================
+FAIL: test_config_rejects_unapproved_and_wrong_typed_fields (tests.test_sim_scenarios.ScenarioTests.test_config_rejects_unapproved_and_wrong_typed_fields) (code='unapproved_protocol', raw=b'{"approval_binding":{"draft_path":".scra')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 73, in test_config_rejects_unapproved_and_wrong_typed_fields
+    self.assertEqual(result.returncode, 2, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2 : Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 313, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\prepare_data.py", line 44, in main
+    from sim_scenarios import prepare_scenarios
+ModuleNotFoundError: No module named 'sim_scenarios'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.785s
+
+FAILED (failures=8)

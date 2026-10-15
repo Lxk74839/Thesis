@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_expiry_only_changes_the_retail_interval_not_historical_reports (tests.test_sim_scenarios.ScenarioTests.test_expiry_only_changes_the_retail_interval_not_historical_reports)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 234, in test_expiry_only_changes_the_retail_interval_not_historical_reports
+    self.assertEqual(retail['valid_to_ms'], 1791417600000)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1791504000000 != 1791417600000
+
+----------------------------------------------------------------------
+Ran 1 test in 0.767s
+
+FAILED (failures=1)

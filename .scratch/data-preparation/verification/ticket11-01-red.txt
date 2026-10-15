@@ -1,0 +1,56 @@
+EEE
+======================================================================
+ERROR: test_missing_dependencies_use_the_structured_stage_error (tests.test_sim_scenarios.ScenarioTests.test_missing_dependencies_use_the_structured_stage_error) (missing='--sim-record')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 49, in test_missing_dependencies_use_the_structured_stage_error
+    self.assertEqual(json.loads(result.stdout), {'stage': 'evidence_scenarios',
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+ERROR: test_missing_dependencies_use_the_structured_stage_error (tests.test_sim_scenarios.ScenarioTests.test_missing_dependencies_use_the_structured_stage_error) (missing='--scenario-config')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 49, in test_missing_dependencies_use_the_structured_stage_error
+    self.assertEqual(json.loads(result.stdout), {'stage': 'evidence_scenarios',
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+======================================================================
+ERROR: test_missing_dependencies_use_the_structured_stage_error (tests.test_sim_scenarios.ScenarioTests.test_missing_dependencies_use_the_structured_stage_error) (missing='--output-root')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 49, in test_missing_dependencies_use_the_structured_stage_error
+    self.assertEqual(json.loads(result.stdout), {'stage': 'evidence_scenarios',
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\json\decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.295s
+
+FAILED (errors=3)

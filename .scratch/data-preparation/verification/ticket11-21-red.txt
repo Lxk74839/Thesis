@@ -1,0 +1,53 @@
+FFFF
+======================================================================
+FAIL: test_reference_requires_authorized_sampling_and_compatible_test_times (tests.test_sim_scenarios.ScenarioTests.test_reference_requires_authorized_sampling_and_compatible_test_times) (kind='inspection_sample', path=('facts', 'sampled_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 465, in test_reference_requires_authorized_sampling_and_compatible_test_times
+    self.assertEqual(self.references(audit_root)['V05', 'R1_SIM_Q1', 'PX3']['candidate_state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+======================================================================
+FAIL: test_reference_requires_authorized_sampling_and_compatible_test_times (tests.test_sim_scenarios.ScenarioTests.test_reference_requires_authorized_sampling_and_compatible_test_times) (kind='inspection_sample', path=('issuer_id',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 465, in test_reference_requires_authorized_sampling_and_compatible_test_times
+    self.assertEqual(self.references(audit_root)['V05', 'R1_SIM_Q1', 'PX3']['candidate_state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+======================================================================
+FAIL: test_reference_requires_authorized_sampling_and_compatible_test_times (tests.test_sim_scenarios.ScenarioTests.test_reference_requires_authorized_sampling_and_compatible_test_times) (kind='inspection_report', path=('facts', 'test_started_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 465, in test_reference_requires_authorized_sampling_and_compatible_test_times
+    self.assertEqual(self.references(audit_root)['V05', 'R1_SIM_Q1', 'PX3']['candidate_state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+======================================================================
+FAIL: test_reference_requires_authorized_sampling_and_compatible_test_times (tests.test_sim_scenarios.ScenarioTests.test_reference_requires_authorized_sampling_and_compatible_test_times) (kind='inspection_report', path=('issued_at_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 465, in test_reference_requires_authorized_sampling_and_compatible_test_times
+    self.assertEqual(self.references(audit_root)['V05', 'R1_SIM_Q1', 'PX3']['candidate_state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.926s
+
+FAILED (failures=4)

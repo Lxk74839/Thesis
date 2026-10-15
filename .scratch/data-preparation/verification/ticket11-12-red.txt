@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_revocation_preserves_originals_and_registers_an_authorized_action (tests.test_sim_scenarios.ScenarioTests.test_revocation_preserves_originals_and_registers_an_authorized_action)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 246, in test_revocation_preserves_originals_and_registers_an_authorized_action
+    self.assertEqual(len(actions), 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.659s
+
+FAILED (failures=1)

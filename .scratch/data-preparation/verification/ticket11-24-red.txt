@@ -1,0 +1,45 @@
+FFFF
+======================================================================
+FAIL: test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans (tests.test_sim_scenarios.ScenarioTests.test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans) (name='materials.jsonl', path=('version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 528, in test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans
+    self.assertEqual(failed.returncode, 2, failed.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"e7f51d676ea4de819aea9df5081fa9a63f8e01bb4272ca2880ac2084014e4995","public_fact_manifest_sha256":"6633fa0a27e35e08c0aa5feb3cceeed4e7542986ee97890e0a2acbe91c5f616f","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"1dab444bc9fa287715febbf96e7b3f76d29bd86293290e7bdf72941846bede4f","runtime":{"at_utc":"2026-10-15T13:31:45.946165+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans (tests.test_sim_scenarios.ScenarioTests.test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans) (name='materials.jsonl', path=('facts', 'sampled_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 528, in test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans
+    self.assertEqual(failed.returncode, 2, failed.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"e7f51d676ea4de819aea9df5081fa9a63f8e01bb4272ca2880ac2084014e4995","public_fact_manifest_sha256":"b0f1877f834495a8918c590f7deb65522ba2e336e36ac664e5583f0e502059e7","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"55cafd4442d31cc5be8825810cc19b9501ee47811c54295b260d36104bae7e51","runtime":{"at_utc":"2026-10-15T13:31:46.267693+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":15,"Refuted":4,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans (tests.test_sim_scenarios.ScenarioTests.test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans) (name='events.jsonl', path=('event_start_ms',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 528, in test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans
+    self.assertEqual(failed.returncode, 2, failed.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"e7f51d676ea4de819aea9df5081fa9a63f8e01bb4272ca2880ac2084014e4995","public_fact_manifest_sha256":"11228b9880f82ac8be3d416fa4caf58bcdcc2625a3809485c7d8e32a1092f0cd","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"956c5b009d0141b5e48f95947cc12408608509710bc6a33c7e32302f197b8738","runtime":{"at_utc":"2026-10-15T13:31:46.541282+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans (tests.test_sim_scenarios.ScenarioTests.test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans) (name='change-actions.jsonl', path=('supersedes_version',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 528, in test_reference_rejects_numeric_type_aliases_but_keeps_policy_booleans
+    self.assertEqual(failed.returncode, 2, failed.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"e7f51d676ea4de819aea9df5081fa9a63f8e01bb4272ca2880ac2084014e4995","public_fact_manifest_sha256":"ba85b7fa9991c33708010fa39e91c22dbcc8caf7475b57a5dd7c16cd66fed641","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"f9bb24a024c3246f6859476db1d131671aa5a8eec9743f31d862804be17ceed0","runtime":{"at_utc":"2026-10-15T13:31:46.809785+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":4,"Supported":73},"status":"scenario_reference_complete"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.078s
+
+FAILED (failures=4)

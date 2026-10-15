@@ -1,0 +1,14 @@
+E
+======================================================================
+ERROR: test_permission_view_only_denies_the_selected_existing_report (tests.test_sim_scenarios.ScenarioTests.test_permission_view_only_denies_the_selected_existing_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 277, in test_permission_view_only_denies_the_selected_existing_report
+    self.assertEqual(policy['read_denials'], [{'principal_id': 'SIM-VERIFIER', 'target_kind': 'material',
+                     ~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'read_denials'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.712s
+
+FAILED (errors=1)

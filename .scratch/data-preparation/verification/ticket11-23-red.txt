@@ -1,0 +1,17 @@
+F
+======================================================================
+FAIL: test_reference_resolves_authorized_heads_and_never_revives_v1 (tests.test_sim_scenarios.ScenarioTests.test_reference_resolves_authorized_heads_and_never_revives_v1)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 493, in test_reference_resolves_authorized_heads_and_never_revives_v1
+    self.assertEqual(refs[view, profile, 'PX3']['candidate_state'], expected, (view, profile))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+ : ('V08', 'R1_SIM_Q1')
+
+----------------------------------------------------------------------
+Ran 1 test in 0.998s
+
+FAILED (failures=1)

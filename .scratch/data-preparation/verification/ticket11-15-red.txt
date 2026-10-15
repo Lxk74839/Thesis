@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_unrelated_origin_change_keeps_all_necessary_materials_identical (tests.test_sim_scenarios.ScenarioTests.test_unrelated_origin_change_keeps_all_necessary_materials_identical)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 287, in test_unrelated_origin_change_keeps_all_necessary_materials_identical
+    self.assertEqual(len(changed), 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 1 test in 0.687s
+
+FAILED (failures=1)

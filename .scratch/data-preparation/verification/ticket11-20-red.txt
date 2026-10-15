@@ -1,0 +1,73 @@
+FFFFF
+======================================================================
+FAIL: test_reference_distinguishes_missing_invalid_negative_and_independent_conflict (tests.test_sim_scenarios.ScenarioTests.test_reference_distinguishes_missing_invalid_negative_and_independent_conflict) (view='V03', profile='R1_SIM_Q1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 386, in test_reference_distinguishes_missing_invalid_negative_and_independent_conflict
+    self.assertEqual(refs[view, profile, 'PX3']['candidate_state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+======================================================================
+FAIL: test_reference_distinguishes_missing_invalid_negative_and_independent_conflict (tests.test_sim_scenarios.ScenarioTests.test_reference_distinguishes_missing_invalid_negative_and_independent_conflict) (view='V03', profile='R1_AND_R5_SIM_Q1_ON_SALE')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 386, in test_reference_distinguishes_missing_invalid_negative_and_independent_conflict
+    self.assertEqual(refs[view, profile, 'PX3']['candidate_state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Refuted' != 'Pending'
+- Refuted
++ Pending
+
+
+======================================================================
+FAIL: test_reference_distinguishes_missing_invalid_negative_and_independent_conflict (tests.test_sim_scenarios.ScenarioTests.test_reference_distinguishes_missing_invalid_negative_and_independent_conflict) (view='V04', profile='R1_SIM_Q1')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 386, in test_reference_distinguishes_missing_invalid_negative_and_independent_conflict
+    self.assertEqual(refs[view, profile, 'PX3']['candidate_state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+
+
+======================================================================
+FAIL: test_reference_distinguishes_missing_invalid_negative_and_independent_conflict (tests.test_sim_scenarios.ScenarioTests.test_reference_distinguishes_missing_invalid_negative_and_independent_conflict) (view='V04', profile='R1_AND_R5_SIM_Q1_ON_SALE')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 386, in test_reference_distinguishes_missing_invalid_negative_and_independent_conflict
+    self.assertEqual(refs[view, profile, 'PX3']['candidate_state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+
+
+======================================================================
+FAIL: test_reference_distinguishes_missing_invalid_negative_and_independent_conflict (tests.test_sim_scenarios.ScenarioTests.test_reference_distinguishes_missing_invalid_negative_and_independent_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 388, in test_reference_distinguishes_missing_invalid_negative_and_independent_conflict
+    self.assertEqual((digest_clause['s'], digest_clause['r']), (0, 0))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, 1) != (0, 0)
+
+First differing element 1:
+1
+0
+
+- (0, 1)
+?     ^
+
++ (0, 0)
+?     ^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.050s
+
+FAILED (failures=5)

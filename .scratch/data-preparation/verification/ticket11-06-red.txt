@@ -1,0 +1,19 @@
+F
+======================================================================
+FAIL: test_object_mismatch_has_matching_digest_but_keeps_original_index (tests.test_sim_scenarios.ScenarioTests.test_object_mismatch_has_matching_digest_but_keeps_original_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 174, in test_object_mismatch_has_matching_digest_but_keeps_original_index
+    self.assertEqual(wrong['parent_asin'], 'PX2')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'PX3' != 'PX2'
+- PX3
+?   ^
++ PX2
+?   ^
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.657s
+
+FAILED (failures=1)

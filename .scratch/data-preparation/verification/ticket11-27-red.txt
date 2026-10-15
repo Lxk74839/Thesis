@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_audit_output_cannot_write_inside_the_package_or_normal_baseline (tests.test_sim_scenarios.ScenarioTests.test_audit_output_cannot_write_inside_the_package_or_normal_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 615, in test_audit_output_cannot_write_inside_the_package_or_normal_baseline
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"8f42fa0386e397487166358930bff3ba5433d23c1b4ee369f566bc8f30b83729","public_fact_manifest_sha256":"40aa965d31280ec6e5f12b9412b7c5d366041ea97ae84c1ca9ee43a1c3a40960","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"2d39adaf76faa6126005c811fcc986c60c69af82a966cb01bfa8469b19d6aa55","runtime":{"at_utc":"2026-10-15T13:41:23.183997+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.070s
+
+FAILED (failures=1)

@@ -1,0 +1,45 @@
+FFFF
+======================================================================
+FAIL: test_reference_closes_master_manifest_and_snapshot_contracts (tests.test_sim_scenarios.ScenarioTests.test_reference_closes_master_manifest_and_snapshot_contracts) (key='request_profiles')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 567, in test_reference_closes_master_manifest_and_snapshot_contracts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"c26d5e718f48c37a53a2dd560f0a35552fc10f6b47b524ca8c9c88e3daf22451","public_fact_manifest_sha256":"c9da08882404cd3075d61fe8067c7dee40eb5e517ba8fb42db5122d4e3b74266","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"2a6cbe22c34ce0f6dbb0477cf694184eb8c54ae2764adc5a7d950ba792047b3f","runtime":{"at_utc":"2026-10-15T13:35:56.664095+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_closes_master_manifest_and_snapshot_contracts (tests.test_sim_scenarios.ScenarioTests.test_reference_closes_master_manifest_and_snapshot_contracts) (key='requests_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 567, in test_reference_closes_master_manifest_and_snapshot_contracts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"c26d5e718f48c37a53a2dd560f0a35552fc10f6b47b524ca8c9c88e3daf22451","public_fact_manifest_sha256":"4666615e6a122bf975165e2a143e3623c44d405874f6b32a5fedc8c749c4f7b4","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"31d7480cef2d92798dd006b808dde17c3451c96da24cf642ddbca6131fcc8562","runtime":{"at_utc":"2026-10-15T13:35:57.166755+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_closes_master_manifest_and_snapshot_contracts (tests.test_sim_scenarios.ScenarioTests.test_reference_closes_master_manifest_and_snapshot_contracts) (key='expected_status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 567, in test_reference_closes_master_manifest_and_snapshot_contracts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"c26d5e718f48c37a53a2dd560f0a35552fc10f6b47b524ca8c9c88e3daf22451","public_fact_manifest_sha256":"5b065df2ddab5f2f768ce914858d47cb5ab832b30d6e540c885e7d46e2c49a9e","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"ff439437769a040df5611b72ee81e19649eee1b856d88ad747da8452f221a372","runtime":{"at_utc":"2026-10-15T13:35:57.658818+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+======================================================================
+FAIL: test_reference_closes_master_manifest_and_snapshot_contracts (tests.test_sim_scenarios.ScenarioTests.test_reference_closes_master_manifest_and_snapshot_contracts) (key='unknown')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 567, in test_reference_closes_master_manifest_and_snapshot_contracts
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"errors":[],"program_sha256":"c26d5e718f48c37a53a2dd560f0a35552fc10f6b47b524ca8c9c88e3daf22451","public_fact_manifest_sha256":"40aa965d31280ec6e5f12b9412b7c5d366041ea97ae84c1ca9ee43a1c3a40960","reference_rows":96,"reference_rule_version":"scenario-reference-1.0.0","reference_sha256":"2d39adaf76faa6126005c811fcc986c60c69af82a966cb01bfa8469b19d6aa55","runtime":{"at_utc":"2026-10-15T13:35:58.115253+00:00","conda_prefix":"C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis","python_version":"3.13.16"},"state_counts":{"Conflict":6,"Pending":13,"Refuted":6,"Supported":71},"status":"scenario_reference_complete"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.658s
+
+FAILED (failures=4)

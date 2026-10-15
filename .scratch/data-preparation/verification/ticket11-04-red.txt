@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_missing_report_uses_the_frozen_parent_selection (tests.test_sim_scenarios.ScenarioTests.test_missing_report_uses_the_frozen_parent_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 143, in test_missing_report_uses_the_frozen_parent_selection
+    self.assertEqual(len(missing), 23)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: 24 != 23
+
+----------------------------------------------------------------------
+Ran 1 test in 2.674s
+
+FAILED (failures=1)

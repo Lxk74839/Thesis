@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal", "evidence_scenarios"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -31,7 +31,18 @@ def main():
     parser.add_argument("--task-config", type=Path)
     parser.add_argument("--access-probe", type=Path)
     parser.add_argument("--sim-config", type=Path)
+    parser.add_argument("--sim-record", type=Path)
+    parser.add_argument("--scenario-config", type=Path)
     args = parser.parse_args()
+    if args.stage == "evidence_scenarios":
+        allowed = {'stage', 'sim_record', 'scenario_config', 'output_root'}
+        if (any(value is None for value in (args.sim_record, args.scenario_config, args.output_root))
+                or any(value is not None for key, value in vars(args).items() if key not in allowed)):
+            print(json.dumps({'stage': 'evidence_scenarios', 'status': 'evidence_scenarios_incomplete',
+                              'error': {'code': 'invalid_arguments'}}))
+            return 2
+        from sim_scenarios import prepare_scenarios
+        return prepare_scenarios(args.sim_record, args.scenario_config, args.output_root)
     if args.stage == "sim_normal":
         allowed = {'stage', 'catalog_record', 'sim_config', 'output_root'}
         if (any(value is None for value in (args.catalog_record, args.sim_config, args.output_root))

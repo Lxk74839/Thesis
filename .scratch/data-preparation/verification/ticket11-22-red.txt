@@ -1,0 +1,17 @@
+F
+======================================================================
+FAIL: test_reference_honors_read_denials_and_rejects_policy_escalation (tests.test_sim_scenarios.ScenarioTests.test_reference_honors_read_denials_and_rejects_policy_escalation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 473, in test_reference_honors_read_denials_and_rejects_policy_escalation
+    self.assertEqual(row['candidate_state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.964s
+
+FAILED (failures=1)

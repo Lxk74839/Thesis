@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_independent_reference_rederives_normal_support_and_rejects_container_damage (tests.test_sim_scenarios.ScenarioTests.test_independent_reference_rederives_normal_support_and_rejects_container_damage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 350, in test_independent_reference_rederives_normal_support_and_rejects_container_damage
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\python.exe: can't open file 'C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\diagnostics\\verify_sim11.py': [Errno 2] No such file or directory
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.746s
+
+FAILED (failures=1)

@@ -35,3 +35,13 @@ records/sim/*.json -text
 .scratch/data-preparation/verification/ticket10* -text -whitespace
 .scratch/data-preparation/ticket10-implementation-authorization-20261015.md -text
 .scratch/data-preparation/ticket10-acceptance-sim-normal-1.0.0.md -text
+# Preserve the exact ticket 11 contract and its authorization before configuration.
+.scratch/data-preparation/ticket11-stage1-evidence-scenarios-review-draft-20261015.md -text
+.scratch/data-preparation/ticket11-implementation-authorization-20261015.md -text
+# Exact new bytes are required by ticket 11 source and artifact digest bindings.
+sim_scenarios.py text eol=lf
+tests/test_sim_scenarios.py text eol=lf
+config/sim-scenarios-1.0.0.json -text
+records/sim-scenarios/*.json -text
+.scratch/data-preparation/diagnostics/verify_sim11.py text eol=lf
+.scratch/data-preparation/verification/ticket11* -text -whitespace

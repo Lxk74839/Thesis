@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_fixed_combinations_share_selection_and_have_the_approved_counts (tests.test_sim_scenarios.ScenarioTests.test_fixed_combinations_share_selection_and_have_the_approved_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 299, in test_fixed_combinations_share_selection_and_have_the_approved_counts
+    self.assertEqual(len(self.rows('V13', 'materials.jsonl')), 25)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 24 != 25
+
+----------------------------------------------------------------------
+Ran 1 test in 0.680s
+
+FAILED (failures=1)

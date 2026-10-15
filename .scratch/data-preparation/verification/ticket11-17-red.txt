@@ -1,0 +1,14 @@
+E
+======================================================================
+ERROR: test_private_mutation_trace_locates_before_after_originals_and_receipts (tests.test_sim_scenarios.ScenarioTests.test_private_mutation_trace_locates_before_after_originals_and_receipts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 315, in test_private_mutation_trace_locates_before_after_originals_and_receipts
+    self.assertEqual(trace['before']['materials'][0]['sha256'], hashlib.sha256(wire(self.report('V00'))).hexdigest())
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'materials'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.707s
+
+FAILED (errors=1)

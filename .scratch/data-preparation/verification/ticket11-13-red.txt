@@ -1,0 +1,27 @@
+EE
+======================================================================
+ERROR: test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2 (tests.test_sim_scenarios.ScenarioTests.test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2) (view='V09')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 263, in test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2
+    second = self.report(view, version=2)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 94, in report
+    return next(row for row in self.rows(view, 'materials.jsonl')
+                if row['evidence_id'] == base_id and row['version'] == version)
+StopIteration
+
+======================================================================
+ERROR: test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2 (tests.test_sim_scenarios.ScenarioTests.test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2) (view='V10')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 263, in test_legal_versions_keep_v1_and_explicitly_replace_it_with_v2
+    second = self.report(view, version=2)
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 94, in report
+    return next(row for row in self.rows(view, 'materials.jsonl')
+                if row['evidence_id'] == base_id and row['version'] == version)
+StopIteration
+
+----------------------------------------------------------------------
+Ran 1 test in 0.659s
+
+FAILED (errors=2)

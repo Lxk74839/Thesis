@@ -1,0 +1,17 @@
+F
+======================================================================
+FAIL: test_tampered_fail_keeps_the_old_pass_receipt (tests.test_sim_scenarios.ScenarioTests.test_tampered_fail_keeps_the_old_pass_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 187, in test_tampered_fail_keeps_the_old_pass_receipt
+    self.assertEqual(tampered['facts']['conclusion'], 'fail')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'pass' != 'fail'
+- pass
++ fail
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.683s
+
+FAILED (failures=1)
