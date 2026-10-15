@@ -1,0 +1,6 @@
+test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.485s
+
+OK

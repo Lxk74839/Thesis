@@ -1,0 +1,15 @@
+test_paths_and_all_write_ancestors_are_checked_before_writing (test_sim_normal.SimNormalTests.test_paths_and_all_write_ancestors_are_checked_before_writing) ... FAIL
+
+======================================================================
+FAIL: test_paths_and_all_write_ancestors_are_checked_before_writing (test_sim_normal.SimNormalTests.test_paths_and_all_write_ancestors_are_checked_before_writing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 278, in test_paths_and_all_write_ancestors_are_checked_before_writing
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.182s
+
+FAILED (failures=1)

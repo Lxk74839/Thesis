@@ -1,0 +1,185 @@
+test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) ... 
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'verify_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'batch_created_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'batch_registered_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'storage', 'end_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'packaging', 'start_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'harvest', 'registered_at_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'sampled_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'test_started_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'test_completed_at_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'inspection_report', 'issued_at_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'inspection_sample', 'registered_at_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'retail_status', 'registered_at_ms')) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'retail_valid_to_ms', None)) ... FAIL
+  test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'retail_valid_from_ms', None)) ... FAIL
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'verify_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 235, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'batch_created_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'batch_registered_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'storage', 'end_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'packaging', 'start_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('events', 'harvest', 'registered_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'sampled_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'test_started_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'test_completed_at_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'inspection_report', 'issued_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'inspection_sample', 'registered_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('materials', 'retail_status', 'registered_at_ms'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'retail_valid_to_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+======================================================================
+FAIL: test_illegal_time_or_current_validity_cannot_publish (test_sim_normal.SimNormalTests.test_illegal_time_or_current_validity_cannot_publish) (change=('clock', 'retail_valid_from_ms', None))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 236, in test_illegal_time_or_current_validity_cannot_publish
+    self.assertEqual(json.loads(result.stdout)['error']['code'], 'invalid_config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'io_error' != 'invalid_config'
+- io_error
++ invalid_config
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.523s
+
+FAILED (failures=14)

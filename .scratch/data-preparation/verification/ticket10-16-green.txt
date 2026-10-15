@@ -1,0 +1,6 @@
+test_independent_audit_retains_failed_check_for_a_broken_record (test_sim_normal.SimNormalTests.test_independent_audit_retains_failed_check_for_a_broken_record) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.251s
+
+OK

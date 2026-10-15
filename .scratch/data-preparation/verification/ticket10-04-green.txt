@@ -1,0 +1,6 @@
+test_normal_baseline_matches_the_hand_worked_single_product (test_sim_normal.SimNormalTests.test_normal_baseline_matches_the_hand_worked_single_product) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.216s
+
+OK

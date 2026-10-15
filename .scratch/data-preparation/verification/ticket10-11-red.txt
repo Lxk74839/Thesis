@@ -1,0 +1,16 @@
+test_independent_audit_derives_r1_from_originals_and_receipts (test_sim_normal.SimNormalTests.test_independent_audit_derives_r1_from_originals_and_receipts) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_derives_r1_from_originals_and_receipts (test_sim_normal.SimNormalTests.test_independent_audit_derives_r1_from_originals_and_receipts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 359, in test_independent_audit_derives_r1_from_originals_and_receipts
+    self.assertEqual(audited.returncode, 0, audited.stdout + audited.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\python.exe: can't open file 'C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.scratch\\data-preparation\\diagnostics\\verify_sim10.py': [Errno 2] No such file or directory
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.213s
+
+FAILED (failures=1)

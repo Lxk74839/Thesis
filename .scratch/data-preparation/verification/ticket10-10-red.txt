@@ -1,0 +1,16 @@
+test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes (test_sim_normal.SimNormalTests.test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes) ... FAIL
+
+======================================================================
+FAIL: test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes (test_sim_normal.SimNormalTests.test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 319, in test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes
+    self.assertEqual(repeated.returncode, 0, repeated.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"stage": "sim_normal", "status": "sim_normal_incomplete", "error": {"code": "io_error"}}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.346s
+
+FAILED (failures=1)

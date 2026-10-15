@@ -26,3 +26,12 @@ records/splits/*.json -text
 .scratch/data-preparation/issues/09-evidence-protocol.md -text
 .scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md -text whitespace=-blank-at-eof
 .scratch/data-preparation/ticket10-preimplementation-confirmation-20261015.md -text
+# Ticket 10 new sources and bound evidence must survive Git checkout byte-for-byte.
+sim_normal.py text eol=lf
+tests/test_sim_normal.py text eol=lf
+config/sim-normal-1.0.0.json -text
+records/sim/*.json -text
+.scratch/data-preparation/diagnostics/verify_sim10.py text eol=lf
+.scratch/data-preparation/verification/ticket10* -text -whitespace
+.scratch/data-preparation/ticket10-implementation-authorization-20261015.md -text
+.scratch/data-preparation/ticket10-acceptance-sim-normal-1.0.0.md -text

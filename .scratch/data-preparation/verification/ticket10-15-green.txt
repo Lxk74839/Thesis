@@ -1,0 +1,6 @@
+test_independent_audit_cannot_write_inside_original_components (test_sim_normal.SimNormalTests.test_independent_audit_cannot_write_inside_original_components) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.255s
+
+OK

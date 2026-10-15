@@ -1,0 +1,21 @@
+test_independent_audit_retains_failed_check_for_a_broken_record (test_sim_normal.SimNormalTests.test_independent_audit_retains_failed_check_for_a_broken_record) ... ERROR
+
+======================================================================
+ERROR: test_independent_audit_retains_failed_check_for_a_broken_record (test_sim_normal.SimNormalTests.test_independent_audit_retains_failed_check_for_a_broken_record)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 463, in test_independent_audit_retains_failed_check_for_a_broken_record
+    self.assertEqual(json.loads((self.root / 'audit/check.json').read_bytes())['status'], 'failed')
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\pathlib\_abc.py", line 625, in read_bytes
+    with self.open(mode='rb') as f:
+         ~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis\Lib\pathlib\_local.py", line 537, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.tmp\\tmptqvrj_v5\\audit\\check.json'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.253s
+
+FAILED (errors=1)

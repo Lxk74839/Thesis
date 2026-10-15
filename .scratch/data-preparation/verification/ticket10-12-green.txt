@@ -1,0 +1,6 @@
+test_independent_audit_does_not_accept_self_declared_extra_authority (test_sim_normal.SimNormalTests.test_independent_audit_does_not_accept_self_declared_extra_authority) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.275s
+
+OK

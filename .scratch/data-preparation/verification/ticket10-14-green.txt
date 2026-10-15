@@ -1,0 +1,6 @@
+test_independent_audit_checks_declared_event_and_material_order (test_sim_normal.SimNormalTests.test_independent_audit_checks_declared_event_and_material_order) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.299s
+
+OK

@@ -1,0 +1,6 @@
+test_missing_stage_dependencies_are_structured_failures (test_sim_normal.SimNormalTests.test_missing_stage_dependencies_are_structured_failures) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.269s
+
+OK

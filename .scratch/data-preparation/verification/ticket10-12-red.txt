@@ -1,0 +1,16 @@
+test_independent_audit_does_not_accept_self_declared_extra_authority (test_sim_normal.SimNormalTests.test_independent_audit_does_not_accept_self_declared_extra_authority) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_does_not_accept_self_declared_extra_authority (test_sim_normal.SimNormalTests.test_independent_audit_does_not_accept_self_declared_extra_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 414, in test_independent_audit_does_not_accept_self_declared_extra_authority
+    self.assertEqual(audited.returncode, 2, audited.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.273s
+
+FAILED (failures=1)

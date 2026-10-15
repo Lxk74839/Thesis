@@ -1,0 +1,6 @@
+test_other_stage_arguments_are_rejected (test_sim_normal.SimNormalTests.test_other_stage_arguments_are_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.453s
+
+OK

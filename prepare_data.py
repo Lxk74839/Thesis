@@ -15,9 +15,9 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal"])
     parser.add_argument("--source-manifest", type=Path)
-    parser.add_argument("--output-root", required=True, type=Path)
+    parser.add_argument("--output-root", type=Path)
     parser.add_argument("--metadata-record", type=Path)
     parser.add_argument("--scope-config", type=Path)
     parser.add_argument("--catalog-record", type=Path)
@@ -30,7 +30,19 @@ def main():
     parser.add_argument("--split-record", type=Path)
     parser.add_argument("--task-config", type=Path)
     parser.add_argument("--access-probe", type=Path)
+    parser.add_argument("--sim-config", type=Path)
     args = parser.parse_args()
+    if args.stage == "sim_normal":
+        allowed = {'stage', 'catalog_record', 'sim_config', 'output_root'}
+        if (any(value is None for value in (args.catalog_record, args.sim_config, args.output_root))
+                or any(value is not None for key, value in vars(args).items() if key not in allowed)):
+            print(json.dumps({"stage": "sim_normal", "status": "sim_normal_incomplete",
+                              "error": {"code": "invalid_arguments"}}))
+            return 2
+        from sim_normal import prepare_normal
+        return prepare_normal(args.catalog_record, args.sim_config, args.output_root)
+    if args.output_root is None:
+        parser.error("the following arguments are required: --output-root")
     if args.stage == "preference_tasks":
         from preference_tasks import prepare_tasks, TaskError
         try:

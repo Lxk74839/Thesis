@@ -1,0 +1,6 @@
+test_catalog_must_match_binding_and_contain_unique_included_parents (test_sim_normal.SimNormalTests.test_catalog_must_match_binding_and_contain_unique_included_parents) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.247s
+
+OK

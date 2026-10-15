@@ -1,0 +1,6 @@
+test_independent_audit_rejects_an_unrecognized_snapshot_schema (test_sim_normal.SimNormalTests.test_independent_audit_rejects_an_unrecognized_snapshot_schema) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.271s
+
+OK

@@ -1,0 +1,6 @@
+test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.070s
+
+OK

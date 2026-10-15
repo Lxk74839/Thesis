@@ -1,0 +1,16 @@
+test_independent_audit_cannot_write_inside_original_components (test_sim_normal.SimNormalTests.test_independent_audit_cannot_write_inside_original_components) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_cannot_write_inside_original_components (test_sim_normal.SimNormalTests.test_independent_audit_cannot_write_inside_original_components)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 451, in test_independent_audit_cannot_write_inside_original_components
+    self.assertEqual(result.returncode, 2, result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.271s
+
+FAILED (failures=1)

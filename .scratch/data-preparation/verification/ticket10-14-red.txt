@@ -1,0 +1,16 @@
+test_independent_audit_checks_declared_event_and_material_order (test_sim_normal.SimNormalTests.test_independent_audit_checks_declared_event_and_material_order) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_checks_declared_event_and_material_order (test_sim_normal.SimNormalTests.test_independent_audit_checks_declared_event_and_material_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 441, in test_independent_audit_checks_declared_event_and_material_order
+    self.assertEqual(audited.returncode, 2, audited.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"status": "passed", "errors": []}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.287s
+
+FAILED (failures=1)

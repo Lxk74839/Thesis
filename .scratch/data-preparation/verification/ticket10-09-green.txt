@@ -1,0 +1,6 @@
+test_paths_and_all_write_ancestors_are_checked_before_writing (test_sim_normal.SimNormalTests.test_paths_and_all_write_ancestors_are_checked_before_writing) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.355s
+
+OK

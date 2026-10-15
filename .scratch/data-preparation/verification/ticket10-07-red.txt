@@ -1,0 +1,15 @@
+test_only_confirmed_sim_issuers_and_enumerations_are_enabled (test_sim_normal.SimNormalTests.test_only_confirmed_sim_issuers_and_enumerations_are_enabled) ... FAIL
+
+======================================================================
+FAIL: test_only_confirmed_sim_issuers_and_enumerations_are_enabled (test_sim_normal.SimNormalTests.test_only_confirmed_sim_issuers_and_enumerations_are_enabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 265, in test_only_confirmed_sim_issuers_and_enumerations_are_enabled
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.298s
+
+FAILED (failures=1)

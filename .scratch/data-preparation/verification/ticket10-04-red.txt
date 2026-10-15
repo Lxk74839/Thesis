@@ -1,0 +1,16 @@
+test_normal_baseline_matches_the_hand_worked_single_product (test_sim_normal.SimNormalTests.test_normal_baseline_matches_the_hand_worked_single_product) ... FAIL
+
+======================================================================
+FAIL: test_normal_baseline_matches_the_hand_worked_single_product (test_sim_normal.SimNormalTests.test_normal_baseline_matches_the_hand_worked_single_product)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 110, in test_normal_baseline_matches_the_hand_worked_single_product
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"stage": "sim_normal", "status": "sim_normal_incomplete", "error": {"code": "invalid_catalog"}}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.109s
+
+FAILED (failures=1)

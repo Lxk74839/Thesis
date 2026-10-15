@@ -1,0 +1,6 @@
+test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes (test_sim_normal.SimNormalTests.test_reuse_is_immutable_and_new_roots_reproduce_exact_bytes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.973s
+
+OK

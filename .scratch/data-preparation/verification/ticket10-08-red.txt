@@ -1,0 +1,15 @@
+test_other_stage_arguments_are_rejected (test_sim_normal.SimNormalTests.test_other_stage_arguments_are_rejected) ... FAIL
+
+======================================================================
+FAIL: test_other_stage_arguments_are_rejected (test_sim_normal.SimNormalTests.test_other_stage_arguments_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 272, in test_other_stage_arguments_are_rejected
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.176s
+
+FAILED (failures=1)

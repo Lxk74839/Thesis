@@ -1,0 +1,6 @@
+test_independent_audit_derives_r1_from_originals_and_receipts (test_sim_normal.SimNormalTests.test_independent_audit_derives_r1_from_originals_and_receipts) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.288s
+
+OK

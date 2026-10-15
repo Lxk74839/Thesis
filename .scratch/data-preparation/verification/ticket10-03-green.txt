@@ -1,0 +1,6 @@
+test_unbound_protocol_or_profile_needs_confirmation (test_sim_normal.SimNormalTests.test_unbound_protocol_or_profile_needs_confirmation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.479s
+
+OK

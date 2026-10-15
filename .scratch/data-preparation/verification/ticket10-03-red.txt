@@ -1,0 +1,22 @@
+test_unbound_protocol_or_profile_needs_confirmation (test_sim_normal.SimNormalTests.test_unbound_protocol_or_profile_needs_confirmation) ... FAIL
+
+======================================================================
+FAIL: test_unbound_protocol_or_profile_needs_confirmation (test_sim_normal.SimNormalTests.test_unbound_protocol_or_profile_needs_confirmation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 85, in test_unbound_protocol_or_profile_needs_confirmation
+    self.assertEqual(json.loads(result.stdout), {'stage': 'sim_normal', 'status': 'needs_confirmation',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                'error': {'code': 'unapproved_protocol'}})
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'sta[25 chars]s': 'sim_normal_incomplete', 'error': {'code':[15 chars]og'}} != {'sta[25 chars]s': 'needs_confirmation', 'error': {'code': 'u[16 chars]ol'}}
+- {'error': {'code': 'invalid_catalog'},
++ {'error': {'code': 'unapproved_protocol'},
+   'stage': 'sim_normal',
+-  'status': 'sim_normal_incomplete'}
++  'status': 'needs_confirmation'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.108s
+
+FAILED (failures=1)

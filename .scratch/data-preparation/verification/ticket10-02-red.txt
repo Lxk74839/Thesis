@@ -1,0 +1,116 @@
+test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) ... 
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"version":"one","version":"two"}') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"x":NaN}') ... FAIL
+  test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'[]') ... FAIL
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"byte_contract":"sim-jsonl-utf8-lf-1.0.0","catalog_binding":{"component_sha256"')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"version":"one","version":"two"}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'{"x":NaN}')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_config_is_closed_typed_integer_json (test_sim_normal.SimNormalTests.test_config_is_closed_typed_integer_json) (raw=b'[]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_normal.py", line 87, in test_config_is_closed_typed_integer_json
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 1.067s
+
+FAILED (failures=11)

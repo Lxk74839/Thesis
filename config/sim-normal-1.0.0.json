@@ -1,0 +1,211 @@
+{
+  "byte_contract": "sim-jsonl-utf8-lf-1.0.0",
+  "catalog_binding": {
+    "component_sha256": "1fa80d0e969a73fc02ca3c6c815b8c597980d2aaa2e4a9d158d012d967799a84",
+    "expected_parent_count": 1494,
+    "record_path": "records/catalog/grain-A-1.1.15.json",
+    "record_sha256": "ff9d23d4c1147cfa75c3f979c77bbbfdb1f630b0ee3a78df4aa3c22fa238ccad",
+    "version": "grain-A-1.1.15"
+  },
+  "clock": {
+    "batch_created_at_ms": 1790812800000,
+    "batch_registered_at_ms": 1790812860000,
+    "retail_valid_from_ms": 1791374400000,
+    "retail_valid_to_ms": 1791504000000,
+    "sampled_at_ms": 1791105300000,
+    "snapshot_sealed_at_ms": 1791375000000,
+    "test_completed_at_ms": 1791189000000,
+    "test_started_at_ms": 1791108000000,
+    "verify_at_ms": 1791417600000
+  },
+  "events": {
+    "harvest": {
+      "end_ms": 1790845200000,
+      "registered_at_ms": 1790845260000,
+      "start_ms": 1790841600000
+    },
+    "inspection": {
+      "end_ms": 1791190800000,
+      "registered_at_ms": 1791190860000,
+      "start_ms": 1791104400000
+    },
+    "packaging": {
+      "end_ms": 1790931600000,
+      "registered_at_ms": 1790931660000,
+      "start_ms": 1790928000000
+    },
+    "retail": {
+      "end_ms": 1791374400000,
+      "registered_at_ms": 1791374460000,
+      "start_ms": 1791374400000
+    },
+    "storage": {
+      "end_ms": 1791100800000,
+      "registered_at_ms": 1791100860000,
+      "start_ms": 1790935200000
+    },
+    "transport": {
+      "end_ms": 1791280800000,
+      "registered_at_ms": 1791280860000,
+      "start_ms": 1791194400000
+    }
+  },
+  "facts": {
+    "handover_status": "accepted",
+    "origin_area_id": "SIM-AREA-01",
+    "packaging_condition": "intact",
+    "quantity_unit": "SIM_PACK",
+    "quantity_units": 100,
+    "report_conclusion": "pass",
+    "retail_location_id": "SIM-RETAIL-01",
+    "retail_status": "on_sale",
+    "storage_mode": "SIM_DRY",
+    "test_scope": [
+      "SIM-Q1"
+    ],
+    "warehouse_location_id": "SIM-WAREHOUSE-01"
+  },
+  "id_namespace": "Thesis-SIM-1",
+  "issuers": [
+    {
+      "event_stages": [
+        "harvest"
+      ],
+      "issuer_id": "SIM-PRODUCER",
+      "material_kinds": [
+        "harvest_record"
+      ],
+      "may_create_batch": true
+    },
+    {
+      "event_stages": [
+        "packaging"
+      ],
+      "issuer_id": "SIM-PACKER",
+      "material_kinds": [
+        "packaging_binding"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [
+        "storage"
+      ],
+      "issuer_id": "SIM-WAREHOUSE",
+      "material_kinds": [
+        "storage_log"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [],
+      "issuer_id": "SIM-SAMPLER",
+      "material_kinds": [
+        "inspection_sample"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [
+        "inspection"
+      ],
+      "issuer_id": "SIM-LAB",
+      "material_kinds": [
+        "inspection_report"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [
+        "transport"
+      ],
+      "issuer_id": "SIM-CARRIER",
+      "material_kinds": [
+        "transport_dispatch"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [],
+      "issuer_id": "SIM-RECEIVER",
+      "material_kinds": [
+        "transport_receipt"
+      ],
+      "may_create_batch": false
+    },
+    {
+      "event_stages": [
+        "retail"
+      ],
+      "issuer_id": "SIM-RETAIL",
+      "material_kinds": [
+        "retail_status"
+      ],
+      "may_create_batch": false
+    }
+  ],
+  "materials": {
+    "harvest_record": {
+      "issued_at_ms": 1790845500000,
+      "registered_at_ms": 1790845560000
+    },
+    "inspection_report": {
+      "issued_at_ms": 1791191400000,
+      "registered_at_ms": 1791191460000
+    },
+    "inspection_sample": {
+      "issued_at_ms": 1791105600000,
+      "registered_at_ms": 1791190920000
+    },
+    "packaging_binding": {
+      "issued_at_ms": 1790931900000,
+      "registered_at_ms": 1790931960000
+    },
+    "retail_status": {
+      "issued_at_ms": 1791374700000,
+      "registered_at_ms": 1791374760000
+    },
+    "storage_log": {
+      "issued_at_ms": 1791101100000,
+      "registered_at_ms": 1791101160000
+    },
+    "transport_dispatch": {
+      "issued_at_ms": 1791194700000,
+      "registered_at_ms": 1791280920000
+    },
+    "transport_receipt": {
+      "issued_at_ms": 1791281100000,
+      "registered_at_ms": 1791281160000
+    }
+  },
+  "profile": "normal_six_stage_v1",
+  "protocol_binding": {
+    "draft_path": ".scratch/data-preparation/ticket09-stage1-sim-evidence-request-review-draft-20261015.md",
+    "draft_sha256": "6ae2dd42b943b65eda899560be8cffa68fac8570ad362439b2a100de76720461",
+    "record_path": ".scratch/data-preparation/issues/09-evidence-protocol.md",
+    "record_sha256": "ef7f34e0868c879963287c4085418ed2748939f394ea61ea1751635b4da7abc6",
+    "version": "sim-evidence-protocol-1.0.0"
+  },
+  "reference_request": {
+    "predicate": "inspection_report_conclusion",
+    "profile_id": "R1_SIM_Q1",
+    "required_conclusion": "pass",
+    "required_kinds": [
+      "inspection_sample",
+      "inspection_report"
+    ],
+    "required_test_scope": [
+      "SIM-Q1"
+    ],
+    "source": "experiment_design",
+    "time_scope": "sampling_event"
+  },
+  "registry": {
+    "backend": "local_sim_registry",
+    "identity_mode": "simulated_allowlist_no_crypto",
+    "read_principal_id": "SIM-VERIFIER",
+    "registrar_id": "SIM-REGISTRY"
+  },
+  "schema_version": "sim-normal-config-1.0.0",
+  "version": "sim-normal-1.0.0"
+}

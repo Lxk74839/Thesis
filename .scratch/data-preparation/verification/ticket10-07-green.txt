@@ -1,0 +1,6 @@
+test_only_confirmed_sim_issuers_and_enumerations_are_enabled (test_sim_normal.SimNormalTests.test_only_confirmed_sim_issuers_and_enumerations_are_enabled) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.183s
+
+OK
