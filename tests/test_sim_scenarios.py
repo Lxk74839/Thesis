@@ -623,6 +623,24 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual(row['candidate_state'], 'Pending')
         self.assertIn(2, [head['head_version'] for head in row['clauses'][0]['version_heads']])
 
+    def test_missing_registered_status_actions_keep_version_checks_incomplete(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for view in ('V08', 'V09'):
+            with self.subTest(view=view):
+                self.restore_public(saved)
+                self.replace_rows(view, 'change-actions.jsonl', [])
+                self.reseal()
+                result, audit = self.audit('missing-action-' + view)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                clause = self.references(audit)[view, 'R1_SIM_Q1', 'PX3']['clauses'][0]
+                self.assertEqual((clause['s'], clause['r']), (1, 0))
+                self.assertFalse(clause['required_reads_complete'])
+                self.assertFalse(clause['version_checks_complete'])
+                self.assertEqual(clause['state'], 'Pending')
+                self.assertIn('unavailable', [r['reason'] for r in clause['rejected']])
+
     def test_cross_scope_revision_actions_cannot_remove_the_original_claim(self):
         self.fixture()
         self.prepared()

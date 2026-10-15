@@ -583,6 +583,16 @@ class EvidenceView:
             else:
                 accepted.append(observation)
         for key in sorted(relevant):
+            if key[0] == 'change_action':
+                if any(r['receipt_status'] == 'accepted' and r['source'] == 'SIM'
+                       and r['registry_backend'] == 'local_sim_registry'
+                       and r['registrar_id'] == self.data['policy.json'][0]['registrar_id']
+                       for r, _ in self.receipts[key]):
+                    _, observation = self.original(key)
+                    if observation['reason'] in ('unavailable', 'access_denied'):
+                        rejected.append(observation)
+                        reads_complete = versions_complete = False
+                continue
             if key[0] != 'material':
                 continue
             head = self.lineage(key[1])

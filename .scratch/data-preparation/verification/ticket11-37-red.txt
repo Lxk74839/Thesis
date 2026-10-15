@@ -1,0 +1,23 @@
+FF
+======================================================================
+FAIL: test_missing_registered_status_actions_keep_version_checks_incomplete (tests.test_sim_scenarios.ScenarioTests.test_missing_registered_status_actions_keep_version_checks_incomplete) (view='V08')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 639, in test_missing_registered_status_actions_keep_version_checks_incomplete
+    self.assertFalse(clause['required_reads_complete'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_missing_registered_status_actions_keep_version_checks_incomplete (tests.test_sim_scenarios.ScenarioTests.test_missing_registered_status_actions_keep_version_checks_incomplete) (view='V09')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 639, in test_missing_registered_status_actions_keep_version_checks_incomplete
+    self.assertFalse(clause['required_reads_complete'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 1.997s
+
+FAILED (failures=2)
