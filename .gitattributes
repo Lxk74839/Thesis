@@ -45,3 +45,16 @@ config/sim-scenarios-1.0.0.json -text
 records/sim-scenarios/*.json -text
 .scratch/data-preparation/diagnostics/verify_sim11.py text eol=lf
 .scratch/data-preparation/verification/ticket11* -text -whitespace
+# Preserve the byte-bound ticket12 contract and new offline sources on checkout.
+/.scratch/data-preparation/ticket12-* text eol=lf
+/.scratch/data-preparation/diagnostics/ticket12-* text eol=lf
+/.scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/* text eol=lf
+/.scratch/data-preparation/diagnostics/*quality12*.py text eol=lf
+/quality_fusion.py text eol=lf
+/recommendation_actions.py text eol=lf
+/config/quality-fusion-0.1.0.json text eol=lf
+/tests/test_quality_fusion.py text eol=lf
+/tests/test_recommendation_actions.py text eol=lf
+/tests/quality_fixtures.py text eol=lf
+/records/sim-quality/*.json -text
+/.scratch/data-preparation/verification/ticket12-* text eol=lf

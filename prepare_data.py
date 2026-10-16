@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal", "evidence_scenarios"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal", "evidence_scenarios", "quality_fusion"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -33,7 +33,27 @@ def main():
     parser.add_argument("--sim-config", type=Path)
     parser.add_argument("--sim-record", type=Path)
     parser.add_argument("--scenario-config", type=Path)
+    parser.add_argument("--quality-config", type=Path)
     args = parser.parse_args()
+    if args.stage == "quality_fusion":
+        allowed = {'stage', 'sim_record', 'quality_config', 'output_root'}
+        if (any(value is None for value in (args.sim_record, args.quality_config, args.output_root))
+                or any(value is not None for key, value in vars(args).items() if key not in allowed)):
+            print(json.dumps({'stage': 'quality_fusion', 'status': 'quality_fusion_incomplete',
+                              'error': {'code': 'invalid_arguments'}}))
+            return 2
+        from quality_fusion import prepare_quality
+        try:
+            result = prepare_quality(args.sim_record, args.quality_config, args.output_root)
+            print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+            return 0
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            failure = {'stage': 'quality_fusion', 'status': 'quality_fusion_incomplete',
+                       'error': {'code': str(exc) if isinstance(exc, ValueError) else type(exc).__name__}}
+            if hasattr(exc, 'failure_record'):
+                failure['failure_record'] = exc.failure_record
+            print(json.dumps(failure))
+            return 2
     if args.stage == "evidence_scenarios":
         allowed = {'stage', 'sim_record', 'scenario_config', 'output_root'}
         if (any(value is None for value in (args.sim_record, args.scenario_config, args.output_root))

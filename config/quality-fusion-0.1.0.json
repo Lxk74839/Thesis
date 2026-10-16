@@ -1,0 +1,73 @@
+{
+  "approval_binding": {
+    "authorization": {
+      "path": ".scratch/data-preparation/ticket12-quality-offline-authorization-20261016.md",
+      "sha256": "f4d08021ce2bebf9246fba6fa161a7549c1352775d611b80b367597ebf5fa163"
+    },
+    "report": {
+      "path": ".scratch/data-preparation/ticket12-quality-dev-report-and-implementation-contract-20261016.md",
+      "sha256": "5249861c92b1403836bc9b5e70b45d800a6ba8dc424a4e9c74c92c998cac88ca"
+    }
+  },
+  "assignment": {
+    "T_denominator": 5,
+    "T_numerators": [
+      1,
+      4
+    ],
+    "domain": "Thesis-ticket12-quality-v1",
+    "seed": "20261016",
+    "stocks": [
+      25,
+      50,
+      75,
+      100
+    ]
+  },
+  "normal_binding": {
+    "acceptance": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0-acceptance.json",
+      "sha256": "831c951af0e09f0d041354579d0fa3713cb3deeb52c8328fe8574e347a0a338c"
+    },
+    "config": {
+      "path": "config/sim-normal-1.0.0.json",
+      "sha256": "f58de2f0de17eff32ce461184c28a879560f1d97cfbc8836c2be391cd4572ba3"
+    },
+    "record": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+      "sha256": "8694d35a342f6c198bc1db1a0d2ee4b5cad8e09a17e13aed72dacd23eb907715"
+    }
+  },
+  "rules": {
+    "A_checks": [
+      "same_parent_batch",
+      "same_location_unit"
+    ],
+    "C_slots": [
+      "retail_status"
+    ],
+    "alpha_grid": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "attribute": "retail_stock",
+    "beta_T_grid": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "main_alpha": 0.5,
+    "main_beta": [
+      0.25,
+      0.5,
+      0.25
+    ],
+    "score_decimals": 12,
+    "source": "experiment_design",
+    "stock_scale": 100,
+    "weight": 1
+  },
+  "schema_version": "quality-fusion-config-0.1.0",
+  "version": "sim-quality-fusion-0.1.0"
+}
