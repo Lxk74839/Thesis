@@ -1,10 +1,10 @@
 {
   "base": "cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1",
-  "candidate": "1f3f6bc852805b04fd4aba07878623b564428a0a",
+  "candidate": "27a03a59e72991faddbc88b5828b8516dcd6b760",
   "initial_candidate": "ee5bb2783fdbf4c6ea8b50ebb2f077ed66f0bfb8",
   "prior_clearance_commit": "2d54759cfe64111a0d4098532c2d3f0a603bb8d4",
   "prior_candidate": "7de5d37220cb4a70bc2b6148a60698b4870917a6",
-  "diff": "git diff cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1...1f3f6bc852805b04fd4aba07878623b564428a0a",
+  "diff": "git diff cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1...27a03a59e72991faddbc88b5828b8516dcd6b760",
   "concentrated_fix_rounds": 1,
   "real_integration_fix_rounds": 1,
   "standards": {
@@ -22,6 +22,11 @@
       "sha256": "a0e10d5eba05deb009f905e2d3402c5b7fbd97471ea991888935fffbaddab44a"
     },
     "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-standards-acceptance-final.md",
+      "bytes": 1902,
+      "sha256": "8c2e0b37f6f3a90d0ddeeef6f11e22d16270a200324565f18ad99e5ba8b2c45c"
+    },
+    "integration_report": {
       "path": ".scratch/data-preparation/verification/ticket13-standards-delivery-final.md",
       "bytes": 2036,
       "sha256": "72cd49d9a88df41507630de27cd2452b092830d7aea8eb77a165bd1a5a6ac327"
@@ -42,11 +47,18 @@
       "sha256": "37f95bad52b8d10d08bdb4175fdb01d105c2b7e531908c2fad5a387456caf65c"
     },
     "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-spec-acceptance-final.md",
+      "bytes": 1817,
+      "sha256": "a41f733a35f5dee41aa7ca4d66af95060abdc3e01b404702643bf1629dac7510"
+    },
+    "integration_report": {
       "path": ".scratch/data-preparation/verification/ticket13-spec-delivery-final.md",
       "bytes": 2027,
       "sha256": "dd6eb2ce1caaea7bbb4eb5faeefc284f2fed358f7e9021032e83d32914bd8e64"
     }
   },
   "review_execution": "two_independent_parallel_static_agents_no_Python",
-  "scope": "code_review_only_real_delivery_pending"
+  "scope": "code_review_only_data_acceptance_is_separate",
+  "integration_candidate": "1f3f6bc852805b04fd4aba07878623b564428a0a",
+  "acceptance_evidence_refinement_rounds": 1
 }
