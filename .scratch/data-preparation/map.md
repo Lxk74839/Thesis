@@ -6,6 +6,8 @@
 
 ## Decisions-so-far
 
+- 2026-10-16当前更新：[工单13联合准备子范围](issues/13-joint-task-package.md)已resolved。授权fb315b2、最终生产源码1f3f6bc，固定cfec0e5起点/最终27a03a5候选两轴均0阻塞/0非阻塞；31项测试、24轮RED→GREEN及A05定向补证通过。真实1,603根、1,494父商品/批次、2,393,008完整候选关联、16,030视图绑定；S2实测nQ=1,283、开发320，n8=1,111引用旧P0。11组件/5参考新根字节复现、一致复用、1,556文件保护通过；另建接受记录，prepared未回写。Python累计657.348秒，子树峰值433.523MiB（另预留64MiB），失败全入账、未扩额。[接受/覆盖/剩余依赖](ticket13-acceptance-joint-task-package-0.1.0.md)、[冻结证据](verification/ticket13-delivery-evidence.json)。整体充分性not_determined；真实工具/运行器/预算及14/15未完成，未运行T0/P1、付费模型或部署。以下历史按时间保留。
+
 - 2026-10-16当前更新：[工单11](issues/11-evidence-scenarios.md)已resolved。sim-scenarios-1.0.0离线组件16视图、同一150对象，47,808独立参考逐对象/获批分布一致；270项回归、固定2e6594e双轴无阻塞、116稳定文件及参考新空根字节复现、一致复用、1,003保护文件通过。A17公开fixture仅检验未来配对合同，不关联真实用户。正式bundle约0.777GiB；正常基准/原稿/旧接受记录保持原字节，主prepared记录不改，独立接受另存。[正式验收](ticket11-acceptance-sim-scenarios-1.0.0.md)。权重/充分性/预算留12，真实根任务/工具留13，无推荐模型运行。
 
 - 2026-10-15工单11：J1—J8及S1/S2、H01—H18、A01—A18获用户一次确认并授权，先归档原稿实际摘要再写正式配置。固定2e6594e，当前claimed，仅离线异常组件；16视图、同一150对象、历史R1无TTL及R1 AND R5。实际门禁及接受结果另归档，不启动12/13或模型。[授权](ticket11-implementation-authorization-20261015.md)。
