@@ -67,6 +67,7 @@ class JointFixture:
             snap = {'snapshot_id':'snapshot-'+label,'verify_at_ms':1791417600000,'read_principal_id':'SIM-VERIFIER',
                     'protocol_version':'quality-preference-protocol-0.1.0' if label.startswith('Q') else 'sim-evidence-protocol-1.0.0',
                     'components':{k:{x:v for x,v in ref.items() if x!='path'} for k,ref in files.items()}}
+            if not label.startswith('Q'):del snap['read_principal_id']
             snapshot=self.write('facts/'+label+'/snapshot.json',snap)
             material='sim-quality-fusion-0.1.0' if label.startswith('Q') else 'sim-scenarios-1.0.0'
             self.views.append({'label':label,'arm':'quality' if label.startswith('Q') else 'necessary',

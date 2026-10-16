@@ -439,3 +439,14 @@ class JointTasksTests(unittest.TestCase):
         result=self.verify(output='partial')
         self.assertEqual(result.returncode,2,result.stdout)
         self.assertEqual(json.loads(result.stdout)['error']['code'],'incomplete_probe_coverage')
+
+    def test_accepted_scenario_snapshot_inherits_principal_from_bound_policy(self):
+        fixture=JointFixture(self.work)
+        for view in fixture.views[:8]:
+            snapshot=json.loads((ROOT/view['snapshot']['path']).read_bytes())
+            snapshot.pop('read_principal_id',None)
+            view['snapshot']=fixture.write('facts/'+view['label']+'/snapshot.json',snapshot)
+        fixture.refresh()
+        result=self.prepare(fixture)
+        self.assertEqual(result.returncode,0,result.stdout)
+        self.assertEqual(self.verify().returncode,0)

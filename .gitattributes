@@ -70,3 +70,4 @@ records/sim-scenarios/*.json -text
 /.scratch/data-preparation/diagnostics/*joint13*.py text eol=lf
 /.scratch/data-preparation/verification/ticket13-* -text
 /records/joint-tasks/*.json -text
+/.scratch/data-preparation/diagnostics/ticket13-generation-location.py text eol=lf

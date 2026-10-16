@@ -240,9 +240,15 @@ def prepare_joint(config_path, output_root, access_probe=None):
             record = records['quality' if view['arm']=='quality' else 'scenarios']
             require(any(info['path']==view['snapshot']['path'] and info['sha256']==view['snapshot']['sha256']
                         for info in record['components'].values()),'invalid_baseline')
-            snapshot = decode(checked(view['snapshot'],cache).read_bytes())
+            snapshot_file = checked(view['snapshot'],cache)
+            snapshot = decode(snapshot_file.read_bytes())
+            policy_file = snapshot_file.parent/'policy.json'
+            policy = decode(checked({'path':policy_file.relative_to(ROOT).as_posix(),
+                'sha256':snapshot['components']['policy.json']['sha256']},cache).read_bytes())
             require(snapshot['snapshot_id']==view['snapshot_id'] and snapshot['verify_at_ms']==cfg['verify_at_ms']
-                    and snapshot['read_principal_id']==cfg['principal_id'] and view['request_profile_id']==PROFILE)
+                    and policy['read_principal_id']==cfg['principal_id'] and view['request_profile_id']==PROFILE)
+            if view['arm']=='quality':
+                require(snapshot['read_principal_id']==cfg['principal_id'])
         catalog = list(rows(inputs['preference_catalog']))
         require(all(set(p)=={'parent_asin','title','crop'} and all(isinstance(v,str) and v for v in p.values()) for p in catalog))
         products = {p['parent_asin']:p for p in catalog}
