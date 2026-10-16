@@ -58,3 +58,15 @@ records/sim-scenarios/*.json -text
 /tests/quality_fixtures.py text eol=lf
 /records/sim-quality/*.json -text
 /.scratch/data-preparation/verification/ticket12-* text eol=lf
+
+# Preserve ticket13 approved bytes and new preparation/audit artifacts.
+/.scratch/data-preparation/ticket13-* -text
+/joint_tasks.py text eol=lf
+/joint_access.py text eol=lf
+/tests/test_joint_tasks.py text eol=lf
+/tests/joint_fixtures.py text eol=lf
+/config/joint-task-package-0.1.0.json -text
+/docs/data-sources/joint-tasks.md text eol=lf
+/.scratch/data-preparation/diagnostics/*joint13*.py text eol=lf
+/.scratch/data-preparation/verification/ticket13-* -text
+/records/joint-tasks/*.json -text

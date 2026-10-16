@@ -1,0 +1,342 @@
+{
+  "schema_version": "joint-config-0.1.0",
+  "package_version": "joint-task-package-0.1.0",
+  "model_schema": "joint-model-input-0.1.0",
+  "base_score_version": "char3-tfidf-history-1.0.0",
+  "catalog_version": "grain-A-1.1.15",
+  "approval": {
+    "contract": {
+      "path": ".scratch/data-preparation/ticket13-stage1-joint-package-and-independent-evaluation-contract-20261016.md",
+      "bytes": 44353,
+      "sha256": "d279bbeda1e406569e2c186e23988a3402a8946cab3ba8dee2a716ad76056221"
+    },
+    "authorization": {
+      "path": ".scratch/data-preparation/ticket13-implementation-authorization-20261016.md",
+      "bytes": 2396,
+      "sha256": "7f7ab0e238b117ae0f38372697b12a9aad7755a0786ddbd2ef10fd6b566efd81"
+    },
+    "protocol": {
+      "path": ".scratch/data-preparation/ticket12-final-experiment-protocol-review-20261016.md",
+      "bytes": 34184,
+      "sha256": "d2b22af021b2e3b7a25046927c122ba653fe52691bc90c964b5f5edf6b7da4ca"
+    },
+    "protocol_confirmation": {
+      "path": ".scratch/data-preparation/ticket12-final-experiment-protocol-confirmation-20261016.md",
+      "bytes": 8477,
+      "sha256": "e81c699a4376dc43c417a0c697d481d5c5282ca0fbb5c068072d84d6d60a90fc"
+    }
+  },
+  "inputs": {
+    "catalog": {
+      "path": "records/catalog/grain-A-1.1.15.json",
+      "bytes": 3680,
+      "sha256": "ff9d23d4c1147cfa75c3f979c77bbbfdb1f630b0ee3a78df4aa3c22fa238ccad"
+    },
+    "selected": {
+      "path": "records/reviews/grain-A-1.1.15-review-diagnostics-1.0.0.json",
+      "bytes": 43666,
+      "sha256": "83781b12c762ac18a852c329d933514b0aaa560b6351460d0d31503b49691d19"
+    },
+    "cleaning": {
+      "path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0.json",
+      "bytes": 3741,
+      "sha256": "087134e66aec971070aaca11eee837112fd39a0893993b16b94b2194b19d89a5"
+    },
+    "cleaning_acceptance": {
+      "path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-acceptance.json",
+      "bytes": 3421,
+      "sha256": "11cb020b33ace568f6bb93d60e977e64444e4a0b63e6552514e1ac387a1df378"
+    },
+    "cleaning_erratum": {
+      "path": "records/cleaning/grain-A-1.1.15-review-cleaning-1.0.0-format-erratum.json",
+      "bytes": 2404,
+      "sha256": "086982a25b091fb56936d40b3901edef7d4d4e7e4f180e647e237907f2cd53ab"
+    },
+    "split": {
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0.json",
+      "bytes": 5262,
+      "sha256": "2da2aede2c3057c914621bfaf40d2d5ba81b3ad1a1b694451213ea8358a21131"
+    },
+    "split_acceptance": {
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0-acceptance.json",
+      "bytes": 13458,
+      "sha256": "8af692d6409c8136bd67e6d5fbb696c9e725e53aea958ea639417153382d45ad"
+    },
+    "preference": {
+      "path": "records/preference-tasks/grain-A-1.1.15-preference-task-1.0.1.json",
+      "bytes": 4064,
+      "sha256": "79cbaf4a64f113f3139088061488ef42cdcdb50a947a285b6d5295234901c926"
+    },
+    "preference_acceptance": {
+      "path": "records/preference-tasks/grain-A-1.1.15-preference-task-1.0.1-acceptance.json",
+      "bytes": 6531,
+      "sha256": "e28d48990a6e754427e1460bdbda414591c6b43ada3061261a8dd2b6ac4ca956"
+    },
+    "normal": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0.json",
+      "bytes": 3199,
+      "sha256": "8694d35a342f6c198bc1db1a0d2ee4b5cad8e09a17e13aed72dacd23eb907715"
+    },
+    "normal_acceptance": {
+      "path": "records/sim/grain-A-1.1.15-sim-normal-1.0.0-acceptance.json",
+      "bytes": 5956,
+      "sha256": "831c951af0e09f0d041354579d0fa3713cb3deeb52c8328fe8574e347a0a338c"
+    },
+    "scenarios": {
+      "path": "records/sim-scenarios/grain-A-1.1.15-sim-scenarios-1.0.0.json",
+      "bytes": 42689,
+      "sha256": "9c8216fd821c249e1b393801d3ae8bdf4fe2c98b01ec21606adcc860871f3361"
+    },
+    "scenarios_acceptance": {
+      "path": "records/sim-scenarios/grain-A-1.1.15-sim-scenarios-1.0.0-acceptance.json",
+      "bytes": 47465,
+      "sha256": "f4d6673c309bc1e9b359e9bddad4d28604d755073a8b61735c01ba0d29253ede"
+    },
+    "quality": {
+      "path": "records/sim-quality/grain-A-1.1.15-sim-quality-fusion-0.1.0.json",
+      "bytes": 7248,
+      "sha256": "215ce92c86b55b7b87a6e5677a161b8d9623c39000966651c9b91d13336197bc"
+    },
+    "quality_acceptance": {
+      "path": "records/sim-quality/grain-A-1.1.15-sim-quality-fusion-0.1.0-acceptance.json",
+      "bytes": 12284,
+      "sha256": "fd3a17e94336410f6a971ce6866a8d835ae821035fcfbd8c2f6723bd8968ed8d"
+    },
+    "preference_catalog": {
+      "path": "data/preference-tasks/grain-A-1.1.15/preference-task-1.0.1/model/catalog.jsonl",
+      "bytes": 186370,
+      "sha256": "30cf9a8c3cde2f2b7e9d8037b760922a36f478c9fcbcbd0248f279d581ab5339"
+    },
+    "preference_tasks": {
+      "path": "data/preference-tasks/grain-A-1.1.15/preference-task-1.0.1/model/tasks.jsonl",
+      "bytes": 263769471,
+      "sha256": "bb8b3de3d8223515da235ef20877b405edfb937234035967cb8abd8b5cd1cb26"
+    },
+    "preference_evaluation": {
+      "path": "data/preference-tasks/grain-A-1.1.15/preference-task-1.0.1/private/evaluation.jsonl",
+      "bytes": 1504905,
+      "sha256": "f168dbf0dd5b20140a73efe61d347f2f40406b47eeb006115fe2b6d2be20c66a"
+    },
+    "preference_audit": {
+      "path": "data/preference-tasks/grain-A-1.1.15/preference-task-1.0.1/private/task-audit.jsonl",
+      "bytes": 2992144,
+      "sha256": "603c7c9356aca3f2f6e39dc9f9d6f7a97c710591e179c8528e4aa47208441234"
+    },
+    "preference_model_manifest": {
+      "path": "data/preference-tasks/grain-A-1.1.15/preference-task-1.0.1/model/manifest.json",
+      "bytes": 293,
+      "sha256": "4d38032f57479d7c9d2087d922d2f7efbb7ff53bfd6c2ac1acf232d1553a7b76"
+    },
+    "identity_key": {
+      "path": "data/task-inputs/preference-task-1.0.0/id-key.bin",
+      "bytes": 32,
+      "sha256": "d625d273299725dbd986e906d6573b0b32b626f928df64d95dfea8c3662af426"
+    },
+    "raw_reviews": {
+      "path": "data/reviews/grain-A-1.1.15/review-diagnostics-1.0.0/raw-matched.jsonl",
+      "bytes": 24176576,
+      "sha256": "4a8f118c514a49bfa5c14b09dabca8389b46743100d4798b875b24ec913a23a6"
+    },
+    "review_sources": {
+      "path": "data/reviews/grain-A-1.1.15/review-diagnostics-1.0.0/source-references.jsonl",
+      "bytes": 7455268,
+      "sha256": "7f51a0e75d973a2db3ec0d2039aed5e885508c03c603da26d73ec35c7c8620de"
+    },
+    "clean_reviews": {
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/reviews.jsonl",
+      "bytes": 38055177,
+      "sha256": "dbcd4b2ba7ef3bda6527005edc68ced8ddc647a8e05eaf58e4664afbeaa9e955"
+    },
+    "clean_audit": {
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/source-row-audit.jsonl",
+      "bytes": 15107394,
+      "sha256": "fe3b7f6a6c76bcd854e845e03f58e1f56446dea1802667ba3e1d2592740d674c"
+    },
+    "clean_accounts": {
+      "path": "data/cleaning/grain-A-1.1.15/review-cleaning-1.0.0/account-eligibility.jsonl",
+      "bytes": 23806848,
+      "sha256": "5d39be3d9d1c7f02d9c6660a2e8e4d8b71795b7661d6f2347223e115008e6837"
+    },
+    "scenario_reference": {
+      "path": "data/sim-reference/grain-A-1.1.15/sim-scenarios-1.0.0/scenario-reference-1.0.0/reference.jsonl",
+      "bytes": 380874737,
+      "sha256": "51353d37f5bc489911cfaac5d62562e9bde407e0e487178c4c309ebbed09f9f9"
+    },
+    "quality_reference": {
+      "path": "data/quality-fusion-audit/20261016/formal/raw-reference.jsonl",
+      "bytes": 6560900,
+      "sha256": "2012df7884d700944999ca16f76c20a3e4b972c63b0933b8e7f1262eae0b7ad6"
+    },
+    "quality_reference_summary": {
+      "path": "data/quality-fusion-audit/20261016/formal/raw-reference-summary.json",
+      "bytes": 557,
+      "sha256": "57fc1f16426948176f5c4a8111a8af3fdc629bcff73b9c236211979f34a5b0f4"
+    },
+    "p0_aggregate": {
+      "path": ".scratch/data-preparation/verification/ticket12-p0-20261016-aggregate.json",
+      "bytes": 50328,
+      "sha256": "273b46b8643a769541d75a72b8a134ca0be144d494c793ca1c6316cd8baf6590"
+    },
+    "p0_applicability": {
+      "path": "data/evaluation-audit/ticket12-p0-20261016/account-applicability.jsonl",
+      "bytes": 2188631,
+      "sha256": "371c3e8e21389fe5aeee0897025a9eab53254ae05ac74e5cbefa7f17f3944fd8"
+    }
+  },
+  "views": [
+    {
+      "label": "V00",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_286b0847b020a9d2cb5baa04a756d4fac00299e9f17fa1756df55ca7a32a03f8",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_286b0847b020a9d2cb5baa04a756d4fac00299e9f17fa1756df55ca7a32a03f8/snapshot.json",
+        "bytes": 1427,
+        "sha256": "7a6a139a0d3238be6db8de0edf1d574428a9046e0f07ccdd4057c4a6c9b51d45"
+      },
+      "snapshot_id": "n_cc7de7e80d5f2a82ddf25fb2fa135bc53678954229ee58a832bfc63349c29393",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V01",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_3f831ca654073b0d3e8ec8b11beaa17487e8364ef7edd37cde4aad10c72e7441",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_3f831ca654073b0d3e8ec8b11beaa17487e8364ef7edd37cde4aad10c72e7441/snapshot.json",
+        "bytes": 1427,
+        "sha256": "0ee46b7cf8f1434ee1c6a2e2b06582e7497381dc7e1f2c25aae3b172f8082aeb"
+      },
+      "snapshot_id": "n_5815fa2a64842b0656e703b9eb45641e7a5beb8aa9fbf571584915d4db8839d0",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V03",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_a842f28d7e66049a4df0dc24bf27b58ce531431d455e48b1b3b145ff744e8cb9",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_a842f28d7e66049a4df0dc24bf27b58ce531431d455e48b1b3b145ff744e8cb9/snapshot.json",
+        "bytes": 1427,
+        "sha256": "257ec92b69dd7429b44f53f440faabd18c19fd1e2a34a91bc529b059c3887c9b"
+      },
+      "snapshot_id": "n_941f98d15e73908fc335a1a2567470926b59ec9bd663a0477517d7df6b2db9d4",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V05",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_e3f3fea2e99e2803e849b7638b87152e77712222757ae610e8e9e6da7eef9898",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_e3f3fea2e99e2803e849b7638b87152e77712222757ae610e8e9e6da7eef9898/snapshot.json",
+        "bytes": 1427,
+        "sha256": "db809463ce2481facb79cfa7c98b7754fd7d7ad9ba670943db2cb0222050605a"
+      },
+      "snapshot_id": "n_ba2880de4cea51ab85b28627927993f42bc7a3948abf419e7a1661c584b6ac23",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V06",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_cb05b159559cd5498544484e5f22f0d40085e531adb46c2a60d8db4a92a46158",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_cb05b159559cd5498544484e5f22f0d40085e531adb46c2a60d8db4a92a46158/snapshot.json",
+        "bytes": 1427,
+        "sha256": "a33f9dd766f43cabfbd3ca66418beb08e745b89fe1f48c92410265858de7a148"
+      },
+      "snapshot_id": "n_7951335eaef7c2022107ab4d9f5050500df43450988b680b2367eea543235935",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V07",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_4186f86a4769fdbe39ca9f59ccdba4b41d41f544b1abde3e358cb07c52a77617",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_4186f86a4769fdbe39ca9f59ccdba4b41d41f544b1abde3e358cb07c52a77617/snapshot.json",
+        "bytes": 1427,
+        "sha256": "c80cbec75d73e8355c92cb2500855ce1552e4048624693156c18a9f5276cc2b5"
+      },
+      "snapshot_id": "n_fa1567ecbf639b5b22de5cb5b749def97d4be4094376e8201d605930e47f4e31",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V09",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_8ddbc9b22f91e6951c02beee266c01f9b65a3ea650ce04ef85f2ecd8ea538404",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_8ddbc9b22f91e6951c02beee266c01f9b65a3ea650ce04ef85f2ecd8ea538404/snapshot.json",
+        "bytes": 1433,
+        "sha256": "ec27f867a3c0a88ce8f0b37f34252d59cf26a0ac50749bece204d7e1113cf8b5"
+      },
+      "snapshot_id": "n_9f187522c058e6368a08a5430653b586db5c0d6157ac4aa08dfc478416c49bbb",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "V12",
+      "arm": "necessary",
+      "material_version": "sim-scenarios-1.0.0",
+      "view_id": "q_09ba12120d2d8693d8e8a0fb00048c34819bb8836a8e45eb2bc73319447b9649",
+      "snapshot": {
+        "path": "data/sim-scenarios/grain-A-1.1.15/sim-scenarios-1.0.0/views/q_09ba12120d2d8693d8e8a0fb00048c34819bb8836a8e45eb2bc73319447b9649/snapshot.json",
+        "bytes": 1427,
+        "sha256": "d4c82c9c46531d750ac8528af31a800165f5cece8d63177ff1d809a39b17e67b"
+      },
+      "snapshot_id": "n_e39a949680748d2a0f47ea0a31573864fa3cd1c294a117aa8e20ac9cc4ca32a1",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "Q1",
+      "arm": "quality",
+      "material_version": "sim-quality-fusion-0.1.0",
+      "view_id": "q_942dd13177585f2417ae577d50bb94110078d1e23f1d56c89007f996a161558a",
+      "snapshot": {
+        "path": "data/sim-quality/grain-A-1.1.15/sim-quality-fusion-0.1.0/views/q_942dd13177585f2417ae577d50bb94110078d1e23f1d56c89007f996a161558a/snapshot.json",
+        "bytes": 121158,
+        "sha256": "871347ca85ba4bbd803057f84a44117041797c3d762b4bec8016381890483832"
+      },
+      "snapshot_id": "qf_2f5ce9d8e58830ac145b3f9569a994ad237897ee6936b9a5d6085553d33db401",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    },
+    {
+      "label": "Q2",
+      "arm": "quality",
+      "material_version": "sim-quality-fusion-0.1.0",
+      "view_id": "q_5b4204f21ce6ef7b9693890b7b455c72932da4bf2e162a63d42bab0182580c18",
+      "snapshot": {
+        "path": "data/sim-quality/grain-A-1.1.15/sim-quality-fusion-0.1.0/views/q_5b4204f21ce6ef7b9693890b7b455c72932da4bf2e162a63d42bab0182580c18/snapshot.json",
+        "bytes": 121158,
+        "sha256": "0aec698a47f489b0a06f730ab6b5ad9df5cabe62fcb031b84d5826219ea709fd"
+      },
+      "snapshot_id": "qf_70827efddf8d35725a9f917a898a9240e53bfcafeb62f8a6d910579cfab55a62",
+      "request_profile_id": "R1_AND_R5_SIM_Q1_ON_SALE"
+    }
+  ],
+  "verify_at_ms": 1791417600000,
+  "principal_id": "SIM-VERIFIER",
+  "page_size": 32,
+  "K": 10,
+  "budget": {
+    "validation": "pending",
+    "execution_budget": null,
+    "execution_authorized": false,
+    "candidate": {
+      "logical_tools": 2048,
+      "physical_tools": 256,
+      "model_calls": 12,
+      "input_tokens": 96000,
+      "output_tokens": 12000,
+      "retries": 2,
+      "candidates": 64,
+      "elapsed_ms": 600000
+    }
+  },
+  "serialization": "json-utf8-lf-sortkeys-finite-0.1.0",
+  "runtime": {
+    "python": "3.13.16",
+    "environment": "Thesis"
+  }
+}

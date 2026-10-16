@@ -15,7 +15,7 @@ import zlib
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal", "evidence_scenarios", "quality_fusion"])
+    parser.add_argument("--stage", required=True, choices=["metadata", "reviews", "catalog", "review_extract", "review_clean", "user_split", "preference_tasks", "sim_normal", "evidence_scenarios", "quality_fusion", "joint_tasks"])
     parser.add_argument("--source-manifest", type=Path)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--metadata-record", type=Path)
@@ -34,7 +34,17 @@ def main():
     parser.add_argument("--sim-record", type=Path)
     parser.add_argument("--scenario-config", type=Path)
     parser.add_argument("--quality-config", type=Path)
+    parser.add_argument("--joint-config", type=Path)
     args = parser.parse_args()
+    if args.stage == "joint_tasks":
+        allowed = {'stage', 'joint_config', 'output_root', 'access_probe'}
+        if (args.joint_config is None or args.output_root is None
+                or any(value is not None for key, value in vars(args).items() if key not in allowed)):
+            print(json.dumps({'stage': 'joint_tasks', 'status': 'joint_tasks_incomplete',
+                              'error': {'code': 'invalid_arguments'}}))
+            return 2
+        from joint_tasks import prepare_joint
+        return prepare_joint(args.joint_config, args.output_root, args.access_probe)
     if args.stage == "quality_fusion":
         allowed = {'stage', 'sim_record', 'quality_config', 'output_root'}
         if (any(value is None for value in (args.sim_record, args.quality_config, args.output_root))
