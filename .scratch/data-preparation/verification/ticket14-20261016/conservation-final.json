@@ -1,0 +1,365 @@
+{
+  "accounts_with_unique_target_field": 53576,
+  "all_passed": true,
+  "candidate_supplement": {
+    "C_references": 2393008,
+    "H_events": 1845,
+    "S_parent_references": 1874,
+    "candidate_max": 1493,
+    "candidate_min": 1488,
+    "catalog": 1494,
+    "roots": 1603,
+    "rootwise_set_complement_and_history_time_checked": true
+  },
+  "diagnostic_correction": "Initial audit incorrectly substituted 1845 positive H events for all-seen S references. Stored S totals 1874; original failed audit is retained. No upstream defect or change.",
+  "equations": [
+    {
+      "evidence": "catalog",
+      "left": 603274,
+      "name": "metadata_scope_partition",
+      "passed": true,
+      "right": 603274
+    },
+    {
+      "evidence": "source_reviews",
+      "left": 603274,
+      "name": "metadata_review_parent_partition",
+      "passed": true,
+      "right": 603274
+    },
+    {
+      "evidence": "selected",
+      "left": 14318520,
+      "name": "review_source_partition",
+      "passed": true,
+      "right": 14318520
+    },
+    {
+      "evidence": "clean",
+      "left": 56903,
+      "name": "source_to_clean",
+      "passed": true,
+      "right": 56903
+    },
+    {
+      "evidence": "clean",
+      "left": 56903,
+      "name": "window_partition",
+      "passed": true,
+      "right": 56903
+    },
+    {
+      "evidence": "clean",
+      "left": 53576,
+      "name": "account_qualification_partition",
+      "passed": true,
+      "right": 53576
+    },
+    {
+      "evidence": "split",
+      "left": 1603,
+      "name": "account_split",
+      "passed": true,
+      "right": 1603
+    },
+    {
+      "evidence": "08_full_check",
+      "left": 53576,
+      "name": "background_account_partition",
+      "passed": true,
+      "right": 53576
+    },
+    {
+      "evidence": "08_full_check",
+      "left": 56427,
+      "name": "background_event_partition",
+      "passed": true,
+      "right": 56427
+    },
+    {
+      "evidence": "accepted13_roots.jsonl_full_stored_C_equals_catalog_minus_all_seen",
+      "left": 2394882,
+      "name": "complete_candidate_partition",
+      "passed": true,
+      "right": 2394882
+    },
+    {
+      "evidence": "13_check",
+      "left": 2393008,
+      "name": "candidate_reuse",
+      "passed": true,
+      "right": 2393008
+    },
+    {
+      "evidence": "13_check",
+      "left": 1603,
+      "name": "root_conservation",
+      "passed": true,
+      "right": 1603
+    },
+    {
+      "evidence": "13_freeze",
+      "left": 16030,
+      "name": "view_bindings",
+      "passed": true,
+      "right": 16030
+    },
+    {
+      "evidence": "13_freeze",
+      "left": 3206,
+      "name": "Q_association_rows",
+      "passed": true,
+      "right": 3206
+    },
+    {
+      "evidence": "13_check",
+      "left": 14940,
+      "name": "reference_index_rows",
+      "passed": true,
+      "right": 14940
+    },
+    {
+      "evidence": "clean/accounts_path",
+      "left": 53576,
+      "name": "stored_account_dispositions_cover_source_accounts",
+      "passed": true,
+      "right": 53576
+    },
+    {
+      "evidence": "clean/accounts_path",
+      "left": {
+        "insufficient_positive_history": 40331,
+        "latest_not_positive_text": 11366,
+        "latest_seen_product": 276
+      },
+      "name": "stored_exclusion_reasons_match_accepted",
+      "passed": true,
+      "right": {
+        "insufficient_positive_history": 40331,
+        "latest_not_positive_text": 11366,
+        "latest_seen_product": 276
+      }
+    },
+    {
+      "evidence": "clean/audit_path",
+      "left": 56903,
+      "name": "all_matched_source_rows_have_disposition",
+      "passed": true,
+      "right": 56903
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_pool_history_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_pool_crop_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_pool_year_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_UQ_history_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_UQ_crop_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 320,
+      "name": "dev_UQ_year_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "split+13",
+      "left": 320,
+      "name": "dev_Q_pool_matches_split",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "P0+13",
+      "left": 320,
+      "name": "dev_U8_partition",
+      "passed": true,
+      "right": 320
+    },
+    {
+      "evidence": "P0+13_coverage",
+      "left": {
+        "barley": 1,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 174,
+        "finger_millet": 0,
+        "fonio": 1,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 5,
+        "oats": 38,
+        "pearl_millet": 0,
+        "rice": 92,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 0,
+        "wheat": 9
+      },
+      "name": "dev_Q_and_old_pool_coverage",
+      "passed": true,
+      "right": {
+        "barley": 1,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 174,
+        "finger_millet": 0,
+        "fonio": 1,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 5,
+        "oats": 38,
+        "pearl_millet": 0,
+        "rice": 92,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 0,
+        "wheat": 9
+      }
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_pool_history_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_pool_crop_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_pool_year_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_UQ_history_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_UQ_crop_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "13_coverage",
+      "left": 1283,
+      "name": "test_UQ_year_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "split+13",
+      "left": 1283,
+      "name": "test_Q_pool_matches_split",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "P0+13",
+      "left": 1283,
+      "name": "test_U8_partition",
+      "passed": true,
+      "right": 1283
+    },
+    {
+      "evidence": "P0+13_coverage",
+      "left": {
+        "barley": 3,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 681,
+        "finger_millet": 0,
+        "fonio": 0,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 23,
+        "oats": 174,
+        "pearl_millet": 0,
+        "rice": 351,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 3,
+        "wheat": 48
+      },
+      "name": "test_Q_and_old_pool_coverage",
+      "passed": true,
+      "right": {
+        "barley": 3,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 681,
+        "finger_millet": 0,
+        "fonio": 0,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 23,
+        "oats": 174,
+        "pearl_millet": 0,
+        "rice": 351,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 3,
+        "wheat": 48
+      }
+    }
+  ],
+  "initial_failure_retained": "conservation.json",
+  "private_account_identifiers_exported": false,
+  "rules_recomputed": false,
+  "stored_account_statuses": {
+    "excluded": 51973,
+    "qualified": 1603
+  },
+  "stored_exclusion_reasons": {
+    "insufficient_positive_history": 40331,
+    "latest_not_positive_text": 11366,
+    "latest_seen_product": 276
+  },
+  "stored_source_dispositions": {
+    "duplicate_copy": 476,
+    "retained": 56427
+  }
+}

@@ -1,0 +1,5 @@
+bound_files_checked=80
+bound_files_checked=160
+bound_files_checked=240
+bound_files_checked=320
+{"binding_files": 369, "binding_bytes": 5146542436, "conservation_checks": 36, "failed_equations": ["complete_candidate_partition"], "account_statuses": {"excluded": 51973, "qualified": 1603}, "unique_target_fields": 53576, "source_row_dispositions": {"retained": 56427, "duplicate_copy": 476}, "n8": 1111, "nQ": 1283, "protected_tracked_files": 1054}

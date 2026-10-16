@@ -1,0 +1,87 @@
+{
+  "baseline": "3c565eb",
+  "files": [
+    {
+      "path": ".scratch/data-preparation/verification/metadata-source-check.json",
+      "sha256": "d17a0782e30b994d799096776b205deee6faef38a768715a32647d317c298762"
+    },
+    {
+      "path": ".scratch/data-preparation/verification/review-check.json",
+      "sha256": "68ecd3dda7737e696439d7c39eff8107694d7b876a09fcda7151d2f7690e9e67"
+    },
+    {
+      "path": ".scratch/data-preparation/verification/grain-A-1.1.15-check.json",
+      "sha256": "f27f91058625abf28ebedf9bfb0c446cced9c74af9cc60b9e398bd8472adba54"
+    },
+    {
+      "path": ".scratch/data-preparation/verification/grain-A-1.1.15-reviews-check.json",
+      "sha256": "0ce60e169dfcfa88eb1136d638b52747b556d6ac5978e0ba26ed5e16662c46d3"
+    },
+    {
+      "path": ".scratch/data-preparation/verification/semantic-sample-grain-A-1.1.15-acceptance.md",
+      "sha256": "07f55fc9f8095db8ab6749fe67ceb1b756800b067eb347402948e294fd618894"
+    },
+    {
+      "path": ".scratch/data-preparation/verification/ticket08-1.0.1-target-mutation-check.json",
+      "sha256": "0c7404d2579d3317915e7dd5ce6afbeb775f043da84ebd8f99164a69e279dfb5"
+    },
+    {
+      "path": "records/sources/amazon-2023-grocery-metadata.json",
+      "sha256": "41075dc0b4434859b79e0b6ddd2852063c37e74d1bf905f6a3efef1adab696f0"
+    },
+    {
+      "path": "records/sources/amazon-2023-grocery-reviews.json",
+      "sha256": "fff549ff7f17f56a6ec41e63d9e5aecbdea5f23eab89baf208024c578d1aabc7"
+    },
+    {
+      "path": ".scratch/data-preparation/scope-revision-results-grain-A-1.1.15.md",
+      "sha256": "5d618a03bd6e19180302f8ec9cb1c9ea26368de44add9b2f0b6ac2f489b0223d"
+    },
+    {
+      "path": ".scratch/data-preparation/ticket12-final-experiment-protocol-review-20261016.md",
+      "sha256": "d2b22af021b2e3b7a25046927c122ba653fe52691bc90c964b5f5edf6b7da4ca"
+    },
+    {
+      "path": ".scratch/data-preparation/ticket12-final-experiment-protocol-confirmation-20261016.md",
+      "sha256": "e81c699a4376dc43c417a0c697d481d5c5282ca0fbb5c068072d84d6d60a90fc"
+    }
+  ],
+  "qualification_waterfall": [
+    {
+      "accounts": 53576,
+      "stage": "distinct_source_accounts"
+    },
+    {
+      "accounts": 53576,
+      "stage": "valid_time_and_unique_latest_parent"
+    },
+    {
+      "accounts": 53300,
+      "stage": "latest_unseen_parent"
+    },
+    {
+      "accounts": 41934,
+      "stage": "latest_unseen_rating_ge4_nonblank_text"
+    },
+    {
+      "accounts": 1603,
+      "stage": "accepted_positive_history_qualified"
+    },
+    {
+      "accounts": 320,
+      "stage": "development"
+    },
+    {
+      "accounts": 1283,
+      "stage": "test_pool"
+    }
+  ],
+  "source_binding": "source checks -> exact source records -> compressed digests -> catalog/extraction checks",
+  "source_review_anomaly": {
+    "retained_full_source_rating_zero_rows": 1,
+    "selected_invalid_rating_rows": 0
+  },
+  "source_scans_reexecuted": 0,
+  "status": "passed",
+  "waterfall_basis": "accepted04/05 original chronology diagnostics plus accepted06 final exclusions; no new rule"
+}

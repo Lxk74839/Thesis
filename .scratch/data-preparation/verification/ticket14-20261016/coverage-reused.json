@@ -1,0 +1,1055 @@
+{
+  "Q": {
+    "dev": {
+      "UQ": {
+        "accounts": 320,
+        "effective_history_texts": {
+          "max": 6,
+          "mean": 1.215625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_depth_groups": {
+          "1": 277,
+          "2": 30,
+          "3+": 13
+        },
+        "history_distinct_parents": {
+          "max": 6,
+          "mean": 1.20625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_events": {
+          "max": 6,
+          "mean": 1.215625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_parent_coverage": 169,
+        "legacy_exposure": {
+          "known_agent_result_accounts": 2,
+          "known_human_result_accounts": 0,
+          "legacy_corpus_accounts": 43,
+          "unknown_agent_result_accounts": 318,
+          "unknown_human_result_accounts": 320
+        },
+        "limitations": [
+          "conditional_on_fixed_catalog_materials_and_source_accounts",
+          "shared_products_and_materials",
+          "sparse_history",
+          "fixed_SIM_time_is_not_historical_supply_chain_validation",
+          "legacy_exposure_not_new_blind_test"
+        ],
+        "target_UTC_year": {
+          "2010": 1,
+          "2011": 0,
+          "2012": 1,
+          "2013": 12,
+          "2014": 13,
+          "2015": 15,
+          "2016": 14,
+          "2017": 23,
+          "2018": 31,
+          "2019": 26,
+          "2020": 65,
+          "2021": 54,
+          "2022": 48,
+          "2023": 17
+        },
+        "target_concentration": {
+          "cluster_size_histogram": {
+            "1": 81,
+            "15": 1,
+            "18": 1,
+            "2": 29,
+            "22": 1,
+            "24": 1,
+            "27": 1,
+            "3": 8,
+            "4": 3,
+            "5": 2,
+            "6": 1,
+            "7": 1,
+            "8": 2
+          },
+          "distinct_parents": 132,
+          "hhi": 0.028496093750000003,
+          "top_counts": {
+            "1": 27,
+            "10": 140,
+            "20": 175,
+            "5": 106
+          },
+          "top_shares": {
+            "1": 0.084375,
+            "10": 0.4375,
+            "20": 0.546875,
+            "5": 0.33125
+          }
+        },
+        "target_crop": {
+          "barley": 1,
+          "barnyard_millet": 0,
+          "coix": 0,
+          "corn": 174,
+          "finger_millet": 0,
+          "fonio": 1,
+          "foxtail_millet": 0,
+          "kodo_millet": 0,
+          "little_millet": 0,
+          "millet": 5,
+          "oats": 38,
+          "pearl_millet": 0,
+          "rice": 92,
+          "rye": 0,
+          "sorghum": 0,
+          "teff": 0,
+          "wheat": 9
+        },
+        "target_time_UTC": {
+          "max": "2023-03-25T23:23:53.438000+00:00",
+          "min": "2010-11-30T13:44:12+00:00"
+        }
+      },
+      "pool": {
+        "accounts": 320,
+        "effective_history_texts": {
+          "max": 6,
+          "mean": 1.215625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_depth_groups": {
+          "1": 277,
+          "2": 30,
+          "3+": 13
+        },
+        "history_distinct_parents": {
+          "max": 6,
+          "mean": 1.20625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_events": {
+          "max": 6,
+          "mean": 1.215625,
+          "median": 1.0,
+          "n": 320,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_parent_coverage": 169,
+        "legacy_exposure": {
+          "known_agent_result_accounts": 2,
+          "known_human_result_accounts": 0,
+          "legacy_corpus_accounts": 43,
+          "unknown_agent_result_accounts": 318,
+          "unknown_human_result_accounts": 320
+        },
+        "limitations": [
+          "conditional_on_fixed_catalog_materials_and_source_accounts",
+          "shared_products_and_materials",
+          "sparse_history",
+          "fixed_SIM_time_is_not_historical_supply_chain_validation",
+          "legacy_exposure_not_new_blind_test"
+        ],
+        "target_UTC_year": {
+          "2010": 1,
+          "2011": 0,
+          "2012": 1,
+          "2013": 12,
+          "2014": 13,
+          "2015": 15,
+          "2016": 14,
+          "2017": 23,
+          "2018": 31,
+          "2019": 26,
+          "2020": 65,
+          "2021": 54,
+          "2022": 48,
+          "2023": 17
+        },
+        "target_concentration": {
+          "cluster_size_histogram": {
+            "1": 81,
+            "15": 1,
+            "18": 1,
+            "2": 29,
+            "22": 1,
+            "24": 1,
+            "27": 1,
+            "3": 8,
+            "4": 3,
+            "5": 2,
+            "6": 1,
+            "7": 1,
+            "8": 2
+          },
+          "distinct_parents": 132,
+          "hhi": 0.028496093750000003,
+          "top_counts": {
+            "1": 27,
+            "10": 140,
+            "20": 175,
+            "5": 106
+          },
+          "top_shares": {
+            "1": 0.084375,
+            "10": 0.4375,
+            "20": 0.546875,
+            "5": 0.33125
+          }
+        },
+        "target_crop": {
+          "barley": 1,
+          "barnyard_millet": 0,
+          "coix": 0,
+          "corn": 174,
+          "finger_millet": 0,
+          "fonio": 1,
+          "foxtail_millet": 0,
+          "kodo_millet": 0,
+          "little_millet": 0,
+          "millet": 5,
+          "oats": 38,
+          "pearl_millet": 0,
+          "rice": 92,
+          "rye": 0,
+          "sorghum": 0,
+          "teff": 0,
+          "wheat": 9
+        },
+        "target_time_UTC": {
+          "max": "2023-03-25T23:23:53.438000+00:00",
+          "min": "2010-11-30T13:44:12+00:00"
+        }
+      }
+    },
+    "test": {
+      "UQ": {
+        "accounts": 1283,
+        "effective_history_texts": {
+          "max": 5,
+          "mean": 1.1348402182385036,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_depth_groups": {
+          "1": 1151,
+          "2": 105,
+          "3+": 27
+        },
+        "history_distinct_parents": {
+          "max": 5,
+          "mean": 1.1286048324240063,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_events": {
+          "max": 5,
+          "mean": 1.1348402182385036,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_parent_coverage": 388,
+        "legacy_exposure": {
+          "known_agent_result_accounts": 0,
+          "known_human_result_accounts": 0,
+          "legacy_corpus_accounts": 70,
+          "unknown_agent_result_accounts": 1283,
+          "unknown_human_result_accounts": 1283
+        },
+        "limitations": [
+          "conditional_on_fixed_catalog_materials_and_source_accounts",
+          "shared_products_and_materials",
+          "sparse_history",
+          "fixed_SIM_time_is_not_historical_supply_chain_validation",
+          "legacy_exposure_not_new_blind_test"
+        ],
+        "target_UTC_year": {
+          "2011": 1,
+          "2012": 4,
+          "2013": 21,
+          "2014": 52,
+          "2015": 70,
+          "2016": 63,
+          "2017": 77,
+          "2018": 73,
+          "2019": 119,
+          "2020": 240,
+          "2021": 260,
+          "2022": 225,
+          "2023": 78
+        },
+        "target_concentration": {
+          "cluster_size_histogram": {
+            "1": 166,
+            "11": 6,
+            "13": 1,
+            "14": 2,
+            "15": 1,
+            "16": 1,
+            "17": 2,
+            "2": 67,
+            "20": 1,
+            "22": 1,
+            "23": 1,
+            "24": 1,
+            "3": 18,
+            "39": 1,
+            "4": 19,
+            "5": 11,
+            "6": 11,
+            "64": 1,
+            "66": 1,
+            "7": 3,
+            "78": 1,
+            "8": 1,
+            "9": 1,
+            "92": 1,
+            "94": 1
+          },
+          "distinct_parents": 320,
+          "hhi": 0.024029684907681176,
+          "top_counts": {
+            "1": 94,
+            "10": 522,
+            "20": 661,
+            "5": 394
+          },
+          "top_shares": {
+            "1": 0.07326578332034295,
+            "10": 0.406858924395947,
+            "20": 0.5151987529228371,
+            "5": 0.30709275136399067
+          }
+        },
+        "target_crop": {
+          "barley": 3,
+          "barnyard_millet": 0,
+          "coix": 0,
+          "corn": 681,
+          "finger_millet": 0,
+          "fonio": 0,
+          "foxtail_millet": 0,
+          "kodo_millet": 0,
+          "little_millet": 0,
+          "millet": 23,
+          "oats": 174,
+          "pearl_millet": 0,
+          "rice": 351,
+          "rye": 0,
+          "sorghum": 0,
+          "teff": 3,
+          "wheat": 48
+        },
+        "target_time_UTC": {
+          "max": "2023-07-23T16:46:07.454000+00:00",
+          "min": "2011-06-20T20:00:05+00:00"
+        }
+      },
+      "pool": {
+        "accounts": 1283,
+        "effective_history_texts": {
+          "max": 5,
+          "mean": 1.1348402182385036,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_depth_groups": {
+          "1": 1151,
+          "2": 105,
+          "3+": 27
+        },
+        "history_distinct_parents": {
+          "max": 5,
+          "mean": 1.1286048324240063,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_events": {
+          "max": 5,
+          "mean": 1.1348402182385036,
+          "median": 1,
+          "n": 1283,
+          "p90": 2,
+          "p95": 2
+        },
+        "history_parent_coverage": 388,
+        "legacy_exposure": {
+          "known_agent_result_accounts": 0,
+          "known_human_result_accounts": 0,
+          "legacy_corpus_accounts": 70,
+          "unknown_agent_result_accounts": 1283,
+          "unknown_human_result_accounts": 1283
+        },
+        "limitations": [
+          "conditional_on_fixed_catalog_materials_and_source_accounts",
+          "shared_products_and_materials",
+          "sparse_history",
+          "fixed_SIM_time_is_not_historical_supply_chain_validation",
+          "legacy_exposure_not_new_blind_test"
+        ],
+        "target_UTC_year": {
+          "2011": 1,
+          "2012": 4,
+          "2013": 21,
+          "2014": 52,
+          "2015": 70,
+          "2016": 63,
+          "2017": 77,
+          "2018": 73,
+          "2019": 119,
+          "2020": 240,
+          "2021": 260,
+          "2022": 225,
+          "2023": 78
+        },
+        "target_concentration": {
+          "cluster_size_histogram": {
+            "1": 166,
+            "11": 6,
+            "13": 1,
+            "14": 2,
+            "15": 1,
+            "16": 1,
+            "17": 2,
+            "2": 67,
+            "20": 1,
+            "22": 1,
+            "23": 1,
+            "24": 1,
+            "3": 18,
+            "39": 1,
+            "4": 19,
+            "5": 11,
+            "6": 11,
+            "64": 1,
+            "66": 1,
+            "7": 3,
+            "78": 1,
+            "8": 1,
+            "9": 1,
+            "92": 1,
+            "94": 1
+          },
+          "distinct_parents": 320,
+          "hhi": 0.024029684907681176,
+          "top_counts": {
+            "1": 94,
+            "10": 522,
+            "20": 661,
+            "5": 394
+          },
+          "top_shares": {
+            "1": 0.07326578332034295,
+            "10": 0.406858924395947,
+            "20": 0.5151987529228371,
+            "5": 0.30709275136399067
+          }
+        },
+        "target_crop": {
+          "barley": 3,
+          "barnyard_millet": 0,
+          "coix": 0,
+          "corn": 681,
+          "finger_millet": 0,
+          "fonio": 0,
+          "foxtail_millet": 0,
+          "kodo_millet": 0,
+          "little_millet": 0,
+          "millet": 23,
+          "oats": 174,
+          "pearl_millet": 0,
+          "rice": 351,
+          "rye": 0,
+          "sorghum": 0,
+          "teff": 3,
+          "wheat": 48
+        },
+        "target_time_UTC": {
+          "max": "2023-07-23T16:46:07.454000+00:00",
+          "min": "2011-06-20T20:00:05+00:00"
+        }
+      }
+    }
+  },
+  "U8": {
+    "dev": {
+      "accounts": 271,
+      "history_depth_histogram": {
+        "1": 231,
+        "2": 27,
+        "3": 7,
+        "4": 4,
+        "6": 2
+      },
+      "history_distinct_products": {
+        "max": 6,
+        "mean": 1.2324723247232472,
+        "median": 1,
+        "min": 1,
+        "n": 271,
+        "p90": 2,
+        "p95": 2
+      },
+      "history_events": {
+        "max": 6,
+        "mean": 1.2361623616236161,
+        "median": 1,
+        "min": 1,
+        "n": 271,
+        "p90": 2,
+        "p95": 3
+      },
+      "history_parent_coverage": 158,
+      "target_concentration": {
+        "accounts_or_references": 271,
+        "cluster_size_histogram": {
+          "1": 72,
+          "15": 1,
+          "18": 1,
+          "2": 28,
+          "22": 1,
+          "24": 1,
+          "3": 6,
+          "4": 3,
+          "5": 1,
+          "6": 1,
+          "7": 1,
+          "8": 2
+        },
+        "distinct_parents": 118,
+        "hhi": 0.029043722171539055,
+        "inverse_hhi_diversity_only": 34.43084857008908,
+        "singleton_parents": 72,
+        "top_counts": {
+          "1": 24,
+          "10": 117,
+          "20": 147,
+          "5": 87
+        },
+        "top_shares": {
+          "1": 0.08856088560885608,
+          "10": 0.4317343173431734,
+          "20": 0.5424354243542435,
+          "5": 0.3210332103321033
+        }
+      },
+      "target_crop_counts": {
+        "barley": 1,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 142,
+        "finger_millet": 0,
+        "fonio": 1,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 5,
+        "oats": 29,
+        "pearl_millet": 0,
+        "rice": 84,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 0,
+        "wheat": 9
+      },
+      "target_time_max_utc": "2023-03-19T22:26:48.664000+00:00",
+      "target_time_min_utc": "2012-02-15T14:05:18+00:00",
+      "target_year_counts_utc": {
+        "2012": 1,
+        "2013": 12,
+        "2014": 12,
+        "2015": 10,
+        "2016": 10,
+        "2017": 18,
+        "2018": 25,
+        "2019": 23,
+        "2020": 57,
+        "2021": 49,
+        "2022": 41,
+        "2023": 13
+      }
+    },
+    "test": {
+      "accounts": 1111,
+      "history_depth_histogram": {
+        "1": 993,
+        "2": 94,
+        "3": 20,
+        "4": 2,
+        "5": 2
+      },
+      "history_distinct_products": {
+        "max": 5,
+        "mean": 1.1332133213321331,
+        "median": 1,
+        "min": 1,
+        "n": 1111,
+        "p90": 2,
+        "p95": 2
+      },
+      "history_events": {
+        "max": 5,
+        "mean": 1.1395139513951396,
+        "median": 1,
+        "min": 1,
+        "n": 1111,
+        "p90": 2,
+        "p95": 2
+      },
+      "history_parent_coverage": 361,
+      "target_concentration": {
+        "accounts_or_references": 1111,
+        "cluster_size_histogram": {
+          "1": 149,
+          "11": 5,
+          "13": 1,
+          "14": 1,
+          "15": 1,
+          "16": 1,
+          "17": 2,
+          "2": 64,
+          "20": 1,
+          "22": 1,
+          "23": 1,
+          "24": 1,
+          "3": 15,
+          "39": 1,
+          "4": 18,
+          "5": 10,
+          "6": 9,
+          "64": 1,
+          "66": 1,
+          "7": 3,
+          "78": 1,
+          "8": 1,
+          "9": 1,
+          "92": 1
+        },
+        "distinct_parents": 290,
+        "hhi": 0.024493628480759866,
+        "inverse_hhi_diversity_only": 40.82694406774055,
+        "singleton_parents": 149,
+        "top_counts": {
+          "1": 92,
+          "10": 445,
+          "20": 575,
+          "5": 339
+        },
+        "top_shares": {
+          "1": 0.08280828082808281,
+          "10": 0.40054005400540055,
+          "20": 0.5175517551755175,
+          "5": 0.3051305130513051
+        }
+      },
+      "target_crop_counts": {
+        "barley": 3,
+        "barnyard_millet": 0,
+        "coix": 0,
+        "corn": 560,
+        "finger_millet": 0,
+        "fonio": 0,
+        "foxtail_millet": 0,
+        "kodo_millet": 0,
+        "little_millet": 0,
+        "millet": 23,
+        "oats": 145,
+        "pearl_millet": 0,
+        "rice": 330,
+        "rye": 0,
+        "sorghum": 0,
+        "teff": 3,
+        "wheat": 47
+      },
+      "target_time_max_utc": "2023-07-23T16:46:07.454000+00:00",
+      "target_time_min_utc": "2011-06-20T20:00:05+00:00",
+      "target_year_counts_utc": {
+        "2011": 1,
+        "2012": 4,
+        "2013": 20,
+        "2014": 45,
+        "2015": 60,
+        "2016": 47,
+        "2017": 66,
+        "2018": 65,
+        "2019": 101,
+        "2020": 214,
+        "2021": 218,
+        "2022": 198,
+        "2023": 72
+      }
+    }
+  },
+  "actual_effect_intervals": "not_determined_not_run",
+  "n8": 1111,
+  "nQ": 1283,
+  "original8_per_view": {
+    "dev": {
+      "V00": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 320,
+        "n_pool": 320
+      },
+      "V01": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V02": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V03": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V04": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V05": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Refuted": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V06": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Conflict": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V07": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V08": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V09": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Refuted": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V10": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 320,
+        "n_pool": 320
+      },
+      "V11": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Pending": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V12": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 320,
+        "n_pool": 320
+      },
+      "V13": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Conflict": 40,
+          "reference_target_Pending": 9
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V14": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Conflict": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      },
+      "V15": {
+        "NA": 49,
+        "NA_reasons": {
+          "reference_target_Refuted": 49
+        },
+        "applicable": 271,
+        "n_pool": 320
+      }
+    },
+    "test": {
+      "V00": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 1283,
+        "n_pool": 1283
+      },
+      "V01": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V02": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V03": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V04": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V05": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Refuted": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V06": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Conflict": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V07": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V08": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V09": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Refuted": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V10": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 1283,
+        "n_pool": 1283
+      },
+      "V11": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Pending": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V12": {
+        "NA": 0,
+        "NA_reasons": {},
+        "applicable": 1283,
+        "n_pool": 1283
+      },
+      "V13": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Conflict": 126,
+          "reference_target_Pending": 46
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V14": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Conflict": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      },
+      "V15": {
+        "NA": 172,
+        "NA_reasons": {
+          "reference_target_Refuted": 172
+        },
+        "applicable": 1111,
+        "n_pool": 1283
+      }
+    }
+  },
+  "outside_U8": {
+    "accounts": 172,
+    "history_depth_histogram": {
+      "1": 158,
+      "2": 11,
+      "3": 3
+    },
+    "history_distinct_products": {
+      "max": 3,
+      "mean": 1.0988372093023255,
+      "median": 1.0,
+      "min": 1,
+      "n": 172,
+      "p90": 1,
+      "p95": 2
+    },
+    "history_events": {
+      "max": 3,
+      "mean": 1.1046511627906976,
+      "median": 1.0,
+      "min": 1,
+      "n": 172,
+      "p90": 1,
+      "p95": 2
+    },
+    "history_parent_coverage": 90,
+    "target_concentration": {
+      "accounts_or_references": 172,
+      "cluster_size_histogram": {
+        "1": 17,
+        "11": 1,
+        "14": 1,
+        "2": 3,
+        "3": 3,
+        "4": 1,
+        "5": 1,
+        "6": 2,
+        "94": 1
+      },
+      "distinct_parents": 30,
+      "hhi": 0.3151027582477014,
+      "inverse_hhi_diversity_only": 3.1735679038832876,
+      "singleton_parents": 17,
+      "top_counts": {
+        "1": 94,
+        "10": 149,
+        "20": 162,
+        "5": 131
+      },
+      "top_shares": {
+        "1": 0.5465116279069767,
+        "10": 0.8662790697674418,
+        "20": 0.9418604651162791,
+        "5": 0.7616279069767442
+      }
+    },
+    "target_crop_counts": {
+      "barley": 0,
+      "barnyard_millet": 0,
+      "coix": 0,
+      "corn": 121,
+      "finger_millet": 0,
+      "fonio": 0,
+      "foxtail_millet": 0,
+      "kodo_millet": 0,
+      "little_millet": 0,
+      "millet": 0,
+      "oats": 29,
+      "pearl_millet": 0,
+      "rice": 21,
+      "rye": 0,
+      "sorghum": 0,
+      "teff": 0,
+      "wheat": 1
+    },
+    "target_time_max_utc": "2023-03-02T02:39:24.123000+00:00",
+    "target_time_min_utc": "2013-10-06T21:51:09+00:00",
+    "target_year_counts_utc": {
+      "2013": 1,
+      "2014": 7,
+      "2015": 10,
+      "2016": 16,
+      "2017": 11,
+      "2018": 8,
+      "2019": 18,
+      "2020": 26,
+      "2021": 42,
+      "2022": 27,
+      "2023": 6
+    }
+  },
+  "planning_required": 975,
+  "sufficiency": "not_determined"
+}

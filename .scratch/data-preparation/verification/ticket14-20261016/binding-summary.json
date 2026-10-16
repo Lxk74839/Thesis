@@ -1,0 +1,8 @@
+{
+  "bytes": 5146542436,
+  "failures": [],
+  "files": 369,
+  "method": "streamed_current_bytes_and_JSONL_line_counts_against_accepted_bindings",
+  "no_generation_no_scoring_no_reproduction": true,
+  "status": "passed"
+}

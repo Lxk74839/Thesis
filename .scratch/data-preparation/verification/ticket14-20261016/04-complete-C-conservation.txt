@@ -1,0 +1,1 @@
+{"status": "passed", "roots": 1603, "catalog": 1494, "H_events": 1845, "S_parent_references": 1874, "C_references": 2393008, "candidate_min": 1488, "candidate_max": 1493, "rootwise_set_complement_and_history_time_checked": true, "conservation_checks": 36}
