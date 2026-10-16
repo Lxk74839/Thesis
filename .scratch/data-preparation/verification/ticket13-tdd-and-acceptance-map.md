@@ -27,6 +27,8 @@
 
 最终新增31项测试：24个有RED/GREEN的行为，7个现有行为的定向特征/影响检查；最后31项全套通过。原295项、旧P0、SIM生成及上游全量语义未重跑。既有四阶段只做缺参数分派回归，没有重新构造上游组件。
 
+真实S1/S2与复现、保护通过后，交付映射复核仅增强既有A05测试：用完整probe集比较模型组件/b/所有实际请求不变，并在变更前后分别通过S2，断言只有指定根的偏好参考目标改变。该定向检查通过，生产代码、配置、真实prepared/参考字节未变，不重跑真实组装或已通过全套；测试差异再做两轴静态定向复核。
+
 实际日志和资源原账在data/joint-audit/joint-task-package-0.1.0/tdd*.txt及resource-ledger.jsonl，均不入Git。日志包含测试名、原失败与后续通过；原资源账记录命令执行退出与进程树计时/Windows Job峰值。最后特征检查日志为behavior-characterization-and-impact.txt。正式接受将绑定这些日志的冻结清单，不把subTest、文件行、场景或引用当独立用户。
 
 Standards与Spec初审见同目录ticket13-standards-initial.md与ticket13-spec-initial.md；集中修复后固定新候选，交原两独立代理并行定向复审，结论分别归档。文档和源数据接受范围继续区分，整体样本充分性not_determined。

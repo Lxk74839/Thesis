@@ -279,23 +279,32 @@ class JointTasksTests(unittest.TestCase):
 
     def test_private_target_mutation_leaves_scores_projection_and_actual_request_unchanged(self):
         fixture=JointFixture(self.work)
-        probe=fixture.rows('probe.jsonl',[{'session_task_id':fixture.tasks[0]['task_id'],'operation':'model_request','arguments':{}}])
-        first=self.prepare(fixture,probe=ROOT/probe['path'])
+        first=self.prepare(fixture)
         self.assertEqual(first.returncode,0,first.stdout)
         before=json.loads(first.stdout)
+        checked=self.verify(audit='before-reference')
+        self.assertEqual(checked.returncode,0,checked.stdout)
+        before_targets={r['root']:r['target_parent'] for r in map(json.loads,
+            (self.work/'before-reference/preference-reference.jsonl').read_bytes().splitlines())}
         target=fixture.evaluations[0]
         target['target_parent_asin']='DEMO-B' if target['target_parent_asin']=='DEMO-A' else 'DEMO-A'
         target['target_rating']=4
         target['target_review']={'parent_asin':target['target_parent_asin'],'rating':4,'text':'PRIVATE_DIFFERENT_TARGET'}
         target['reference_answer']['positive_parent_asins']=[target['target_parent_asin']]
         fixture.refresh()
-        second=self.prepare(fixture,output='changed-private-target',probe=ROOT/probe['path'])
+        second=self.prepare(fixture,output='changed-private-target')
         self.assertEqual(second.returncode,0,second.stdout)
         after=json.loads(second.stdout)
         names=[k for k in before['components'] if k.startswith('model/') or k in ('base-scores.jsonl','private/access-probe.jsonl')]
         self.assertEqual({k:before['components'][k]['sha256'] for k in names},
                          {k:after['components'][k]['sha256'] for k in names})
         self.assertNotEqual(before['config']['sha256'],after['config']['sha256'])
+        checked=self.verify(output='changed-private-target',audit='after-reference')
+        self.assertEqual(checked.returncode,0,checked.stdout)
+        after_targets={r['root']:r['target_parent'] for r in map(json.loads,
+            (self.work/'after-reference/preference-reference.jsonl').read_bytes().splitlines())}
+        self.assertNotEqual(before_targets[target['task_id']],after_targets[target['task_id']])
+        self.assertEqual(after_targets,{**before_targets,target['task_id']:target['target_parent_asin']})
 
     def test_resource_and_cross_session_challenges_have_identical_denial(self):
         fixture=JointFixture(self.work)
