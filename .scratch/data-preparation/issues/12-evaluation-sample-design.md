@@ -33,3 +33,11 @@
 详见[本次接受报告与剩余最小决策](../ticket12-offline-acceptance-and-remaining-decisions-20261016.md)及[独立接受记录](C:/Users/Kane/Documents/CodexProject/Thesis/records/sim-quality/grain-A-1.1.15-sim-quality-fusion-0.1.0-acceptance.json)。D1—D3/D6延续既有授权；质量臂正式比较、统计family/精度和模型根预算待一次集中确认，故Status为needs-info，整体复选项不提前勾选。
 
 不确认K1—K8整体，不启动P1、付费模型、账本部署或13联合包；样本充分性仍待判定。
+
+### 2026-10-16：最终实验协议待一次确认，尚未冻结
+
+新增[最终实验协议整合待确认稿](../ticket12-final-experiment-protocol-review-20261016.md)，仅收口原8视图与Q1/Q2的正式比较、四比较family及候选共同预算。集中确认表只列F1—F3；D1—D3、D6及离线模块直接引用，不重复确认。完整M的实际取得范围/G/终态固定后再作质量full/no-q/mean组件重排，不额外取证，不扩大为完整系统消融。
+
+推荐四项近似同时95%、条件近似目标±.08，975仅为各自有效cohort的规划人数；nQ未完成新关联，不能沿用旧1,111或宣布充分性。2048逻辑/256物理及既有模型限额均保持候选，真实执行预算须经后续另行授权的零API开发技术联调验证。
+
+本轮只写Markdown，未新增代码/配置、重跑测试、运行推荐或读取正式测试表现；未冻结spec、接受记录或工单13。Status继续needs-info，等待F1—F3集中结论。确认后仅进入工单12设计冻结及13方案审核，不自动授权T0、P1、USD600、模型运行或部署。
