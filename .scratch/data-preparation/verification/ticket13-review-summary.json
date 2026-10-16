@@ -1,9 +1,12 @@
 {
   "base": "cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1",
-  "candidate": "7de5d37220cb4a70bc2b6148a60698b4870917a6",
+  "candidate": "1f3f6bc852805b04fd4aba07878623b564428a0a",
   "initial_candidate": "ee5bb2783fdbf4c6ea8b50ebb2f077ed66f0bfb8",
-  "diff": "git diff cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1...7de5d37220cb4a70bc2b6148a60698b4870917a6",
+  "prior_clearance_commit": "2d54759cfe64111a0d4098532c2d3f0a603bb8d4",
+  "prior_candidate": "7de5d37220cb4a70bc2b6148a60698b4870917a6",
+  "diff": "git diff cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1...1f3f6bc852805b04fd4aba07878623b564428a0a",
   "concentrated_fix_rounds": 1,
+  "real_integration_fix_rounds": 1,
   "standards": {
     "blockers": 0,
     "nonblocking": 0,
@@ -13,10 +16,15 @@
       "bytes": 1778,
       "sha256": "0a9de56951eb5cb31fb02112286c576d5a7dd3ffd22ff76884c82797442b2449"
     },
-    "report": {
+    "prior_report": {
       "path": ".scratch/data-preparation/verification/ticket13-standards-final.md",
       "bytes": 1626,
       "sha256": "a0e10d5eba05deb009f905e2d3402c5b7fbd97471ea991888935fffbaddab44a"
+    },
+    "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-standards-delivery-final.md",
+      "bytes": 2036,
+      "sha256": "72cd49d9a88df41507630de27cd2452b092830d7aea8eb77a165bd1a5a6ac327"
     }
   },
   "spec": {
@@ -28,10 +36,15 @@
       "bytes": 2082,
       "sha256": "9aa33312cef9ebef13f816aa3611e1ea5f203bd999a5b4222d97348ff7c12e01"
     },
-    "report": {
+    "prior_report": {
       "path": ".scratch/data-preparation/verification/ticket13-spec-final.md",
       "bytes": 1699,
       "sha256": "37f95bad52b8d10d08bdb4175fdb01d105c2b7e531908c2fad5a387456caf65c"
+    },
+    "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-spec-delivery-final.md",
+      "bytes": 2027,
+      "sha256": "dd6eb2ce1caaea7bbb4eb5faeefc284f2fed358f7e9021032e83d32914bd8e64"
     }
   },
   "review_execution": "two_independent_parallel_static_agents_no_Python",
