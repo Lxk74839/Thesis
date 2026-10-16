@@ -1,0 +1,98 @@
+{
+  "baseline": "7bd12cdb36b073f65ce9f123939e01288b8a12c0",
+  "private_originals": "data/diagnostics/ticket12-quality-dev-20261016 and data/evaluation-audit: ignored, unchanged",
+  "production_accepted": false,
+  "scope": "authorized_offline_quality_and_action_modules_only",
+  "sources": {
+    ".scratch/data-preparation/diagnostics/ticket12-p0-core-feasibility-notes-20261016.md": {
+      "bytes": 22728,
+      "kind": "public_research_source",
+      "sha256": "99fb2eb8c942444c9af76b8e8ed63548704e085a9b59e010faf694d3a988b295"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-p0-readonly-20261016.py": {
+      "bytes": 31164,
+      "kind": "public_research_source",
+      "sha256": "0b9e65363a664123f0b634bf790c582ea66c113de7b112395a4cc0abb9bf956f"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-primary-source-notes-20261016.md": {
+      "bytes": 18726,
+      "kind": "public_research_source",
+      "sha256": "70561c8cf613bd38e58b5e47f504f5e5378313c0c3dfc0b28fe5c46de1220c82"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/derive_views.py": {
+      "bytes": 3641,
+      "kind": "public_research_source",
+      "sha256": "70159566b7b9050a5411dd24faed24d667fa34035b35e96684edd6b7d42a2867"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/diagnose_development.py": {
+      "bytes": 13990,
+      "kind": "public_research_source",
+      "sha256": "428d5c56c97255f789381b48f6c7353641ae05446b5c25db015d3c5fb63f9076"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/generate_views.py": {
+      "bytes": 6578,
+      "kind": "public_research_source",
+      "sha256": "6c8c5f1b754b807d061fc24d3d18fa7ba3e8cfc35f075d2693e0af60358d3f90"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/public_examples.py": {
+      "bytes": 10266,
+      "kind": "public_research_source",
+      "sha256": "2e05a76354eecabd56df6a3d3161c22e46929e9be6d8cc5218459877229dca66"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/reference.py": {
+      "bytes": 13176,
+      "kind": "public_research_source",
+      "sha256": "d27436fbae499c6916bdcd7424aab2164734d48d9e9dc96dc654e094e525520d"
+    },
+    ".scratch/data-preparation/diagnostics/ticket12-quality-dev-20261016/support.py": {
+      "bytes": 3751,
+      "kind": "public_research_source",
+      "sha256": "4a7a24a2815a66617d17ccafe27937ae8687cf063830f32a49c21d118ee01ab4"
+    },
+    ".scratch/data-preparation/ticket12-p0-and-core-design-supplement-20261016.md": {
+      "bytes": 41609,
+      "kind": "public_research_source",
+      "sha256": "da4296cdfc97bf03a0aeda4a783448a3b18b132af33863c10511c6782e710cd5"
+    },
+    ".scratch/data-preparation/ticket12-quality-dev-report-and-implementation-contract-20261016.md": {
+      "bytes": 43615,
+      "kind": "public_research_source",
+      "sha256": "5249861c92b1403836bc9b5e70b45d800a6ba8dc424a4e9c74c92c998cac88ca"
+    },
+    ".scratch/data-preparation/ticket12-quality-offline-authorization-20261016.md": {
+      "bytes": 2848,
+      "kind": "public_research_source",
+      "sha256": "f4d08021ce2bebf9246fba6fa161a7549c1352775d611b80b367597ebf5fa163"
+    },
+    ".scratch/data-preparation/ticket12-stage1-joint-evaluation-review-draft-20261016.md": {
+      "bytes": 60309,
+      "kind": "public_research_source",
+      "sha256": "e2ba79c1799e2e72b92d1ecf4c22336fec54aae50f0d1742fb32a28f412e52fa"
+    },
+    ".scratch/data-preparation/verification/ticket12-p0-20261016-aggregate.json": {
+      "bytes": 50328,
+      "kind": "local_audit_not_in_git",
+      "sha256": "273b46b8643a769541d75a72b8a134ca0be144d494c793ca1c6316cd8baf6590"
+    },
+    ".scratch/data-preparation/verification/ticket12-p0-20261016-micro.json": {
+      "bytes": 397,
+      "kind": "local_audit_not_in_git",
+      "sha256": "601c26e3498c404e1e56ba1f86874c640ff38bedb1d580206f770cc81be73359"
+    },
+    ".scratch/data-preparation/verification/ticket12-quality-dev-20261016-distributions.json": {
+      "bytes": 1167,
+      "kind": "local_audit_not_in_git",
+      "sha256": "237fcca5ca5cb72b9ae764accd97674927ab754546e9e8b9fa26ed9f473c8b2e"
+    },
+    ".scratch/data-preparation/verification/ticket12-quality-dev-20261016-final-audit.json": {
+      "bytes": 23806,
+      "kind": "local_audit_not_in_git",
+      "sha256": "f421c9c0e9a4a4f05c32c9e31eac91f24776ce1f0c1e3bf85f99e47d0746410a"
+    },
+    ".scratch/data-preparation/verification/ticket12-quality-dev-20261016-report-check.json": {
+      "bytes": 422,
+      "kind": "local_audit_not_in_git",
+      "sha256": "e086c181ac786ac74d30f6bac50cb88fe66e1399e1d744fed81c64751f78238c"
+    }
+  }
+}
