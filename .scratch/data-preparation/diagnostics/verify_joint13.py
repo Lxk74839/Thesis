@@ -1,6 +1,6 @@
 """Independent joint association audit. Standard library; no production imports."""
 import argparse
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import hashlib
 import hmac
@@ -9,6 +9,7 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
 import sys
 import unicodedata
 from statistics import median
@@ -42,7 +43,10 @@ def parse(raw):
 def path(value):
     target = Path(os.path.abspath(ROOT/value))
     insist(target==ROOT or ROOT in target.parents,'invalid_path')
-    insist(all(not p.is_symlink() and not p.is_junction() for p in (target,*target.parents)),'invalid_path')
+    for ancestor in (target,*target.parents):
+        insist(not ancestor.is_symlink() and not ancestor.is_junction(),'invalid_path')
+        if ancestor.exists():
+            insist(not getattr(ancestor.lstat(),'st_file_attributes',0) & stat.FILE_ATTRIBUTE_REPARSE_POINT,'invalid_path')
     return target
 
 
@@ -237,6 +241,8 @@ def verify_projection(config, inputs, components):
     insist(len(handles)==len(seen_views),'joint_session_binding_mismatch')
     default_handles = {root:handle for handle,(root,view) in handles.items() if view['view_id']==config['views'][0]['view_id']}
     actual_requests = denied = 0
+    request_handles, page_roots = set(), set()
+    denial_coverage = defaultdict(set)
     for observation,_ in entries(components['private/access-probe.jsonl']):
         response = observation['response']
         probe = observation['probe']
@@ -250,6 +256,19 @@ def verify_projection(config, inputs, components):
             insist(response=={'status':'access_denied'},'unsafe_denial')
             insist(not (probe['operation']=='model_request' and probe['arguments']=={}),'unexpected_request_denial')
             denied += 1
+            root,_ = handles[bound_handle]
+            op,args = probe['operation'],probe['arguments']
+            if op=='read_resource' and args=={'path':config['inputs']['preference_evaluation']['path']}:
+                denial_coverage[root].add('existing_private')
+            elif op=='read_resource' and args=={'path':'data/private-nonexistent-target.jsonl'}:
+                insist(not (ROOT/'data/private-nonexistent-target.jsonl').exists(),'probe_resource_not_absent')
+                denial_coverage[root].add('absent_private')
+            elif op=='invoke_tool' and args=={'name':'private_evaluator','role':'evaluator'}:
+                denial_coverage[root].add('arbitrary_tool')
+            elif op=='model_request' and set(args)=={'root_task_id'} and args['root_task_id'] in root_details and args['root_task_id']!=root:
+                denial_coverage[root].add('cross_root')
+            elif op=='candidate_page' and args=={'order':'parent','cursor':'forged-cross-session-cursor'}:
+                denial_coverage[root].add('forged_cursor')
         elif observation['probe']['operation']=='model_request':
             request = response['request']
             insist(request['tools']==[] and len(request['messages'])==1
@@ -272,6 +291,7 @@ def verify_projection(config, inputs, components):
             unsigned = {k:v for k,v in payload.items() if k!='input_fingerprint'}
             insist(payload['input_fingerprint']==hashlib.sha256(wire(unsigned)).hexdigest(),'unsafe_model_request')
             actual_requests += 1
+            request_handles.add(handle)
         elif probe['operation']=='candidate_page':
             root,_ = handles[bound_handle]
             args = probe['arguments']
@@ -281,8 +301,12 @@ def verify_projection(config, inputs, components):
                     'unsafe_candidate_page')
             if args['cursor'] is None:
                 insist(response['candidates']==root_details[root]['page_heads'][args['order']],'unsafe_candidate_page')
+                if args['order']=='parent':page_roots.add(root)
         else:
             insist(False,'unsafe_model_request')
+    insist(request_handles==set(handles) and page_roots==set(root_details)
+            and all(denial_coverage[root]=={'existing_private','absent_private','arbitrary_tool','cross_root','forged_cursor'}
+                    for root in root_details),'incomplete_probe_coverage')
     return {'all_root_projections_checked':len(root_details),'complete_candidate_references':candidate_references,
             'actual_request_probes':actual_requests,'actual_denials':denied,'score_tolerance':1e-12}
 
@@ -379,6 +403,11 @@ def associate_q(audit, config, inputs, tasks, evaluations):
             insist(all(info_cache[file][k]==expected[k] for k in ('bytes','records','sha256')),'reference_scope_mismatch')
             files[name]=file
         insist(info_cache[files['actions.jsonl']]['bytes']==0,'reference_scope_mismatch')
+        for name in ('batches.jsonl','events.jsonl','policy.json'):
+            insist(info_cache[files[name]]['sha256']==normal['components'][name]['sha256'],'reference_scope_mismatch')
+        for name in ('batches.jsonl','events.jsonl','materials.jsonl','registrations.jsonl'):
+            insist(all(type(r.get('version')) is int and r['version']==1 for r,_ in entries(files[name])),
+                    'reference_scope_mismatch')
         originals = {r['evidence_id']:r for r,_ in entries(files['materials.jsonl'])}
         registrations = {r['registration_id']:r for r,_ in entries(files['registrations.jsonl'])}
         events = {r['event_id']:r for r,_ in entries(files['events.jsonl'])}

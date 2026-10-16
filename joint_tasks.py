@@ -7,6 +7,7 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
 import sys
 import subprocess
 import tempfile
@@ -52,6 +53,8 @@ def project_path(value):
     require(path == ROOT or ROOT in path.parents, 'invalid_path')
     for ancestor in (path, *path.parents):
         require(not ancestor.is_symlink() and not ancestor.is_junction(), 'invalid_path')
+        if ancestor.exists():
+            require(not getattr(ancestor.lstat(),'st_file_attributes',0) & stat.FILE_ATTRIBUTE_REPARSE_POINT, 'invalid_path')
     return path
 
 
@@ -263,7 +266,7 @@ def prepare_joint(config_path, output_root, access_probe=None):
             require(final.is_dir() and record_path.is_file(), 'output_conflict')
             old = decode(record_path.read_bytes())
             require(old.get('reuse_fingerprint_sha256')==fingerprint, 'output_conflict')
-        with tempfile.TemporaryDirectory(dir=ROOT/'.tmp') as temp:
+        with tempfile.TemporaryDirectory(dir=project_path(ROOT/'.tmp')) as temp:
             stage = Path(temp)/'bundle'
             stage.mkdir()
             write_rows(stage/'candidate-map.jsonl', [{'parent_asin':p,'sim_batch_id':mapping[p]} for p in parents])

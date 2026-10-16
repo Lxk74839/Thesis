@@ -1,6 +1,7 @@
 """Ticket13 public CLI seams. Expected outcomes are independent public literals."""
 import json
 import hashlib
+import hmac
 from pathlib import Path
 import subprocess
 import sys
@@ -18,6 +19,22 @@ class JointTasksTests(unittest.TestCase):
         self.work=Path(self.temp.name)
 
     def prepare(self, fixture, output='output', probe=None):
+        if probe is None:
+            observations=[]
+            for i,task in enumerate(fixture.tasks):
+                root=task['task_id']
+                for view in fixture.views:
+                    handle=hmac.new(b'k'*32,b'Thesis:joint-session-0.1.0\0'+wire([
+                        root,view['material_version'],view['snapshot_id'],view['request_profile_id']]),hashlib.sha256).hexdigest()
+                    observations.append({'session_task_id':handle,'operation':'model_request','arguments':{}})
+                challenges=[('candidate_page',{'order':'parent','cursor':None}),
+                    ('read_resource',{'path':fixture.cfg['inputs']['preference_evaluation']['path']}),
+                    ('read_resource',{'path':'data/private-nonexistent-target.jsonl'}),
+                    ('invoke_tool',{'name':'private_evaluator','role':'evaluator'}),
+                    ('model_request',{'root_task_id':fixture.tasks[(i+1)%len(fixture.tasks)]['task_id']}),
+                    ('candidate_page',{'order':'parent','cursor':'forged-cross-session-cursor'})]
+                observations += [{'session_task_id':root,'operation':op,'arguments':args} for op,args in challenges]
+            probe=ROOT/fixture.rows('full-probe.jsonl',observations)['path']
         command=[sys.executable,str(ROOT/'prepare_data.py'),'--stage','joint_tasks',
                  '--joint-config',str(fixture.root/'config.json'),'--output-root',str(self.work/output)]
         if probe:command+=['--access-probe',str(probe)]
@@ -361,3 +378,64 @@ class JointTasksTests(unittest.TestCase):
         result=self.verify()
         self.assertEqual(result.returncode,2,result.stdout)
         self.assertEqual(json.loads(result.stdout)['error']['code'],'source_graph_mismatch')
+
+    def test_staging_directory_junction_is_rejected_before_any_publication(self):
+        with tempfile.TemporaryDirectory(dir=ROOT/'data/joint-audit/joint-task-package-0.1.0') as external:
+            self.work=Path(external)
+            fixture=JointFixture(self.work)
+            temporary=ROOT/'.tmp'
+            backup=ROOT/('.tmp-ticket13-'+self.work.name)
+            self.assertEqual(temporary.parent,ROOT)
+            self.assertEqual(backup.parent,ROOT)
+            temporary.rename(backup)
+            try:
+                subprocess.run(['cmd','/c','mklink','/J',str(temporary),str(backup)],
+                               capture_output=True,check=True)
+                result=self.prepare(fixture)
+            finally:
+                if temporary.is_junction():temporary.rmdir()
+                backup.rename(temporary)
+            self.assertEqual(result.returncode,2,result.stdout)
+            self.assertEqual(json.loads(result.stdout)['error']['code'],'invalid_path')
+            self.assertFalse((self.work/'output/records').exists())
+
+    def test_q_version_outside_accepted_normal_v1_scope_is_rejected(self):
+        fixture=JointFixture(self.work)
+        view=fixture.views[8]
+        citation=fixture.q_rows[0]['source_citations']['inspection_report']
+        folder=(ROOT/view['snapshot']['path']).parent
+        originals=[json.loads(line) for line in (folder/'materials.jsonl').read_bytes().splitlines()]
+        original=next(r for r in originals if r['evidence_id']==citation['evidence_id'])
+        original['version']=2
+        citation['sha256']=hashlib.sha256(wire(original)).hexdigest()
+        registrations=[json.loads(line) for line in (folder/'registrations.jsonl').read_bytes().splitlines()]
+        next(r for r in registrations if r['registration_id']==citation['registration_id'])['content_sha256']=citation['sha256']
+        snapshot=json.loads((folder/'snapshot.json').read_bytes())
+        for name,values in (('materials.jsonl',originals),('registrations.jsonl',registrations)):
+            binding=fixture.rows('facts/Q1/'+name,values)
+            snapshot['components'][name]={k:v for k,v in binding.items() if k!='path'}
+        view['snapshot']=fixture.write('facts/Q1/snapshot.json',snapshot)
+        fixture.refresh()
+        self.assertEqual(self.prepare(fixture).returncode,0)
+        result=self.verify()
+        self.assertEqual(result.returncode,2,result.stdout)
+        self.assertEqual(json.loads(result.stdout)['error']['code'],'reference_scope_mismatch')
+
+    def test_independent_acceptance_requires_actual_full_root_probe_coverage(self):
+        fixture=JointFixture(self.work)
+        self.assertEqual(self.prepare(fixture,probe=False).returncode,0)
+        result=self.verify()
+        self.assertEqual(result.returncode,2,result.stdout)
+        self.assertEqual(json.loads(result.stdout)['error']['code'],'incomplete_probe_coverage')
+        self.assertFalse((self.work/'audit/check.json').exists())
+
+    def test_duplicate_probe_counts_cannot_replace_distinct_view_coverage(self):
+        fixture=JointFixture(self.work)
+        self.assertEqual(self.prepare(fixture).returncode,0)
+        values=[json.loads(line) for line in (self.work/'inputs/full-probe.jsonl').read_bytes().splitlines()]
+        values[9]=values[0]
+        probe=fixture.rows('missing-one-view-probe.jsonl',values)
+        self.assertEqual(self.prepare(fixture,output='partial',probe=ROOT/probe['path']).returncode,0)
+        result=self.verify(output='partial')
+        self.assertEqual(result.returncode,2,result.stdout)
+        self.assertEqual(json.loads(result.stdout)['error']['code'],'incomplete_probe_coverage')

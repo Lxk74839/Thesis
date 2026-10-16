@@ -21,7 +21,7 @@ class JointFixture:
                          for p, title, crop in [('DEMO-A','AAA','rice'), ('DEMO-B','BBB','corn'), ('DEMO-H','AAA','rice')]]
         self.products += [{'parent_asin':f'DEMO-Z{i:02}', 'title':'ZZZ', 'crop':'oats'} for i in range(extra_products)]
         self.products.sort(key=lambda p:p['parent_asin'].encode())
-        self.batches = [{'parent_asin':p['parent_asin'], 'sim_batch_id':'SIM-'+p['parent_asin'], 'source':'SIM'} for p in self.products]
+        self.batches = [{'parent_asin':p['parent_asin'], 'sim_batch_id':'SIM-'+p['parent_asin'], 'source':'SIM','version':1} for p in self.products]
         candidates = [p['parent_asin'] for p in self.products if p['parent_asin']!='DEMO-H']
         self.tasks = []
         self.evaluations = []
@@ -56,10 +56,10 @@ class JointFixture:
                     original={'source':'SIM','parent_asin':p,'sim_batch_id':'SIM-'+p,'event_id':event_id,
                         'evidence_id':evidence_id,'kind':kind,'version':1,'facts':{'conclusion':'pass'}}
                     originals.append(original)
-                    events.append({'source':'SIM','event_id':event_id,'parent_asin':p,'sim_batch_id':'SIM-'+p})
+                    events.append({'source':'SIM','event_id':event_id,'parent_asin':p,'sim_batch_id':'SIM-'+p,'version':1})
                     registrations.append({'source':'SIM','registration_id':'reg-'+kind+'-'+p,'target_id':evidence_id,
                         'parent_asin':p,'sim_batch_id':'SIM-'+p,'event_id':event_id,
-                        'content_sha256':hashlib.sha256(wire(original)).hexdigest()})
+                        'content_sha256':hashlib.sha256(wire(original)).hexdigest(),'version':1})
             for name, rows in [('batches.jsonl',self.batches), ('events.jsonl',events),
                                ('materials.jsonl',originals),('registrations.jsonl',registrations),('actions.jsonl',[])]:
                 files[name] = self.rows('facts/'+label+'/'+name,rows)
@@ -121,6 +121,8 @@ class JointFixture:
             'status':'accepted_ticket08_preference_trial_api_only','record_sha256':prefref['sha256'],
             'component_sha256':{k:v['sha256'] for k,v in pref['components'].items()}}))
         normal={'components':{'batches.jsonl':self.rows('normal/batches.jsonl',self.batches)}}
+        for name in ('events.jsonl','policy.json'):
+            normal['components'][name]=self.raw('normal/'+name,(self.root/'inputs/facts/Q2'/name).read_bytes())
         normalref=self.input('normal',self.write('records/normal.json',normal))
         self.input('normal_acceptance',self.write('records/normal-acceptance.json',{'status':'accepted','generation_record':normalref}))
         for role in ('scenarios','quality'):
