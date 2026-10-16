@@ -1,0 +1,2 @@
+ticket14_*.py text eol=lf
+run_ticket14_check.py text eol=lf
