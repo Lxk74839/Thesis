@@ -1,0 +1,15 @@
+{
+  "P0_SIM_base_scoring_joint_packaging_reproductions_rerun": 0,
+  "changed": [],
+  "data_payloads_recomputed": false,
+  "excluded_task_updates": [
+    ".scratch/data-preparation/issues/14-full-data-acceptance.md",
+    ".scratch/data-preparation/map.md"
+  ],
+  "formal_test_recommendation_outputs_read_or_computed": 0,
+  "old_acceptance_records_and_production_and_manuscript_unchanged": true,
+  "original_materials": 26,
+  "protected_baseline_tracked_files": 1054,
+  "protected_distinct_files": 1352,
+  "status": "passed"
+}

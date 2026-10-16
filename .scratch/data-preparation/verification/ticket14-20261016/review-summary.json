@@ -1,0 +1,23 @@
+{
+  "baseline": "3c565eb9fd5e4240bbcc214111655ca394a0a3a8",
+  "candidate": "25158c53ec728a72620f88c36d0c804b73614018",
+  "diff": "git diff 3c565eb9fd5e4240bbcc214111655ca394a0a3a8...25158c53ec728a72620f88c36d0c804b73614018",
+  "method": "two_independent_static_agents_no_Python_or_Conda",
+  "standards": {
+    "blocking": 0,
+    "nonblocking": 0,
+    "worst_issue": null,
+    "report": ".scratch/data-preparation/verification/ticket14-20261016/standards-final.md"
+  },
+  "spec": {
+    "blocking": 0,
+    "nonblocking": 0,
+    "worst_issue": null,
+    "initial_nonblocking": 1,
+    "closed": "P3 explicit raw matched rating distribution; existing evidence only",
+    "initial_report": ".scratch/data-preparation/verification/ticket14-20261016/spec-initial.md",
+    "report": ".scratch/data-preparation/verification/ticket14-20261016/spec-final.md"
+  },
+  "review_scope": "new_ticket14_audit_and_report_only_not_reacceptance_of_upstream",
+  "final_delivery_metadata": "review_archives_and_protection_resource_receipts_follow_without_production_changes"
+}
