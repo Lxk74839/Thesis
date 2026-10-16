@@ -1,5 +1,6 @@
 """Independent raw-reference check of the public worked example before formal audit."""
 import copy
+import argparse
 import hashlib
 import importlib.util
 import json
@@ -42,6 +43,8 @@ def write_view(folder,acquired,corrupt=None):
 
 
 def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--audit-name',default='.')
+    args=parser.parse_args()
     with tempfile.TemporaryDirectory(dir=ROOT/'.tmp') as temp:
         root=Path(temp);binding,acquired=scoring_fixture(root)
         write_view(root/'public',acquired)
@@ -56,7 +59,8 @@ def main():
             else:raise AssertionError('independent_negative_accepted:'+case)
     summary={'status':'passed','public_candidates':4,'independent_negative_cases':3,
              'expected_source':'approved_worked_example_and_contract','model_API_calls':0}
-    path=ROOT/'data/quality-fusion-audit/20261016/public-reference-summary.json'
+    path=ROOT/'data/quality-fusion-audit/20261016'/args.audit_name/'public-reference-summary.json'
+    path.parent.mkdir(parents=True,exist_ok=True)
     with path.open('xb') as stream:stream.write(wire(summary)+b'\n')
     print(json.dumps(summary,sort_keys=True))
 

@@ -88,7 +88,8 @@ def reconstruct(folder):
             check(kind=='batch' and auth['may_create_batch'] and row['created_at_ms']<=reg['registered_at_ms'],'batch_authority')
     facts=[]
     parents=sorted(snap['scope_sha256'],key=lambda p:p.encode())
-    check(len(rows['batches.jsonl'])==len(parents),'parent_count')
+    check(all(len(rows[name])==multiple*len(parents) for name,multiple in
+              (('batches.jsonl',1),('events.jsonl',6),('materials.jsonl',8),('registrations.jsonl',15))),'parent_count')
     for parent in parents:
         scoped=[r for r in regs if r['parent_asin']==parent]
         check(sha(wire(scoped))==snap['scope_sha256'][parent],'scope_closure')
@@ -125,7 +126,11 @@ def reconstruct(folder):
         facts.append({'parent_asin':parent,'x':x,'z':1,'C':{'numerator':1,'denominator':1},
             'T':{'numerator':temporal.numerator,'denominator':temporal.denominator},
             'A':{'numerator':sum(checks),'denominator':2},'q':float(quality),'m':float(m),
-            'eligible':True,'stock_evidence_id':retail['evidence_id'],'stock_sha256':index[retail['evidence_id']]['content_sha256']})
+            'eligible':True,'stock_evidence_id':retail['evidence_id'],'stock_sha256':index[retail['evidence_id']]['content_sha256'],
+            'source_citations':{kind:{'evidence_id':materials[kind]['evidence_id'],
+                'registration_id':index[materials[kind]['evidence_id']]['registration_id'],
+                'event_id':materials[kind]['event_id'],'sha256':index[materials[kind]['evidence_id']]['content_sha256']}
+                for kind in ('inspection_sample','inspection_report','retail_status','transport_dispatch','transport_receipt')}})
     return snap,facts,rows
 
 
@@ -133,6 +138,15 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--record',default='records/sim-quality/grain-A-1.1.15-sim-quality-fusion-0.1.0.json')
     parser.add_argument('--output-root',default='.');parser.add_argument('--audit-name',default='formal')
     args=parser.parse_args();root=(ROOT/args.output_root).resolve();record=parse((ROOT/args.record).read_bytes())
+    check(record['stage']=='quality_fusion' and record['status']=='prepared_pending_independent_acceptance'
+          and record['counts']=={'parents':1494,'views':2},'prepared_contract')
+    check(set(record['inputs'])=={'quality_config','normal_record','normal_acceptance','normal_config'},'input_binding_set')
+    for info in record['inputs'].values():check(sha((ROOT/info['path']).read_bytes())==info['sha256'],'input_digest')
+    check(set(record['producer_sha256'])=={'quality_fusion.py','prepare_data.py','recommendation_actions.py'},'producer_set')
+    for name,value in record['producer_sha256'].items():check(sha((ROOT/name).read_bytes())==value,'producer_digest')
+    for name,info in record['components'].items():
+        content=(root/info['path']).read_bytes()
+        check(sha(content)==info['sha256'] and len(content)==info['bytes'] and len(content.splitlines())==info['records'],'prepared_component_digest')
     audit=ROOT/'data/quality-fusion-audit/20261016'/args.audit_name;audit.mkdir(parents=True,exist_ok=True)
     output=[];worlds=[]
     for view in record['views']:
@@ -169,6 +183,10 @@ def main():
         'parents_per_view':[len(w[1]) for w in worlds],'histogram':dict(Counter(str((r['x'],r['T']['numerator'],r['T']['denominator'])) for r in output)),
         'all_C_one':all(r['C']=={'numerator':1,'denominator':1} for r in output),
         'all_A_one':all(r['A']=={'numerator':2,'denominator':2} for r in output),
+        'source_citations':sum(len(r['source_citations']) for r in output),'component_files':len(record['components']),
+        'events_per_view':[len(w[2]['events.jsonl']) for w in worlds],
+        'materials_per_view':[len(w[2]['materials.jsonl']) for w in worlds],
+        'registrations_per_view':[len(w[2]['registrations.jsonl']) for w in worlds],
         'reference_sha256':sha((audit/'raw-reference.jsonl').read_bytes()),'model_API_calls':0}
     (audit/'raw-reference-summary.json').write_bytes(wire(summary)+b'\n');print(json.dumps(summary,sort_keys=True))
 

@@ -67,6 +67,50 @@ class QualityCLITests(unittest.TestCase):
 
 
 class QualityRankTests(unittest.TestCase):
+    def test_batch_metadata_cannot_impersonate_an_authenticated_stock_material(self):
+        from quality_fusion import rank_quality,QualityError
+        with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:
+            original=scoring_fixture(Path(temp))
+            for case in ('extra_metadata','wrong_schema'):
+                with self.subTest(case=case):
+                    bind,acquired=copy.deepcopy(original);pack=acquired['candidates']['DEMO-A']
+                    key=next(k for k,r in pack['originals'].items() if 'created_at_ms' in json.loads(r))
+                    batch=json.loads(pack['originals'][key])
+                    retail=next(json.loads(r) for r in pack['originals'].values() if json.loads(r).get('kind')=='retail_status')
+                    batch.update(kind='retail_status',evidence_id=retail['evidence_id'],facts=retail['facts'],valid_from_ms=retail['valid_from_ms'],valid_to_ms=bind['verify_at_ms']+999*(bind['verify_at_ms']-retail['valid_from_ms']))
+                    if case=='wrong_schema':batch['schema_version']='sim-material-1.0.0'
+                    pack['originals'][key]=wire(batch);reseal(bind,acquired)
+                    if case=='wrong_schema':
+                        with self.assertRaises(QualityError):rank_quality(bind,acquired)
+                    else:
+                        a=next(r for r in rank_quality(bind,acquired)['candidates'] if r['parent_asin']=='DEMO-A')
+                        self.assertEqual((a['x'],a['q'],a['score']),(75,.6,.675))
+
+    def test_material_cannot_substitute_unrelated_complete_path_for_its_unread_event(self):
+        from quality_fusion import rank_quality,QualityError
+        with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:
+            original=scoring_fixture(Path(temp))
+            for case in ('unregistered','registered_unread','normal_event_unread'):
+                with self.subTest(case=case):
+                    bind,acquired=copy.deepcopy(original);pack=acquired['candidates']['DEMO-A']
+                    key=next(k for k,r in pack['originals'].items() if json.loads(r).get('kind')=='retail_status')
+                    retail=json.loads(pack['originals'][key]);old=retail['event_id']
+                    if case=='normal_event_unread':pack['originals'].pop(old)
+                    else:
+                        retail['event_id']='UNREAD-DEPENDENCY'
+                        next(r for r in pack['registrations'] if r['target_id']==key)['event_id']='UNREAD-DEPENDENCY'
+                        pack['originals'][key]=wire(retail)
+                        if case=='registered_unread':
+                            reg=copy.deepcopy(next(r for r in pack['registrations'] if r['target_id']==old))
+                            reg.update(target_id='UNREAD-DEPENDENCY',event_id='UNREAD-DEPENDENCY',registration_id='EXTRA-EVENT-REG',sequence=999)
+                            pack['registrations'].append(reg)
+                    reseal(bind,acquired)
+                    if case=='unregistered':
+                        with self.assertRaises(QualityError):rank_quality(bind,acquired)
+                    else:
+                        a=next(r for r in rank_quality(bind,acquired)['candidates'] if r['parent_asin']=='DEMO-A')
+                        self.assertEqual((a['stock_state'],a['z'],a['eligible']),('Unassessed',0,False))
+
     def test_rejects_wrong_material_stage_pre_event_issue_late_batch_and_pre_arrival_stock(self):
         from quality_fusion import rank_quality,QualityError
         with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:

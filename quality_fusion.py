@@ -64,6 +64,7 @@ def _acquired_objects(parent, pack, snapshot, policy):
         need(key in index, 'unregistered_original')
         row=_decode(raw);reg=index[key];typ=reg['target_kind']
         need(json_bytes(row)==raw and digest(raw)==reg['content_sha256'], 'digest_mismatch')
+        need(typ in ('batch','event','material') and row['schema_version']=='sim-'+typ+'-1.0.0', 'object_type_mismatch')
         identity='sim_batch_id' if typ=='batch' else 'event_id' if typ=='event' else 'evidence_id'
         issuer=row.get('issuer_id',row.get('actor_id'))
         need(row[identity]==key and row['parent_asin']==parent and row['sim_batch_id']==batch
@@ -110,6 +111,8 @@ def _acquired_objects(parent, pack, snapshot, policy):
                 need(objects[batch]['created_at_ms']<=event['event_start_ms'], 'invalid_batch_time')
     for key,row in objects.items():
         if index[key]['target_kind']=='material':
+            need(row['event_id'] in index and index[row['event_id']]['target_kind']=='event'
+                 and index[row['event_id']]['registered_at_ms']<=index[key]['registered_at_ms'], 'unregistered_event_dependency')
             event=objects.get(row['event_id'])
             if event is not None:
                 need(index[row['event_id']]['target_kind']=='event'
@@ -134,7 +137,8 @@ def _acquired_objects(parent, pack, snapshot, policy):
     necessary={'inspection_sample','inspection_report','retail_status'}
     closed=all(r['target_id'] in objects for r in regs if r['target_kind']=='material'
                and necessary.intersection(authorities.get(r['issuer_id'],{}).get('material_kinds',[])))
-    return list(objects.values()), batch in objects and set(events)==set(stages) and closed
+    path_closed=all(r['target_id'] in objects for r in regs if r['target_kind'] in ('batch','event'))
+    return list(objects.values()), batch in objects and set(events)==set(stages) and closed and path_closed
 
 
 def prepare_quality(sim_record, config_path, output_root):
@@ -271,8 +275,9 @@ def rank_quality(binding, acquired):
     for parent,base in zip(binding['C'],binding['base_scores']):
         supplied=acquired['candidates'].get(parent)
         originals,graph= _acquired_objects(parent,supplied,snapshot,policy) if supplied is not None else ([],False)
-        materials={r['kind']:r for r in originals if 'kind' in r}
-        stocks=[r for r in originals if r.get('kind')=='retail_status'] if graph else []
+        material_rows=[r for r in originals if r['schema_version']=='sim-material-1.0.0']
+        materials={r['kind']:r for r in material_rows}
+        stocks=[r for r in material_rows if r['kind']=='retail_status'] if graph else []
         retail=stocks[0] if stocks else None
         conflict=len({(r['facts']['stock_units'],r['facts']['location_id']) for r in stocks})>1
         supported=retail is not None and not conflict
