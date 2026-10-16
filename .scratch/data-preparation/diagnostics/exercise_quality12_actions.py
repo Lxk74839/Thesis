@@ -1,5 +1,6 @@
 """Execute the approved public F/A/B adapters; actual state transitions, zero models."""
 import copy
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -18,7 +19,9 @@ def encode(value):
 
 
 def main():
-    audit=ROOT/'data/quality-fusion-audit/20261016'
+    parser=argparse.ArgumentParser();parser.add_argument('--audit-name',default='.')
+    args=parser.parse_args();audit=ROOT/'data/quality-fusion-audit/20261016'/args.audit_name
+    audit.mkdir(parents=True,exist_ok=True)
     traces=[]
     with tempfile.TemporaryDirectory(dir=ROOT/'.tmp') as temp:
         binding,available=scoring_fixture(Path(temp));parent=binding['C'][0]
@@ -57,6 +60,7 @@ def main():
     with path.open('xb') as stream:
         for trace in traces:stream.write(encode(trace)+b'\n')
     summary={'status':'executed_public_fixtures','fixtures':len(traces),'states':sum(len(t['states']) for t in traces),
+             'producer_sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ('quality_fusion.py','recommendation_actions.py')},
              'model_API_calls':0,'real_model_benefit':'not_measured','trace_sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
     (audit/'action-fixture-summary.json').write_bytes(encode(summary)+b'\n');print(json.dumps(summary,sort_keys=True))
 

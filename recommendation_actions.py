@@ -147,10 +147,12 @@ def advance_action(state,event):
         executed=missing[0] if state['mode']=='fixed' else event['slot']
         targets=[k for k in slots[executed] if k not in originals]
         require(all(r.get('action_id')!=event['action_id'] for r in state['receipts']), 'duplicate_action')
+        previous=[r for r in state['receipts'] if r['status']=='failed' and r.get('parent_asin')==parent
+                  and r.get('snapshot_id')==event['snapshot_id'] and set(r.get('target_ids',[])).intersection(targets)]
         retry=event.get('retry_of')
         if retry:
-            require(any(r.get('action_id')==retry and r['status']=='failed' and r['executed_slot']==executed for r in state['receipts']), 'invalid_retry')
-        cost={'logical_tools':len(targets),'physical_tools':1,'candidates':int(parent not in state['visited']),'retries':int(bool(retry))}
+            require(any(r['action_id']==retry for r in previous), 'invalid_retry')
+        cost={'logical_tools':len(targets),'physical_tools':1,'candidates':int(parent not in state['visited']),'retries':int(bool(previous))}
         if _charge(next_state,event,cost,reserve=True):
             next_state['pending']={'action_id':event['action_id'],'parent_asin':parent,'requested_slot':event['slot'],
                 'executed_slot':executed,'target_ids':targets,'cost':cost,'snapshot_id':event['snapshot_id']}
@@ -178,9 +180,11 @@ def advance_action(state,event):
                     success=False
             next_state['pending']=None
             next_state['receipts'][-1].update(status='executed' if success else 'failed',action_id=pending['action_id'],
+                parent_asin=pending['parent_asin'],snapshot_id=pending['snapshot_id'],target_ids=pending['target_ids'],
                 requested_slot=pending['requested_slot'],executed_slot=pending['executed_slot'],
                 target_sha256={k:digest(v) for k,v in event['originals'].items()},
-                usage={k:pending['cost'].get(k,0) for k in RESOURCES},budget_after=copy.deepcopy(next_state['budget']))
+                usage={**{k:pending['cost'].get(k,0) for k in RESOURCES},'elapsed_ms':event['at_ms']-state['at_ms']},
+                budget_after=copy.deepcopy(next_state['budget']))
     elif kind=='submit_draft':
         require(event['role']=='推荐管理' and next_state['phase']=='initial', 'invalid_phase')
         draft=event['draft']
@@ -202,7 +206,7 @@ def advance_action(state,event):
             for item in state['drafts'][-1]['content']['items']:
                 if item['parent_asin'] in eligible and item['parent_asin'] not in next_state['G']:
                     next_state['G'].append(item['parent_asin'])
-            next_state['phase']='feedback' if issues and state['mode']!='no_feedback' else 'final'
+            next_state['phase']='feedback' if issues and state['mode']!='no_feedback' and state['feedback_round']==0 else 'final'
     elif kind=='revise_and_resubmit':
         require(event['role']=='推荐管理' and state['phase']=='feedback' and state['mode']!='no_feedback'
                 and state['feedback_round']==0, 'feedback_disabled_or_exhausted')

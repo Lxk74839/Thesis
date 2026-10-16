@@ -37,6 +37,38 @@ def wrong_draft(state):
 
 
 class ActionTests(unittest.TestCase):
+    def test_unsuccessful_single_revision_still_reaches_common_final_gate(self):
+        with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:
+            binding,acquired=scoring_fixture(Path(temp))
+            for mode in ('full','fixed'):
+                with self.subTest(mode=mode):
+                    state=start(binding,acquired,mode)
+                    state=step(state,'submit_draft',draft=wrong_draft(state))
+                    state=step(state,'verify_draft','推荐依据核验')
+                    issue=state['visible_issues'][0]
+                    sample=next(k for k,r in acquired['candidates'][binding['C'][0]]['originals'].items() if json.loads(r).get('kind')=='inspection_sample')
+                    state=step(state,'revise_and_resubmit',issue_id=issue['issue_id'],draft_id='STILL-WRONG',pointer=issue['pointer'],value=sample)
+                    state=step(state,'verify_draft','推荐依据核验')
+                    state=step(state,'finalize')
+                    self.assertEqual((state['terminal'],state['delivered']),('blocked_evidence',[]))
+                    self.assertEqual(len(state['drafts']),2)
+                    self.assertEqual(state['release_check']['issues'][0]['code'],'wrong_attribute_citation')
+
+    def test_retry_is_inferred_from_actual_failed_targets_and_settle_time_is_preserved(self):
+        with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:
+            binding,available=scoring_fixture(Path(temp));partial=copy.deepcopy(available);parent=binding['C'][0]
+            key=next(k for k,r in partial['candidates'][parent]['originals'].items() if json.loads(r).get('kind')=='retail_status')
+            partial['candidates'][parent]['originals'].pop(key)
+            state=start(binding,partial,limits={**LIMITS,'retries':0},available=available)
+            state=step(state,'acquire','生命周期追溯',parent_asin=parent,slot='R5.retail_status',action_id='FIRST-FAIL')
+            state=step(state,'settle','生命周期追溯',action_id='FIRST-FAIL',success=False,originals={})
+            with self.subTest(phase='settle_receipt'):
+                self.assertEqual(state['receipts'][-1]['usage']['elapsed_ms'],1)
+            used=state['budget']['used']['logical_tools']
+            attempted=step(state,'acquire','生命周期追溯',parent_asin=parent,slot='R5.retail_status',action_id='NEW-ID-WITHOUT-RETRY-LABEL')
+            self.assertEqual((attempted['terminal'],attempted['pending']),('incomplete_budget',None))
+            self.assertEqual(attempted['budget']['used']['logical_tools'],used)
+
     def test_state_tampering_pending_work_and_cross_task_events_cannot_bypass_contract(self):
         from recommendation_actions import ActionError
         with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:

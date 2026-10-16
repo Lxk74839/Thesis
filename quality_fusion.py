@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 import uuid
 
-from sim_normal import PROJECT, SimError, digest, json_bytes, read_json, safe_path, unique_object
+from sim_normal import KINDS, MATERIAL_STAGES, PROJECT, SimError, digest, json_bytes, read_json, safe_path, unique_object
 from sim_scenarios import load_baseline
 
 VERSION = 'sim-quality-fusion-0.1.0'
@@ -106,11 +106,15 @@ def _acquired_objects(parent, pack, snapshot, policy):
                  and predecessor['event_end_ms']<=event['event_start_ms'], 'invalid_event_path')
         elif prev<0:
             need(event['predecessor_event_ids']==[], 'invalid_event_path')
+            if batch in objects:
+                need(objects[batch]['created_at_ms']<=event['event_start_ms'], 'invalid_batch_time')
     for key,row in objects.items():
         if index[key]['target_kind']=='material':
             event=objects.get(row['event_id'])
             if event is not None:
                 need(index[row['event_id']]['target_kind']=='event'
+                     and row['kind'] in KINDS and event['stage']==dict(zip(KINDS,MATERIAL_STAGES))[row['kind']]
+                     and event['event_start_ms']<=row['issued_at_ms']
                      and index[row['event_id']]['registered_at_ms']<=index[key]['registered_at_ms'], 'invalid_event_dependency')
     materials={r['kind']:r for k,r in objects.items() if index[k]['target_kind']=='material'}
     sample,report=materials.get('inspection_sample'),materials.get('inspection_report')
@@ -124,6 +128,9 @@ def _acquired_objects(parent, pack, snapshot, policy):
                  ('transport_segment_id','from_location_id','to_location_id','quantity_units','unit'))
              and receipt['facts']['handover_status']=='accepted'
              and dispatch['facts']['departed_at_ms']<=receipt['facts']['arrived_at_ms']<=receipt['issued_at_ms'], 'invalid_arrival')
+        for row in objects.values():
+            if row.get('kind')=='retail_status':
+                need(receipt['facts']['arrived_at_ms']<=row['facts']['observed_at_ms'], 'invalid_arrival_time')
     necessary={'inspection_sample','inspection_report','retail_status'}
     closed=all(r['target_id'] in objects for r in regs if r['target_kind']=='material'
                and necessary.intersection(authorities.get(r['issuer_id'],{}).get('material_kinds',[])))

@@ -67,6 +67,32 @@ class QualityCLITests(unittest.TestCase):
 
 
 class QualityRankTests(unittest.TestCase):
+    def test_rejects_wrong_material_stage_pre_event_issue_late_batch_and_pre_arrival_stock(self):
+        from quality_fusion import rank_quality,QualityError
+        with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:
+            original=scoring_fixture(Path(temp))
+            for case in ('wrong_stage','pre_event_issue','late_batch','pre_arrival_stock'):
+                with self.subTest(case=case):
+                    bind,acquired=copy.deepcopy(original);pack=acquired['candidates']['DEMO-A']
+                    objects={k:json.loads(v) for k,v in pack['originals'].items()}
+                    retail=next(r for r in objects.values() if r.get('kind')=='retail_status')
+                    if case=='wrong_stage':
+                        event=next(r for r in objects.values() if r.get('stage')=='inspection')
+                        retail['event_id']=event['event_id']
+                        next(r for r in pack['registrations'] if r['target_id']==retail['evidence_id'])['event_id']=event['event_id']
+                    if case=='pre_event_issue':
+                        sample=next(r for r in objects.values() if r.get('kind')=='inspection_sample')
+                        sample['issued_at_ms']=objects[sample['event_id']]['event_start_ms']-1
+                    if case=='late_batch':
+                        batch=next(r for r in objects.values() if 'created_at_ms' in r)
+                        batch['created_at_ms']=next(r['event_start_ms'] for r in objects.values() if r.get('stage')=='harvest')+1
+                        next(r for r in pack['registrations'] if r['target_kind']=='batch')['registered_at_ms']=batch['created_at_ms']+1
+                    if case=='pre_arrival_stock':
+                        arrived=next(r['facts']['arrived_at_ms'] for r in objects.values() if r.get('kind')=='transport_receipt')
+                        retail['valid_from_ms']=arrived-2;retail['facts']['observed_at_ms']=arrived-1
+                    pack['originals']={k:wire(v) for k,v in objects.items()};reseal(bind,acquired)
+                    with self.assertRaises(QualityError):rank_quality(bind,acquired)
+
     def test_pure_computation_is_repeatable_and_never_reads_missing_originals_or_host_files(self):
         from quality_fusion import rank_quality,QualityError
         with tempfile.TemporaryDirectory(dir=PROJECT/'.tmp') as temp:

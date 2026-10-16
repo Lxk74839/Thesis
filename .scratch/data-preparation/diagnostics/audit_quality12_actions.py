@@ -1,4 +1,5 @@
 """Independent public fixture audit; no production scoring/state imports."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -17,7 +18,9 @@ def original(state,parent,key):
 
 
 def main():
-    traces=[json.loads(line) for line in (AUDIT/'action-fixture-traces.jsonl').read_bytes().splitlines()]
+    parser=argparse.ArgumentParser();parser.add_argument('--audit-name',default='.')
+    args=parser.parse_args();audit=AUDIT/args.audit_name
+    traces=[json.loads(line) for line in (audit/'action-fixture-traces.jsonl').read_bytes().splitlines()]
     check(len(traces)==9,'trace_count');transitions=0;budget_cells=0
     for trace in traces:
         states=trace['states'];first,last=states[0],states[-1];mode=trace['mode']
@@ -59,8 +62,8 @@ def main():
             else:check(last['terminal']=='blocked_evidence','B_no_feedback_gate')
     summary={'status':'passed','fixtures':len(traces),'transitions':transitions,'budget_cells':budget_cells,
         'real_model_benefit':'not_measured','model_API_calls':0,
-        'trace_sha256':hashlib.sha256((AUDIT/'action-fixture-traces.jsonl').read_bytes()).hexdigest()}
-    (AUDIT/'action-independent-summary.json').write_text(json.dumps(summary,sort_keys=True,indent=2)+'\n',encoding='utf-8')
+        'trace_sha256':hashlib.sha256((audit/'action-fixture-traces.jsonl').read_bytes()).hexdigest()}
+    (audit/'action-independent-summary.json').write_text(json.dumps(summary,sort_keys=True,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(summary,sort_keys=True))
 
 
