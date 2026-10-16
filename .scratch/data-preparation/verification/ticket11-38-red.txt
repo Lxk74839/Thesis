@@ -1,0 +1,29 @@
+FF
+======================================================================
+FAIL: test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority (tests.test_sim_scenarios.ScenarioTests.test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority) (mode='issuer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 656, in test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority
+    self.assertEqual(clause['state'], 'Supported')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Pending' != 'Supported'
+- Pending
++ Supported
+
+
+======================================================================
+FAIL: test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority (tests.test_sim_scenarios.ScenarioTests.test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority) (mode='object')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 656, in test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority
+    self.assertEqual(clause['state'], 'Supported')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Pending' != 'Supported'
+- Pending
++ Supported
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.767s
+
+FAILED (failures=2)

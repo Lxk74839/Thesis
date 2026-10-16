@@ -1,0 +1,29 @@
+FF
+======================================================================
+FAIL: test_misbound_receipts_cannot_borrow_another_candidates_retail_support (tests.test_sim_scenarios.ScenarioTests.test_misbound_receipts_cannot_borrow_another_candidates_retail_support) (registrar='UNTRUSTED')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 949, in test_misbound_receipts_cannot_borrow_another_candidates_retail_support
+    self.assertEqual(row['clauses'][1]['state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+
+
+======================================================================
+FAIL: test_misbound_receipts_cannot_borrow_another_candidates_retail_support (tests.test_sim_scenarios.ScenarioTests.test_misbound_receipts_cannot_borrow_another_candidates_retail_support) (registrar='SIM-REGISTRY')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Kane\Documents\CodexProject\Thesis\tests\test_sim_scenarios.py", line 949, in test_misbound_receipts_cannot_borrow_another_candidates_retail_support
+    self.assertEqual(row['clauses'][1]['state'], 'Pending')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Supported' != 'Pending'
+- Supported
++ Pending
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.769s
+
+FAILED (failures=2)

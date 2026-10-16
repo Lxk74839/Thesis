@@ -1,0 +1,18 @@
+{
+  "candidate": "f2e7d2e8bb4f2b5e86487e24cd2a45f009ac7735",
+  "runtime": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+  "results": [
+    {
+      "mode": "foreign_lineage_owner",
+      "expected_state": "Supported",
+      "observed_exit_code": 0,
+      "observed_state": "Pending"
+    },
+    {
+      "mode": "foreign_retail_scope",
+      "expected_state": "Pending",
+      "observed_exit_code": 0,
+      "observed_state": "Supported"
+    }
+  ]
+}

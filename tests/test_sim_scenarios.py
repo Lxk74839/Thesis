@@ -623,6 +623,41 @@ class ScenarioTests(unittest.TestCase):
         self.assertEqual(row['candidate_state'], 'Pending')
         self.assertIn(2, [head['head_version'] for head in row['clauses'][0]['version_heads']])
 
+    def test_invalid_receipts_cannot_grant_another_issuer_or_object_status_authority(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for mode in ('issuer', 'object'):
+            with self.subTest(mode=mode):
+                self.restore_public(saved)
+                actions = self.rows('V08', 'change-actions.jsonl')
+                if mode == 'issuer':
+                    actions[0]['issuer_id'] = 'SIM-RETAIL'
+                else:
+                    donor = self.report('V08', parent='PX2')
+                    for field in ('parent_asin', 'sim_batch_id', 'event_id'):
+                        actions[0][field] = donor[field]
+                self.rebind_actions('V08', actions)
+                receipts = self.rows('V08', 'registrations.jsonl')
+                fake = copy.deepcopy(self.receipt('V08', self.report('V08')))
+                for field in ('issuer_id', 'parent_asin', 'sim_batch_id', 'event_id'):
+                    fake[field] = actions[0][field]
+                fake['registration_id'] = 'g_' + hashlib.sha256(('fake-authority-' + mode).encode()).hexdigest()
+                for receipt in receipts:
+                    if receipt['target_kind'] == 'change_action':
+                        for field in ('issuer_id', 'parent_asin', 'sim_batch_id', 'event_id'):
+                            receipt[field] = actions[0][field]
+                self.replace_rows('V08', 'registrations.jsonl', receipts + [fake])
+                self.order_receipts('V08')
+                self.reseal()
+                result, audit = self.audit('fake-authority-' + mode)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                clause = self.references(audit)['V08', 'R1_SIM_Q1', 'PX3']['clauses'][0]
+                self.assertEqual(clause['state'], 'Supported')
+                head = next(h for h in clause['version_heads'] if h['evidence_id'] == self.report('V08')['evidence_id'])
+                self.assertEqual(head['revoked_versions'], [])
+                self.assertIn('action_not_authorized', [a['reason'] for a in head['actions']])
+
     def test_missing_registered_status_actions_keep_version_checks_incomplete(self):
         self.fixture()
         self.prepared()
@@ -890,6 +925,30 @@ class ScenarioTests(unittest.TestCase):
             result, audit_root = self.audit('head-' + str(index))
             self.assertEqual(result.returncode, 0, result.stdout)
             self.assertEqual(self.references(audit_root)['V09', 'R1_SIM_Q1', 'PX3']['candidate_state'], 'Pending')
+
+    def test_misbound_receipts_cannot_borrow_another_candidates_retail_support(self):
+        self.fixture()
+        self.prepared()
+        saved = self.capture_public()
+        for registrar in ('UNTRUSTED', 'SIM-REGISTRY'):
+            with self.subTest(registrar=registrar):
+                self.restore_public(saved)
+                materials = self.rows('V07', 'materials.jsonl')
+                own = next(r for r in materials if r['parent_asin'] == 'PX3' and r['kind'] == 'retail_status')
+                donor = next(r for r in materials if r['parent_asin'] == 'PX1' and r['kind'] == 'retail_status')
+                receipt = copy.deepcopy(self.receipt('V07', donor))
+                receipt.update(parent_asin=own['parent_asin'], sim_batch_id=own['sim_batch_id'], event_id=own['event_id'],
+                    registrar_id=registrar, registration_id='g_' + hashlib.sha256(('foreign-retail-' + registrar).encode()).hexdigest())
+                self.replace_rows('V07', 'registrations.jsonl', self.rows('V07', 'registrations.jsonl') + [receipt])
+                self.order_receipts('V07')
+                self.reseal()
+                result, audit = self.audit('foreign-retail-' + registrar)
+                self.assertEqual(result.returncode, 0, result.stdout)
+                row = self.references(audit)['V07', 'R1_AND_R5_SIM_Q1_ON_SALE', 'PX3']
+                self.assertEqual(row['clauses'][0]['state'], 'Supported')
+                self.assertEqual(row['clauses'][1]['state'], 'Pending')
+                self.assertEqual(row['candidate_state'], 'Pending')
+                self.assertNotIn(donor['evidence_id'], [item['id'] for item in row['clauses'][1]['adopted']])
 
     def test_legal_zero_and_maximum_integer_stock_do_not_change_a_status_only_request(self):
         self.fixture()

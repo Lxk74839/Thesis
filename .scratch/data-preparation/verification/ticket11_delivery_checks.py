@@ -284,9 +284,58 @@ def reproduce(first_record, second_record, first_audit, second_audit):
     return {'status': 'passed', 'stable_files_compared': compared, 'reference_bytes_equal': True}
 
 
+def pairing(record_path):
+    record_path = path(record_path)
+    record = load(record_path)
+    package = record_path.parents[2] / Path(record['components']['manifest.json']['path']).parent
+    index = rows(package / 'view-index.jsonl')
+    first = package / Path(index[0]['snapshot_path']).parent
+    catalog = [{'parent_asin': r['parent_asin'], 'crop': r['crop']} for r in rows(first / 'batches.jsonl')[:4]]
+    candidates = [r['parent_asin'] for r in catalog[1:]]
+    request = next(r for r in rows(package / 'requests.jsonl') if r['profile_id'] == 'R1_AND_R5_SIM_Q1_ON_SALE')
+    fixture = {'root_task_id': 'PUBLIC-PX-ROOT-1', 'split': 'development',
+        'history': [{'parent_asin': catalog[0]['parent_asin'], 'rating': 4, 'text': 'PUBLIC SYNTHETIC HISTORY'}],
+        'seen_parent_asins': [catalog[0]['parent_asin']], 'candidate_parent_asins': candidates,
+        'catalog_projection': catalog, 'raw_request': request['design_text'], 'structured_request': request,
+        'base_scores': dict(zip(candidates, [0.3, 0.2, 0.1])), 'base_score_version': 'fixture-only',
+        'output_k': 1, 'model_version': 'fixture-only-no-model', 'tool_version': 'fixture-only-no-tool',
+        'budget': {'fixture_units': 0}, 'failure_accounting': 'fixture-only-no-calls'}
+    expected = {key: sha(wire(value)) for key, value in fixture.items()}
+    handles = []
+    for item in index:
+        snapshot = load(package / item['snapshot_path'])
+        batches = rows(package / Path(item['snapshot_path']).parent / 'batches.jsonl')
+        check(set(candidates) <= {r['parent_asin'] for r in batches}, 'pairing_candidate_coverage')
+        check(snapshot['scenario_version'] == record['scenario_version']
+              and request['profile_id'] in snapshot['request_profiles'], 'pairing_snapshot_request')
+        paired = copy.deepcopy(fixture)
+        paired['candidate_parent_asins'] = [r['parent_asin'] for r in batches if r['parent_asin'] in candidates]
+        projected = {r['parent_asin']: {'parent_asin': r['parent_asin'], 'crop': r['crop']} for r in batches}
+        paired['catalog_projection'] = [projected[r['parent_asin']] for r in catalog]
+        paired['structured_request'] = next(r for r in rows(package / 'requests.jsonl')
+                                             if r['profile_id'] == snapshot['request_profiles'][1])
+        paired['raw_request'] = paired['structured_request']['design_text']
+        actual = {key: sha(wire(value)) for key, value in paired.items()}
+        check(actual == expected, 'pairing_invariants')
+        handles.append({'root_task_id': paired['root_task_id'], 'scenario_version': snapshot['scenario_version'],
+            'snapshot_id': snapshot['snapshot_id'], 'request_profile_id': request['profile_id'],
+            'view_id': item['view_id'], 'split': paired['split'], 'field_sha256': actual})
+    rejected_controls = []
+    for field in fixture:
+        altered = copy.deepcopy(fixture)
+        altered[field] = {'deliberate_public_fixture_mismatch': field}
+        check({key: sha(wire(value)) for key, value in altered.items()} != expected, 'pairing_negative_control')
+        rejected_controls.append(field)
+    check(len(handles) == 16 and len({r['snapshot_id'] for r in handles}) == 16, 'pairing_handle_count')
+    return {'status': 'passed', 'fixture_scope': 'synthetic_contract_only_not_ticket12_defaults',
+        'fixture': fixture, 'handles': handles, 'field_comparisons': len(handles) * len(fixture),
+        'rejected_mismatch_controls': rejected_controls, 'real_user_joins': 0, 'model_calls': 0, 'tool_calls': 0,
+        'independent_users_added': 0, 'ticket13_runtime_integration': 'not_implemented'}
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', choices=['protection', 'conformance', 'reproduction'])
+    parser.add_argument('mode', choices=['protection', 'conformance', 'reproduction', 'pairing'])
     parser.add_argument('--before')
     parser.add_argument('--record')
     parser.add_argument('--audit-root')
@@ -299,6 +348,8 @@ def main():
         result = protect(args.before)
     elif args.mode == 'conformance':
         result = conformance(args.record, args.audit_root)
+    elif args.mode == 'pairing':
+        result = pairing(args.record)
     else:
         result = reproduce(args.record, args.other_record, args.audit_root, args.other_audit_root)
     result.update(program_sha256=sha(Path(__file__).read_bytes()),

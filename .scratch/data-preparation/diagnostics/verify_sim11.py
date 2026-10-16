@@ -403,7 +403,9 @@ class EvidenceView:
             self.receipts[key].append((row, {'path': prefix + 'registrations.jsonl', 'line': number,
                 'sha256': sha(originals['registrations.jsonl'][number - 1]), 'id': row['registration_id'],
                 'version': row['version'], 'json_pointer': '/content_sha256'}))
-            self.scopes[row['parent_asin'], row['sim_batch_id'], row['event_id']].add(key)
+            if row['receipt_status'] == 'accepted' and row['source'] == 'SIM' and row['registry_backend'] == 'local_sim_registry' \
+                    and row['registrar_id'] == data['policy.json'][0]['registrar_id']:
+                self.scopes[row['parent_asin'], row['sim_batch_id'], row['event_id']].add(key)
         for action in data['change-actions.jsonl']:
             self.actions_by_target[action['target_id']].append(action)
 
@@ -498,17 +500,32 @@ class EvidenceView:
         records = {key[2]: entries for key, entries in self.receipts.items() if key[:2] == ('material', identity)}
         trace = {'evidence_id': identity, 'head_version': 1, 'revoked_versions': [], 'actions': [], 'reason': None}
         visible = [r for entries in records.values() for r, _ in entries
-                   if r['receipt_status'] == 'accepted' and r['registrar_id'] == self.data['policy.json'][0]['registrar_id']]
+                   if r['receipt_status'] == 'accepted' and r['source'] == 'SIM'
+                   and r['registry_backend'] == 'local_sim_registry'
+                   and r['registrar_id'] == self.data['policy.json'][0]['registrar_id']]
         anchors = [r for r in visible if r['version'] == 1]
+        identity_fields = ('issuer_id', 'parent_asin', 'sim_batch_id', 'event_id')
+        bound_identity = None
+        for version in sorted(records):
+            key = 'material', identity, version
+            pair = self.objects.get(key)
+            if key not in self.denied and pair and any(r['version'] == version and r['content_sha256'] == pair[1]['sha256']
+                                                      for r in visible):
+                bound_identity = tuple(pair[0][field] for field in identity_fields)
+                break
+        if bound_identity is None:
+            registered_identities = {tuple(r[field] for field in identity_fields) for r in anchors}
+            if len(registered_identities) == 1:
+                bound_identity = next(iter(registered_identities))
+        anchors = [r for r in anchors if tuple(r[field] for field in identity_fields) == bound_identity]
         edges, revoked = defaultdict(set), set()
         for action in self.actions_by_target[identity]:
             accepted, observation = self.original(('change_action', action['action_id'], 1))
             if accepted is not None:
                 own = [r for r in anchors if r['issuer_id'] == action['issuer_id']
                     and all(r[field] == action[field] for field in ('parent_asin', 'sim_batch_id', 'event_id'))]
-                target_records = [r for r, _ in records.get(action['target_version'], [])
-                    if r['receipt_status'] == 'accepted' and r['issuer_id'] == action['issuer_id']
-                    and r['registrar_id'] == self.data['policy.json'][0]['registrar_id']
+                target_records = [r for r in visible if r['version'] == action['target_version']
+                    and tuple(r[field] for field in identity_fields) == bound_identity and r['issuer_id'] == action['issuer_id']
                     and all(r[field] == action[field] for field in ('parent_asin', 'sim_batch_id', 'event_id'))]
                 if action['target_kind'] != 'material':
                     observation = {**observation, 'reason': 'action_target_kind'}
@@ -611,6 +628,10 @@ class EvidenceView:
                 rejected.append(observation)
                 reads_complete &= observation['reason'] not in ('unavailable', 'access_denied')
             elif row['kind'] in (('inspection_sample', 'inspection_report') if is_inspection else ('retail_status',)):
+                if (row['parent_asin'], row['sim_batch_id'], row['event_id']) != (
+                        batch['parent_asin'], batch['sim_batch_id'], binding[stage]):
+                    rejected.append({**observation, 'reason': 'outside_request_object'})
+                    continue
                 if is_inspection and row['facts']['sample_id'] != binding['sample_id']:
                     rejected.append({**observation, 'reason': 'outside_request_sample'})
                     continue
