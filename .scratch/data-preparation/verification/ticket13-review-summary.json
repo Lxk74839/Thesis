@@ -1,0 +1,39 @@
+{
+  "base": "cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1",
+  "candidate": "7de5d37220cb4a70bc2b6148a60698b4870917a6",
+  "initial_candidate": "ee5bb2783fdbf4c6ea8b50ebb2f077ed66f0bfb8",
+  "diff": "git diff cfec0e5bb3b04ac46ab76e4b2ddb5f7b36e7d1e1...7de5d37220cb4a70bc2b6148a60698b4870917a6",
+  "concentrated_fix_rounds": 1,
+  "standards": {
+    "blockers": 0,
+    "nonblocking": 0,
+    "initial_blockers": 1,
+    "initial_report": {
+      "path": ".scratch/data-preparation/verification/ticket13-standards-initial.md",
+      "bytes": 1778,
+      "sha256": "0a9de56951eb5cb31fb02112286c576d5a7dd3ffd22ff76884c82797442b2449"
+    },
+    "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-standards-final.md",
+      "bytes": 1626,
+      "sha256": "a0e10d5eba05deb009f905e2d3402c5b7fbd97471ea991888935fffbaddab44a"
+    }
+  },
+  "spec": {
+    "blockers": 0,
+    "nonblocking": 0,
+    "initial_blockers": 2,
+    "initial_report": {
+      "path": ".scratch/data-preparation/verification/ticket13-spec-initial.md",
+      "bytes": 2082,
+      "sha256": "9aa33312cef9ebef13f816aa3611e1ea5f203bd999a5b4222d97348ff7c12e01"
+    },
+    "report": {
+      "path": ".scratch/data-preparation/verification/ticket13-spec-final.md",
+      "bytes": 1699,
+      "sha256": "37f95bad52b8d10d08bdb4175fdb01d105c2b7e531908c2fad5a387456caf65c"
+    }
+  },
+  "review_execution": "two_independent_parallel_static_agents_no_Python",
+  "scope": "code_review_only_real_delivery_pending"
+}
