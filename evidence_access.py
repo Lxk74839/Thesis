@@ -1,5 +1,7 @@
 """Host-bound acquisition of SIM facts; no evaluation data or model access."""
 import copy
+import math
+import os
 import hashlib
 import json
 from pathlib import Path
@@ -129,6 +131,139 @@ class LocalEvidenceSource:
                 'lookup_target_id': r['target_id'], 'lookup_version': r['version'], 'found': False}}) for r in registrations]
 
 
+class RootBudget:
+    """One host-owned ledger, including final capacity; no provider defaults."""
+    resources = ('model_calls', 'input_tokens', 'output_tokens', 'logical_tools', 'physical_tools',
+                 'candidates', 'retries', 'elapsed_ms', 'cost_microusd')
+
+    def __init__(self, binding, limits, final_reserve, *, clock, journal_path):
+        self.binding = copy.deepcopy(binding)
+        self.limits = copy.deepcopy(limits)
+        self.final_reserve = copy.deepcopy(final_reserve)
+        for table in (limits, final_reserve):
+            if set(table) != set(self.resources) or any(type(v) is not int or v < 0 for v in table.values()):
+                raise ValueError('invalid_budget')
+        if any(final_reserve[k] > limits[k] for k in self.resources):
+            raise ValueError('invalid_final_reserve')
+        self.clock = clock
+        self.started = clock()
+        self.usage = dict.fromkeys(self.resources, 0)
+        self.reservations = {}
+        self.receipts = []
+        self.lock = threading.RLock()
+        self.final_started = False
+        self.halted = None
+        self.journal_path = Path(journal_path).resolve()
+        if not any(self.journal_path.is_relative_to(PROJECT / folder) for folder in
+                   ('.tmp/recommendation-runtime', 'data/recommendation-runtime-audit')):
+            raise ValueError('invalid_journal_path')
+        self.journal_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.journal_path.open('x', encoding='utf-8') as stream:
+            stream.write(encoded({'kind': 'init', 'binding': self.binding,
+                                  'limits': limits, 'final_reserve': final_reserve}).decode() + '\n')
+            stream.flush()
+            os.fsync(stream.fileno())
+
+    def _record(self, value):
+        with self.journal_path.open('a', encoding='utf-8') as stream:
+            stream.write(encoded(value).decode() + '\n')
+            stream.flush()
+            os.fsync(stream.fileno())
+        self.receipts.append(copy.deepcopy(value))
+
+    def _tick(self):
+        elapsed = math.ceil(self.clock() - self.started)
+        if elapsed < self.usage['elapsed_ms']:
+            raise ValueError('non_monotonic_clock')
+        self.usage['elapsed_ms'] = elapsed
+
+    def reserve(self, operation, upper_bound, *, phase, retry_of):
+        with self.lock:
+            self._tick()
+            if phase not in ('work', 'final') or self.final_started and phase != 'final':
+                raise ValueError('invalid_budget_phase')
+            if not set(upper_bound) <= set(self.resources) or any(type(v) is not int or v < 0 for v in upper_bound.values()):
+                raise ValueError('invalid_reservation')
+            held = {k: upper_bound.get(k, 0) for k in self.resources}
+            if retry_of is not None:
+                prior = self.reservations.get(retry_of)
+                if prior is None or prior['settled'] is None or prior['status'] == 'ok':
+                    raise ValueError('invalid_retry')
+                held['retries'] = 1
+            if self.halted:
+                result = {'status': self.halted, 'operation': operation}
+                self._record(result)
+                return result
+            outstanding = self._held()
+            reserve = self.final_reserve if phase == 'work' else dict.fromkeys(self.resources, 0)
+            allowed = all(self.usage[k] + outstanding[k] + held[k] + reserve[k] <= self.limits[k] for k in self.resources)
+            status = 'reserved' if allowed else ('deadline_exceeded' if self.usage['elapsed_ms'] + held['elapsed_ms']
+                + reserve['elapsed_ms'] > self.limits['elapsed_ms'] else 'budget_exhausted')
+            result = {'status': status, 'operation': operation, 'phase': phase, 'retry_of': retry_of,
+                      'reservation_id': self.binding['run_id'] + ':' + str(len(self.receipts)), 'held': held,
+                      'usage_before': self.usage.copy(), 'held_before': outstanding,
+                      'final_reserve_applied': reserve.copy()}
+            self._record(result)
+            if allowed:
+                self.reservations[result['reservation_id']] = {'held': held, 'settled': None, 'status': 'pending',
+                    'operation': copy.deepcopy(operation), 'phase': phase}
+                self.final_started = phase == 'final'
+            return copy.deepcopy(result)
+
+    def settle(self, reservation_id, observation):
+        with self.lock:
+            self._tick()
+            entry = self.reservations.get(reservation_id)
+            previous = entry['settled'] if entry else None
+            if entry is None or previous is not None and (all(v is not None for v in previous.values())
+                    or observation.get('authoritative_receipt') != reservation_id):
+                raise ValueError('invalid_or_settled_reservation')
+            actual = {k: observation['usage'].get(k, None if entry['held'][k] else 0)
+                      for k in self.resources if k != 'elapsed_ms'}
+            if entry['held']['retries']:
+                actual['retries'] = 1
+            if any(v is not None and (type(v) is not int or v < 0) for v in actual.values()):
+                raise ValueError('invalid_usage')
+            if previous is not None and (any(v is None for v in actual.values())
+                    or any(v is not None and actual[k] != v for k, v in previous.items())):
+                raise ValueError('invalid_authoritative_usage')
+            unknown = any(v is None for v in actual.values())
+            result = {'status': 'unresolved' if unknown else 'settled', 'reservation_id': reservation_id, 'usage': actual,
+                      'observation': copy.deepcopy(observation), 'usage_before': self.usage.copy(),
+                      'released': {k: max(0, entry['held'][k] - v) if v is not None else 0 for k, v in actual.items()},
+                      'unresolved': {k: entry['held'][k] for k, v in actual.items() if v is None}}
+            self._record(result)
+            for key, value in actual.items():
+                if previous is None or previous[key] is None:
+                    self.usage[key] += value if value is not None else 0
+            entry.update(settled=actual, status=observation['status'])
+            if self.halted == 'usage_unresolved' and self.audit_view()['usage_exact']:
+                self.halted = None
+            if unknown:
+                self.halted = 'usage_unresolved'
+            elif observation.get('late') or self.usage['elapsed_ms'] > self.limits['elapsed_ms']:
+                self.halted = 'deadline_exceeded'
+            elif (any(self.usage[k] > self.limits[k] for k in self.resources)
+                    or any(v > entry['held'][k] for k, v in actual.items())):
+                self.halted = 'budget_exhausted'
+            return copy.deepcopy(result)
+
+    def _held(self):
+        return {k: sum(v['held'][k] for v in self.reservations.values() if v['settled'] is None
+                      or k != 'elapsed_ms' and v['settled'].get(k) is None) for k in self.resources}
+
+    def audit_view(self):
+        with self.lock:
+            self._tick()
+            held = self._held()
+            return copy.deepcopy({'binding': self.binding, 'limits': self.limits, 'final_reserve': self.final_reserve,
+                'usage': self.usage, 'held': held, 'reservations': self.reservations, 'receipts': self.receipts,
+                'halted': self.halted, 'usage_exact': not any(held.values()) and all(
+                    v['settled'] is not None and all(x is not None for x in v['settled'].values())
+                    for v in self.reservations.values()),
+                'overrun': {k: max(0, self.usage[k] + held[k] - self.limits[k]) for k in self.resources}})
+
+
 class EvidenceSession:
     """The model-facing interface accepts only bound list/read/page operations."""
     version = 'restricted-evidence-0.1.0'
@@ -141,7 +276,18 @@ class EvidenceSession:
         return [{'name': name, 'version': EvidenceSession.version, 'input_schema': {'type': 'object',
             'properties': {key: shape}, 'required': [key], 'additionalProperties': False}} for name, key, shape in inputs]
 
-    def __init__(self, binding, source, *, limits, final_reserve, joint=None, clock=None, sleeper=time.sleep):
+    def __init__(self, binding, source, *, limits, final_reserve, joint=None, clock=None, sleeper=time.sleep, root_budget=None):
+        self.root_budget = root_budget
+        if root_budget is not None:
+            if (any(binding[k] != root_budget.binding[k] for k in
+                    ('run_id', 'root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms'))
+                    or limits != root_budget.limits or final_reserve != root_budget.final_reserve
+                    or clock is not None and clock is not root_budget.clock
+                    or getattr(root_budget, 'evidence_attached', False)):
+                raise ValueError('root_budget_binding_mismatch')
+            root_budget.evidence_attached = True
+            clock = root_budget.clock
+        self.root_reservations = {}
         self.binding = copy.deepcopy(binding)
         self.source = source
         self.joint = joint
@@ -163,9 +309,9 @@ class EvidenceSession:
         self.usage = dict.fromkeys(('logical_tools', 'physical_tools', 'candidates', 'retries', 'elapsed_ms'), 0)
         self.clock = clock or (lambda: time.monotonic() * 1000)
         self.sleeper = sleeper
-        self.started = self.clock()
+        self.started = root_budget.started if root_budget is not None else self.clock()
         self.stopped = None
-        self.lock = threading.RLock()
+        self.lock = root_budget.lock if root_budget is not None else threading.RLock()
         self.seen_candidates = set()
         self.history = {}
         self.failed_continuations = {}
@@ -225,7 +371,37 @@ class EvidenceSession:
                 physical = int(any(r not in self.cache for r in refs))
         return {'logical_tools': logical, 'physical_tools': physical}
 
-    def _execute(self, operation, arguments, actor_role, retry_of=None):
+    def _shared_execute(self, operation, arguments, actor_role, retry_of):
+        root = self.root_budget
+        self.usage = root.usage.copy()
+        before = self.usage.copy()
+        held = self._estimate(operation, arguments)
+        candidate = operation in ('list_evidence', 'read_evidence') and self.binding['parent_asin'] not in self.seen_candidates
+        held.update(candidates=int(candidate), retries=int(retry_of is not None),
+                    elapsed_ms=45000 + ((1000, 2000)[min(self.usage['retries'], 1)] if retry_of else 0))
+        reservation = root.reserve(operation, held, phase='work', retry_of=self.root_reservations.get(retry_of))
+        if reservation['status'] != 'reserved':
+            self.stopped = reservation['status']
+        result = self._execute(operation, arguments, actor_role, retry_of, _shared=False)
+        if reservation['status'] == 'reserved':
+            receipt = result['receipt']
+            actual = {**receipt['usage_delta'], 'candidates': self.usage['candidates'] - before['candidates'],
+                      'retries': self.usage['retries'] - before['retries']}
+            if receipt['reservation']['unresolved']:
+                actual['logical_tools'] = None
+            root.settle(reservation['reservation_id'], {'status': result['status'], 'usage': actual,
+                                                      'late': receipt['late']})
+            self.root_reservations[receipt['receipt_id']] = reservation['reservation_id']
+            receipt['root_reservation_id'] = reservation['reservation_id']
+            self.receipts[-1]['root_reservation_id'] = reservation['reservation_id']
+        self.usage = root.usage.copy()
+        result['receipt']['root_usage_after'] = copy.deepcopy(self.usage)
+        self.receipts[-1]['root_usage_after'] = copy.deepcopy(self.usage)
+        return result
+
+    def _execute(self, operation, arguments, actor_role, retry_of=None, *, _shared=True):
+        if self.root_budget is not None and _shared:
+            return self._shared_execute(operation, arguments, actor_role, retry_of)
         before = copy.deepcopy(self.usage)
         operation_binding = copy.deepcopy(self.binding)
         receipt_id = digest(self.scope_seed + str(len(self.receipts)).encode())
@@ -448,6 +624,10 @@ class EvidenceSession:
             and row['version'] == registration['version'] for row in policy.get('read_denials', []))
 
     def audit_view(self):
+        if self.root_budget is not None:
+            with self.root_budget.lock:
+                self.root_budget._tick()
+                self.usage = self.root_budget.usage.copy()
         return copy.deepcopy({'acquired': self.acquired, 'setup': self.source.setup,
                               'receipts': self.receipts, 'usage': self.usage, 'provenance': self.provenance,
                               'unsettled_reservations': self.unsettled_reservations})
