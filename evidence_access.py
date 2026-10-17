@@ -61,25 +61,34 @@ class LocalEvidenceSource:
         return raw, {'component_path': path.relative_to(PROJECT).as_posix(),
                      'component_sha256': ref['sha256'], 'bytes': len(raw)}
 
-    def list(self, parent, batch):
+    def list(self, parent, batch, *, binding):
         raw, origin = self._file(self.snapshot_ref['path'], self.snapshot_ref)
         snapshot = decode(raw)
+        if snapshot['snapshot_id'] != binding['snapshot_id'] or snapshot['verify_at_ms'] != binding['verify_at_ms']:
+            raise ValueError('source_integrity_error')
         context = {'snapshot': {'raw_utf8': raw.decode('utf-8'), 'source': origin}}
         directory = Path(self.snapshot_ref['path']).parent
+        raw_policy, policy_origin = self._file(directory / 'policy.json', snapshot['components']['policy.json'])
+        policy = decode(raw_policy)
+        if (policy['policy_id'] != snapshot['policy_id'] or policy['read_principal_id'] != binding['principal_id']
+                or snapshot.get('read_principal_id', binding['principal_id']) != binding['principal_id']):
+            raise ValueError('source_integrity_error')
+        context['policy'] = {'raw_utf8': raw_policy.decode('utf-8'), 'source': policy_origin}
         registrations = []
         for name, ref in snapshot['components'].items():
             if name not in FILES:
                 raise ValueError('source_integrity_error')
+            if name == 'policy.json':
+                continue
             content, source = self._file(directory / name, ref)
             if name == 'materials.jsonl':
                 self.material_kinds = {(row['evidence_id'], row['version']): row['kind']
                                        for row in (decode(value) for value in content.splitlines())}
-            if name == 'policy.json':
-                context['policy'] = {'raw_utf8': content.decode('utf-8'), 'source': source}
             if name in ('actions.jsonl', 'change-actions.jsonl'):
                 context['actions_scope'] = {'empty': not content, 'raw_utf8': '' if not content else None,
                                              'source': source}
             if name == 'registrations.jsonl':
+                registration_source = source
                 offset = 0
                 for line, value in enumerate(content.splitlines(keepends=True), 1):
                     row = decode(value)
@@ -91,7 +100,9 @@ class LocalEvidenceSource:
                         registrations.append({'record': row, 'raw_utf8': value.rstrip(b'\n').decode('utf-8'),
                             'source': {**source, 'line': line, 'offset': offset}})
                     offset += len(value)
-        return context, registrations
+        return context, registrations, {'empty': not registrations, 'source': {**registration_source,
+            'scope_parent_asin': parent, 'scope_sim_batch_id': batch, 'scope_records': len(registrations),
+            'cutoff_sequence': snapshot['cutoff_sequence'], 'sealed_at_ms': snapshot['sealed_at_ms']}}
 
     def read(self, registrations):
         raw, _ = self._file(self.snapshot_ref['path'], self.snapshot_ref)
@@ -157,6 +168,7 @@ class EvidenceSession:
         self.lock = threading.RLock()
         self.seen_candidates = set()
         self.history = {}
+        self.failed_continuations = {}
         self.provenance = {}
         self.unsettled_reservations = {}
         for table in (self.limits, self.final_reserve):
@@ -169,7 +181,20 @@ class EvidenceSession:
         with self.lock:
             if operation not in ('list_evidence', 'read_evidence', 'candidate_page'):
                 return self._execute('denied_operation', {}, actor_role)
-            return self._execute(operation, arguments, actor_role)
+            retry_of = next((self.failed_continuations[key] for key in self._request_keys(operation, arguments)
+                             if key in self.failed_continuations), None)
+            return self._execute(operation, arguments, actor_role, retry_of)
+
+    def _request_keys(self, operation, arguments):
+        if not isinstance(arguments, dict):
+            return []
+        scope = digest(self.scope_seed)
+        if operation == 'read_evidence' and isinstance(arguments.get('evidence_refs'), list):
+            return [(scope, operation, ref) for ref in arguments['evidence_refs'] if isinstance(ref, str) and ref in self.refs]
+        if operation == 'list_evidence' and set(arguments) == {'cursor'} and (
+                arguments['cursor'] is None or isinstance(arguments['cursor'], str)):
+            return [(scope, operation, arguments['cursor'])]
+        return []
 
     def assess_current(self):
         with self.lock:
@@ -208,37 +233,39 @@ class EvidenceSession:
         self.delta = {'logical_tools': 0, 'physical_tools': 0}
         started = self.clock()
         held = self._estimate(operation, arguments)
+        backoff_ms = (1000, 2000)[min(self.usage['retries'], 1)] if retry_of is not None else 0
+        held['elapsed_ms'] = 45000 + backoff_ms
+        deadline = min(started + held['elapsed_ms'], self.started + self.limits['elapsed_ms'] - self.final_reserve['elapsed_ms'])
         admitted = not self.stopped and all(self.usage[key] + held[key] + self.final_reserve[key] <= self.limits[key]
-                                           for key in held)
+                                           for key in ('logical_tools', 'physical_tools'))
         is_candidate = operation in ('list_evidence', 'read_evidence') and self.binding['parent_asin'] not in self.seen_candidates
         admitted = admitted and self.usage['candidates'] + int(is_candidate) <= self.limits['candidates']
-        admitted = admitted and started - self.started + self.final_reserve['elapsed_ms'] <= self.limits['elapsed_ms']
+        time_available = started - self.started + held['elapsed_ms'] + self.final_reserve['elapsed_ms'] <= self.limits['elapsed_ms']
+        admitted = admitted and time_available
         admitted = admitted and (retry_of is None or self.usage['retries'] < self.limits['retries'])
         if not admitted and not self.stopped:
-            self.stopped = 'deadline_exceeded' if started - self.started >= self.limits['elapsed_ms'] else 'budget_exhausted'
+            self.stopped = 'deadline_exceeded' if not time_available else 'budget_exhausted'
         try:
             if admitted and retry_of is not None:
-                self.sleeper((1, 2)[min(self.usage['retries'], 1)])
-                if self.clock() - self.started + self.final_reserve['elapsed_ms'] > self.limits['elapsed_ms']:
+                self.usage['retries'] += 1
+                self.sleeper(backoff_ms / 1000)
+                if self.clock() >= deadline:
                     self.stopped = 'deadline_exceeded'
-                    admitted = False
-            result = self._dispatch(operation, arguments) if admitted else {'status': self.stopped or 'budget_exhausted'}
+            result = self._dispatch(operation, arguments) if admitted and not self.stopped else {'status': self.stopped or 'budget_exhausted'}
         except (ValueError, KeyError, TypeError, UnicodeError, FileNotFoundError):
             self.stopped = 'source_integrity_error'
             result = {'status': self.stopped}
         except OSError:
             result = {'status': 'io_error'}
-        if admitted and result['status'] != 'ok' and not self.delta['logical_tools']:
+        if admitted and result['status'] != 'ok' and not self.delta['logical_tools'] and not result.get('items'):
             self.delta['logical_tools'] = 1
         if self.delta['physical_tools'] and is_candidate:
             self.seen_candidates.add(self.binding['parent_asin'])
             self.usage['candidates'] += 1
-        if admitted and retry_of is not None:
-            self.usage['retries'] += 1
         for key, value in self.delta.items():
             self.usage[key] += value
         finished = self.clock()
-        late = admitted and (finished - self.started > self.limits['elapsed_ms'] or finished - started > 45000)
+        late = admitted and finished > deadline
         if late:
             result['status'] = 'deadline_exceeded'
             self.stopped = 'deadline_exceeded'
@@ -250,29 +277,35 @@ class EvidenceSession:
         if self.stopped:
             self.acquired['halted'] = self.stopped
         self.usage['elapsed_ms'] = finished - self.started
+        settled = {**self.delta, 'elapsed_ms': finished - started}
         receipt = {'receipt_id': receipt_id, 'request_id': receipt_id, 'retry_of': retry_of,
             'operation': operation, 'status': result['status'], 'actor_role': actor_role,
             'requested_refs': [ref for ref in arguments.get('evidence_refs', []) if isinstance(ref, str) and ref in self.refs]
                 if isinstance(arguments, dict) and isinstance(arguments.get('evidence_refs', []), list) else [],
             'scope_handle': digest(self.scope_seed), 'started_at_ms': started, 'finished_at_ms': finished,
+            'deadline_at_ms': deadline,
             'late': late, 'usage_delta': self.delta.copy(), 'root_usage_before': before,
             'root_usage_after': self.usage.copy(), 'response_bytes': 0,
             'reservation': {'held': held if admitted else dict.fromkeys(held, 0),
-                            'settled': dict.fromkeys(held) if unknown else self.delta.copy(),
-                            'released': {key: held[key] - self.delta[key] for key in held} if admitted and not unknown else dict.fromkeys(held, 0),
+                            'settled': dict.fromkeys(held) if unknown else settled if admitted else dict.fromkeys(held, 0),
+                            'released': {key: max(0, held[key] - settled[key]) for key in held} if admitted and not unknown else dict.fromkeys(held, 0),
                             'unresolved': unknown},
             'usage_exact': not self.unsettled_reservations,
             'items': []}
         for item in self.acquired['context'].values():
             item.setdefault('receipt_id', receipt_id)
         for pack in self.acquired['candidates'].values():
-            for item in [*pack['registrations'], *pack['originals'].values(), *pack['attempts'].values()]:
+            for item in [*pack['registrations'], *pack['originals'].values(), *pack['attempts'].values(),
+                         *pack.get('enumeration_observations', [])]:
                 item.setdefault('receipt_id', receipt_id)
         observations = [(kind, item, None) for kind, item in self.acquired['context'].items()
                         if item['receipt_id'] == receipt_id]
         for row in result.get('entries', []):
             observations.append(('registration', self.refs[row['evidence_ref']], row['evidence_ref']))
         pack = self.acquired['candidates'].get(operation_binding['parent_asin'], {})
+        for observation in pack.get('enumeration_observations', []):
+            if observation['empty'] and observation['receipt_id'] == receipt_id:
+                observations.append(('empty_registration_scope', observation, None))
         for row in result.get('items', []):
             ref = row['evidence_ref']
             observations.append(('original', pack['attempts'][ref], ref))
@@ -295,6 +328,14 @@ class EvidenceSession:
         self.history[receipt_id] = {'operation': operation, 'arguments': copy.deepcopy(arguments), 'actor_role': actor_role,
             'retryable': result['status'] in ('io_error', 'deadline_exceeded') or
                          any(v['status'] in ('io_error', 'deadline_exceeded') for v in result.get('items', []))}
+        if admitted:
+            item_status = {item['evidence_ref']: item['status'] for item in result.get('items', [])}
+            for key in self._request_keys(operation, arguments):
+                status = item_status.get(key[2], result['status'])
+                if status in ('io_error', 'deadline_exceeded'):
+                    self.failed_continuations[key] = receipt_id
+                elif status in ('ok', 'unavailable', 'access_denied'):
+                    self.failed_continuations.pop(key, None)
         return result
 
     def _dispatch(self, operation, arguments):
@@ -345,7 +386,7 @@ class EvidenceSession:
             for ref in uncached:
                 if fetched[ref]['status'] == 'ok':
                     self.cache[ref] = copy.deepcopy(fetched[ref])
-            self.delta['logical_tools'] += len(results)
+            self.delta['logical_tools'] += sum(item['status'] != 'not_attempted' for item in results)
             pack = self.acquired['candidates'][self.binding['parent_asin']]
             items = []
             for ref, result in zip(refs, results):
@@ -363,7 +404,7 @@ class EvidenceSession:
         offset = 0 if cursor is None else self.cursors[cursor]
         parent, batch = self.binding['parent_asin'], self.binding['sim_batch_id']
         self.delta['physical_tools'] += 1
-        context, registrations = self.source.list(parent, batch)
+        context, registrations, scope_observation = self.source.list(parent, batch, binding=self.binding)
         if not self.acquired['context']:
             self.delta['logical_tools'] += len(context)
             self.acquired['context'] = context
@@ -372,8 +413,9 @@ class EvidenceSession:
             return {'status': 'access_denied'}
         done = offset + 32 >= len(registrations)
         pack = self.acquired['candidates'].setdefault(parent, {'registrations': [], 'enumeration_complete': False,
-                                                              'originals': {}, 'attempts': {}})
+            'originals': {}, 'attempts': {}, 'enumeration_observations': []})
         pack['enumeration_complete'] = pack['enumeration_complete'] or done
+        pack['enumeration_observations'].append({**scope_observation, 'terminal': done, 'offset': offset})
         entries = []
         for item in registrations[offset:offset + 32]:
             row = {key: value for key, value in item['record'].items() if key != 'sequence'}

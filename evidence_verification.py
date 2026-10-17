@@ -191,7 +191,7 @@ def _completion(claim, pack, objects, policy, context):
         if needed:
             required.append(item['evidence_ref'])
     return {'enumeration_complete': pack['enumeration_complete'],
-        'required_reads_complete': all(ref in pack['originals'] for ref in required),
+        'required_reads_complete': bool(required) and all(ref in pack['originals'] for ref in required),
         'version_checks_complete': 'actions_scope' in context and all(ref in pack['originals'] for ref in actions),
         'attempts_settled': all(pack['attempts'].get(ref, {}).get('status') in ('ok', 'unavailable', 'access_denied') for ref in required)}
 
@@ -204,7 +204,8 @@ def assess_evidence(binding, acquired):
            ('run_id', 'root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms')):
         raise ValueError('acquired_binding_mismatch')
     pack = acquired['candidates'].get(binding['parent_asin'])
-    if not pack or not pack['attempts']:
+    if not pack or (not pack['attempts'] and not any(item['empty'] and item['terminal'] and item.get('receipt_id')
+            for item in pack.get('enumeration_observations', []))):
         return result
     context = acquired['context']
     policy = json.loads(context['policy']['raw_utf8'])

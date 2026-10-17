@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 from pathlib import Path
+import subprocess
 import sys
 import time
 
@@ -79,6 +80,14 @@ def audit_sources(audit):
 
 results = []
 try:
+    subprocess.run(['git', 'diff', '--exit-code', 'HEAD', '--', 'evidence_access.py', 'evidence_verification.py'],
+                   cwd=ROOT, check=True, capture_output=True)
+    execution = {'candidate_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        'files': [{'path': path, 'bytes': (ROOT / path).stat().st_size, 'sha256': digest(ROOT / path)} for path in
+            ('evidence_access.py', 'evidence_verification.py', 'joint_access.py', 'quality_fusion.py',
+             '.scratch/evidence-forensics/diagnostics/probe_sources.py')],
+        'contract_sha256': digest(ROOT / '.scratch/evidence-forensics/spec.md'),
+        'confirmation_sha256': digest(ROOT / '.scratch/evidence-forensics/confirmation.md')}
     cfg = load('config/joint-task-package-0.1.0.json')
     record = load('records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0.json')
     preference = load('config/preference-task-1.0.1.json')
@@ -149,9 +158,11 @@ try:
                 quality.append({'mode': mode, 'current_fields': current,
                     'mean_quality': scored['mean_quality'], 'actual_G_count': len(scored['G'])})
         assert session.audit_view() == audit
+        audit['probe_execution'] = execution
         evidence = put(view['label'] + '-actual-a.json', audit)
         results.append({'label_admin_only': view['label'], 'status': 'passed', 'root': chosen, 'candidate': parent,
-            'binding': binding, 'safe_input_fingerprint': json.loads(joint.request['messages'][0]['content'])['input_fingerprint'],
+            'binding': binding, 'execution': execution,
+            'safe_input_fingerprint': json.loads(joint.request['messages'][0]['content'])['input_fingerprint'],
             'existing_tools_unchanged': joint.request['tools'] == [], 'actual_A': evidence,
             'assessment': assessment_response['assessment'], 'independent': independent,
             'usage': audit['usage'], 'setup': audit['setup'], 'quality_conversion': quality,
@@ -160,6 +171,7 @@ try:
         print(json.dumps({'source': view['label'], 'status': 'passed', 'state': assessment_response['assessment']['evidence_state'],
                           'logical': audit['usage']['logical_tools'], 'physical': audit['usage']['physical_tools']}), flush=True)
     put('probe-summary.json', {'status': 'passed', 'selection': 'lexical_first_dev_root_and_fixed_b_queue_first_candidate',
+        'execution': execution,
         'sources': results, 'test_limits_only': True, 'T0_executed': False, 'recommendation_runs': 0,
         'private_gold_or_targets_read': False, 'source_regeneration': False,
         'coverage_limit': 'one predetermined candidate; no assumption it belongs to the anomaly set; H01-H14 cover semantics'})

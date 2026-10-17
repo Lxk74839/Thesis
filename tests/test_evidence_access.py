@@ -271,6 +271,21 @@ class EvidenceAccessTests(unittest.TestCase):
             self.assertFalse({'root_task_id', 'principal_id', 'snapshot_id', 'path', 'role'} & set(row['input_schema']['properties']))
         self.assertEqual(schemas[1]['input_schema']['properties']['evidence_refs']['maxItems'], 32)
 
+    def test_mismatched_source_binding_stops_before_candidate_facts_are_scanned(self):
+        from evidence_access import EvidenceSession, LocalEvidenceSource
+        normal = self.fixture.session()
+        for change in ({'snapshot_id': 'OTHER'}, {'verify_at_ms': 1001}, {'principal_id': 'OTHER'}):
+            with self.subTest(change=change):
+                session = EvidenceSession(self.fixture.binding(**change), LocalEvidenceSource(self.fixture.snapshot_ref),
+                    limits=normal.limits, final_reserve=normal.final_reserve)
+                result = session.dispatch('list_evidence', {'cursor': None})
+                self.assertEqual(result['status'], 'source_integrity_error')
+                audit = session.audit_view()
+                self.assertEqual(audit['acquired']['candidates'], {})
+                self.assertEqual(audit['acquired']['context'], {})
+                self.assertLessEqual(audit['setup']['file_reads'], 2)
+                self.assertEqual(session.dispatch('list_evidence', {'cursor': None})['receipt']['usage_delta']['physical_tools'], 0)
+
 
     def test_retry_cap_and_failed_request_refs_are_root_receipted(self):
         from evidence_access import EvidenceSession, LocalEvidenceSource
@@ -292,6 +307,78 @@ class EvidenceAccessTests(unittest.TestCase):
         self.assertEqual(exhausted['status'], 'budget_exhausted')
         self.assertEqual(session.audit_view()['usage']['retries'], 2)
         self.assertEqual(exhausted['receipt']['usage_delta']['physical_tools'], 0)
+
+    def test_direct_redispatch_of_failed_refs_uses_the_same_root_retry_cap(self):
+        from evidence_access import EvidenceSession, LocalEvidenceSource
+        class FailedSource(LocalEvidenceSource):
+            def read(self, registrations):
+                raise OSError('public repeatable failure')
+        self.fixture.normal()
+        normal = self.fixture.session()
+        delays = []
+        session = EvidenceSession(self.fixture.binding(), FailedSource(self.fixture.snapshot_ref),
+            limits=normal.limits, final_reserve=normal.final_reserve, clock=lambda: 0, sleeper=delays.append)
+        page = session.dispatch('list_evidence', {'cursor': None})
+        refs = [row['evidence_ref'] for row in page['entries'][:2]]
+        first = session.dispatch('read_evidence', {'evidence_refs': refs})
+        second = session.dispatch('read_evidence', {'evidence_refs': list(reversed(refs))})
+        third = session.dispatch('read_evidence', {'evidence_refs': refs[:1]})
+        exhausted = session.dispatch('read_evidence', {'evidence_refs': refs})
+        self.assertEqual(second['receipt']['retry_of'], first['receipt']['request_id'])
+        self.assertEqual(third['receipt']['retry_of'], second['receipt']['request_id'])
+        self.assertEqual(delays, [1, 2])
+        self.assertEqual(session.audit_view()['usage']['retries'], 2)
+        self.assertEqual(exhausted['status'], 'budget_exhausted')
+        self.assertEqual(exhausted['receipt']['usage_delta']['physical_tools'], 0)
+
+    def test_operation_time_and_retry_backoff_are_reserved_before_io(self):
+        from evidence_access import EvidenceSession, LocalEvidenceSource
+        limits = {'logical_tools': 4096, 'physical_tools': 512, 'candidates': 1, 'retries': 2, 'elapsed_ms': 60000}
+        reserve = {'logical_tools': 2, 'physical_tools': 1, 'elapsed_ms': 1000}
+        now = [0]
+        session = EvidenceSession(self.fixture.binding(), LocalEvidenceSource(self.fixture.snapshot_ref),
+            limits=limits, final_reserve=reserve, clock=lambda: now[0])
+        now[0] = 59000
+        denied = session.dispatch('list_evidence', {'cursor': None})
+        self.assertEqual(denied['status'], 'deadline_exceeded')
+        self.assertEqual(denied['receipt']['usage_delta'], {'logical_tools': 0, 'physical_tools': 0})
+        self.assertEqual(session.audit_view()['setup']['file_reads'], 0)
+        class FailedSource(LocalEvidenceSource):
+            def read(self, registrations):
+                raise OSError('public transient fault')
+        now[0] = 0
+        delays = []
+        retry_session = EvidenceSession(self.fixture.binding(), FailedSource(self.fixture.snapshot_ref),
+            limits=limits, final_reserve=reserve, clock=lambda: now[0], sleeper=delays.append)
+        page = retry_session.dispatch('list_evidence', {'cursor': None})
+        failed = retry_session.dispatch('read_evidence', {'evidence_refs': [page['entries'][0]['evidence_ref']]})
+        now[0] = 14000
+        retry = retry_session.retry(failed['receipt']['request_id'])
+        self.assertEqual(retry['status'], 'deadline_exceeded')
+        self.assertEqual(delays, [])
+        self.assertEqual(retry['receipt']['usage_delta']['physical_tools'], 0)
+        self.assertEqual(page['receipt']['reservation']['held']['elapsed_ms'], 45000)
+        self.assertEqual(page['receipt']['deadline_at_ms'], 45000)
+
+    def test_partial_batch_retains_failure_but_does_not_charge_unexecuted_items(self):
+        from evidence_access import EvidenceSession, LocalEvidenceSource
+        class PartialSource(LocalEvidenceSource):
+            def read(self, registrations):
+                return [*super().read(registrations[:1]), {'status': 'io_error'}, {'status': 'not_attempted'}]
+        self.fixture.normal()
+        normal = self.fixture.session()
+        session = EvidenceSession(self.fixture.binding(), PartialSource(self.fixture.snapshot_ref),
+            limits=normal.limits, final_reserve=normal.final_reserve)
+        page = session.dispatch('list_evidence', {'cursor': None})
+        refs = [row['evidence_ref'] for row in page['entries'][:3]]
+        result = session.dispatch('read_evidence', {'evidence_refs': refs})
+        self.assertEqual([item['status'] for item in result['items']], ['ok', 'io_error', 'not_attempted'])
+        self.assertEqual(result['receipt']['usage_delta'], {'logical_tools': 2, 'physical_tools': 1})
+        self.assertEqual(result['receipt']['reservation']['settled']['logical_tools'], 2)
+        self.assertEqual(result['receipt']['reservation']['released']['logical_tools'], 1)
+        saved = session.audit_view()['acquired']['candidates']['PUBLIC-A']
+        self.assertEqual(set(saved['originals']), {refs[0]})
+        self.assertEqual(saved['attempts'][refs[2]]['status'], 'not_attempted')
 
 
 if __name__ == '__main__':

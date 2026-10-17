@@ -25,6 +25,25 @@ class EvidenceVerificationTests(unittest.TestCase):
         self.assertFalse(result['advance_allowed'])
         self.assertEqual(session.audit_view()['setup'], before)
 
+    def test_actual_empty_terminal_scope_is_pending_and_can_be_safely_rejected(self):
+        self.fixture.registrations.clear()
+        self.fixture.seal()
+        session = self.fixture.session()
+        self.assertEqual(session.assess_current()['assessment']['assessment_status'], 'unassessed')
+        page = session.dispatch('list_evidence', {'cursor': None})
+        self.assertEqual(page['entries'], [])
+        self.assertTrue(page['enumeration_complete'])
+        result = session.assess_current()['assessment']
+        self.assertEqual(result['assessment_status'], 'assessed')
+        self.assertEqual(result['evidence_state'], 'Pending')
+        self.assertTrue(result['advance_allowed'])
+        self.assertFalse(result['completion']['required_reads_complete'])
+        self.assertTrue(result['completion']['attempts_settled'])
+        observation = next(item for item in page['receipt']['items'] if item['kind'] == 'empty_registration_scope')
+        origin = session.audit_view()['provenance'][observation['source_ref']]
+        self.assertEqual(origin['scope_records'], 0)
+        self.assertEqual(page['receipt']['usage_delta'], {'logical_tools': 4, 'physical_tools': 1})
+
     def test_unread_unrelated_harvest_material_cannot_block_r1_or_r5(self):
         self.fixture.normal()
         self.fixture.add('materials.jsonl', {'schema_version': 'sim-material-1.0.0', 'source': 'SIM',

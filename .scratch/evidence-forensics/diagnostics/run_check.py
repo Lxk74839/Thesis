@@ -38,11 +38,21 @@ def main():
     assert Path(sys.prefix).resolve() == ROOT / '.conda/envs/Thesis'
     AUDIT.mkdir(parents=True, exist_ok=True)
     ledger = AUDIT / 'resource-ledger.jsonl'
+    inflight = AUDIT / 'resource-inflight.json'
+    if inflight.exists():
+        raise SystemExit('forensics_resource_usage_unresolved_no_new_work')
     used = sum(json.loads(row)['seconds'] for row in ledger.read_text().splitlines()) if ledger.exists() else 0
     if used + time.perf_counter() - START >= LIMIT:
         raise SystemExit('forensics_compute_limit_exhausted')
     label = sys.argv[1]
     output = AUDIT / (label + '.txt')
+    with inflight.open('x', encoding='utf-8', newline='\n') as stream:
+        json.dump({'label': label, 'guard_pid': os.getpid(), 'started_at_unix': time.time(),
+                   'seconds': None, 'known_cumulative_seconds': used,
+                   'unsettled_allowance_seconds': LIMIT - used}, stream, sort_keys=True)
+        stream.write('\n')
+        stream.flush()
+        os.fsync(stream.fileno())
     kernel = ctypes.WinDLL('kernel32', use_last_error=True)
     kernel.CreateJobObjectW.restype = wintypes.HANDLE
     kernel.SetInformationJobObject.argtypes = (wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD)
@@ -83,6 +93,9 @@ def main():
                'guard': 'Windows_Job_tree_limit_plus_64MiB_guard_reserve'}
         with ledger.open('a', encoding='utf-8', newline='\n') as stream:
             stream.write(json.dumps(row, sort_keys=True) + '\n')
+            stream.flush()
+            os.fsync(stream.fileno())
+        inflight.unlink()
     if output.exists():
         print(output.read_text(encoding='utf-8'), end='')
     print(json.dumps(row, sort_keys=True))
