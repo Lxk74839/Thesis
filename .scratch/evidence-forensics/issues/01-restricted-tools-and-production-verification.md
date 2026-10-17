@@ -1,8 +1,8 @@
 # 01：实现共同受限取证与原8异常生产核验
 
 Type: task
-Status: needs-info
-Blocked by: 本专项CFE-01—CFE-08及E1/E2公共测试Interface的集中确认（非上游13/14）
+Status: claimed
+Blocked by: 无；CFE-01—CFE-08、E1/E2、H01—H14及10来源probe已确认
 Baseline: ac49059ffa1f61545033b84f688eee4be58d75be
 
 ## What to build
@@ -27,3 +27,5 @@ Baseline: ac49059ffa1f61545033b84f688eee4be58d75be
 ## Comments
 
 2026-10-16：按人类指令建立后续取证专项。固定基线已解析为当前HEAD，初始工作区干净；只读继承F1—F3、09及13/14接受链。合同/确认/索引/本工单为本轮唯一写入范围，未新增生产代码、配置或测试。
+
+2026-10-16：人类明确授权全部合同内本地实施/测试/probe/审查/接受，已以1c61360先提交[授权归档](../authorization-20261016.md)及原稿。认领实施；原合同字节保留，累计Python上限1,800秒/4GiB。
