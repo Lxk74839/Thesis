@@ -64,6 +64,16 @@ class RecommendationRunTests(unittest.TestCase):
         self.assertEqual(result['components']['mean_quality']['mean_quality']['denominator'], 0)
         self.assertEqual(result['components']['full']['topK'], [])
 
+    def test_empty_quality_C_still_rejects_incomplete_or_changed_fusion_contracts(self):
+        self.fixture.quality([])
+        original = self.fixture.make('M', model=ScriptedTransport().adapter(), arm='quality', prefix=1).audit_view()['binding']['fusion']
+        for field, value in (('schema_version', 'OTHER'), ('contract_sha256', 'OTHER'), ('extra', True)):
+            run = self.fixture.make('M', model=ScriptedTransport().adapter(), arm='quality', prefix=1,
+                binding_changes={'fusion': {**original, field: value}})
+            result = run.run()
+            self.assertEqual(result['terminal'], 'failed_protocol')
+            self.assertEqual(result['budget']['usage']['model_calls'], 0)
+
     def test_single_and_six_role_runs_use_actual_scripted_messages_and_tool_responses(self):
         expected = {'需求解析', '推荐管理', '用户画像', '农产品画像', '生命周期追溯', '推荐依据核验'}
         for method in ('S', 'M'):
@@ -447,6 +457,20 @@ class RecommendationRunTests(unittest.TestCase):
         self.assertTrue(Path(result['audit_path']).is_file())
         self.assertFalse((run.output_root / 'publication.json').exists())
         self.assertTrue(result['budget']['usage_exact'])
+
+    def test_malformed_initial_drafts_fail_before_verification_and_keep_the_raw_draft(self):
+        import copy
+        for payload in ({}, {'draft_id': 'PUBLIC-D0', 'parent_draft_id': None},
+                        {'draft_id': 'PUBLIC-D0', 'parent_draft_id': None, 'items': [], 'extra': True},
+                        {'draft_id': 'PUBLIC-D0', 'parent_draft_id': None, 'items': None}):
+            def malformed(req, raw, context, payload=payload):
+                if req['output_kind'] == 'draft' and context['stage'] == 'draft':
+                    raw['message']['content']['data'] = copy.deepcopy(payload)
+            result = self.fixture.make('M', model=ScriptedTransport(mutate=malformed).adapter()).run()
+            self.assertEqual((result['terminal'], result['reason']), ('failed_protocol', 'invalid_draft_payload'))
+            self.assertEqual(result['drafts'], [payload])
+            self.assertTrue(Path(result['audit_path']).is_file())
+            self.assertFalse(any(m['request']['output_kind'] == 'verification' for m in result['messages']))
 
     def test_cited_sample_and_report_must_match_even_when_the_object_is_qualified(self):
         import copy

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
+from quality_fusion import RULES
 
 
 def pointer_value(value, pointer):
@@ -18,6 +19,13 @@ def pointer_value(value, pointer):
         part = part.replace('~1', '/').replace('~0', '~')
         value = value[int(part)] if isinstance(value, list) and part.isdecimal() else value[part]
     return value
+
+
+def _draft_shape(draft):
+    return (isinstance(draft, dict) and set(draft) == {'draft_id', 'parent_draft_id', 'items'}
+        and isinstance(draft['draft_id'], str) and bool(draft['draft_id'])
+        and (draft['parent_draft_id'] is None or isinstance(draft['parent_draft_id'], str))
+        and isinstance(draft['items'], list))
 
 
 class RunStop(Exception):
@@ -86,7 +94,13 @@ class RecommendationRun:
         if b['arm'] == 'quality':
             valid = valid and type(b['prefix_limit']) is int and b['prefix_limit'] > 0 and isinstance(b['fusion'], dict)
             fusion = b['fusion'] if isinstance(b['fusion'], dict) else {}
-            valid = (valid and fusion.get('alpha') == .5 and fusion.get('beta') == [.25, .5, .25]
+            valid = (valid and set(fusion) == {'schema_version', 'task_id', 'C', 'C_sha256', 'H_sha256', 'base_scores',
+                'base_score_version', 'base_score_sha256', 'snapshot_id', 'verify_at_ms', 'principal_id',
+                'contract_sha256', 'K', 'alpha', 'beta', 'mode', 'preference'}
+                and fusion.get('schema_version') == 'fusion-binding-0.1.0'
+                and fusion.get('contract_sha256') == digest(encoded(RULES))
+                and isinstance(fusion.get('base_score_version'), str) and bool(fusion['base_score_version'])
+                and fusion.get('alpha') == .5 and fusion.get('beta') == [.25, .5, .25]
                 and fusion.get('mode') == 'full' and fusion.get('task_id') == b['root_task_id']
                 and fusion.get('preference') == {'source': 'experiment_design', 'dimensions': ['retail_stock'],
                                                 'weights': {'retail_stock': 1}}
@@ -374,8 +388,7 @@ class RecommendationRun:
     def _draft_issues(self, draft):
         issues = []
         acquired = self.evidence.audit_view()['acquired']
-        if (not isinstance(draft, dict) or set(draft) != {'draft_id', 'parent_draft_id', 'items'}
-                or not isinstance(draft['draft_id'], str) or not draft['draft_id'] or not isinstance(draft['items'], list)):
+        if not _draft_shape(draft):
             return [self._issue(draft if isinstance(draft, dict) else {}, '/', 'invalid_draft')]
         identifiers = [i.get('parent_asin') if isinstance(i, dict) else None for i in draft['items']]
         if identifiers != self._order()[:self.binding['K']] or len(identifiers) > self.binding['K']:
@@ -523,9 +536,7 @@ class RecommendationRun:
         old = self.state['drafts'][-1]
         self.state['feedback_round'] = 1
         new = self._role('推荐管理', 'draft', 'revision')
-        if (not isinstance(new, dict) or set(new) != {'draft_id', 'parent_draft_id', 'items'}
-                or not isinstance(new['draft_id'], str) or not new['draft_id'] or not isinstance(new['items'], list)
-                or not isinstance(old.get('draft_id'), str)):
+        if not _draft_shape(new) or not _draft_shape(old):
             raise RunStop('failed_protocol', 'invalid_revision_payload')
         if new['parent_draft_id'] != old['draft_id'] or new['draft_id'] == old['draft_id']:
             raise RunStop('failed_protocol', 'invalid_revision_binding')
@@ -617,6 +628,8 @@ class RecommendationRun:
             proposal = self._rule_draft() if self.binding['method'] == 'R' else self._role('推荐管理', 'draft', 'draft')
             draft = self._program('submit_draft', lambda: proposal)
             self.state['drafts'].append(draft)
+            if not _draft_shape(draft) or draft['parent_draft_id'] is not None:
+                raise RunStop('failed_protocol', 'invalid_draft_payload')
             if self._review() and self.binding['method'] != 'R':
                 self._revise()
             draft = self.state['drafts'][-1]
