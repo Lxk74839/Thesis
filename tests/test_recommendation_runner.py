@@ -56,6 +56,14 @@ class RecommendationRunTests(unittest.TestCase):
         self.assertEqual(result['budget']['usage']['physical_tools'], 0)
         self.assertEqual((result['cursor'], result['G'], result['delivered']), (0, [], []))
 
+    def test_empty_quality_C_has_unknown_profile_and_zero_component_denominator(self):
+        self.fixture.quality([])
+        result = self.fixture.make('M', model=ScriptedTransport().adapter(), arm='quality', prefix=1).run()
+        self.assertEqual(result['terminal'], 'valid_empty')
+        self.assertEqual(len(result['roles_completed']), 6)
+        self.assertEqual(result['components']['mean_quality']['mean_quality']['denominator'], 0)
+        self.assertEqual(result['components']['full']['topK'], [])
+
     def test_single_and_six_role_runs_use_actual_scripted_messages_and_tool_responses(self):
         expected = {'需求解析', '推荐管理', '用户画像', '农产品画像', '生命周期追溯', '推荐依据核验'}
         for method in ('S', 'M'):
@@ -423,3 +431,60 @@ class RecommendationRunTests(unittest.TestCase):
         self.assertEqual((result['terminal'], result['delivered']), ('failed_protocol', []))
         self.assertFalse(result['budget']['usage_exact'])
         self.assertFalse((run.output_root / 'publication.json').exists())
+
+    def test_malformed_revision_is_a_sealed_protocol_failure(self):
+        def malformed(req, raw, context):
+            if req['output_kind'] != 'draft':
+                return
+            if context['stage'] == 'revision':
+                raw['message']['content']['data'] = {}
+            else:
+                raw['message']['content']['data']['items'][0]['reasons'][0]['citations'][0]['pointer'] = '/missing'
+        run = self.fixture.make('M', model=ScriptedTransport(mutate=malformed).adapter())
+        result = run.run()
+        self.assertEqual((result['terminal'], result['delivered']), ('failed_protocol', []))
+        self.assertEqual(result['messages'][-1]['response']['message']['content']['data'], {})
+        self.assertTrue(Path(result['audit_path']).is_file())
+        self.assertFalse((run.output_root / 'publication.json').exists())
+        self.assertTrue(result['budget']['usage_exact'])
+
+    def test_cited_sample_and_report_must_match_even_when_the_object_is_qualified(self):
+        import copy
+        sample = copy.deepcopy(next(r for r in self.fixture.facts.rows['materials.jsonl'] if r['kind'] == 'inspection_sample'))
+        sample['evidence_id'] = 'D-OTHER-SAMPLE'
+        sample['facts']['sample_id'] = 'SAMPLE-OTHER'
+        self.fixture.facts.add('materials.jsonl', sample)
+        self.fixture.seal()
+        def mismatch(req, raw, context):
+            if req['output_kind'] == 'draft':
+                cited = [f['citation'] for f in context['facts']['PUBLIC-A'] if f['data'].get('kind') is None
+                    or f['data'].get('evidence_id') == 'D-OTHER-SAMPLE' or f['data'].get('kind') == 'inspection_report']
+                raw['message']['content']['data']['items'][0]['reasons'][0]['citations'] = cited
+        result = self.fixture.make('M', model=ScriptedTransport(mutate=mismatch).adapter()).run()
+        self.assertEqual(result['G'], ['PUBLIC-A'])
+        self.assertEqual(result['terminal'], 'blocked_evidence')
+        self.assertIn('citation_does_not_support_claim', [i['code'] for i in result['issues']])
+        self.assertEqual(result['budget']['usage']['physical_tools'], 2)
+
+    def test_profiles_are_grounded_in_history_and_post_acquisition_assessment_and_quality(self):
+        self.fixture.quality(['PUBLIC-A'])
+        self.fixture.history = [{'parent_asin': 'PUBLIC-HISTORY', 'review_text': '公开人工历史原文'}]
+        run = self.fixture.make('M', model=ScriptedTransport().adapter(), arm='quality', prefix=1)
+        result = run.run()
+        self.assertEqual(result['terminal'], 'released')
+        user = next(m for m in result['messages'] if m['role'] == '用户画像')
+        self.assertEqual(user['response']['message']['content']['data']['observations'][0]['pointer'], '/H/0/review_text')
+        product = next(m for m in result['messages'] if m['role'] == '农产品画像')
+        context = product['request']['messages'][-1]['content']['runtime']
+        self.assertEqual(context['assessments']['PUBLIC-A']['evidence_state'], 'Supported')
+        self.assertEqual(context['quality']['PUBLIC-A']['q'], .6)
+        observation = product['response']['message']['content']['data']['observations'][0]
+        stock = next(a for a in observation['attributes'] if a['attribute'] == 'stock_units')
+        self.assertEqual((stock['value'], stock['unit'], stock['citation']['pointer']), (75, 'SIM_PACK', '/facts/stock_units'))
+        for role in ('用户画像', '农产品画像'):
+            def empty_profile(req, raw, context, role=role):
+                if req['role'] == role:
+                    raw['message']['content']['data']['observations'] = []
+            result = self.fixture.make('M', model=ScriptedTransport(mutate=empty_profile).adapter(), arm='quality', prefix=1).run()
+            self.assertEqual((result['terminal'], result['reason']), ('failed_protocol', 'invalid_profile'))
+            self.assertNotIn(role, result['roles_completed'])

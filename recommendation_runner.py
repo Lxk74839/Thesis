@@ -37,7 +37,7 @@ class RecommendationRun:
             raise ValueError('runtime_root_mismatch')
         self.queue = sorted(binding['C'], key=lambda p: (-binding['base_scores'][binding['C'].index(p)], p.encode()))
         self.state = {'run_id': binding['run_id'], 'binding': copy.deepcopy(binding), 'queue': self.queue[:],
-            'cursor': 0, 'G': [], 'assessments': {}, 'drafts': [], 'issues': [], 'revisions': [],
+            'cursor': 0, 'current_candidate': evidence.binding['parent_asin'], 'G': [], 'assessments': {}, 'drafts': [], 'issues': [], 'revisions': [],
             'messages': [], 'dispatches': [], 'feedback_round': 0, 'roles_completed': [],
             'visible_issues': [],
             'versions': {'baseline': '6ac5c2cddde6973b9743e3e17f5c264840f42854', 'runner': self.version,
@@ -142,6 +142,9 @@ class RecommendationRun:
         return [p for p in self.queue if p in self.state['G']]
 
     def _rank(self, mode):
+        if not self.queue:
+            return {'order': [], 'topK': [], 'candidates': [], 'G': [], 'raw_eligible': [],
+                    'mean_quality': {'value': 0, 'denominator': 0, 'reason': 'no_supported_candidates'}}
         try:
             result = rank_acquired_quality({**self.binding['fusion'], 'mode': mode}, self.evidence.audit_view()['acquired'])
         except ValueError as exc:
@@ -184,9 +187,14 @@ class RecommendationRun:
                 'evidence_ref': o['evidence_ref'], 'receipt_id': o['receipt_id'],
                 'target_id': o['registration']['target_id'], 'version': o['registration']['version'], 'pointer': '/'}}
                 for o in pack['originals'].values()]
+        quality = ({r['parent_asin']: {k: r[k] for k in ('z', 'm', 'q', 'stock_state')}
+                    for r in self._rank('full')['candidates']} if self.binding['arm'] == 'quality' and self.state['assessments'] else {})
         return {'stage': stage, 'method': self.binding['method'],
-            'current': self.queue[self.state['cursor']] if self.state['cursor'] < len(self.queue) else None,
+            'current': self.queue[self.state['cursor']] if self.state['cursor'] < len(self.queue) and self.state['stop_reason'] is None else None,
             'necessary_clauses': self.binding['necessary_clauses'], 'facts': facts,
+            'history': json.loads(self.initial_messages[0]['content'])['H'] if self.initial_messages else [],
+            'assessments': {p: {k: a[k] for k in ('assessment_status', 'evidence_state', 'eligible',
+                'advance_allowed', 'completion', 'claims')} for p, a in self.state['assessments'].items()}, 'quality': quality,
             'ordered': self._order()[:self.binding['K']], 'G': self.state['G'][:],
             'candidate_batches': dict(zip(self.binding['C'], self.binding['batches'])),
             'base_preferences': {p: self._base_preference(p) for p in self.binding['C']},
@@ -201,6 +209,64 @@ class RecommendationRun:
             'evidence_ref': 'safe-base:' + self.binding['base_score_sha256'],
             'receipt_id': 'input:' + self.state['input_projection_sha256'], 'target_id': parent,
             'version': 1, 'pointer': '/base_score'}}
+
+    def _analysis(self, role):
+        data = self._role(role, 'analysis', role)
+        if (set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']
+                or not isinstance(data['observations'], list)):
+            raise RunStop('failed_protocol', 'changed_request')
+        if role == '需求解析':
+            self._complete(role)
+            return
+        context = self._context(role)
+        observations = data['observations']
+        try:
+            if not observations:
+                raise ValueError('missing_profile')
+            if role == '用户画像':
+                for item in observations:
+                    if (set(item) != {'pointer', 'value', 'preference_status'} or not isinstance(item['pointer'], str)
+                            or not (item['pointer'] == '/H' or item['pointer'].startswith('/H/'))
+                            or item['preference_status'] not in ('unknown', 'history_fact')
+                            or encoded(pointer_value({'H': context['history']}, item['pointer'])) != encoded(item['value'])):
+                        raise ValueError('unbound_history')
+                self._complete(role)
+                return
+            current = context['current']
+            assessment, quality = context['assessments'].get(current), context['quality'].get(current)
+            unknown = (['empty_C'] if current is None else [c for c, v in assessment['claims'].items()
+                if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else []))
+            item = observations[0]
+            if (len(observations) != 1 or set(item) != {'candidate_id', 'assessment', 'quality', 'attributes', 'unknown'}
+                    or item['candidate_id'] != current or encoded(item['assessment']) != encoded(assessment) or encoded(item['quality']) != encoded(quality)
+                    or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
+                raise ValueError('unbound_product_profile')
+            facts = context['facts'].get(current, [])
+            attributes = {'conclusion': 'inspection_report', 'status': 'retail_status', 'stock_units': 'retail_status'}
+            expected = {(f['citation']['evidence_ref'], key) for f in facts for key, kind in attributes.items()
+                        if f['data'].get('kind') == kind and key in f['data']['facts']}
+            seen = set()
+            for attribute in item['attributes']:
+                if set(attribute) != {'attribute', 'value', 'unit', 'citation'}:
+                    raise ValueError('invalid_attribute')
+                key, citation = attribute['attribute'], attribute['citation']
+                fact = next(f for f in facts if f['citation']['evidence_ref'] == citation['evidence_ref'])
+                pair = (citation['evidence_ref'], key)
+                if (pair not in expected or pair in seen or encoded(citation) != encoded({**fact['citation'], 'pointer': '/facts/' + key})
+                        or encoded(attribute['value']) != encoded(fact['data']['facts'][key])
+                        or attribute['unit'] != (fact['data']['facts'].get('unit') if key == 'stock_units' else None)):
+                    raise ValueError('invalid_attribute_binding')
+                seen.add(pair)
+            if seen != expected:
+                raise ValueError('missing_attributes')
+            self._complete(role)
+        except (ValueError, KeyError, TypeError, IndexError, StopIteration):
+            raise RunStop('failed_protocol', 'invalid_profile') from None
+
+    def _complete(self, role):
+        role = '单智能体' if self.binding['method'] == 'S' else role
+        if role not in self.state['roles_completed']:
+            self.state['roles_completed'].append(role)
 
     def _invoke(self, role, kind, messages, tools):
         retry_of = None
@@ -260,8 +326,6 @@ class RecommendationRun:
             history.append(copy.deepcopy(message))
             calls = message['tool_requests']
             if not calls:
-                if role not in self.state['roles_completed']:
-                    self.state['roles_completed'].append(role)
                 return copy.deepcopy(message['content']['data'])
             for call in calls:
                 if call['call_id'] in self.call_ids:
@@ -281,9 +345,11 @@ class RecommendationRun:
             raise RunStop('failed_protocol', 'invalid_dispatch')
         self.state['dispatches'].append({'from': '单智能体' if self.binding['method'] == 'S' else '推荐管理',
             'role_message_id': self.state['messages'][-1]['role_message_id'], **copy.deepcopy(manager)})
+        self._complete('推荐管理')
         trace = self._role('生命周期追溯', 'acquire', 'acquire')
         if trace != {'done': True}:
             raise RunStop('failed_protocol', 'invalid_trace_completion')
+        self._complete('生命周期追溯')
 
     def _rule_draft(self):
         items = []
@@ -390,6 +456,22 @@ class RecommendationRun:
                             'on_sale_supported': {'retail_status'}, 'retail_stock': {'retail_status'}}.get(reason['kind'], set())
                 if not required <= {v.get('kind') for v in values}:
                     issues.append(self._issue(draft, pointer, 'wrong_attribute_citation', parent, reason['claim_id']))
+                if reason['kind'] in ('inspection_supported', 'on_sale_supported'):
+                    refs = {c['evidence_ref'] for c in reason['citations'] if isinstance(c, dict)
+                            and isinstance(c.get('evidence_ref'), str) and c['evidence_ref'] in accepted}
+                    # Dependencies must also be explicitly cited somewhere in this item.
+                    refs.update(c['evidence_ref'] for r in item['reasons'] if isinstance(r, dict)
+                        and isinstance(r.get('citations'), list) for c in r['citations'] if isinstance(c, dict)
+                        and isinstance(c.get('evidence_ref'), str) and c['evidence_ref'] in accepted
+                        and originals[c['evidence_ref']]['registration']['target_kind'] != 'material')
+                    pack = acquired['candidates'][parent]
+                    cited_view = {**acquired, 'candidates': {**acquired['candidates'], parent: {**pack,
+                        'originals': {ref: original for ref, original in originals.items() if ref in refs}}}}
+                    claim = 'c1' if reason['kind'] == 'inspection_supported' else 'c2'
+                    cited = assess_evidence({**self.evidence.binding, 'parent_asin': parent, 'sim_batch_id': batch,
+                                             'necessary_clauses': [claim]}, cited_view)['claims'][claim]
+                    if cited['s'] != 1 or cited['r'] != 0:
+                        issues.append(self._issue(draft, pointer, 'citation_does_not_support_claim', parent, claim))
         return issues
 
     def _review(self):
@@ -431,6 +513,7 @@ class RecommendationRun:
                     raise RunStop('failed_protocol', 'invalid_model_issue') from None
             self.state.setdefault('model_verifications', []).append({'draft_id': draft['draft_id'],
                 'role_message_id': self.state['messages'][-1]['role_message_id'], 'issues': copy.deepcopy(model_issues)})
+            self._complete('推荐依据核验')
         issues = self._program('verify_draft', lambda: self._draft_issues(draft)) + model_issues
         self.state['issues'].extend(copy.deepcopy(issues))
         self.state['visible_issues'] = copy.deepcopy(issues)
@@ -440,6 +523,10 @@ class RecommendationRun:
         old = self.state['drafts'][-1]
         self.state['feedback_round'] = 1
         new = self._role('推荐管理', 'draft', 'revision')
+        if (not isinstance(new, dict) or set(new) != {'draft_id', 'parent_draft_id', 'items'}
+                or not isinstance(new['draft_id'], str) or not new['draft_id'] or not isinstance(new['items'], list)
+                or not isinstance(old.get('draft_id'), str)):
+            raise RunStop('failed_protocol', 'invalid_revision_payload')
         if new['parent_draft_id'] != old['draft_id'] or new['draft_id'] == old['draft_id']:
             raise RunStop('failed_protocol', 'invalid_revision_binding')
         changes = []
@@ -474,6 +561,10 @@ class RecommendationRun:
                 or pending[0]['phase'] != 'final' or any(r['settled'] is not None and
                     any(v is None for v in r['settled'].values()) for r in budget['reservations'].values())):
             raise RunStop('failed_protocol', 'unfinished_root_work')
+        expected_roles = (set() if self.binding['method'] == 'R' else {'单智能体'} if self.binding['method'] == 'S'
+            else {'需求解析', '推荐管理', '用户画像', '农产品画像', '生命周期追溯', '推荐依据核验'})
+        if set(self.state['roles_completed']) != expected_roles:
+            raise RunStop('failed_protocol', 'incomplete_roles')
         self._empty_gate(draft)
         issues = self._draft_issues(draft) + [i for i in self.state['visible_issues'] if i['blocking']]
         issues = list({i['issue_id']: i for i in issues}.values())
@@ -492,13 +583,12 @@ class RecommendationRun:
             if (self.output_root / 'publication.json').exists() or audit_path.exists():
                 raise RunStop('failed_protocol', 'publication_already_exists')
             if self.binding['method'] != 'R':
-                for role in (('需求解析',) if self.binding['method'] == 'S' else ('需求解析', '用户画像', '农产品画像')):
-                    analysis = self._role(role, 'analysis', role)
-                    if set(analysis) != {'necessary_clauses', 'observations'} or analysis['necessary_clauses'] != self.binding['necessary_clauses']:
-                        raise RunStop('failed_protocol', 'changed_request')
+                for role in ('需求解析', '用户画像'):
+                    self._analysis(role)
             goal = min(len(self.queue), self.binding['prefix_limit'] if self.binding['arm'] == 'quality' else self.budget.limits['candidates'])
             if not self.queue and self.binding['method'] != 'R':
                 self._model_acquire()
+                self._analysis('农产品画像')
             while self.state['cursor'] < goal:
                 if self.binding['method'] == 'R':
                     self._rule_acquire()
@@ -511,6 +601,8 @@ class RecommendationRun:
                     raise RunStop('failed_protocol', 'current_incomplete')
                 if assessment['eligible']:
                     self.state['G'].append(parent)
+                if self.binding['method'] != 'R':
+                    self._analysis('农产品画像')
                 self.state['cursor'] += 1
                 if self.binding['arm'] == 'necessary' and len(self.state['G']) == self.binding['K']:
                     self.state['stop_reason'] = 'first_10_qualified'
@@ -519,6 +611,7 @@ class RecommendationRun:
                     break
                 if self.state['cursor'] < len(self.queue):
                     self._check_tool(self.evidence.advance_current())
+                    self.state['current_candidate'] = self.evidence.binding['parent_asin']
             self.state['stop_reason'] = self.state['stop_reason'] or ('complete_C' if goal == len(self.queue) else
                 'quality_prefix' if self.binding['arm'] == 'quality' else 'candidate_prefix')
             proposal = self._rule_draft() if self.binding['method'] == 'R' else self._role('推荐管理', 'draft', 'draft')

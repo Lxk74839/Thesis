@@ -24,6 +24,27 @@ class ScriptedTransport:
         calls, data = [], {}
         if kind == 'analysis':
             data = {'necessary_clauses': ['c1', 'c2'], 'observations': []}
+            if context['stage'] == '用户画像':
+                history = context['history']
+                pointer = '/H/0/review_text' if history and isinstance(history[0], dict) and 'review_text' in history[0] else '/H'
+                value = history[0]['review_text'] if pointer.endswith('review_text') else history
+                data['observations'] = [{'pointer': pointer, 'value': copy.deepcopy(value), 'preference_status': 'unknown'}]
+            elif context['stage'] == '农产品画像':
+                parent = context['current']
+                assessment, quality = context['assessments'].get(parent), context['quality'].get(parent)
+                attributes = []
+                for fact in context['facts'].get(parent, []):
+                    row = fact['data']
+                    for key in (('conclusion',) if row.get('kind') == 'inspection_report' else
+                                ('status', 'stock_units') if row.get('kind') == 'retail_status' else ()):
+                        if key in row['facts']:
+                            attributes.append({'attribute': key, 'value': row['facts'][key],
+                                'unit': row['facts'].get('unit') if key == 'stock_units' else None,
+                                'citation': {**fact['citation'], 'pointer': '/facts/' + key}})
+                unknown = (['empty_C'] if parent is None else [c for c, v in assessment['claims'].items()
+                    if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else []))
+                data['observations'] = [{'candidate_id': parent, 'assessment': assessment, 'quality': quality,
+                                          'attributes': attributes, 'unknown': unknown}]
         elif kind == 'dispatch':
             data = {'candidate': context['current'], 'to': '单智能体' if context['method'] == 'S' else '生命周期追溯',
                     'claim_ids': ['c1', 'c2']}

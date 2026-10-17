@@ -82,6 +82,20 @@ def check(name, directory):
     elif terminal in ('released', 'valid_empty'):
         roles = {'单智能体'} if binding['method'] == 'S' else {'需求解析', '推荐管理', '用户画像', '农产品画像', '生命周期追溯', '推荐依据核验'}
         require(set(result['roles_completed']) == roles and bool(result['dispatches']), name + ': roles/dispatch')
+        profiles = [m for m in messages if m['request']['output_kind'] == 'analysis'
+            and m['request']['messages'][-1]['content']['runtime']['stage'] == '农产品画像']
+        require(len(profiles) == max(1, cursor), name + ': actual product-profile schedule')
+        for message in profiles:
+            context = message['request']['messages'][-1]['content']['runtime']
+            observation = message['response']['message']['content']['data']['observations'][0]
+            parent = observation['candidate_id']
+            require(observation['assessment'] == context['assessments'][parent] and bool(context['facts'][parent]), name + ': profile before evidence')
+            for attribute in observation['attributes']:
+                citation = attribute['citation']
+                original = state['evidence']['acquired']['candidates'][parent]['originals'][citation['evidence_ref']]
+                row = json.loads(original['raw_utf8'])
+                require(attribute['value'] == row['facts'][attribute['attribute']] and citation['pointer'] == '/facts/' + attribute['attribute'], name + ': ungrounded profile attribute')
+                require(citation['receipt_id'] == original['receipt_id'], name + ': profile receipt')
     for message in messages:
         request, response = message['request'], message['response']
         require(message['provenance'] == response['provenance'] == 'scripted' and response['provider_requests_sent'] == 0, name + ': provenance')
@@ -148,6 +162,8 @@ def check(name, directory):
 folder = (AUDIT / sys.argv[1]).resolve()
 require(folder.is_relative_to(AUDIT / 'micro'), 'only public micro artifacts')
 summaries = {name: check(name, folder / name / 'runs/1') for name in CASES}
+normal_inputs = {json.loads((folder / ('normal-' + method) / 'runs/1/result.json').read_bytes())['input_projection_sha256'] for method in ('R', 'S', 'M')}
+require(len(normal_inputs) == 1, 'R/S/M unequal safe initial information')
 files = {p.relative_to(folder).as_posix(): {'bytes': p.stat().st_size, 'sha256': sha(p.read_bytes())}
          for p in sorted(folder.rglob('*')) if p.is_file()}
 report = {'status': 'passed', 'oracle': 'stdlib_only_literal_public_artifact_check', 'cases': summaries, 'files': files}
