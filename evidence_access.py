@@ -334,7 +334,8 @@ class EvidenceSession:
                 status = item_status.get(key[2], result['status'])
                 if status in ('io_error', 'deadline_exceeded'):
                     self.failed_continuations[key] = receipt_id
-                elif status in ('ok', 'unavailable', 'access_denied'):
+                elif (key[2] in item_status and status in ('ok', 'unavailable', 'access_denied')) or (
+                        operation == 'list_evidence' and result['status'] == 'ok'):
                     self.failed_continuations.pop(key, None)
         return result
 

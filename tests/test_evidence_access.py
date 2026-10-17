@@ -380,6 +380,28 @@ class EvidenceAccessTests(unittest.TestCase):
         self.assertEqual(set(saved['originals']), {refs[0]})
         self.assertEqual(saved['attempts'][refs[2]]['status'], 'not_attempted')
 
+    def test_rejected_batch_cannot_erase_failed_refs_or_reset_the_retry_cap(self):
+        from evidence_access import EvidenceSession, LocalEvidenceSource
+        class FailedSource(LocalEvidenceSource):
+            def read(self, registrations):
+                raise OSError('public repeatable failure')
+        self.fixture.normal()
+        normal = self.fixture.session()
+        delays = []
+        session = EvidenceSession(self.fixture.binding(), FailedSource(self.fixture.snapshot_ref),
+            limits=normal.limits, final_reserve=normal.final_reserve, clock=lambda: 0, sleeper=delays.append)
+        page = session.dispatch('list_evidence', {'cursor': None})
+        refs = [row['evidence_ref'] for row in page['entries'][:3]]
+        session.dispatch('read_evidence', {'evidence_refs': refs})
+        rejected = session.dispatch('read_evidence', {'evidence_refs': [refs[0], *refs]})
+        self.assertEqual(rejected['status'], 'access_denied')
+        self.assertEqual(rejected['receipt']['usage_delta']['physical_tools'], 0)
+        attempts = [session.dispatch('read_evidence', {'evidence_refs': [ref]}) for ref in refs]
+        self.assertEqual([row['status'] for row in attempts], ['io_error', 'budget_exhausted', 'budget_exhausted'])
+        self.assertEqual(delays, [1, 2])
+        self.assertEqual(session.audit_view()['usage']['retries'], 2)
+        self.assertEqual(session.audit_view()['usage']['physical_tools'], 3)
+
 
 if __name__ == '__main__':
     unittest.main()
