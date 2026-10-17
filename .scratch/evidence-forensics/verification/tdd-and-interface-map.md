@@ -51,3 +51,18 @@
 ## 尚待完成
 
 固定候选提交后按同一base/candidate由Standards和Spec两独立代理并行审查；阻塞集中处理、必要补测及定向复审。最终真实probe需绑定实际交付生产字节，最终保护核查/资源汇总与专项接受另写，不回改已接受上游。T0/P1、运行器、模型/计费、可执行预算、链及15门禁保持。
+
+## 最终实施接受补记（2026-10-17）
+
+上文是6bbcb80初次候选前的历史映射与待办，不作最终状态。最终候选为`d1ff0f8776b6b1e0f8f4078f3ca440ed1bb1bee4`；43项公共测试在87标签全部通过，最终10来源probe在88标签10/10，独立接受核对89标签通过。完整结论见[专项接受记录](../acceptance-20261017.md)，实际产物/原始输出及最终资源账见[机器索引](delivery-evidence.json)。
+
+| 补充覆盖 | 公共反例/诊断与回执 |
+| --- | --- |
+| E1来源先绑定 | mismatched_source_binding：snapshot/τ/principal三种错配均在候选扫描前停止；71 RED→72 GREEN |
+| H12重试不可换序/拆批绕过 | direct_redispatch_of_failed_refs；73 RED→74 GREEN；rejected_batch_cannot_erase_failed_refs按Spec给出的失败整批→重复ref拒绝→拆批精确序列，85 RED→86 GREEN |
+| H12时间和最终预留 | operation_time_and_retry_backoff_are_reserved_before_io；75 RED→76 GREEN；45秒+退避先保留、时间不足不发I/O，真实sleep调度边界81失败→82修复 |
+| H10实际空范围 | actual_empty_terminal_scope：实际来源空登记终页显式评估Pending可安全拒绝、必需原文仍未取得，未取证则Unassessed；77 RED→78 GREEN |
+| H12部分批读 | partial_batch_retains_failure：ok/io_error/not_attempted=2逻辑/1物理、释放1未执行逻辑，逐项保留；79 RED→80 GREEN |
+| 资源中断命令边界 | 守护真实嵌套进程强杀，未结算占用保留且下一子进程不能启动；69 RED→70 GREEN，嵌套树计入同一个外层正式账 |
+
+共36个公共E1/E2行为RED→GREEN周期及1个资源守护命令边界周期；公开自然已覆盖边界无造假RED。两轴最终均0阻塞，Standards 1非阻塞仅记录。最终Python90次guard/110.878299秒、峰值Job75.183594MiB+守护64MiB，上游保护1,819文件无变化；未修改既有模块或扩大正常v1 Q。运行器/T0/P1/预算可行性/15仍按原门禁。

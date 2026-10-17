@@ -1,0 +1,15 @@
+{
+  "schema_version": "evidence-forensics-final-static-check-0.1.0",
+  "base": "ac49059ffa1f61545033b84f688eee4be58d75be",
+  "reviewed_implementation_candidate": "d1ff0f8776b6b1e0f8f4078f3ca440ed1bb1bee4",
+  "status": "passed",
+  "local_links_checked": 29,
+  "file_fingerprints_checked": 189,
+  "reviewed_production_tests_and_diagnostics_unchanged": true,
+  "git_diff_check": "passed",
+  "project_python_after_resource_run_89": 0,
+  "acceptance_sha256": "6ff196d11a6c8bb60b58f9f557c68264819e3dd323fa939dcb6f5fff5fd70bdd",
+  "delivery_index_sha256": "5469cfb9531b64e274ea01a6b0b130d337a4d8b99fddd3fdff2881fdd81a439a",
+  "resource_ledger_sha256": "22790bfa30a27440b4ba5cde0d6f25c3b2c601ea135df80bf631875d16ff390f",
+  "scope": "PowerShell and Git static checks only; this record and acceptance commit do not expand runtime authorization"
+}
