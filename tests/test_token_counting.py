@@ -14,6 +14,119 @@ from token_counting import InputCounter
 
 
 class InputCountingTests(unittest.TestCase):
+    def test_count_read_timeout_keeps_received_headers_and_unknown_cost_held(self):
+        prepared = ModelAdapter(None, capability_binding=BINDING).prepare(request())
+        root = case_directory('http-read-timeout')
+        exported, path = export_catalog(root, [prepared])
+        self.assertEqual(exported.returncode, 0, exported.stdout + exported.stderr)
+        sends = []
+        class Response:
+            status = 200
+            def getheaders(self):
+                return [('x-request-id', 'PUBLIC-TIMEOUT-HTTP')]
+            def read(self, limit):
+                raise TimeoutError('PUBLIC-READ-TIMEOUT')
+        class Connection:
+            def __init__(self, host, timeout):
+                pass
+            def request(self, method, path, body, headers):
+                sends.append(body)
+            def getresponse(self):
+                return Response()
+            def close(self):
+                pass
+        permit = count_permit(root, json.loads(path.read_bytes()))
+        counter = InputCounter('PUBLIC-PROJECT', directory=root, clock=lambda: 0,
+                               https_factory=Connection, credential='PUBLIC-FIXTURE-NOT-A-KEY')
+        result = counter.count(prepared, authorization=permit)
+        self.assertEqual(result['status'], 'count_failed')
+        self.assertEqual(result['raw_response']['status_code'], 200)
+        self.assertEqual(result['raw_response']['headers']['x-request-id'], 'PUBLIC-TIMEOUT-HTTP')
+        self.assertEqual(result['raw_response']['read_error'], 'PUBLIC-READ-TIMEOUT')
+        journal = [json.loads(line) for line in (root / 'count-journal.jsonl').read_text().splitlines()]
+        self.assertIsNone(journal[-1]['cost_microusd'])
+        stopped = counter.count(prepared, authorization=permit)
+        self.assertEqual(stopped['status'], 'count_stage_halted')
+        self.assertEqual(stopped['held_unknown_microusd'], 3)
+        self.assertEqual(len(sends), 1)
+
+    def test_count_http_failures_keep_received_status_headers_and_bounded_body(self):
+        for failure in ('invalid_json', 'late', 'oversize'):
+            with self.subTest(failure=failure):
+                prepared = ModelAdapter(None, capability_binding=BINDING).prepare(request())
+                root = case_directory('http-failure-' + failure)
+                exported, path = export_catalog(root, [prepared])
+                self.assertEqual(exported.returncode, 0, exported.stdout + exported.stderr)
+                raw_body = b'{PUBLIC-NON-JSON' if failure == 'invalid_json' else (
+                    b'X' * (1024**2 + 1) if failure == 'oversize' else
+                    b'{"object":"response.input_tokens","input_tokens":100}')
+                now, sends = [0], []
+                class Response:
+                    status = 400 if failure == 'invalid_json' else 200
+                    def getheaders(self):
+                        return [('x-request-id', 'PUBLIC-FAILED-HTTP')]
+                    def read(self, limit):
+                        if failure == 'late':
+                            now[0] = 30001
+                        return raw_body[:limit]
+                class Connection:
+                    def __init__(self, host, timeout):
+                        pass
+                    def request(self, method, path, body, headers):
+                        sends.append((method, path))
+                    def getresponse(self):
+                        return Response()
+                    def close(self):
+                        pass
+                result = InputCounter('PUBLIC-PROJECT', directory=root, clock=lambda: now[0],
+                    https_factory=Connection, credential='PUBLIC-FIXTURE-NOT-A-KEY').count(
+                    prepared, authorization=count_permit(root, json.loads(path.read_bytes())))
+                self.assertEqual(result['status'], 'count_failed')
+                self.assertEqual(len(sends), 1)
+                self.assertEqual(result['raw_response']['status_code'], Response.status)
+                self.assertEqual(result['raw_response']['headers']['x-request-id'], 'PUBLIC-FAILED-HTTP')
+                self.assertEqual(result['raw_response']['raw_utf8'].encode(), raw_body)
+                journal = [json.loads(line) for line in (root / 'count-journal.jsonl').read_text().splitlines()]
+                self.assertEqual(journal[-1]['raw_response'], result['raw_response'])
+                self.assertFalse((root / 'count-receipts.jsonl').exists())
+
+    def test_resealed_catalog_cannot_bypass_planning_caps_at_import_or_count(self):
+        adapter = ModelAdapter(None, capability_binding=BINDING)
+        rows = []
+        for index in range(18):
+            req = request()
+            req.update(request_id='PUBLIC-REQUEST-' + str(index), attempt_id='PUBLIC-ATTEMPT-' + str(index))
+            rows.append(adapter.prepare(req))
+        root = case_directory('imported-planning-cap')
+        plan = {'schema_version': 'openai-count-plan-0.1.0', 'scope': 'public_fixture',
+            'project_id': 'PUBLIC-PROJECT', 'roots': [{'run_id': 'PUBLIC-RUN', 'method': 'M'}],
+            'expected': [p['source'] for p in rows]}
+        manifest = {'schema_version': 'openai-count-manifest-0.1.0', 'plan': plan,
+            'entries': {p['prepared_id']: p for p in rows},
+            'references': [{**p['source'], 'prepared_id': p['prepared_id']} for p in rows],
+            'complete': True, 'provider_requests_sent': 0}
+        manifest['manifest_id'] = hashlib.sha256(json.dumps(manifest, sort_keys=True, ensure_ascii=False,
+            separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+        path, target = root / 'manifest.json', root / 'import.json'
+        save(path, manifest)
+        with self.subTest(boundary='import'):
+            proc = subprocess.run([sys.executable, '-B', '-m', 'token_counting', 'import',
+                '--manifest', str(path), '--receipts', str(root / 'count-receipts.jsonl'),
+                '--output', str(target)], cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
+            self.assertEqual(json.loads(proc.stdout)['status'], 'rejected')
+            self.assertEqual(json.loads(proc.stdout)['reason'], 'count_planning_cap_exceeded')
+            self.assertFalse(target.exists())
+        with self.subTest(boundary='count'):
+            sends = []
+            def sender(body, **kw):
+                sends.append(body)
+                return {'status_code': 200, 'headers': {}, 'body': {'object': 'response.input_tokens', 'input_tokens': 100}}
+            result = InputCounter('PUBLIC-PROJECT', directory=root, clock=lambda: 0, sender=sender).count(
+                rows[0], authorization=count_permit(root, manifest))
+            self.assertEqual(result['status'], 'permission_denied')
+            self.assertEqual(sends, [])
+            self.assertFalse((root / 'count-journal.jsonl').exists())
+
     def test_public_catalog_cannot_omit_requests_for_a_declared_model_root(self):
         prepared = ModelAdapter(None, capability_binding=BINDING).prepare(request())
         root = case_directory('missing-model-root')

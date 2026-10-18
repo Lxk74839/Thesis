@@ -73,6 +73,7 @@ if mode == 'delivery':
         audits.append({'path': path.relative_to(ROOT).as_posix(), 'terminal': audit['terminal'], 'calls': usage['model_calls']})
     for path in cases.rglob('count-journal.jsonl'):
         rows = [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()]
+        count_intents = {r['attempt_id']: r for r in rows if r['kind'] == 'intent'}
         for row in rows:
             if row['kind'] == 'intent':
                 intents += 1
@@ -80,6 +81,12 @@ if mode == 'delivery':
                 injected_http += row['transport_origin'] == 'injected_https'
             elif row.get('receipt'):
                 assert row['receipt']['provider_requests_sent'] == 0
+            if row['kind'] == 'result' and count_intents[row['attempt_id']]['transport_origin'] == 'injected_https':
+                raw = row['raw_response']
+                assert type(raw['status_code']) is int and isinstance(raw['headers'], dict)
+                assert len(raw['raw_utf8'].encode('utf-8')) <= 1024**2 + 1
+                if raw.get('read_error'):
+                    assert row['cost_microusd'] is None and row['receipt'] is None
     assert len(audits) == 6 and injected_http and intents
     files = {p.relative_to(ROOT).as_posix(): {'bytes': p.stat().st_size, 'sha256': fingerprint(p)}
              for p in sorted(cases.rglob('*')) if p.is_file()}

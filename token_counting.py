@@ -45,6 +45,11 @@ def validate_manifest(manifest):
             or manifest['manifest_id'] != sha({k: v for k, v in manifest.items() if k != 'manifest_id'})):
         raise ValueError('invalid_manifest')
     refs, plan, entries = manifest['references'], manifest['plan'], manifest['entries']
+    per_root = {}
+    for ref in refs:
+        per_root[ref['run_id']] = per_root.get(ref['run_id'], 0) + 1
+    if any(n > 17 for n in per_root.values()) or len(entries) > 108800:
+        raise ValueError('count_planning_cap_exceeded')
     if {r['run_id'] for r in refs} != {r['run_id'] for r in plan['roots'] if r['method'] in ('S', 'M')}:
         raise ValueError('incomplete_model_root_coverage')
     if plan['scope'] == 'T0_controlled_catalog':
@@ -83,8 +88,6 @@ def export_manifest(source):
     actual = sorted(canonical({k: v for k, v in r.items() if k != 'prepared_id'}) for r in references)
     if expected != actual or len(actual) != len(set(actual)):
         raise ValueError('incomplete_catalog')
-    if any(sum(r['run_id'] == root for r in references) > 17 for root in roots) or len(entries) > 108800:
-        raise ValueError('count_planning_cap_exceeded')
     result = {'schema_version': 'openai-count-manifest-0.1.0', 'plan': plan, 'entries': entries,
               'references': references, 'complete': True, 'provider_requests_sent': 0}
     result['manifest_id'] = sha(result)
@@ -244,8 +247,8 @@ class InputCounter:
                 raw = send_count(prepared['count_utf8'], deadline_ms=deadline, credential=credential,
                                  clock=self.clock, connection_factory=self.https_factory)
             body = raw['body']
-            cost = rate['failure_microusd']
-            if (raw['status_code'] != 200 or set(body) != {'object', 'input_tokens'}
+            cost = None if 'read_error' in raw else rate['failure_microusd']
+            if (raw.get('boundary_error') or raw['status_code'] != 200 or set(body) != {'object', 'input_tokens'}
                     or body['object'] != 'response.input_tokens' or type(body['input_tokens']) is not int
                     or body['input_tokens'] < 0 or self.clock() > min(now + 30000, permit['deadline_ms'])
                     or len(canonical(raw).encode('utf-8')) > 1024**2):

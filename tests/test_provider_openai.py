@@ -9,6 +9,29 @@ from token_counting import InputCounter
 
 
 class OpenAINativeTests(unittest.TestCase):
+    def test_error_status_cannot_hide_unbound_billing_or_unrequested_provider_tools(self):
+        for failure in ('model', 'service_tier', 'provider_tool'):
+            with self.subTest(failure=failure):
+                def sender(body, **kw):
+                    response = native_response()
+                    response['body']['status'] = 'incomplete'
+                    response['body']['incomplete_details'] = {'reason': 'max_output_tokens'}
+                    if failure == 'model':
+                        response['body']['model'] = 'PUBLIC-UNBOUND-MODEL'
+                    elif failure == 'service_tier':
+                        response['body']['service_tier'] = 'flex'
+                    else:
+                        response['body']['output'].insert(0, {'type': 'web_search_call', 'id': 'PUBLIC-UNREQUESTED'})
+                    return response
+                adapter, req, root = reserved_native(sender)
+                result = adapter.invoke(req)
+                expected = 'unsupported_provider_tool' if failure == 'provider_tool' else 'provider_binding_mismatch'
+                self.assertEqual(result['status'], expected)
+                self.assertIsNone(result['usage']['cost_microusd'])
+                self.assertFalse(result['usage_known'])
+                self.assertFalse(result['error']['retryable'])
+                save(root / 'result.json', result)
+
     def test_a_late_response_cannot_clear_an_input_usage_mismatch(self):
         now = [0]
         def sender(body, **kw):

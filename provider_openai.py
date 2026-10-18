@@ -3,6 +3,7 @@ import copy
 import hashlib
 import json
 import http.client
+import base64
 
 MODEL = 'gpt-5.4-mini-2026-03-17'
 MAPPER = 'openai-responses-mapper-0.1.0'
@@ -18,11 +19,26 @@ def send_count(body, *, deadline_ms, credential, clock, connection_factory=None)
         connection.request('POST', '/v1/responses/input_tokens', body=body.encode('utf-8'), headers={
             'Content-Type': 'application/json', 'Authorization': 'Bearer ' + credential})
         response = connection.getresponse()
-        raw = response.read(1024**2 + 1)
-        if len(raw) > 1024**2 or clock() > deadline_ms:
-            raise ValueError('count_response_limit')
-        return {'status_code': response.status, 'headers': {k.lower(): v for k, v in response.getheaders()},
-                'body': json.loads(raw), 'raw_utf8': raw.decode('utf-8')}
+        envelope = {'status_code': response.status, 'headers': {k.lower(): v for k, v in response.getheaders()}, 'body': None}
+        try:
+            raw = response.read(1024**2 + 1)
+        except (OSError, http.client.HTTPException) as exc:
+            envelope['read_error'] = str(exc)
+            raw = getattr(exc, 'partial', b'')[:1024**2 + 1]
+        try:
+            envelope['raw_utf8'] = raw.decode('utf-8')
+        except UnicodeDecodeError:
+            envelope['raw_base64'] = base64.b64encode(raw).decode('ascii')
+        if 'read_error' in envelope:
+            envelope['boundary_error'] = 'count_read_error'
+        elif len(raw) > 1024**2 or clock() > deadline_ms:
+            envelope['boundary_error'] = 'count_response_limit'
+        else:
+            try:
+                envelope['body'] = json.loads(raw)
+            except (ValueError, UnicodeDecodeError):
+                envelope['boundary_error'] = 'invalid_count_json'
+        return envelope
     finally:
         connection.close()
 
@@ -261,6 +277,13 @@ def normalized_usage(envelope):
 
 def terminal_error(envelope):
     status, body = envelope.get('status_code'), envelope.get('body')
+    output = body.get('output', []) if isinstance(body, dict) else []
+    output = output if isinstance(output, list) else []
+    if isinstance(body, dict) and (body.get('usage') is not None or 'model' in body or 'service_tier' in body):
+        if body.get('model') != MODEL or body.get('service_tier') != 'default':
+            return 'provider_binding_mismatch', 'capability'
+    if any(isinstance(item, dict) and item.get('type') not in ('message', 'function_call', 'reasoning') for item in output):
+        return 'unsupported_provider_tool', 'capability'
     if status in (401, 403):
         return 'auth', 'auth'
     if status == 429:
@@ -271,15 +294,10 @@ def terminal_error(envelope):
         return 'format_error', 'format'
     if body.get('status') == 'incomplete':
         return 'truncated', 'truncated'
-    output = body.get('output') if isinstance(body.get('output'), list) else []
-    if any(isinstance(item, dict) and item.get('type') not in ('message', 'function_call', 'reasoning') for item in output):
-        return 'unsupported_provider_tool', 'capability'
     if any(isinstance(c, dict) and c.get('type') == 'refusal' for item in output
            if isinstance(item, dict) and item.get('type') == 'message' and isinstance(item.get('content'), list)
            for c in item['content']):
         return 'refusal', 'refusal'
-    if body.get('model', MODEL) != MODEL or body.get('service_tier', 'default') != 'default':
-        return 'provider_binding_mismatch', 'capability'
     return 'format_error', 'format'
 
 
