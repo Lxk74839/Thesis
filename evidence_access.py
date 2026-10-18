@@ -269,12 +269,23 @@ class EvidenceSession:
     version = 'restricted-evidence-0.1.0'
 
     @staticmethod
-    def tool_schemas():
+    def tool_schemas(*, batch=False):
         inputs = [('list_evidence', 'cursor', {'type': ['string', 'null']}),
                   ('read_evidence', 'evidence_refs', {'type': 'array', 'items': {'type': 'string'},
                     'minItems': 1, 'maxItems': 32, 'uniqueItems': True})]
-        return [{'name': name, 'version': EvidenceSession.version, 'input_schema': {'type': 'object',
+        schemas = [{'name': name, 'version': EvidenceSession.version, 'input_schema': {'type': 'object',
             'properties': {key: shape}, 'required': [key], 'additionalProperties': False}} for name, key, shape in inputs]
+        if batch:
+            properties = {'schema_version': {'enum': ['acquisition-batch-0.1.0']},
+                'start_candidate': {'type': 'string'}, 'candidate_limit': {'type': 'integer', 'minimum': 1, 'maximum': 32},
+                'claim_ids': {'type': 'array', 'items': {'type': 'string'}, 'uniqueItems': True},
+                'max_list_pages': {'type': 'integer', 'minimum': 1},
+                'max_read_batches': {'type': 'integer', 'minimum': 1},
+                'stop_policy': {'enum': ['first_10_qualified', 'fixed_prefix']}}
+            schemas.append({'name': 'acquire_batch', 'version': 'restricted-evidence-batch-0.1.0',
+                'input_schema': {'type': 'object', 'properties': properties,
+                                 'required': list(properties), 'additionalProperties': False}})
+        return schemas
 
     def __init__(self, binding, source, *, limits, final_reserve, joint=None, clock=None, sleeper=time.sleep, root_budget=None):
         self.root_budget = root_budget
@@ -325,11 +336,103 @@ class EvidenceSession:
 
     def dispatch(self, operation, arguments, *, actor_role='host'):
         with self.lock:
+            if operation == 'acquire_batch':
+                return self._acquire_batch(arguments, actor_role)
             if operation not in ('list_evidence', 'read_evidence', 'candidate_page'):
                 return self._execute('denied_operation', {}, actor_role)
             retry_of = next((self.failed_continuations[key] for key in self._request_keys(operation, arguments)
                              if key in self.failed_continuations), None)
             return self._execute(operation, arguments, actor_role, retry_of)
+
+    def _acquire_batch(self, plan, actor_role):
+        root = self.root_budget
+        fields = {'schema_version', 'start_candidate', 'candidate_limit', 'claim_ids',
+                  'max_list_pages', 'max_read_batches', 'stop_policy'}
+        if (root is None or self.joint is None or root.binding.get('orchestration') != 'batch32-0.1.0'
+                or root.binding['method'] not in ('S', 'M')
+                or actor_role != ('单智能体' if root.binding['method'] == 'S' else '生命周期追溯')
+                or not isinstance(plan, dict) or set(plan) != fields
+                or plan['schema_version'] != 'acquisition-batch-0.1.0'
+                or plan['start_candidate'] != self.binding['parent_asin']
+                or self.acquired.get('assessments', {}).get(self.binding['parent_asin'], {}).get('advance_allowed')
+                or plan['claim_ids'] != self.binding['necessary_clauses']
+                or any(type(plan[k]) is not int or plan[k] < 1
+                       for k in ('candidate_limit', 'max_list_pages', 'max_read_batches'))
+                or plan['candidate_limit'] > 32
+                or plan['stop_policy'] != ('first_10_qualified' if self.binding['arm'] == 'necessary' else 'fixed_prefix')):
+            return self._execute('denied_operation', {}, actor_role)
+        steps, processed, assessments, observations = [], [], {}, []
+
+        def step(operation, arguments):
+            parent = self.binding['parent_asin']
+            result = (self.assess_current() if operation == 'assess_current' else
+                      self.advance_current() if operation == 'advance_current' else
+                      self.dispatch(operation, arguments, actor_role=actor_role) if operation != 'begin_batch' else
+                      self._execute(operation, arguments, actor_role))
+            steps.append({'candidate_id': parent, **{k: copy.deepcopy(result['receipt'][k]) for k in
+                          ('operation', 'receipt_id', 'root_reservation_id', 'status', 'usage_delta')}})
+            return result
+
+        result = step('begin_batch', {})
+        order = self.joint.orders['base']
+        goal = min(len(order), root.binding['prefix_limit'] if self.binding['arm'] == 'quality' else self.limits['candidates'])
+        position = order.index(self.binding['parent_asin'])
+        pages = reads = 0
+        stop_reason = 'batch_limit'
+        for _ in range(min(plan['candidate_limit'], max(0, goal - position))):
+            if result['status'] != 'ok':
+                break
+            entries, items, cursor = [], [], None
+            while True:
+                if pages >= plan['max_list_pages']:
+                    result = {'status': 'batch_plan_exhausted'}
+                    break
+                result = step('list_evidence', {'cursor': cursor})
+                pages += 1
+                if result['status'] != 'ok':
+                    break
+                entries.extend(result['entries'])
+                cursor = result['next_cursor']
+                if cursor is None:
+                    break
+            entries.sort(key=lambda r: (r['target_kind'], r['target_id'].encode(), r['version']))
+            for offset in range(0, len(entries), 32):
+                if result['status'] != 'ok':
+                    break
+                if reads >= plan['max_read_batches']:
+                    result = {'status': 'batch_plan_exhausted'}
+                    break
+                result = step('read_evidence', {'evidence_refs': [r['evidence_ref'] for r in entries[offset:offset + 32]]})
+                reads += 1
+                items.extend(result.get('items', []))
+                if any(item['status'] in ('io_error', 'not_attempted') for item in result.get('items', [])):
+                    result = {**result, 'status': 'io_error'}
+            if result['status'] == 'ok':
+                result = step('assess_current', {})
+                if result['status'] == 'ok':
+                    parent = self.binding['parent_asin']
+                    assessments[parent] = result['assessment']
+                    observations.append({'candidate_id': parent, 'entries': entries, 'items': items,
+                                         'assessment_receipt_id': steps[-1]['receipt_id']})
+                    if result['assessment']['advance_allowed']:
+                        processed.append(parent)
+                    else:
+                        result = {'status': 'current_incomplete'}
+            if result['status'] != 'ok':
+                break
+            position += 1
+            eligible = sum(a['eligible'] for a in self.acquired['assessments'].values())
+            if self.binding['arm'] == 'necessary' and eligible >= root.binding['K']:
+                stop_reason = 'first_10_qualified'
+                break
+            if position >= goal:
+                stop_reason = 'complete_C' if position == len(order) else (
+                    'quality_prefix' if self.binding['arm'] == 'quality' else 'candidate_prefix')
+                break
+            result = step('advance_current', {})
+        return {'status': result['status'], 'plan_sha256': digest(encoded(plan)),
+                'processed': processed, 'assessments': assessments, 'observations': observations,
+                'steps': steps, 'stop_reason': stop_reason, 'usage_after': root.audit_view()['usage']}
 
     def _request_keys(self, operation, arguments):
         if not isinstance(arguments, dict):
@@ -383,8 +486,10 @@ class EvidenceSession:
         if reservation['status'] != 'reserved':
             self.stopped = reservation['status']
         result = self._execute(operation, arguments, actor_role, retry_of, _shared=False)
+        receipt = result['receipt']
+        receipt['root_reservation_id'] = reservation['reservation_id']
+        self.receipts[-1]['root_reservation_id'] = reservation['reservation_id']
         if reservation['status'] == 'reserved':
-            receipt = result['receipt']
             actual = {**receipt['usage_delta'], 'candidates': self.usage['candidates'] - before['candidates'],
                       'retries': self.usage['retries'] - before['retries']}
             if receipt['reservation']['unresolved']:
@@ -392,8 +497,6 @@ class EvidenceSession:
             root.settle(reservation['reservation_id'], {'status': result['status'], 'usage': actual,
                                                       'late': receipt['late']})
             self.root_reservations[receipt['receipt_id']] = reservation['reservation_id']
-            receipt['root_reservation_id'] = reservation['reservation_id']
-            self.receipts[-1]['root_reservation_id'] = reservation['reservation_id']
         self.usage = root.usage.copy()
         result['receipt']['root_usage_after'] = copy.deepcopy(self.usage)
         self.receipts[-1]['root_usage_after'] = copy.deepcopy(self.usage)
@@ -516,6 +619,9 @@ class EvidenceSession:
         return result
 
     def _dispatch(self, operation, arguments):
+        if operation == 'begin_batch':
+            self.delta['logical_tools'] = 1
+            return {'status': 'ok'}
         if operation == 'advance_current':
             self.delta['logical_tools'] = 1
             current = self.acquired.get('assessments', {}).get(self.binding['parent_asin'], {})

@@ -29,7 +29,9 @@ def error_result(status, category, *, attempted=False, usage=None, raw=None):
 
 def validate_request(request):
     require(isinstance(request, dict) and set(request) == REQUEST_KEYS)
-    require(request['schema_version'] == 'rsm-model-request-0.1.0' and request['role'] in ROLES)
+    require(request['schema_version'] in ('rsm-model-request-0.1.0', 'rsm-model-request-0.2.0') and request['role'] in ROLES)
+    tool_names = ('candidate_page', 'list_evidence', 'read_evidence') + (
+        ('acquire_batch',) if request['schema_version'] == 'rsm-model-request-0.2.0' else ())
     require(all(isinstance(request[k], str) and request[k] for k in
                 ('request_id', 'attempt_id', 'run_id', 'session_id', 'reservation_id')))
     require(request['reply_to'] is None or isinstance(request['reply_to'], str))
@@ -52,13 +54,13 @@ def validate_request(request):
             require(isinstance(message.get('tool_requests', []), list))
             require(not message.get('tool_requests') or message['content'] is None)
             for call in message.get('tool_requests', []):
-                validate_call(call, [{'name': n} for n in ('candidate_page', 'list_evidence', 'read_evidence')])
+                validate_call(call, [{'name': n} for n in tool_names])
                 require(call['call_id'] not in seen)
                 pending.add(call['call_id'])
                 seen.add(call['call_id'])
     require(not pending)
     require(isinstance(request['tools'], list) and all(t.get('name') in
-        ('candidate_page', 'list_evidence', 'read_evidence') for t in request['tools']))
+        tool_names for t in request['tools']))
 
 
 def validate_call(call, tools):
@@ -66,7 +68,15 @@ def validate_call(call, tools):
     require(isinstance(call['call_id'], str) and bool(call['call_id']))
     require(call['name'] in {t['name'] for t in tools} and isinstance(call['arguments'], dict))
     args = call['arguments']
-    if call['name'] == 'read_evidence':
+    if call['name'] == 'acquire_batch':
+        require(set(args) == {'schema_version', 'start_candidate', 'candidate_limit', 'claim_ids',
+                              'max_list_pages', 'max_read_batches', 'stop_policy'})
+        require(args['schema_version'] == 'acquisition-batch-0.1.0' and isinstance(args['start_candidate'], str))
+        require(all(type(args[k]) is int and args[k] >= 1
+                    for k in ('candidate_limit', 'max_list_pages', 'max_read_batches')) and args['candidate_limit'] <= 32)
+        require(isinstance(args['claim_ids'], list) and all(isinstance(c, str) for c in args['claim_ids']))
+        require(args['stop_policy'] in ('first_10_qualified', 'fixed_prefix'))
+    elif call['name'] == 'read_evidence':
         require(set(args) == {'evidence_refs'} and isinstance(args['evidence_refs'], list))
         refs = args['evidence_refs']
         require(1 <= len(refs) <= 32 and all(isinstance(r, str) and r for r in refs) and len(set(refs)) == len(refs))

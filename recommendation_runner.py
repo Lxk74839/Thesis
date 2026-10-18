@@ -39,6 +39,7 @@ class RecommendationRun:
 
     def __init__(self, binding, *, evidence, model, root_budget, output_root):
         self.binding = copy.deepcopy(binding)
+        self.batched = binding.get('orchestration') == 'batch32-0.1.0'
         self.evidence, self.model, self.budget = evidence, model, root_budget
         self.output_root = Path(output_root).resolve()
         if self.output_root != root_budget.journal_path.parent or evidence.root_budget is not root_budget:
@@ -53,9 +54,16 @@ class RecommendationRun:
                 'contract_sha256': '8982a92d8541f8bc52b31824924527abd66b87910cde4e13124abc27b90b6fa8',
                 'implementation_candidate': binding.get('implementation_candidate', 'development_worktree')},
             'terminal': None, 'reason': None, 'stop_reason': None, 'delivered': [], 'components': None}
+        if self.batched:
+            self.state.update(batches=[], profiled_candidates=[])
+            self.state['versions'].update(baseline='ac4874c7218ea1a795ddf992a9c23d133766a293',
+                runner='rsm-runner-batch-0.1.0', adapter='rsm-model-adapter-batch-0.1.0',
+                tools='restricted-evidence-batch-0.1.0', prompt='rsm-batch-safe-prompt-0.1.0',
+                contract_sha256='2c2376c3965a5910b4b2a89b081a87b4f8634ecfd6c9907cdf727831eb5a838b')
         self.result = None
         self.histories = {}
         self.call_ids = set()
+        self.profile_batch_start = 0
         self.initial_messages = copy.deepcopy(evidence.joint.dispatch('model_request', {})['request']['messages']
             if evidence.joint is not None else binding.get('safe_initial_messages', []))
         for message in self.initial_messages:
@@ -123,7 +131,14 @@ class RecommendationRun:
         raise RunStop(terminal, reason)
 
     def _program(self, operation, callback, *, phase='work', logical=1):
-        reservation = self.budget.reserve(operation, {'logical_tools': logical, 'elapsed_ms': 45000}, phase=phase, retry_of=None)
+        elapsed_upper = 45000
+        if self.batched and phase == 'final':
+            remaining = max(0, self.budget.limits['elapsed_ms'] - math.ceil(self.budget.clock() - self.budget.started))
+            elapsed_upper = min(elapsed_upper, remaining // {'final': 3, 'commit': 2, 'seal_audit': 1}[operation])
+        elif self.batched:
+            elapsed_upper = min(elapsed_upper, max(0, self.budget.limits['elapsed_ms']
+                - math.ceil(self.budget.clock() - self.budget.started) - self.budget.final_reserve['elapsed_ms']))
+        reservation = self.budget.reserve(operation, {'logical_tools': logical, 'elapsed_ms': elapsed_upper}, phase=phase, retry_of=None)
         self._check_tool(reservation if reservation['status'] != 'reserved' else {'status': 'ok'})
         started = self.budget.clock()
         try:
@@ -132,7 +147,7 @@ class RecommendationRun:
             self.budget.settle(reservation['reservation_id'], {'status': 'failed', 'usage': {'logical_tools': logical}})
             raise
         self.budget.settle(reservation['reservation_id'], {'status': 'ok', 'usage': {'logical_tools': logical},
-                                                       'late': self.budget.clock() - started > 45000})
+                                                       'late': self.budget.clock() - started > elapsed_upper})
         if self.budget.halted:
             self._check_tool({'status': self.budget.halted})
         return result
@@ -203,7 +218,7 @@ class RecommendationRun:
                 for o in pack['originals'].values()]
         quality = ({r['parent_asin']: {k: r[k] for k in ('z', 'm', 'q', 'stock_state')}
                     for r in self._rank('full')['candidates']} if self.binding['arm'] == 'quality' and self.state['assessments'] else {})
-        return {'stage': stage, 'method': self.binding['method'],
+        context = {'stage': stage, 'method': self.binding['method'],
             'current': self.queue[self.state['cursor']] if self.state['cursor'] < len(self.queue) and self.state['stop_reason'] is None else None,
             'necessary_clauses': self.binding['necessary_clauses'], 'facts': facts,
             'history': json.loads(self.initial_messages[0]['content'])['H'] if self.initial_messages else [],
@@ -217,6 +232,23 @@ class RecommendationRun:
                           'content': m['response']['message']['content']}
                          for m in self.state['messages'] if m['response']['status'] == 'ok'
                          and m['response']['message']['content'] is not None]}
+        if self.batched:
+            context.update(batch_limit=32, quality_arm=self.binding['arm'] == 'quality',
+                profile_candidates=[p for batch in self.state['batches'][self.profile_batch_start:] for p in batch['processed']],
+                assessment_receipts={s['candidate_id']: s['receipt_id'] for batch in self.state['batches']
+                    for s in batch['steps'] if s['operation'] == 'assess_current' and s['status'] == 'ok'})
+            latest = {}
+            for message in self.state['messages']:
+                if message['response']['status'] != 'ok' or message['response']['message']['content'] is None:
+                    continue
+                request = message['request']
+                frame = next(m['content']['runtime'] for m in reversed(request['messages'])
+                             if m['role'] == 'user' and isinstance(m['content'], dict) and 'runtime' in m['content'])
+                latest[(request['output_kind'], frame['stage'])] = {
+                    'role': message['role'], 'stage': frame['stage'], 'role_message_id': message['role_message_id'],
+                    'content': message['response']['message']['content']}
+            context['forwards'] = list(latest.values())
+        return context
 
     def _base_preference(self, parent):
         return {'value': self.binding['base_scores'][self.binding['C'].index(parent)], 'citation': {
@@ -246,33 +278,41 @@ class RecommendationRun:
                         raise ValueError('unbound_history')
                 self._complete(role)
                 return
-            current = context['current']
-            assessment, quality = context['assessments'].get(current), context['quality'].get(current)
-            unknown = (['empty_C'] if current is None else [c for c, v in assessment['claims'].items()
-                if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else []))
-            item = observations[0]
-            if (len(observations) != 1 or set(item) != {'candidate_id', 'assessment', 'quality', 'attributes', 'unknown'}
-                    or item['candidate_id'] != current or encoded(item['assessment']) != encoded(assessment) or encoded(item['quality']) != encoded(quality)
-                    or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
-                raise ValueError('unbound_product_profile')
-            facts = context['facts'].get(current, [])
-            attributes = {'conclusion': 'inspection_report', 'status': 'retail_status', 'stock_units': 'retail_status'}
-            expected = {(f['citation']['evidence_ref'], key) for f in facts for key, kind in attributes.items()
-                        if f['data'].get('kind') == kind and key in f['data']['facts']}
-            seen = set()
-            for attribute in item['attributes']:
-                if set(attribute) != {'attribute', 'value', 'unit', 'citation'}:
-                    raise ValueError('invalid_attribute')
-                key, citation = attribute['attribute'], attribute['citation']
-                fact = next(f for f in facts if f['citation']['evidence_ref'] == citation['evidence_ref'])
-                pair = (citation['evidence_ref'], key)
-                if (pair not in expected or pair in seen or encoded(citation) != encoded({**fact['citation'], 'pointer': '/facts/' + key})
-                        or encoded(attribute['value']) != encoded(fact['data']['facts'][key])
-                        or attribute['unit'] != (fact['data']['facts'].get('unit') if key == 'stock_units' else None)):
-                    raise ValueError('invalid_attribute_binding')
-                seen.add(pair)
-            if seen != expected:
-                raise ValueError('missing_attributes')
+            batch_profile = self.batched and bool(self.queue)
+            parents = context['profile_candidates'] if batch_profile else [context['current']]
+            if len(observations) != len(parents):
+                raise ValueError('missing_candidate_profile')
+            for current, item in zip(parents, observations):
+                assessment, quality = context['assessments'].get(current), context['quality'].get(current)
+                unknown = (['empty_C'] if current is None else [c for c, v in assessment['claims'].items()
+                    if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else []))
+                assessment_key = 'assessment_receipt_id' if batch_profile else 'assessment'
+                assessment_value = context['assessment_receipts'][current] if batch_profile else assessment
+                if (set(item) != {'candidate_id', assessment_key, 'quality', 'attributes', 'unknown'}
+                        or item['candidate_id'] != current or encoded(item[assessment_key]) != encoded(assessment_value)
+                        or encoded(item['quality']) != encoded(quality)
+                        or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
+                    raise ValueError('unbound_product_profile')
+                facts = context['facts'].get(current, [])
+                attributes = {'conclusion': 'inspection_report', 'status': 'retail_status', 'stock_units': 'retail_status'}
+                expected = {(f['citation']['evidence_ref'], key) for f in facts for key, kind in attributes.items()
+                            if f['data'].get('kind') == kind and key in f['data']['facts']}
+                seen = set()
+                for attribute in item['attributes']:
+                    if set(attribute) != {'attribute', 'value', 'unit', 'citation'}:
+                        raise ValueError('invalid_attribute')
+                    key, citation = attribute['attribute'], attribute['citation']
+                    fact = next(f for f in facts if f['citation']['evidence_ref'] == citation['evidence_ref'])
+                    pair = (citation['evidence_ref'], key)
+                    if (pair not in expected or pair in seen or encoded(citation) != encoded({**fact['citation'], 'pointer': '/facts/' + key})
+                            or encoded(attribute['value']) != encoded(fact['data']['facts'][key])
+                            or attribute['unit'] != (fact['data']['facts'].get('unit') if key == 'stock_units' else None)):
+                        raise ValueError('invalid_attribute_binding')
+                    seen.add(pair)
+                if seen != expected:
+                    raise ValueError('missing_attributes')
+            if batch_profile:
+                self.state['profiled_candidates'].extend(parents)
             self._complete(role)
         except (ValueError, KeyError, TypeError, IndexError, StopIteration):
             raise RunStop('failed_protocol', 'invalid_profile') from None
@@ -289,23 +329,30 @@ class RecommendationRun:
             message_id = self.binding['run_id'] + ':message:' + str(number)
             input_upper = len(encoded({'messages': messages, 'tools': tools}))
             backoff = (1000, 2000)[min(self.budget.usage['retries'], 1)] if retry_of else 0
+            elapsed_upper = 45000 + backoff
+            if self.batched:
+                remaining = self.budget.limits['elapsed_ms'] - math.ceil(self.budget.clock() - self.budget.started)
+                if kind != 'final_submit':
+                    remaining -= self.budget.final_reserve['elapsed_ms']
+                elapsed_upper = max(backoff + 1, min(elapsed_upper, remaining))
             intent = {'kind': 'model', 'role': role, 'request_id': message_id,
                       'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind}
             reservation = self.budget.reserve(intent,
                 {'model_calls': 1, 'input_tokens': input_upper, 'output_tokens': 100000,
-                 'cost_microusd': 0, 'elapsed_ms': 45000 + backoff},
+                 'cost_microusd': 0, 'elapsed_ms': elapsed_upper},
                 phase='final' if kind == 'final_submit' else 'work', retry_of=retry_of)
             self._check_tool(reservation if reservation['status'] != 'reserved' else {'status': 'ok'})
             started = self.budget.clock()
             if backoff:
                 self.evidence.sleeper(backoff / 1000)
-            request = {'schema_version': 'rsm-model-request-0.1.0', 'execution_kind': self.binding['execution_kind'],
+            request = {'schema_version': 'rsm-model-request-0.2.0' if self.batched else 'rsm-model-request-0.1.0',
+                'execution_kind': self.binding['execution_kind'],
                 'request_id': message_id, 'attempt_id': message_id, 'run_id': self.binding['run_id'],
                 'session_id': self.binding['run_id'] + ':' + role, 'role': role,
                 'reply_to': self.state['messages'][-1]['role_message_id'] if self.state['messages'] else None,
                 'model_id': None, 'messages': copy.deepcopy(messages), 'tools': tools, 'output_kind': kind,
                 'max_output_tokens': 100000, 'input_token_upper_bound': input_upper,
-                'deadline_ms': int(started + 45000 + backoff), 'reservation_id': reservation['reservation_id']}
+                'deadline_ms': int(started + elapsed_upper), 'reservation_id': reservation['reservation_id']}
             response = self.model.invoke(request)
             late = self.budget.clock() > request['deadline_ms']
             usage = {k: response['usage'].get(k) for k in ('input_tokens', 'output_tokens', 'cost_microusd')}
@@ -327,12 +374,12 @@ class RecommendationRun:
 
     def _role(self, role, kind, stage):
         role = '单智能体' if self.binding['method'] == 'S' else role
-        if role not in self.histories:
+        if self.batched or role not in self.histories:
             self.histories[role] = [{'role': 'system', 'content': {'protocol': self.version,
                 'source_disclosure': 'SIM', 'execution_kind': 'scripted_public'}}, *copy.deepcopy(self.initial_messages)]
         history = self.histories[role]
         history.append({'role': 'user', 'content': {'runtime': self._context(stage)}})
-        tools = self.evidence.tool_schemas() + [{'name': 'candidate_page', 'version': 'joint-page-0.1.0',
+        tools = self.evidence.tool_schemas(batch=self.batched) + [{'name': 'candidate_page', 'version': 'joint-page-0.1.0',
             'input_schema': {'type': 'object', 'properties': {'order': {'enum': ['parent', 'base']},
                 'cursor': {'type': ['string', 'null']}}, 'required': ['order', 'cursor'], 'additionalProperties': False}}]
         while True:
@@ -345,7 +392,22 @@ class RecommendationRun:
                 if call['call_id'] in self.call_ids:
                     raise RunStop('failed_protocol', 'reused_tool_call_id')
                 self.call_ids.add(call['call_id'])
+                if self.batched and call['name'] == 'acquire_batch':
+                    used = sum(len(b['processed']) for b in self.state['batches'][self.profile_batch_start:])
+                    if call['arguments']['candidate_limit'] > 32 - used:
+                        raise RunStop('failed_protocol', 'batch_dispatch_exhausted')
                 result = self.evidence.dispatch(call['name'], call['arguments'], actor_role=role)
+                if self.batched and call['name'] == 'acquire_batch' and 'processed' in result:
+                    self.state['batches'].append({k: copy.deepcopy(result[k]) for k in
+                        ('plan_sha256', 'processed', 'steps', 'stop_reason', 'status')})
+                    self.state['batches'][-1].update(role_message_id=self.state['messages'][-1]['role_message_id'],
+                                                  tool_call_id=call['call_id'])
+                    self.state['assessments'].update(result['assessments'])
+                    self.state['G'] = [p for p in self.queue if self.state['assessments'].get(p, {}).get('eligible')]
+                    self.state['cursor'] += len(result['processed'])
+                    self.state['current_candidate'] = self.evidence.binding['parent_asin']
+                    if result['stop_reason'] != 'batch_limit':
+                        self.state['stop_reason'] = result['stop_reason']
                 if result['status'] not in ('ok', 'io_error', 'access_denied', 'invalid_request') or self.budget.halted:
                     self._check_tool(result)
                 history.append({'role': 'tool', 'tool_call_id': call['call_id'], 'content': result})
@@ -353,15 +415,26 @@ class RecommendationRun:
     def _model_acquire(self):
         manager = self._role('推荐管理', 'dispatch', 'dispatch')
         target = '单智能体' if self.binding['method'] == 'S' else '生命周期追溯'
-        if (set(manager) != {'candidate', 'to', 'claim_ids'} or manager['to'] != target
+        batch_dispatch = self.batched and bool(self.queue)
+        if (set(manager) != {'candidate', 'to', 'claim_ids'} | ({'candidate_limit'} if batch_dispatch else set())
+                or batch_dispatch and (type(manager['candidate_limit']) is not int or manager['candidate_limit'] != 32)
+                or manager['to'] != target
                 or manager['candidate'] != (self.queue[self.state['cursor']] if self.queue else None)
                 or manager['claim_ids'] != self.binding['necessary_clauses']):
             raise RunStop('failed_protocol', 'invalid_dispatch')
         self.state['dispatches'].append({'from': '单智能体' if self.binding['method'] == 'S' else '推荐管理',
             'role_message_id': self.state['messages'][-1]['role_message_id'], **copy.deepcopy(manager)})
         self._complete('推荐管理')
+        batch_start = len(self.state['batches']) if self.batched else 0
+        self.profile_batch_start = batch_start
         trace = self._role('生命周期追溯', 'acquire', 'acquire')
-        if trace != {'done': True}:
+        expected = {'done': True}
+        if self.batched and self.queue:
+            batches = self.state['batches'][batch_start:]
+            if not batches:
+                raise RunStop('failed_protocol', 'missing_batch_acquisition')
+            expected.update(plan_sha256=batches[-1]['plan_sha256'], processed=[p for b in batches for p in b['processed']])
+        if trace != expected:
             raise RunStop('failed_protocol', 'invalid_trace_completion')
         self._complete('生命周期追溯')
 
@@ -576,6 +649,10 @@ class RecommendationRun:
             else {'需求解析', '推荐管理', '用户画像', '农产品画像', '生命周期追溯', '推荐依据核验'})
         if set(self.state['roles_completed']) != expected_roles:
             raise RunStop('failed_protocol', 'incomplete_roles')
+        if self.batched and self.binding['method'] != 'R' and (
+                set(self.state['profiled_candidates']) != set(self.state['assessments'])
+                or len(self.state['profiled_candidates']) != len(set(self.state['profiled_candidates']))):
+            raise RunStop('failed_protocol', 'incomplete_candidate_profiles')
         self._empty_gate(draft)
         issues = self._draft_issues(draft) + [i for i in self.state['visible_issues'] if i['blocking']]
         issues = list({i['issue_id']: i for i in issues}.values())
@@ -601,6 +678,12 @@ class RecommendationRun:
                 self._model_acquire()
                 self._analysis('农产品画像')
             while self.state['cursor'] < goal:
+                if self.batched and self.binding['method'] != 'R':
+                    self._model_acquire()
+                    self._analysis('农产品画像')
+                    if self.state['stop_reason'] is not None:
+                        break
+                    continue
                 if self.binding['method'] == 'R':
                     self._rule_acquire()
                 else:
