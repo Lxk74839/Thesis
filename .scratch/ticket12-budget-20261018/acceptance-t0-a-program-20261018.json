@@ -1,0 +1,64 @@
+{
+  "actual_T0_A_status": "not_started_at_program_acceptance",
+  "base": "88e8b8028bd40fb8a5c3f8fda994cbe9eef1324a",
+  "candidate": "623faf14f4940c66c29f676f0b85f1ae8ea0a046",
+  "capacity_judgment": "not_performed",
+  "execution_budget": null,
+  "formal_spending_authorized": false,
+  "optional_review_followup": "Duplicate external I/O audit-trap scripts in two public tests; nonblocking, preserved without production changes.",
+  "provider_api_calls": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  },
+  "public_tests": {
+    "directly_affected_existing_regressions_passed": 1,
+    "evidence": [
+      {
+        "bytes": 6054,
+        "path": ".scratch/ticket12-budget-20261018/verification-t0-a-program-20261018.md",
+        "sha256": "bdc90a8c73460d241fdf802f184e97e7147afd5cbd9081cc6eea98b2fdcdf3e4"
+      },
+      {
+        "bytes": 2961,
+        "path": ".scratch/ticket12-budget-20261018/verification-t0-a-review-fixes-20261018.md",
+        "sha256": "8082d8cbc7d32aad9a190db572ffbb5450e7d6f72eb5264df3fae9130433b856"
+      }
+    ],
+    "latest_targeted_regressions_passed": 4,
+    "new_distinct_behaviors_passed": 26
+  },
+  "reviews": {
+    "Spec": {
+      "blocking_findings": 0,
+      "candidate": "623faf14f4940c66c29f676f0b85f1ae8ea0a046",
+      "nonblocking_findings": 0,
+      "record": {
+        "bytes": 2374,
+        "path": ".scratch/ticket12-budget-20261018/verification-t0-a-spec-623faf1.md",
+        "sha256": "6ba4738f1968d8963da9b90bd5cfaca0dacf2bfcec6942beaf01e6c26a72b325"
+      }
+    },
+    "Standards": {
+      "blocking_findings": 0,
+      "candidate": "623faf14f4940c66c29f676f0b85f1ae8ea0a046",
+      "nonblocking_findings": 1,
+      "record": {
+        "bytes": 3606,
+        "path": ".scratch/ticket12-budget-20261018/verification-t0-a-standards-623faf1.md",
+        "sha256": "7a9177f357a5d75e11266e343c05756962319c1bb6015a789d0e42e96eae731b"
+      }
+    }
+  },
+  "schema_version": "t0-a-program-acceptance-0.1.0",
+  "scope": "program_component_only",
+  "source_sha256": {
+    ".scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py": "5d7431356b203eced1425075a1ef0edce6ae1e54eb64065a4b2049687a932a75",
+    ".scratch/ticket12-budget-20261018/diagnostics/run_check.py": "a77a9a3462f796daae238e4e8b8e7aadca5acee67df588e8b20e2c69ecd155cb",
+    "evidence_access.py": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+    "model_adapter.py": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+    "recommendation_runner.py": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+    "t0_catalog.py": "fe40e1e33d69e72545dfaa4819f4a19f500f999e217ec59b95be368babd96bc5"
+  },
+  "status": "T0_A_program_accepted"
+}
