@@ -9,6 +9,67 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
+COMPOSER_VERSION = 'rsm-role-composer-0.1.0'
+
+
+def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
+                         role, kind, stage, output_cap, request_id, protocol, history=None):
+    """Pure shared projection and message/schema composition; grants no execution capability."""
+    from evidence_access import EvidenceSession
+    from provider_openai import MODEL, role_output_schema
+    batched = binding.get('orchestration') == 'batch32-0.1.0'
+    queue = state['queue']
+    facts = {parent: [{'data': json.loads(o['raw_utf8']), 'citation': {
+        'evidence_ref': o['evidence_ref'], 'receipt_id': o['receipt_id'],
+        'target_id': o['registration']['target_id'], 'version': o['registration']['version'], 'pointer': '/'}}
+        for o in pack['originals'].values()] for parent, pack in acquired['candidates'].items()}
+    context = {'stage': stage, 'method': binding['method'],
+        'current': queue[state['cursor']] if state['cursor'] < len(queue) and state['stop_reason'] is None else None,
+        'necessary_clauses': binding['necessary_clauses'], 'facts': facts,
+        'history': json.loads(initial_messages[0]['content'])['H'] if initial_messages else [],
+        'assessments': {p: {k: a[k] for k in ('assessment_status', 'evidence_state', 'eligible',
+            'advance_allowed', 'completion', 'claims')} for p, a in state['assessments'].items()}, 'quality': quality,
+        'ordered': ordered[:binding['K']], 'G': state['G'][:],
+        'candidate_batches': dict(zip(binding['C'], binding['batches'])),
+        'base_preferences': {p: {'value': b, 'citation': {
+            'evidence_ref': 'safe-base:' + binding['base_score_sha256'],
+            'receipt_id': 'input:' + state['input_projection_sha256'], 'target_id': p,
+            'version': 1, 'pointer': '/base_score'}} for p, b in zip(binding['C'], binding['base_scores'])},
+        'draft': state['drafts'][-1] if state['drafts'] else None, 'issues': state['visible_issues'],
+        'forwards': [{'role': m['role'], 'role_message_id': m['role_message_id'],
+            'content': m['response']['message']['content']} for m in state['messages']
+            if m['response']['status'] == 'ok' and m['response']['message']['content'] is not None]}
+    if batched:
+        context.update(batch_limit=32, quality_arm=binding['arm'] == 'quality',
+            profile_candidates=[p for batch in state['batches'][state.get('profile_batch_start', 0):] for p in batch['processed']],
+            assessment_receipts={s['candidate_id']: s['receipt_id'] for batch in state['batches']
+                for s in batch['steps'] if s['operation'] == 'assess_current' and s['status'] == 'ok'})
+        latest = {}
+        for message in state['messages']:
+            if message['response']['status'] != 'ok' or message['response']['message']['content'] is None:
+                continue
+            request = message['request']
+            frame = next(m['content']['runtime'] for m in reversed(request['messages'])
+                         if m['role'] == 'user' and isinstance(m['content'], dict) and 'runtime' in m['content'])
+            latest[(request['output_kind'], frame['stage'])] = {'role': message['role'], 'stage': frame['stage'],
+                'role_message_id': message['role_message_id'], 'content': message['response']['message']['content']}
+        context['forwards'] = list(latest.values())
+    effective = '单智能体' if binding['method'] == 'S' else role
+    messages = copy.deepcopy(history) if history is not None else [
+        {'role': 'system', 'content': {'protocol': protocol, 'source_disclosure': 'SIM',
+            'execution_kind': binding['execution_kind']}}, *copy.deepcopy(initial_messages)]
+    messages.append({'role': 'user', 'content': {'runtime': context}})
+    tools = EvidenceSession.tool_schemas(batch=batched) + [{'name': 'candidate_page', 'version': 'joint-page-0.1.0',
+        'input_schema': {'type': 'object', 'properties': {'order': {'enum': ['parent', 'base']},
+            'cursor': {'type': ['string', 'null']}}, 'required': ['order', 'cursor'], 'additionalProperties': False}}]
+    tools = tools if kind == 'acquire' and queue else []
+    return {'schema_version': 'rsm-model-prepare-0.1.0', 'execution_kind': binding['execution_kind'],
+        'request_id': request_id, 'attempt_id': request_id, 'run_id': binding['run_id'],
+        'session_id': binding['run_id'] + ':' + effective, 'role': effective,
+        'reply_to': state['messages'][-1]['role_message_id'] if state['messages'] else None,
+        'model_id': MODEL, 'messages': messages, 'tools': tools, 'output_kind': kind,
+        'output_schema': role_output_schema(effective, kind, messages), 'max_output_tokens': output_cap}
+
 
 def pointer_value(value, pointer):
     if pointer == '/':
@@ -222,47 +283,19 @@ class RecommendationRun:
             raise RunStop('failed_protocol', 'full_publication_mismatch')
         return components
 
-    def _context(self, stage):
-        acquired = self.evidence.audit_view()['acquired']
-        facts = {}
-        for parent, pack in acquired['candidates'].items():
-            facts[parent] = [{'data': json.loads(o['raw_utf8']), 'citation': {
-                'evidence_ref': o['evidence_ref'], 'receipt_id': o['receipt_id'],
-                'target_id': o['registration']['target_id'], 'version': o['registration']['version'], 'pointer': '/'}}
-                for o in pack['originals'].values()]
+    def _composed(self, role, kind, stage, *, history=None):
         quality = ({r['parent_asin']: {k: r[k] for k in ('z', 'm', 'q', 'stock_state')}
                     for r in self._rank('full')['candidates']} if self.binding['arm'] == 'quality' and self.state['assessments'] else {})
-        context = {'stage': stage, 'method': self.binding['method'],
-            'current': self.queue[self.state['cursor']] if self.state['cursor'] < len(self.queue) and self.state['stop_reason'] is None else None,
-            'necessary_clauses': self.binding['necessary_clauses'], 'facts': facts,
-            'history': json.loads(self.initial_messages[0]['content'])['H'] if self.initial_messages else [],
-            'assessments': {p: {k: a[k] for k in ('assessment_status', 'evidence_state', 'eligible',
-                'advance_allowed', 'completion', 'claims')} for p, a in self.state['assessments'].items()}, 'quality': quality,
-            'ordered': self._order()[:self.binding['K']], 'G': self.state['G'][:],
-            'candidate_batches': dict(zip(self.binding['C'], self.binding['batches'])),
-            'base_preferences': {p: self._base_preference(p) for p in self.binding['C']},
-            'draft': self.state['drafts'][-1] if self.state['drafts'] else None, 'issues': self.state['visible_issues'],
-            'forwards': [{'role': m['role'], 'role_message_id': m['role_message_id'],
-                          'content': m['response']['message']['content']}
-                         for m in self.state['messages'] if m['response']['status'] == 'ok'
-                         and m['response']['message']['content'] is not None]}
-        if self.batched:
-            context.update(batch_limit=32, quality_arm=self.binding['arm'] == 'quality',
-                profile_candidates=[p for batch in self.state['batches'][self.profile_batch_start:] for p in batch['processed']],
-                assessment_receipts={s['candidate_id']: s['receipt_id'] for batch in self.state['batches']
-                    for s in batch['steps'] if s['operation'] == 'assess_current' and s['status'] == 'ok'})
-            latest = {}
-            for message in self.state['messages']:
-                if message['response']['status'] != 'ok' or message['response']['message']['content'] is None:
-                    continue
-                request = message['request']
-                frame = next(m['content']['runtime'] for m in reversed(request['messages'])
-                             if m['role'] == 'user' and isinstance(m['content'], dict) and 'runtime' in m['content'])
-                latest[(request['output_kind'], frame['stage'])] = {
-                    'role': message['role'], 'stage': frame['stage'], 'role_message_id': message['role_message_id'],
-                    'content': message['response']['message']['content']}
-            context['forwards'] = list(latest.values())
-        return context
+        return compose_role_request(binding=self.binding,
+            state={**self.state, 'profile_batch_start': self.profile_batch_start},
+            acquired=self.evidence.audit_view()['acquired'], initial_messages=self.initial_messages,
+            quality=quality, ordered=self._order(), role=role, kind=kind, stage=stage,
+            output_cap=1500 if kind == 'final_submit' else 8192,
+            request_id=self.binding['run_id'] + ':message:' + str(len(self.state['messages'])),
+            protocol=self.state['versions']['runner'] if self.native_fixture else self.version, history=history)
+
+    def _context(self, stage):
+        return self._composed('需求解析', 'analysis', stage)['messages'][-1]['content']['runtime']
 
     def _base_preference(self, parent):
         return {'value': self.binding['base_scores'][self.binding['C'].index(parent)], 'citation': {
@@ -424,14 +457,10 @@ class RecommendationRun:
 
     def _role(self, role, kind, stage):
         role = '单智能体' if self.binding['method'] == 'S' else role
-        if self.batched or role not in self.histories:
-            self.histories[role] = [{'role': 'system', 'content': {'protocol': self.state['versions']['runner'] if self.native_fixture else self.version,
-                'source_disclosure': 'SIM', 'execution_kind': self.binding['execution_kind']}}, *copy.deepcopy(self.initial_messages)]
-        history = self.histories[role]
-        history.append({'role': 'user', 'content': {'runtime': self._context(stage)}})
-        tools = self.evidence.tool_schemas(batch=self.batched) + [{'name': 'candidate_page', 'version': 'joint-page-0.1.0',
-            'input_schema': {'type': 'object', 'properties': {'order': {'enum': ['parent', 'base']},
-                'cursor': {'type': ['string', 'null']}}, 'required': ['order', 'cursor'], 'additionalProperties': False}}]
+        composed = self._composed(role, kind, stage,
+            history=None if self.batched else self.histories.get(role))
+        history, tools = composed['messages'], composed['tools']
+        self.histories[role] = history
         while True:
             message = self._invoke(role, kind, history, tools if kind == 'acquire' and self.queue else [])
             history.append(copy.deepcopy(message))

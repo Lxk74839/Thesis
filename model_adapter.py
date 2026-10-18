@@ -27,17 +27,19 @@ def error_result(status, category, *, attempted=False, usage=None, raw=None):
                                                 ('input_tokens', 'output_tokens', 'cost_microusd'))}
 
 
-def validate_request(request):
-    require(isinstance(request, dict) and set(request) == REQUEST_KEYS)
-    require(request['schema_version'] in ('rsm-model-request-0.1.0', 'rsm-model-request-0.2.0') and request['role'] in ROLES)
+def validate_request(request, *, prepare_only=False):
+    keys = REQUEST_KEYS - {'input_token_upper_bound', 'deadline_ms', 'reservation_id'} if prepare_only else REQUEST_KEYS
+    require(isinstance(request, dict) and set(request) == keys)
+    versions = ('rsm-model-prepare-0.1.0',) if prepare_only else ('rsm-model-request-0.1.0', 'rsm-model-request-0.2.0')
+    require(request['schema_version'] in versions and request['role'] in ROLES)
     tool_names = ('candidate_page', 'list_evidence', 'read_evidence') + (
-        ('acquire_batch',) if request['schema_version'] == 'rsm-model-request-0.2.0' else ())
+        ('acquire_batch',) if prepare_only or request['schema_version'] == 'rsm-model-request-0.2.0' else ())
     require(all(isinstance(request[k], str) and request[k] for k in
-                ('request_id', 'attempt_id', 'run_id', 'session_id', 'reservation_id')))
+                ('request_id', 'attempt_id', 'run_id', 'session_id') + (() if prepare_only else ('reservation_id',))))
     require(request['reply_to'] is None or isinstance(request['reply_to'], str))
     require(request['output_kind'] in ('analysis', 'dispatch', 'draft', 'verification', 'final_submit', 'acquire'))
     require(all(type(request[k]) is int and request[k] >= 0 for k in
-                ('max_output_tokens', 'input_token_upper_bound', 'deadline_ms')))
+                ('max_output_tokens',) + (() if prepare_only else ('input_token_upper_bound', 'deadline_ms'))))
     json.dumps(request, allow_nan=False)
     require(isinstance(request['messages'], list) and bool(request['messages']))
     pending, seen = set(), set()
@@ -100,6 +102,13 @@ class ModelAdapter:
     def prepare(self, request):
         from provider_openai import MODEL, prepare
         try:
+            if request.get('schema_version') == 'rsm-model-prepare-0.1.0':
+                require(set(request) == (REQUEST_KEYS - {'input_token_upper_bound', 'deadline_ms', 'reservation_id'}) | {'output_schema'})
+                require(self.binding == {'execution_kind': 't0_development_catalog', 'model_id': MODEL,
+                    'provenance': 'synthetic', 'project_id': 'UNBOUND-T0-DEV-CATALOG'})
+                require(request['execution_kind'] == 't0_development_catalog' and request['model_id'] == MODEL)
+                validate_request({k: v for k, v in request.items() if k != 'output_schema'}, prepare_only=True)
+                return prepare(request, self.binding['project_id'])
             require(set(request) == REQUEST_KEYS | {'output_schema'})
             require(request['schema_version'] == 'rsm-model-request-0.3.0')
             require(self.binding == {'execution_kind': 'openai_native_fixture', 'model_id': MODEL,
@@ -116,6 +125,10 @@ class ModelAdapter:
             return {'status': 'invalid_request', 'input_tokens': None, 'missing': ['invalid_native_contract']}
 
     def invoke(self, request):
+        if (self.binding.get('execution_kind') == 't0_development_catalog'
+                or isinstance(request, dict) and (request.get('schema_version') == 'rsm-model-prepare-0.1.0'
+                    or request.get('execution_kind') == 't0_development_catalog')):
+            return error_result('preflight_denied', 'capability')
         if isinstance(request, dict) and request.get('schema_version') == 'rsm-model-request-0.3.0':
             return self._invoke_native(request)
         try:

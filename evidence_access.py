@@ -38,10 +38,12 @@ def decode(raw):
 
 class LocalEvidenceSource:
     """A read-only adapter pinned to one snapshot and its declared fact files."""
-    def __init__(self, snapshot_ref):
+    def __init__(self, snapshot_ref, *, indexed=False):
         self.snapshot_ref = copy.deepcopy(snapshot_ref)
         self.setup = {'bytes': 0, 'file_reads': 0}
         self.material_kinds = {}
+        self.indexed = indexed
+        self._files, self._tables, self._registrations, self._objects = {}, {}, {}, {}
 
     def _file(self, path, ref):
         path = (PROJECT / path).absolute()
@@ -55,13 +57,35 @@ class LocalEvidenceSource:
                 break
         if not path.is_relative_to(PROJECT) or not path.is_file():
             raise ValueError('source_integrity_error')
+        stamp = (path.stat().st_size, path.stat().st_mtime_ns, ref['sha256'], ref['bytes'])
+        if self.indexed and path in self._files:
+            old_stamp, raw, origin = self._files[path]
+            if old_stamp != stamp:
+                raise ValueError('source_integrity_error')
+            return raw, origin.copy()
         raw = path.read_bytes()
         self.setup['bytes'] += len(raw)
         self.setup['file_reads'] += 1
         if len(raw) != ref['bytes'] or digest(raw) != ref['sha256']:
             raise ValueError('source_integrity_error')
-        return raw, {'component_path': path.relative_to(PROJECT).as_posix(),
-                     'component_sha256': ref['sha256'], 'bytes': len(raw)}
+        origin = {'component_path': path.relative_to(PROJECT).as_posix(),
+                  'component_sha256': ref['sha256'], 'bytes': len(raw)}
+        if self.indexed:
+            self._files[path] = (stamp, raw, origin.copy())
+        return raw, origin
+
+    def _rows(self, content, source):
+        key = (source['component_path'], source['component_sha256'])
+        if self.indexed and key in self._tables:
+            return self._tables[key]
+        result, offset = [], 0
+        for line, value in enumerate(content.splitlines(keepends=True), 1):
+            result.append({'record': decode(value), 'raw_utf8': value.rstrip(b'\n').decode('utf-8'),
+                           'source': {**source, 'line': line, 'offset': offset}})
+            offset += len(value)
+        if self.indexed:
+            self._tables[key] = result
+        return result
 
     def list(self, parent, batch, *, binding):
         raw, origin = self._file(self.snapshot_ref['path'], self.snapshot_ref)
@@ -85,23 +109,32 @@ class LocalEvidenceSource:
             content, source = self._file(directory / name, ref)
             if name == 'materials.jsonl':
                 self.material_kinds = {(row['evidence_id'], row['version']): row['kind']
-                                       for row in (decode(value) for value in content.splitlines())}
+                                       for row in (item['record'] for item in self._rows(content, source))}
             if name in ('actions.jsonl', 'change-actions.jsonl'):
                 context['actions_scope'] = {'empty': not content, 'raw_utf8': '' if not content else None,
                                              'source': source}
             if name == 'registrations.jsonl':
                 registration_source = source
-                offset = 0
-                for line, value in enumerate(content.splitlines(keepends=True), 1):
-                    row = decode(value)
+                key = (source['component_path'], source['component_sha256'])
+                rows = self._rows(content, source)
+                if self.indexed:
+                    if key not in self._registrations:
+                        groups = {}
+                        for item in rows:
+                            row = item['record']
+                            if type(row['sequence']) is not int or type(row['registered_at_ms']) is not int:
+                                raise ValueError('source_integrity_error')
+                            groups.setdefault((row['parent_asin'], row['sim_batch_id']), []).append(item)
+                        self._registrations[key] = groups
+                    rows = self._registrations[key].get((parent, batch), [])
+                for item in rows:
+                    row = item['record']
                     if type(row['sequence']) is not int or type(row['registered_at_ms']) is not int:
                         raise ValueError('source_integrity_error')
                     if (row['parent_asin'] == parent and row['sim_batch_id'] == batch
                             and row['sequence'] <= snapshot['cutoff_sequence']
                             and row['registered_at_ms'] <= snapshot['sealed_at_ms']):
-                        registrations.append({'record': row, 'raw_utf8': value.rstrip(b'\n').decode('utf-8'),
-                            'source': {**source, 'line': line, 'offset': offset}})
-                    offset += len(value)
+                        registrations.append(copy.deepcopy(item))
         return context, registrations, {'empty': not registrations, 'source': {**registration_source,
             'scope_parent_asin': parent, 'scope_sim_batch_id': batch, 'scope_records': len(registrations),
             'cutoff_sequence': snapshot['cutoff_sequence'], 'sealed_at_ms': snapshot['sealed_at_ms']}}
@@ -118,17 +151,22 @@ class LocalEvidenceSource:
         for name, identity in {names[r['target_kind']] for r in registrations}:
             content, origin = self._file(directory / name, snapshot['components'][name])
             origins[name] = origin
-            offset = 0
-            for line, value in enumerate(content.splitlines(keepends=True), 1):
-                row = decode(value)
-                objects[(name, row[identity], row.get('version', 1) if identity == 'action_id' else row['version'])] = {
-                    'status': 'ok', 'raw_utf8': value.rstrip(b'\n').decode('utf-8'),
-                    'sha256': digest(value.rstrip(b'\n')), 'bytes': len(value.rstrip(b'\n')),
-                    'source': {**origin, 'line': line, 'offset': offset}}
-                offset += len(value)
-        return [objects.get((names[r['target_kind']][0], r['target_id'], r['version']),
+            key = (origin['component_path'], origin['component_sha256'], identity)
+            if not self.indexed or key not in self._objects:
+                table = {}
+                for item in self._rows(content, origin):
+                    row, raw_value = item['record'], item['raw_utf8'].encode('utf-8')
+                    table[(name, row[identity], row.get('version', 1) if identity == 'action_id' else row['version'])] = {
+                        'status': 'ok', 'raw_utf8': item['raw_utf8'], 'sha256': digest(raw_value),
+                        'bytes': len(raw_value), 'source': item['source']}
+                if self.indexed:
+                    self._objects[key] = table
+            else:
+                table = self._objects[key]
+            objects.update(table)
+        return [copy.deepcopy(objects.get((names[r['target_kind']][0], r['target_id'], r['version']),
             {'status': 'unavailable', 'source': {**origins[names[r['target_kind']][0]],
-                'lookup_target_id': r['target_id'], 'lookup_version': r['version'], 'found': False}}) for r in registrations]
+                'lookup_target_id': r['target_id'], 'lookup_version': r['version'], 'found': False}})) for r in registrations]
 
 
 class RootBudget:

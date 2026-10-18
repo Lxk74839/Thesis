@@ -36,8 +36,17 @@ class Extended(ctypes.Structure):
 
 
 def main():
+    global AUDIT
     assert Path(sys.prefix).resolve() == ROOT / '.conda/envs/Thesis'
     assert sys.version_info[:3] == (3, 13, 16)
+    arguments = sys.argv[1:]
+    domain = 'offline'
+    if arguments[:1] == ['--resource-domain']:
+        if len(arguments) < 4 or arguments[1] not in ('offline', 't0'):
+            raise SystemExit('invalid_resource_domain')
+        domain, arguments = arguments[1], arguments[2:]
+    if domain == 't0':
+        AUDIT = ROOT / 'data/recommendation-runtime-audit/ticket12-t0'
     AUDIT.mkdir(parents=True, exist_ok=True)
     ledger = AUDIT / 'resource-ledger.jsonl'
     inflight = AUDIT / 'resource-inflight.json'
@@ -46,10 +55,14 @@ def main():
     used = sum(json.loads(row)['seconds'] for row in ledger.read_text().splitlines()) if ledger.exists() else 0
     if used + time.perf_counter() - START >= LIMIT:
         raise SystemExit('runtime_compute_limit_exhausted')
-    label = sys.argv[1]
+    label = arguments[0]
+    if not label or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for c in label):
+        raise SystemExit('invalid_check_label')
     source_paths = tuple(p for p in ('recommendation_runner.py', 'model_adapter.py', 'evidence_access.py',
                     'tests/test_batched_recommendation.py', 'provider_openai.py', 'token_counting.py',
-                    'tests/provider_fixtures.py', 'tests/test_provider_openai.py', 'tests/test_token_counting.py')
+                    'tests/provider_fixtures.py', 'tests/test_provider_openai.py', 'tests/test_token_counting.py',
+                    't0_catalog.py', 'tests/test_t0_catalog.py',
+                    '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py')
                     if (ROOT / p).exists())
     source_sha256 = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in source_paths}
     output = AUDIT / (label + '.txt')
@@ -75,9 +88,11 @@ def main():
     try:
         if not kernel.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info)):
             raise ctypes.WinError(ctypes.get_last_error())
-        env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1', THESIS_BATCH_CHECK_LABEL=label)
+        env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', PYTHONUTF8='1', THESIS_BATCH_CHECK_LABEL=label,
+                   THESIS_RESOURCE_DOMAIN=domain, THESIS_RESOURCE_LEDGER=str(ledger),
+                   THESIS_RESOURCE_DEADLINE_UNIX=str(time.time() + LIMIT - used - (time.perf_counter() - START)))
         with output.open('xb') as stream:
-            child = subprocess.Popen([sys.executable, '-B', *sys.argv[2:]], cwd=ROOT,
+            child = subprocess.Popen([sys.executable, '-B', *arguments[1:]], cwd=ROOT,
                                      stdout=stream, stderr=subprocess.STDOUT, env=env)
             if not kernel.AssignProcessToJobObject(job, wintypes.HANDLE(int(child._handle))):
                 child.terminate()
