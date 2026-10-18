@@ -14,9 +14,10 @@ assert not subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--',
     'recommendation_runner.py', 'model_adapter.py', 'evidence_access.py',
     'tests/test_batched_recommendation.py'], cwd=ROOT)
 audits = []
+literal_checks = set()
 for path in sorted(cases.rglob('audit.json')):
     audit = json.loads(path.read_bytes())
-    assert audit['release_scope'] if 'release_scope' in audit else audit['binding']['fixture'] == 'public_runtime_adapter'
+    assert audit['binding']['fixture'] == 'public_runtime_adapter' and audit['binding']['execution_kind'] == 'scripted_public'
     messages = audit['messages']
     assert all(m['response']['provider_requests_sent'] == 0 and m['usage_basis'] == 'synthetic' for m in messages)
     known_calls = sum(int(m['response']['attempted']) for m in messages)
@@ -52,13 +53,16 @@ for path in sorted(cases.rglob('audit.json')):
     parent = path.parents[2].name
     if parent.startswith('four_quality_candidates_'):
         assert (known_calls, audit['cursor']) == (9, 4)
-    if parent.startswith('batch_messages_preserve_f'):
+        literal_checks.add('four')
+    if parent.startswith('batch_messages_preserve_'):
         assert (known_calls, audit['cursor']) == (9, 12)
-    if parent.startswith('sixty_four_prefix_uses_tw'):
+        literal_checks.add('twelve')
+    if parent.startswith('sixty_four_prefix_uses_t'):
         assert (known_calls, audit['cursor'], len(audit['binding']['C'])) == (13, 64, 66)
+        literal_checks.add('sixty_four')
     audits.append({'path': path.relative_to(ROOT).as_posix(), 'terminal': audit['terminal'],
         'calls': known_calls, 'cursor': audit['cursor'], 'candidate_count': len(audit['binding']['C'])})
-assert audits
+assert audits and literal_checks == {'four', 'twelve', 'sixty_four'}
 files = {p.relative_to(ROOT).as_posix(): {'bytes': p.stat().st_size,
     'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted(cases.rglob('*')) if p.is_file()}
 report = {'status': 'passed', 'candidate': candidate, 'public_audits': audits, 'files': files,
