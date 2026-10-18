@@ -79,6 +79,10 @@ def _clause_ids(view):
     return [c['clause_id'] if isinstance(c, dict) else c for c in view['request']['necessary_clauses']]
 
 
+def _queue(parents, scores):
+    return [parent for parent, score in sorted(zip(parents, scores), key=lambda pair: (-pair[1], pair[0].encode()))]
+
+
 def _replace(value, replacements):
     if isinstance(value, dict):
         return {replacements.get(k, k): _replace(v, replacements) for k, v in value.items()}
@@ -152,7 +156,8 @@ def _dependency(view, parent, batch, source, dependencies, probes, cache):
 
 
 def _prefix(view, candidate, run_id, sources, dependencies, probes, cache, method):
-    order = sorted(candidate['C'], key=lambda p: (-candidate['b'][candidate['C'].index(p)], p.encode()))
+    order = _queue(candidate['C'], candidate['b'])
+    batches = dict(zip(candidate['C'], candidate['batches']))
     processed, steps, refs, eligible, cells = [], [], [], [], []
     usage = {'logical_tools': 0, 'physical_tools': 0, 'candidates': 0}
     acquired = {'context': {}, 'candidates': {}, 'assessments': {}}
@@ -160,7 +165,7 @@ def _prefix(view, candidate, run_id, sources, dependencies, probes, cache, metho
     for parent in order[:64]:
         if view['label'] not in sources:
             sources[view['label']] = LocalEvidenceSource(view['snapshot'], indexed=True)
-        batch = candidate['batches'][candidate['C'].index(parent)]
+        batch = batches[parent]
         template = _dependency(view, parent, batch, sources[view['label']], dependencies, probes, cache)
         namespace = 'synthetic-plan:' + digest(encoded([run_id, parent]))
         # Rebind deterministic template IDs into this root/method; never reuse another root's receipt.
@@ -258,7 +263,7 @@ def _quality(binding, view, acquired):
 
 def _trace(binding, view, initial, prefix):
     """One declared synthetic path, including two format failures and one bounded feedback."""
-    state = {'queue': sorted(binding['C'], key=lambda p: (-binding['base_scores'][binding['C'].index(p)], p.encode())),
+    state = {'queue': _queue(binding['C'], binding['base_scores']),
         'cursor': 0, 'stop_reason': None, 'assessments': {}, 'G': [], 'drafts': [], 'visible_issues': [],
         'messages': [], 'batches': [], 'profile_batch_start': 0, 'input_projection_sha256': digest(encoded(initial))}
     acquired = {'context': {}, 'candidates': {}, 'assessments': {}}
@@ -360,11 +365,17 @@ def _trace(binding, view, initial, prefix):
         yield from emit(profile, {'necessary_clauses': binding['necessary_clauses'], 'observations': observations})
     draft_request = request('推荐管理', 'draft', 'draft')
     context = draft_request['messages'][-1]['content']['runtime']
+    reason_text = {'inspection_supported': '检验必要条件有完整有效支持（SIM）。',
+                   'on_sale_supported': '核验时点的在售必要条件有完整有效支持（SIM）。'}
     items = [{'parent_asin': p, 'sim_batch_id': context['candidate_batches'][p], 'reasons': [
         {'claim_id': c, 'kind': 'inspection_supported' if c == 'c1' else 'on_sale_supported', 'value': True,
-         'unit': None, 'text': 'SIM synthetic source-bound statement',
-         'citations': [f['citation'] for f in context['facts'][p]]} for c in binding['necessary_clauses']]}
+         'unit': None, 'text': reason_text['inspection_supported' if c == 'c1' else 'on_sale_supported'],
+         'citations': [f['citation'] for f in context['facts'][p]
+             if f['citation']['evidence_ref'] in {a['evidence_ref'] for a in state['assessments'][p]['accepted']}]}
+        for c in binding['necessary_clauses']]}
         for p in ordered[:10]]
+    if items:
+        items[0]['reasons'][0]['text'] = 'SIM synthetic statement awaiting the declared correction'
     draft = {'draft_id': binding['run_id'] + ':d0', 'parent_draft_id': None, 'items': items}
     yield from emit(draft_request, draft)
     state['drafts'].append(draft)
@@ -373,14 +384,14 @@ def _trace(binding, view, initial, prefix):
         issues = [{'issue_id': draft['draft_id'] + ':synthetic-issue', 'draft_id': draft['draft_id'],
             'candidate_id': items[0]['parent_asin'], 'claim_id': binding['necessary_clauses'][0],
             'pointer': '/items/0/reasons/0/text', 'code': 'synthetic_statement_repair', 'blocking': True,
-            'allowed_actions': ['revise_and_resubmit'], 'verifier': '单智能体' if binding['method'] == 'S' else '推荐依据核验',
+            'allowed_actions': ['revise_and_resubmit'], 'verifier': 'model',
             'source_receipts': [f['citation']['receipt_id'] for f in context['facts'][items[0]['parent_asin']]]}]
     yield from emit(request('推荐依据核验', 'verification', 'verification'), {'issues': issues})
     if issues:
         state['visible_issues'] = issues
         revised = copy.deepcopy(draft)
         revised.update(draft_id=binding['run_id'] + ':d1', parent_draft_id=draft['draft_id'])
-        revised['items'][0]['reasons'][0]['text'] = 'SIM synthetic repaired source-bound statement'
+        revised['items'][0]['reasons'][0]['text'] = reason_text[revised['items'][0]['reasons'][0]['kind']]
         yield from emit(request('推荐管理', 'draft', 'revision'), revised)
         state['drafts'].append(revised)
         yield from emit(request('推荐依据核验', 'verification', 'verification'), {'issues': []})
@@ -441,6 +452,8 @@ def _development_authorization(auth):
         and auth['human_confirmation']['path'] == CONTROL + 'authorization-t0-a-20261018.md'
         and auth['human_confirmation']['sha256'] == '887699ecd2bfadceb7114bd6d94403152a0dfe2a9b088e5ce32548dd75fdeef8',
         'human_confirmation_mismatch')
+    _require(auth['program_acceptance']['path'] == CONTROL + 'acceptance-t0-a-program-20261018.json',
+             'program_acceptance_path_not_allowed')
     _require(os.environ.get('THESIS_RESOURCE_DOMAIN') == 't0' and auth['resource_ledger'] ==
         'data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl'
         and _path(os.environ.get('THESIS_RESOURCE_LEDGER', '')) == _path(auth['resource_ledger']), 'resource_domain_mismatch')
@@ -467,6 +480,8 @@ def _development_authorization(auth):
         _require(digest(_path(name).read_bytes()) == sha, 'program_source_changed')
     for axis in ('Standards', 'Spec'):
         review = acceptance['reviews'][axis]
+        _require(re.fullmatch(re.escape(CONTROL) + 'verification-t0-a-' + axis.lower() + '-[0-9a-f]{7}\\.md',
+                             review['record']['path']), 'review_path_not_allowed')
         _checked(review['record'])
         _require(review['candidate'] == auth['candidate'] and review['blocking_findings'] == 0, 'program_review_required')
     changed = subprocess.check_output(['git', 'diff', '--name-only', auth['candidate'], '--', *IMPLEMENTATION], cwd=PROJECT)
@@ -519,26 +534,36 @@ def _selected(ref, roots, multiple=False, source_index=None):
 
 def _authorization(path):
     try:
-        auth = decode(_path(path).read_bytes())
+        path = _path(path)
+        if not path.exists():
+            raise FileNotFoundError
+        _require(any(path.is_relative_to(PROJECT / root) for root in ('data/ticket12-t0', '.tmp/ticket12-t0'))
+            and re.fullmatch('authorization(?:-[a-z0-9-]+)?\\.json', path.name), 'authorization_path_not_allowed')
+        auth = decode(path.read_bytes())
     except FileNotFoundError:
         raise ValueError('authorization_unavailable') from None
     _require(isinstance(auth, dict) and set(auth) == AUTH_KEYS, 'invalid_authorization')
     _require(auth['schema_version'] == 't0-a-authorization-0.1.0' and auth['approved'] is True
         and auth['base'] == BASE and auth['budget_candidate'] == 'B02-A+B03'
         and auth['api_limits'] == {'count': 0, 'generate': 0, 'other': 0}, 'invalid_authorization')
-    _checked(auth['contract'])
-    _checked(auth['human_confirmation'])
-    _checked(auth['program_acceptance'])
     if auth['scope'] == 'development_catalog_only':
         _development_authorization(auth)
+        _checked(auth['contract'])
+        _checked(auth['human_confirmation'])
         return auth
     _require(auth['scope'] == 'public_catalog_test' and auth['candidate'] == 'PUBLIC', 'development_acceptance_required')
     _require(set(auth['sources']) == SOURCE_KEYS, 'invalid_source_set')
-    parent = _path(path).parent
+    _require(path.is_relative_to(PROJECT / '.tmp/ticket12-t0'), 'public_authorization_path_not_allowed')
+    parent = path.parent
+    for role, name in (('contract', 'PUBLIC-contract.md'), ('human_confirmation', 'PUBLIC-confirmation.md'),
+                       ('program_acceptance', 'PUBLIC-acceptance.json')):
+        _require(_path(auth[role]['path']) == parent / name, 'public_metadata_path_not_allowed')
     for ref in auth['sources'].values():
         _require(_path(ref['path']).is_relative_to(parent), 'public_source_outside_fixture')
     _require(os.environ.get('THESIS_RESOURCE_DOMAIN') == 'offline' and auth['resource_ledger'] ==
         'data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl', 'resource_domain_mismatch')
+    for role in ('contract', 'human_confirmation', 'program_acceptance'):
+        _checked(auth[role])
     return auth
 
 

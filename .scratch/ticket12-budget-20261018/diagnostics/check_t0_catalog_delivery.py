@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 
 PROJECT = Path(__file__).resolve().parents[3]
@@ -51,6 +52,13 @@ def json_file(path):
     return json.loads(project_path(path).read_bytes())
 
 
+def t0_path(value):
+    path = project_path(value)
+    if not any(path.is_relative_to(PROJECT / root) for root in ('data/ticket12-t0', '.tmp/ticket12-t0')):
+        raise ValueError('T0_input_path_required')
+    return path
+
+
 def rows(path):
     with project_path(path).open('rb') as stream:
         for line in stream:
@@ -76,6 +84,9 @@ def check(auth, directory, protected):
         and catalog['execution_budget'] is None and catalog['execution_authorized'] is False, 'execution_gate_mismatch')
     missing_objects = set()
     for name, expected in catalog['components'].items():
+        if name not in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl', 'source-index.json', 'coverage.json') and not re.fullmatch('objects/[0-9a-f]{64}\\.json', name):
+            need(False, 'component_path_not_allowed')
+            continue
         path = project_path(directory / name)
         if not path.is_file():
             need(False, 'missing_object' if name.startswith('objects/') else 'missing_component')
@@ -88,7 +99,8 @@ def check(auth, directory, protected):
     need(len(root_ids) == len(set(root_ids)), 'duplicate_selection')
     plans = list(rows(directory / 'roots.jsonl'))
     keys = [(p['root_task_id'], p['view_label'], p['method'], p['repeat']) for p in plans]
-    need(len(keys) == len(set(keys)), 'duplicate_plan')
+    plan_keys = set(keys)
+    need(len(keys) == len(plan_keys), 'duplicate_plan')
     development = auth['scope'] == 'development_catalog_only'
     expected = {(root, view, method, 1) for root in root_ids for view in VIEWS for method in ('R', 'S', 'M')} if development else set(keys)
     if development:
@@ -102,7 +114,7 @@ def check(auth, directory, protected):
     forbidden = ('user_id', 'assignment_reason', 'split_hash', 'component_path')
     for row in rows(directory / 'requests.jsonl'):
         key = (row['root_task_id'], row['view_label'], row['method'], 1)
-        need(key in set(keys) and row['method'] in ('S', 'M'), 'orphan_or_R_request')
+        need(key in plan_keys and row['method'] in ('S', 'M'), 'orphan_or_R_request')
         need(row['provenance'] == 'synthetic' and row['input_tokens'] is None and row['output_tokens'] is None
             and row['cost_microusd'] is None, 'invented_usage')
         counts[key] += 1
@@ -111,6 +123,9 @@ def check(auth, directory, protected):
         failures[key] += row['script_response']['status'] == 'format_error'
         need(row['effective_role'] == ('单智能体' if row['method'] == 'S' else row['semantic_role']), 'role_mismatch')
         pid = row['prepared_id']
+        if not isinstance(pid, str) or not re.fullmatch('[0-9a-f]{64}', pid):
+            need(False, 'object_path_not_allowed')
+            continue
         if pid in missing_objects:
             continue
         if pid not in objects_info:
@@ -205,8 +220,17 @@ def main():
         raise SystemExit('new_output_in_T0_directory_required')
     output.parent.mkdir(parents=True, exist_ok=True)
     try:
-        report = {'base': BASE, 'files': protection(), 'complete': True} if args.operation == 'snapshot' else check(
-            json_file(args.authorization), project_path(args.catalog), args.protection)
+        if args.operation == 'snapshot':
+            report = {'base': BASE, 'files': protection(), 'complete': True}
+        else:
+            authorization = t0_path(args.authorization)
+            if not re.fullmatch('authorization(?:-[a-z0-9-]+)?\\.json', authorization.name):
+                raise ValueError('authorization_path_not_allowed')
+            catalog = t0_path(args.catalog)
+            protected = t0_path(args.protection) if args.protection else None
+            if protected and not re.fullmatch('protection(?:-[a-z0-9-]+)?\\.json', protected.name):
+                raise ValueError('protection_path_not_allowed')
+            report = check(json_file(authorization), catalog, protected)
     except (ValueError, OSError, KeyError, TypeError, IndexError) as exc:
         report = {'complete': False, 'errors': ['delivery_check_incomplete', type(exc).__name__]}
     output.write_bytes(canonical(report) + b'\n')

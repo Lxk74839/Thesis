@@ -510,6 +510,140 @@ class CatalogTests(unittest.TestCase):
             '4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3')
         self.assertEqual(prepared['catalog_metadata']['provenance'], 'synthetic')
 
+    def test_metadata_permissions_are_checked_before_any_forbidden_body_open(self):
+        import copy
+        authorization, auth, _ = self.public_authorization()
+        trap = self.work / 'PUBLIC-forbidden/evaluation.jsonl'
+        trap.parent.mkdir()
+        trap.write_bytes(b'PUBLIC target access trap, never actual evaluation data\n')
+        marker = self.work / 'forbidden-open.txt'
+        trap_ref = {'path': trap.relative_to(PROJECT).as_posix(), 'sha256': hashlib.sha256(trap.read_bytes()).hexdigest(),
+                    'bytes': trap.stat().st_size}
+        for number, field in enumerate(('contract', 'human_confirmation', 'program_acceptance')):
+            altered = copy.deepcopy(auth)
+            altered[field] = trap_ref
+            self.save('authorization.json', altered)
+            script = ('import sys,runpy,pathlib; trap=pathlib.Path(sys.argv[1]); marker=pathlib.Path(sys.argv[2]); '
+                'args=sys.argv[3:];\n'
+                'def audit(event,args):\n'
+                ' if event=="open" and isinstance(args[0],(str,bytes)) and pathlib.Path(args[0])==trap:\n'
+                '  marker.write_text("forbidden body opened"); raise AssertionError("forbidden_target_open")\n'
+                'sys.addaudithook(audit); sys.argv=["t0_catalog",*args]; runpy.run_module("t0_catalog",run_name="__main__")')
+            result = subprocess.run([sys.executable, '-B', '-c', script, str(trap), str(marker), 'prepare',
+                '--authorization', str(authorization), '--output', str(self.work / ('gate-' + str(number)))],
+                cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            self.assertFalse(marker.exists(), field)
+
+    def test_delivery_checker_checks_input_paths_before_opening_foreign_components(self):
+        authorization, _, _ = self.public_authorization()
+        result = self.cli(authorization)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        trap = self.work / 'PUBLIC-forbidden/evaluation.jsonl'
+        trap.parent.mkdir()
+        trap.write_text('{"PUBLIC":"forbidden target trap"}', encoding='utf-8')
+        marker = self.work / 'forbidden-open.txt'
+        checker = PROJECT / '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py'
+        script = ('import sys,runpy,pathlib; trap=pathlib.Path(sys.argv[1]); marker=pathlib.Path(sys.argv[2]); '
+            'program=sys.argv[3]; args=sys.argv[4:];\n'
+            'def audit(event,args):\n'
+            ' if event=="open" and isinstance(args[0],(str,bytes)) and pathlib.Path(args[0])==trap:\n'
+            '  marker.write_text("forbidden body opened"); raise AssertionError("forbidden_target_open")\n'
+            'sys.addaudithook(audit); sys.argv=[program,*args]; runpy.run_path(program,run_name="__main__")')
+        for number, bad_auth in enumerate((True, False)):
+            if not bad_auth:
+                catalog_path = self.work / 'catalog/catalog.json'
+                catalog = json.loads(catalog_path.read_bytes())
+                catalog['components'][str(trap)] = {'bytes': trap.stat().st_size, 'sha256': '0' * 64}
+                catalog_path.write_text(json.dumps(catalog), encoding='utf-8')
+            result = subprocess.run([sys.executable, '-B', '-c', script, str(trap), str(marker), str(checker), 'check',
+                '--authorization', str(trap if bad_auth else authorization), '--catalog', str(self.work / 'catalog'),
+                '--output', str(self.work / ('checker-gate-' + str(number) + '.json'))],
+                cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
+            self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+            self.assertFalse(marker.exists())
+
+    def test_synthetic_issue_and_repaired_draft_match_the_existing_release_contract(self):
+        import copy
+        from tests.runtime_fixtures import RuntimeFixture
+        fixture = RuntimeFixture(self.work / 'sources/facts')
+        rejected = copy.deepcopy(next(r for r in fixture.facts.rows['materials.jsonl'] if r['kind'] == 'inspection_report'))
+        rejected.update(evidence_id='PUBLIC-REJECTED', issuer_id='PUBLIC-NONISSUER')
+        fixture.facts.rows['materials.jsonl'].append(rejected)
+        fixture.seal()
+        authorization, auth, ids = self.public_authorization()
+        self.with_facts(auth, fixture, ids)
+        result = self.cli(authorization)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        refs = [json.loads(line) for line in (self.work / 'catalog/requests.jsonl').read_text(encoding='utf-8').splitlines()]
+        rows = [r for r in refs if r['root_task_id'] == ids[0] and r['method'] == 'M']
+        issue = next(r['script_response']['message']['content']['data']['issues'][0] for r in rows
+                     if r['output_kind'] == 'verification' and r['script_response']['message']['content']['data']['issues'])
+        self.assertEqual(issue['verifier'], 'model')
+        draft = next(r['script_response']['message']['content']['data'] for r in rows if r['stage'] == 'revision')
+        texts = {'inspection_supported': '检验必要条件有完整有效支持（SIM）。',
+                 'on_sale_supported': '核验时点的在售必要条件有完整有效支持（SIM）。'}
+        for item in draft['items']:
+            for reason in item['reasons']:
+                self.assertEqual(reason['text'], texts[reason['kind']])
+                self.assertNotIn('PUBLIC-REJECTED', [c['target_id'] for c in reason['citations']])
+        self.assertEqual(rows[-1]['script_response']['message']['content']['data']['draft_id'], draft['draft_id'])
+
+    def test_catalog_replies_replay_through_the_existing_native_run_and_release_gate(self):
+        import copy
+        from evidence_access import encoded
+        from model_adapter import ModelAdapter
+        from tests.runtime_fixtures import RuntimeFixture
+        from tests.provider_fixtures import BINDING, case_directory, native_response
+        from token_counting import InputCounter
+        catalog_fixture = RuntimeFixture(self.work / 'sources/facts')
+        authorization, auth, ids = self.public_authorization()
+        self.with_facts(auth, catalog_fixture, ids)
+        result = self.cli(authorization)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        planned = [json.loads(line) for line in (self.work / 'catalog/requests.jsonl').read_text(encoding='utf-8').splitlines()]
+        planned = [r for r in planned if r['root_task_id'] == ids[0] and r['method'] == 'M']
+        sends = []
+        def sender(body, *, deadline_ms):
+            wire = json.loads(body)
+            sends.append(wire)
+            context = next(json.loads(m['content'])['runtime'] for m in reversed(wire['input'])
+                if m.get('role') == 'user' and isinstance(json.loads(m['content']), dict) and 'runtime' in json.loads(m['content']))
+            def rebind(value, parent=None):
+                if isinstance(value, list):
+                    return [rebind(v, parent) for v in value]
+                if not isinstance(value, dict):
+                    return value
+                parent = value.get('candidate_id', value.get('parent_asin', parent))
+                if {'target_id', 'evidence_ref', 'receipt_id', 'version', 'pointer'} <= set(value):
+                    fact = next(f for facts in context['facts'].values() for f in facts
+                        if f['citation']['target_id'] == value['target_id'] and f['citation']['version'] == value['version'])
+                    return {**fact['citation'], 'pointer': value['pointer']}
+                return {key: context['assessment_receipts'][parent] if key == 'assessment_receipt_id' else
+                    sorted({f['citation']['receipt_id'] for facts in context['facts'].values() for f in facts}) if key == 'source_receipts' else
+                    rebind(item, parent) for key, item in value.items()}
+            scripted = planned[len(sends) - 1]['script_response']
+            message = rebind(copy.deepcopy(scripted['message']))
+            raw = native_response()
+            if scripted['status'] == 'format_error':
+                raw['body']['output'][0]['content'][0]['text'] = '{synthetic malformed'
+            elif message['tool_requests']:
+                raw['body']['output'] = [{'type': 'function_call', 'call_id': c['call_id'], 'name': c['name'],
+                    'arguments': encoded(c['arguments']).decode()} for c in message['tool_requests']]
+            else:
+                raw['body']['output'][0]['content'][0]['text'] = encoded(message['content']).decode()
+            return raw
+        runtime_fixture = RuntimeFixture(case_directory('t0-controlled-reply-replay'))
+        runtime_fixture.history = [{'text': 'PUBLIC rice'}]
+        model = ModelAdapter(sender, capability_binding=BINDING, counter=InputCounter('PUBLIC-PROJECT', fixture_count=100))
+        actual = runtime_fixture.make('M', model=model, binding_changes={'schema_version': 'rsm-run-0.2.0',
+            'execution_kind': 'openai_native_fixture', 'orchestration': 'batch32-0.1.0', 'project_id': 'PUBLIC-PROJECT'},
+            limits={'model_calls': 17, 'input_tokens': 192000, 'output_tokens': 24000, 'cost_microusd': 252017, 'elapsed_ms': 900000},
+            final_reserve={'input_tokens': 8000, 'output_tokens': 1500, 'cost_microusd': 12751, 'elapsed_ms': 60000}).run()
+        self.assertEqual(actual['terminal'], 'released', (actual['terminal'], actual['reason']))
+        self.assertEqual((len(sends), actual['budget']['usage']['retries'], actual['feedback_round']), (13, 2, 1))
+        self.assertEqual(actual['release_check']['issues'], [])
+
 
 if __name__ == '__main__':
     unittest.main()
