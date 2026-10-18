@@ -44,17 +44,30 @@ if mode == 'delivery':
             assert p['wire_body']['model'] == 'gpt-5.4-mini-2026-03-17' and p['wire_body']['reasoning'] == {'effort': 'none'}
             assert request['prepared_id'] == p['prepared_id'] and request['count_receipt_id'] == count['receipt_id']
             assert count['basis'] == 'fixture' and count['input_tokens'] == request['input_token_upper_bound'] == 100
-            assert response['usage']['input_tokens'] == response['raw_response']['body']['usage']['input_tokens'] == 100
+            actual_input = response['raw_response']['body']['usage']['input_tokens']
+            assert response['usage']['input_tokens'] == actual_input
             assert message['root_reservation_id'] in audit['budget']['reservations']
+            reservation = audit['budget']['reservations'][message['root_reservation_id']]
+            if response['status'] == 'usage_mismatch':
+                assert actual_input == 99 and not response['error']['retryable']
+                for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
+                    assert reservation['settled'][key] is None
+                    assert audit['budget']['held'][key] == reservation['held'][key]
+            else:
+                assert actual_input == 100
         usage = audit['budget']['usage']
         assert usage['model_calls'] == sum(int(m['response']['attempted']) for m in audit['messages'])
-        assert usage['input_tokens'] == sum(m['response']['usage']['input_tokens'] for m in audit['messages'])
+        assert usage['input_tokens'] == sum(audit['budget']['reservations'][m['root_reservation_id']]['settled']['input_tokens'] or 0
+            for m in audit['messages'])
         publication = path.parent / 'publication.json'
         if audit['terminal'] == 'released':
             assert (usage['model_calls'], usage['input_tokens'], usage['output_tokens']) == (9, 900, 270)
             delivered = json.loads(publication.read_bytes())
             assert delivered['G'] == audit['G'] and delivered['cursor'] == audit['cursor']
             assert [i['parent_asin'] for i in delivered['draft']['items']] == audit['delivered']
+        elif audit['terminal'] == 'failed_model':
+            assert audit['reason'] == 'usage_unresolved' and usage['model_calls'] == len(audit['messages']) == 1
+            assert audit['budget']['final_reserve']['model_calls'] == 1 and not publication.exists()
         else:
             assert audit['terminal'] == 'incomplete_count' and not publication.exists() and not usage['model_calls']
         audits.append({'path': path.relative_to(ROOT).as_posix(), 'terminal': audit['terminal'], 'calls': usage['model_calls']})
@@ -67,7 +80,7 @@ if mode == 'delivery':
                 injected_http += row['transport_origin'] == 'injected_https'
             elif row.get('receipt'):
                 assert row['receipt']['provider_requests_sent'] == 0
-    assert len(audits) == 4 and injected_http and intents
+    assert len(audits) == 6 and injected_http and intents
     files = {p.relative_to(ROOT).as_posix(): {'bytes': p.stat().st_size, 'sha256': fingerprint(p)}
              for p in sorted(cases.rglob('*')) if p.is_file()}
     report = {'status': 'passed', 'candidate': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),

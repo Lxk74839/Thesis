@@ -9,6 +9,59 @@ from token_counting import InputCounter
 
 
 class OpenAINativeTests(unittest.TestCase):
+    def test_a_late_response_cannot_clear_an_input_usage_mismatch(self):
+        now = [0]
+        def sender(body, **kw):
+            response = native_response()
+            response['body']['usage']['input_tokens'] = 99
+            response['body']['usage']['total_tokens'] = 129
+            now[0] = 45001
+            return response
+        adapter, req, root = reserved_native(sender, now=now)
+        result = adapter.invoke(req)
+        self.assertEqual(result['status'], 'usage_mismatch')
+        self.assertTrue(result['late'])
+        self.assertFalse(result['error']['retryable'])
+        self.assertEqual(result['usage']['input_tokens'], 99)
+        save(root / 'result.json', result)
+
+    def test_error_response_input_drift_stops_the_runtime_and_keeps_its_reservation(self):
+        for failure in ('format', 'truncated'):
+            with self.subTest(failure=failure):
+                script = NativeScriptedSender()
+                def sender(body, **kw):
+                    response = script(body, **kw)
+                    response['body']['usage']['input_tokens'] = 99
+                    response['body']['usage']['total_tokens'] = 129
+                    if failure == 'format':
+                        response['body']['output'][0]['content'][0]['text'] = '{PUBLIC-BROKEN-JSON'
+                    else:
+                        response['body']['status'] = 'incomplete'
+                        response['body']['incomplete_details'] = {'reason': 'max_output_tokens'}
+                    return response
+                model = ModelAdapter(sender, capability_binding=BINDING,
+                    counter=InputCounter('PUBLIC-PROJECT', fixture_count=100))
+                fixture = RuntimeFixture(case_directory('native-error-drift-' + failure))
+                result = fixture.make('M', model=model, binding_changes={'schema_version': 'rsm-run-0.2.0',
+                    'execution_kind': 'openai_native_fixture', 'orchestration': 'batch32-0.1.0',
+                    'project_id': 'PUBLIC-PROJECT'},
+                    limits={'input_tokens': 1000, 'output_tokens': 20000, 'cost_microusd': 100000},
+                    final_reserve={'input_tokens': 100, 'output_tokens': 1500, 'cost_microusd': 6825}).run()
+                self.assertEqual((result['terminal'], result['reason']), ('failed_model', 'usage_unresolved'))
+                self.assertEqual(len(script.wires), 1)
+                message = result['messages'][0]
+                self.assertEqual(message['response']['status'], 'usage_mismatch')
+                self.assertFalse(message['response']['error']['retryable'])
+                self.assertEqual(message['response']['usage']['input_tokens'], 99)
+                self.assertEqual(message['response']['raw_response']['body']['usage']['input_tokens'], 99)
+                budget = result['budget']
+                reservation = budget['reservations'][message['root_reservation_id']]
+                self.assertIsNone(reservation['settled']['input_tokens'])
+                for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
+                    self.assertEqual(budget['held'][key], reservation['held'][key])
+                self.assertEqual(budget['final_reserve']['model_calls'], 1)
+                self.assertEqual(budget['usage']['model_calls'], 1)
+
     def test_unrequested_hosted_tool_output_cannot_be_hidden_behind_a_valid_message(self):
         def sender(body, **kw):
             response = native_response()

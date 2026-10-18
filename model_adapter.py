@@ -218,10 +218,6 @@ class ModelAdapter:
                 require(len({c['call_id'] for c in calls}) == len(calls) and not prior.intersection(c['call_id'] for c in calls))
                 for call in calls:
                     validate_call(call, request['tools'])
-                if (result['usage']['input_tokens'] != i or result['usage']['output_tokens'] > cap
-                        or result['usage']['cost_microusd'] > entry['held']['cost_microusd']):
-                    result = error_result('usage_mismatch', 'capability', attempted=True,
-                                          usage=result['usage'], raw=copy.deepcopy(raw))
             except (ValueError, TypeError, KeyError, AttributeError):
                 try:
                     usage = normalized_usage(raw)
@@ -231,13 +227,19 @@ class ModelAdapter:
                 if status in ('provider_binding_mismatch', 'unsupported_provider_tool') and usage is not None:
                     usage['cost_microusd'] = None
                 result = error_result(status, category, attempted=True, usage=usage, raw=copy.deepcopy(raw))
+            usage = result['usage']
+            if (usage.get('input_tokens') is not None and usage['input_tokens'] != i
+                    or usage.get('output_tokens') is not None and usage['output_tokens'] > cap
+                    or usage.get('cost_microusd') is not None and usage['cost_microusd'] > entry['held']['cost_microusd']):
+                result = error_result('usage_mismatch', 'capability', attempted=True,
+                                      usage=usage, raw=copy.deepcopy(raw))
             body = raw.get('body', {}) if isinstance(raw, dict) else {}
             body = body if isinstance(body, dict) else {}
             headers = raw.get('headers') if isinstance(raw, dict) and isinstance(raw.get('headers'), dict) else {}
             result.update(provider_request_id=headers.get('x-request-id'),
                 provider_response_id=body.get('id'), returned_model=body.get('model'), service_tier=body.get('service_tier'))
         if self.root_budget.clock() > request['deadline_ms']:
-            result = {**result, 'status': 'timeout', 'late': True,
+            result = {**result, 'status': 'usage_mismatch' if result['status'] == 'usage_mismatch' else 'timeout', 'late': True,
                 'error': {'category': 'timeout', 'code': 'late_result', 'retryable': False, 'request_sent': None}}
             result.pop('message', None)
         result.update(provenance='fixture', usage_basis='fixture', provider_requests_sent=0)

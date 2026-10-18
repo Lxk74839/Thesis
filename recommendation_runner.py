@@ -403,6 +403,9 @@ class RecommendationRun:
             response = self.model.invoke(request)
             late = self.budget.clock() > request['deadline_ms']
             usage = {k: response['usage'].get(k) for k in ('input_tokens', 'output_tokens', 'cost_microusd')}
+            if self.native_fixture and response['status'] == 'usage_mismatch':
+                # Keep the conflicting provider usage in the response and the root reservation unresolved.
+                usage = dict.fromkeys(usage)
             usage['model_calls'] = int(response['attempted'])
             self.budget.settle(reservation['reservation_id'], {'status': response['status'], 'usage': usage, 'late': late,
                 'request': copy.deepcopy(request), 'response': copy.deepcopy(response)})

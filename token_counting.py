@@ -45,6 +45,8 @@ def validate_manifest(manifest):
             or manifest['manifest_id'] != sha({k: v for k, v in manifest.items() if k != 'manifest_id'})):
         raise ValueError('invalid_manifest')
     refs, plan, entries = manifest['references'], manifest['plan'], manifest['entries']
+    if {r['run_id'] for r in refs} != {r['run_id'] for r in plan['roots'] if r['method'] in ('S', 'M')}:
+        raise ValueError('incomplete_model_root_coverage')
     if plan['scope'] == 'T0_controlled_catalog':
         roots = plan['roots']
         accounts, views = {r.get('account_id') for r in roots}, {r.get('view_id') for r in roots}
@@ -302,7 +304,7 @@ def main(argv=None):
                 i = by_prepared.get(ref['prepared_id'], {}).get('input_tokens')
                 root = ref['run_id']
                 totals[root] = None if i is None or totals[root] is None else totals[root] + i
-            official = (manifest['plan']['scope'] == 'T0_controlled_catalog' and not missing
+            official = (manifest['plan']['scope'] == 'T0_controlled_catalog' and bool(manifest['entries']) and not missing
                         and all(r['basis'] == 'official_input_tokens' for r in receipts))
             summary = {'status': 'incomplete' if missing else 'imported_official' if official else 'imported_fixture',
                 'manifest_id': manifest['manifest_id'], 'official_complete': official,

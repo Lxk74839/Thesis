@@ -14,6 +14,37 @@ from token_counting import InputCounter
 
 
 class InputCountingTests(unittest.TestCase):
+    def test_public_catalog_cannot_omit_requests_for_a_declared_model_root(self):
+        prepared = ModelAdapter(None, capability_binding=BINDING).prepare(request())
+        root = case_directory('missing-model-root')
+        source, target = root / 'prepared.jsonl', root / 'manifest.json'
+        plan = {'schema_version': 'openai-count-plan-0.1.0', 'scope': 'public_fixture',
+            'project_id': 'PUBLIC-PROJECT', 'roots': [
+                {'run_id': 'PUBLIC-R', 'method': 'R'}, {'run_id': 'PUBLIC-S', 'method': 'S'},
+                {'run_id': 'PUBLIC-RUN', 'method': 'M'}], 'expected': [prepared['source']]}
+        source.write_text('\n'.join(json.dumps(row, ensure_ascii=False) for row in
+            [{'plan': plan}, prepared]) + '\n', encoding='utf-8')
+        proc = subprocess.run([sys.executable, '-B', '-m', 'token_counting', 'export',
+            '--prepared', str(source), '--output', str(target)], cwd=PROJECT,
+            capture_output=True, text=True, encoding='utf-8')
+        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+        self.assertEqual(json.loads(proc.stdout)['reason'], 'incomplete_model_root_coverage')
+        self.assertFalse(target.exists())
+        manifest = {'schema_version': 'openai-count-manifest-0.1.0', 'plan': plan,
+            'entries': {prepared['prepared_id']: prepared},
+            'references': [{**prepared['source'], 'prepared_id': prepared['prepared_id']}],
+            'complete': True, 'provider_requests_sent': 0}
+        manifest['manifest_id'] = hashlib.sha256(json.dumps(manifest, sort_keys=True, ensure_ascii=False,
+            separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+        save(target, manifest)
+        imported = root / 'import.json'
+        proc = subprocess.run([sys.executable, '-B', '-m', 'token_counting', 'import',
+            '--manifest', str(target), '--receipts', str(root / 'count-receipts.jsonl'),
+            '--output', str(imported)], cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
+        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+        self.assertEqual(json.loads(proc.stdout)['reason'], 'incomplete_model_root_coverage')
+        self.assertFalse(imported.exists())
+
     def test_one_missing_count_keeps_the_whole_root_unknown_in_public_import(self):
         adapter = ModelAdapter(None, capability_binding=BINDING)
         first = adapter.prepare(request())
