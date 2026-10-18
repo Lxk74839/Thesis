@@ -47,8 +47,10 @@ def main():
     if used + time.perf_counter() - START >= LIMIT:
         raise SystemExit('runtime_compute_limit_exhausted')
     label = sys.argv[1]
-    source_paths = ('recommendation_runner.py', 'model_adapter.py', 'evidence_access.py',
-                    'tests/test_batched_recommendation.py')
+    source_paths = tuple(p for p in ('recommendation_runner.py', 'model_adapter.py', 'evidence_access.py',
+                    'tests/test_batched_recommendation.py', 'provider_openai.py', 'token_counting.py',
+                    'tests/provider_fixtures.py', 'tests/test_provider_openai.py', 'tests/test_token_counting.py')
+                    if (ROOT / p).exists())
     source_sha256 = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in source_paths}
     output = AUDIT / (label + '.txt')
     with inflight.open('x', encoding='utf-8', newline='\n') as stream:

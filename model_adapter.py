@@ -90,11 +90,34 @@ def validate_call(call, tools):
 class ModelAdapter:
     version = 'rsm-model-adapter-0.1.0'
 
-    def __init__(self, transport, *, capability_binding):
+    def __init__(self, transport, *, capability_binding, counter=None, root_budget=None):
         self.transport = transport
         self.binding = copy.deepcopy(capability_binding)
+        self.prepared = {}
+        self.counter, self.root_budget = counter, root_budget
+        self.native_attempts = set()
+
+    def prepare(self, request):
+        from provider_openai import MODEL, prepare
+        try:
+            require(set(request) == REQUEST_KEYS | {'output_schema'})
+            require(request['schema_version'] == 'rsm-model-request-0.3.0')
+            require(self.binding == {'execution_kind': 'openai_native_fixture', 'model_id': MODEL,
+                                    'provenance': 'fixture', 'project_id': self.binding.get('project_id')}
+                    and isinstance(self.binding['project_id'], str) and bool(self.binding['project_id']))
+            require(request['execution_kind'] == 'openai_native_fixture' and request['model_id'] == MODEL)
+            legacy = {k: copy.deepcopy(v) for k, v in request.items() if k != 'output_schema'}
+            legacy['schema_version'] = 'rsm-model-request-0.2.0'
+            validate_request(legacy)
+            result = prepare(request, self.binding['project_id'])
+            self.prepared[result['prepared_id']] = copy.deepcopy(result)
+            return copy.deepcopy(result)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            return {'status': 'invalid_request', 'input_tokens': None, 'missing': ['invalid_native_contract']}
 
     def invoke(self, request):
+        if isinstance(request, dict) and request.get('schema_version') == 'rsm-model-request-0.3.0':
+            return self._invoke_native(request)
         try:
             validate_request(request)
         except (ValueError, TypeError, KeyError, AttributeError):
@@ -149,3 +172,73 @@ class ModelAdapter:
                 'usage': copy.deepcopy(raw['usage']), 'raw_response': copy.deepcopy(raw),
                 'usage_basis': 'synthetic', 'provenance': 'scripted', 'provider_requests_sent': 0,
                 'attempted': True, 'usage_known': True, 'error': None}
+
+    def _invoke_native(self, request):
+        from provider_openai import cost_microusd, normalize, normalized_usage, terminal_error, verify_prepared
+        try:
+            require(set(request) == REQUEST_KEYS | {'output_schema', 'prepared_id', 'count_receipt_id'})
+            prepared = copy.deepcopy(self.prepared[request['prepared_id']])
+            require(verify_prepared(prepared))
+            again = self.prepare({k: v for k, v in request.items() if k not in ('prepared_id', 'count_receipt_id')})
+            require(again.get('prepared_id') == prepared['prepared_id'])
+            require(all(prepared['source'][k] == request[k] for k in ('run_id', 'session_id', 'role', 'output_kind')))
+            count = self.counter.count(prepared, authorization=None)
+            require(count['status'] == 'counted' and count['basis'] == 'fixture'
+                    and count['receipt_id'] == request['count_receipt_id'])
+            i, cap = count['input_tokens'], prepared['wire_body']['max_output_tokens']
+            require(request['input_token_upper_bound'] == i and 0 < cap <= 128000 and i + cap <= 400000)
+            audit = self.root_budget.audit_view()
+            entry = audit['reservations'][request['reservation_id']]
+            require(not audit['halted'] and audit['binding']['run_id'] == request['run_id']
+                    and audit['binding'].get('project_id') == prepared['project_id']
+                    and entry['settled'] is None and request['reservation_id'] not in self.native_attempts)
+            require(all(entry['operation'].get(k) == v for k, v in {'kind': 'model', 'request_id': request['request_id'],
+                'prepared_id': prepared['prepared_id'], 'wire_sha256': prepared['wire_sha256'],
+                'count_receipt_id': count['receipt_id']}.items()))
+            require(all(entry['held'][k] >= v for k, v in {'model_calls': 1, 'input_tokens': i,
+                'output_tokens': cap, 'cost_microusd': cost_microusd(i, cap)}.items()))
+            reservation = next(r for r in audit['receipts'] if r.get('reservation_id') == request['reservation_id'] and 'phase' in r)
+            phase = 'final' if request['output_kind'] == 'final_submit' else 'work'
+            end = self.root_budget.started + audit['limits']['elapsed_ms'] - (audit['final_reserve']['elapsed_ms'] if phase == 'work' else 0)
+            reserved_end = self.root_budget.started + reservation['usage_before']['elapsed_ms'] + entry['held']['elapsed_ms']
+            require(reservation['phase'] == phase and self.root_budget.clock() <= request['deadline_ms'] <= min(end, reserved_end))
+        except (ValueError, TypeError, KeyError, AttributeError, StopIteration):
+            return error_result('preflight_denied', 'capability')
+        self.native_attempts.add(request['reservation_id'])
+        try:
+            raw = self.transport(prepared['wire_utf8'], deadline_ms=request['deadline_ms'])
+        except (OSError, TimeoutError) as exc:
+            result = error_result('timeout' if isinstance(exc, TimeoutError) else 'transport',
+                                  'timeout' if isinstance(exc, TimeoutError) else 'transport', attempted=True, raw=str(exc))
+        else:
+            try:
+                result = normalize(raw, request)
+                calls = result['message']['tool_requests']
+                prior = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', [])}
+                require(len({c['call_id'] for c in calls}) == len(calls) and not prior.intersection(c['call_id'] for c in calls))
+                for call in calls:
+                    validate_call(call, request['tools'])
+                if (result['usage']['input_tokens'] != i or result['usage']['output_tokens'] > cap
+                        or result['usage']['cost_microusd'] > entry['held']['cost_microusd']):
+                    result = error_result('usage_mismatch', 'capability', attempted=True,
+                                          usage=result['usage'], raw=copy.deepcopy(raw))
+            except (ValueError, TypeError, KeyError, AttributeError):
+                try:
+                    usage = normalized_usage(raw)
+                except (ValueError, TypeError, KeyError, AttributeError):
+                    usage = None
+                status, category = terminal_error(raw) if isinstance(raw, dict) else ('format_error', 'format')
+                if status in ('provider_binding_mismatch', 'unsupported_provider_tool') and usage is not None:
+                    usage['cost_microusd'] = None
+                result = error_result(status, category, attempted=True, usage=usage, raw=copy.deepcopy(raw))
+            body = raw.get('body', {}) if isinstance(raw, dict) else {}
+            body = body if isinstance(body, dict) else {}
+            headers = raw.get('headers') if isinstance(raw, dict) and isinstance(raw.get('headers'), dict) else {}
+            result.update(provider_request_id=headers.get('x-request-id'),
+                provider_response_id=body.get('id'), returned_model=body.get('model'), service_tier=body.get('service_tier'))
+        if self.root_budget.clock() > request['deadline_ms']:
+            result = {**result, 'status': 'timeout', 'late': True,
+                'error': {'category': 'timeout', 'code': 'late_result', 'retryable': False, 'request_sent': None}}
+            result.pop('message', None)
+        result.update(provenance='fixture', usage_basis='fixture', provider_requests_sent=0)
+        return result
