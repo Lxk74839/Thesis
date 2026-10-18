@@ -14,6 +14,38 @@ from token_counting import InputCounter
 
 
 class InputCountingTests(unittest.TestCase):
+    def test_public_import_reports_complete_coverage_and_failure_counts(self):
+        adapter = ModelAdapter(None, capability_binding=BINDING)
+        first = adapter.prepare(request())
+        req = request()
+        req.update(request_id='PUBLIC-SECOND', attempt_id='PUBLIC-SECOND', max_output_tokens=1499)
+        second = adapter.prepare(req)
+        root = case_directory('coverage-summary')
+        exported, path = export_catalog(root, [first, second])
+        self.assertEqual(exported.returncode, 0, exported.stdout + exported.stderr)
+        manifest = json.loads(path.read_bytes())
+        replies = iter([{'status_code': 200, 'headers': {},
+                         'body': {'object': 'response.input_tokens', 'input_tokens': 100}},
+                        {'status_code': 502, 'headers': {'x-request-id': 'PUBLIC-FAILED'},
+                         'body': {'error': 'PUBLIC-UNAVAILABLE'}}])
+        counter = InputCounter('PUBLIC-PROJECT', directory=root, clock=lambda: 0,
+                               sender=lambda *a, **kw: next(replies))
+        permit = count_permit(root, manifest)
+        counter.count(first, authorization=permit)
+        counter.count(second, authorization=permit)
+        target = root / 'import.json'
+        proc = subprocess.run([sys.executable, '-B', '-m', 'token_counting', 'import',
+            '--manifest', str(path), '--receipts', str(root / 'count-receipts.jsonl'),
+            '--output', str(target)], cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
+        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+        report = json.loads(target.read_bytes())
+        self.assertEqual({k: report[k] for k in ('roots', 'references', 'unique', 'valid_receipts',
+            'missing_count', 'failed_attempts', 'unresolved_attempts')},
+            {'roots': 1, 'references': 2, 'unique': 2, 'valid_receipts': 1, 'missing_count': 1,
+             'failed_attempts': 1, 'unresolved_attempts': 0})
+        self.assertIsNone(report['per_root_input_tokens']['PUBLIC-RUN'])
+        self.assertFalse(report['official_complete'])
+
     def test_count_read_timeout_keeps_received_headers_and_unknown_cost_held(self):
         prepared = ModelAdapter(None, capability_binding=BINDING).prepare(request())
         root = case_directory('http-read-timeout')

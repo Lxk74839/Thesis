@@ -299,7 +299,7 @@ def main(argv=None):
             if receipts_path != manifest_path.parent / 'count-receipts.jsonl':
                 raise ValueError('unregistered_receipt_path')
             counter = InputCounter(manifest['plan']['project_id'], directory=manifest_path.parent, manifest_path=manifest_path)
-            _, _, _, receipts = counter._state()
+            _, intents, results, receipts = counter._state()
             by_prepared = {r['prepared_id']: r for r in receipts}
             missing = [key for key in manifest['entries'] if key not in by_prepared]
             totals = {r['run_id']: 0 for r in manifest['plan']['roots']}
@@ -311,6 +311,9 @@ def main(argv=None):
                         and all(r['basis'] == 'official_input_tokens' for r in receipts))
             summary = {'status': 'incomplete' if missing else 'imported_official' if official else 'imported_fixture',
                 'manifest_id': manifest['manifest_id'], 'official_complete': official,
+                'roots': len(manifest['plan']['roots']), 'valid_receipts': len(by_prepared), 'missing_count': len(missing),
+                'failed_attempts': sum(r['status'] != 'counted' for r in results.values()),
+                'unresolved_attempts': len(set(intents) - set(results)),
                 'references': len(manifest['references']), 'unique': len(manifest['entries']), 'missing': missing,
                 'per_root_input_tokens': totals, 'provider_requests_sent': 0}
             write_new(args.output, summary)
