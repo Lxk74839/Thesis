@@ -1,0 +1,305 @@
+{
+  "schema_version": "storage-repair-integrity-0.1.0",
+  "date": "2026-10-19",
+  "stage": "before_three_existing_object_reads",
+  "protected_readonly": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "1a81969eceadbd34701bb3e19793e6917cbfb3d335f9ebbfa305362a4c8a00ab",
+      "unchanged": true
+    },
+    {
+      "path": "model_adapter.py",
+      "sha256": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+      "unchanged": true
+    },
+    {
+      "path": "provider_openai.py",
+      "sha256": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3",
+      "unchanged": true
+    },
+    {
+      "path": "token_counting.py",
+      "sha256": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77",
+      "unchanged": true
+    },
+    {
+      "path": "recommendation_runner.py",
+      "sha256": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+      "unchanged": true
+    },
+    {
+      "path": "evidence_access.py",
+      "sha256": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+      "sha256": "3fd2a3b96b95637528a350edafb40ab42c45db846087ffc0aaade0d0d634ad03",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-performance-storage-diagnosis-20261019.md",
+      "sha256": "d0c1cabfd92ae19912d722e06a4218224c692536cf54e9807a4e6df49ac880b9",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-storage-repair-20261019.md",
+      "sha256": "bbdd693957bc902f6af177d26ccd44896c44e7b67c5a208ecb46e0cac23dcc29",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-implementation-confirmation-20261018.md",
+      "sha256": "5d0e8e3f8e9b8130214d1202de736a73d2fa1bb2a09cb0a52d759067a81e957f",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-20261018.md",
+      "sha256": "887699ecd2bfadceb7114bd6d94403152a0dfe2a9b088e5ce32548dd75fdeef8",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-t0-a-execution-20261018.md",
+      "sha256": "cea36ed6a601c0dd2c33a4a01a617d1d5d866a2ae3d6fc3af4dc6131e0b8aa82",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/state.json",
+      "sha256": "cb09edf8c46fd5e3b38c03c5ceeffb0ec7edc4e3ca4e82d87fc4f42f41698dd8",
+      "unchanged": true
+    }
+  ],
+  "original_ledger_prefixes": [
+    {
+      "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "prefix_bytes": 240273,
+      "prefix_unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "prefix_bytes": 6483,
+      "prefix_unchanged": true
+    }
+  ],
+  "public_frozen_objects": [
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/092fc7900e94eb2492d3f17e068d6da39429f495b15a0a81bdf1787bb9d082a1.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/0afc992641cf1d29ef21d2b564e9906e7e95a014f0d82f1b719b46dfdcc09b75.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/1e947bd248ca33d17e6c7ca5e2e82cb0712364d06a7b8250a3d442f155cf70ff.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/23215e63ac214785e5199a602ef2c934211f9565a0b1033cc9ef9dda22062043.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/27cf457cd92e083f7a4933f824544e476ebeadecc31aa0f79864ed28c1b7c446.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/2b8ff0a4433222464170f67baa089f5ded4a4e4854434969cca4bd81a667ddb0.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/2eb2d51d346b6c47534b1b4b414ef24d7a3b71d0b1775aa51fca995b73e63ce9.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/313a1d4854f8231e915a40dfeb4af056dcf79698943fc4738a39f6b8c33b02d4.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/45a6e2bb3206a9473f028cca48dec082812a7e875a9eb0bfa081ea4755d6b555.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/47e66d4fd9f4ded205275b90a5acf73ea5ea9180387ecc855ce1fb2e5d31fa4c.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/4e045fde24328a9d63922ebe1bb5f96749bd6a61fc4399fcbe10f2b966b26271.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/5ab76a93c303bf82782e8fce0a155e08e3291feda890c9f10688e502e1a289bb.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/5c9c202ad2f950e60db09631e11c028043947bfc7071127f8039ab9ddda61e7f.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/70e7c51c59288b146298c816d3bc4fd0da097d283b27404d0ba29273d0543bba.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/7ac7d0b7cb1616645a71e174fd8f8c6a8aff183416e1d55f15caa9d5a54ab1aa.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/834ee87d7173ef0c51b5fb123eaf48d68e434e5745afce8fcd8394a1074ecbfe.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/896e850f4f2aeb63be7177415afd977cc5b2c41d4aaf885957aaef50e76f790d.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/969fd22293618abbb9ccd66c6b6d43d5ba18a0c794506fca0a96591faf8e6784.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/b36f1b3d510f005c078f3777bcbcd9085fee2d7419d2f562f2acf29fede083f6.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/cc79e123769bcabc29d9e1ffd724b8fcfb4c3ac2f69fec0054a04b66c92a88bc.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/d778056705797b22b593201fed486397bedbf094fa8822c5940bbe164b84e167.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/d9e280bed16f2ae83900aff5d889d10cfd44d216f8f347462b77d62aca74895d.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/e2cb97641f6255ce14903a865932d43898af7620a1866af98cc971cc9843332f.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/e4eaaf853802ee8a739904106a72efa3a9813f3f626b62c1e26dff15919f44b5.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/e50c251a59a32703cf075b58cbd3f16db0e2ac10675bed2b038d3c7917acd48e.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/objects/e5538eb1581e18f1d1efc830a89927f20469b42f023be63f380a9b296b01c5b4.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/0752a2aabecb8e06c6495c9e2a0270ed0f9bc0c817a9bbb0a3da6cde679ff4e2.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/0773c63c87b1cca35e21c08ecabd0a1525d0553730a3d07b0e2719fe8aca80db.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/235d63be4c74a4e8e765806e7c7153b043695c0a6d8b918947024a5ff61f7603.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/26ea6181436406070e9194bc725f08f51622c9a9e02368628363724913a60455.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/2847218a86b5e58cc38e3e3d9c463f48b53bbc5fca43653735d95dc52dbcb63b.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/324057039b7d136455dc2151dbfac674530353661271acfa3314e85979711b74.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/3d2874fa012e144d4a2a37a0a2f7c0d60858acfdeb86bf32262ed3858b8ca821.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/3f4628344fa47a884d24aeea421c6c46ab10da36271c3623afe8ee65d593f97c.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/4b25bc53eb6783c687fb0d16f431500d468614fc317dd7072a859ff4c42ebd44.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/55eace7d156306efc3d7d68d1df832a942919d67f8749b96d7149c69dfc6ae2a.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/7f5851a0c274d22564c81611d8cdadeb52c64e556d1273e9f3c292c7897acd28.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/8533ff888e251f321605d478da80c0d03c923352ee9bdd08738d42cf3d8aae7f.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/8672aca4b5c076fded72d3fe5a70bbec3c8257bedb5316e71a9b55d76b337707.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/9478aab028391907fba8249b071ced5bf0564c91c8b711aff132f8b4872a942b.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/af4f2592467281a71c9c7c3b454a170f5a0abad8ff97763c1850756ce3271e64.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/bcdbc5d992ae071954aa8774d754065c976291d42dcb0cdb3d230177fde8322b.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d09092cbadb2fbb7acf94c7901768c17eee346f16ceac464e2c2eef5d0532a5c.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d0c6666bf2d4cd3f9e3a6070cec9d5c3c2acf06b07a1ace83239b354c7f1b177.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d1995e3dc7e2bfab217204aca55a2bb0b4b2a0acaf2ab0565bd8bdb8d9613103.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d25979dccda6df22aa67392b51b33608a082886abd0835b44bb12db3a3c73aa2.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d74e6fab495972ec71ee1d1d76049916b26f39a92f27187df0fa12604fbac24e.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/d9b4a83e5fe886761fca57bfd3b2bc5c4ab5763e875095d10efba654a666f433.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/e57caab1ac0a4b7ab60000ad87e64827d1d5997a3544c1f480efd4f18d51f9d1.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/f16653859070a884ed25c6a9a17649c19fb44ebc548a5cc7fa920560d9bc0130.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/f42edfaad76f0f77d9ae7c887d171cfa7718eb878f4a35eb694cf7ccd51df598.json",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/catalog-longH/objects/f506ad99c955d3120b6748141e54d36ca0af9b726e4a18b4a85ec7e2cf57bc81.json",
+      "unchanged": true
+    }
+  ],
+  "public_state": {
+    "cases": [
+      "baseline",
+      "repeat",
+      "profile",
+      "longH"
+    ],
+    "reserved_plans": 12
+  },
+  "new_root_plans": 0,
+  "original_large_directory_enumerated": false
+}
