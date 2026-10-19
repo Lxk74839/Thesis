@@ -1,0 +1,59 @@
+{
+  "schema_version": "t0-storage-program-acceptance-0.1.0",
+  "status": "T0_A_storage_program_accepted",
+  "date": "2026-10-19",
+  "base": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "candidate": "85e1c85d4f7115bf6b4684544b27350ef671d6cb",
+  "human_confirmation": {
+    "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-storage-repair-20261019.md",
+    "sha256": "bbdd693957bc902f6af177d26ccd44896c44e7b67c5a208ecb46e0cac23dcc29"
+  },
+  "source_sha256": {
+    "t0_catalog.py": "ec8a1d4c533a33a01ff10bb512f4fbf536044289e8cac9e9b7978a10dbff9186",
+    "tests/test_t0_catalog.py": "1ef822f3d200feb8a73db54f1cf11d7909ed0916b27c3c675a6c9afc1a5c6a34",
+    "model_adapter.py": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+    "provider_openai.py": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3",
+    "token_counting.py": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77",
+    "recommendation_runner.py": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+    "evidence_access.py": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+    ".scratch/ticket12-budget-20261018/diagnostics/run_check.py": "30220d2c506a91638b48f3c13d1e075e2c622990492ae2cac6edb9a6eac886cf",
+    ".scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py": "017055601bb805109ac383027af6c857717e2ae4fd2319faf5e7c4571c66915c",
+    ".scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py": "9ee3b1541c7c1bee1befe3674ebc469da0f4e57cfbab6e006144cc19511e1c9f",
+    ".scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py": "3fd2a3b96b95637528a350edafb40ab42c45db846087ffc0aaade0d0d634ad03"
+  },
+  "reviews": {
+    "Standards": {
+      "candidate": "85e1c85d4f7115bf6b4684544b27350ef671d6cb",
+      "blocking_findings": 0,
+      "nonblocking_findings": 0,
+      "record": {
+        "path": ".scratch/ticket12-budget-20261018/verification-storage-standards-85e1c85.md",
+        "sha256": "1e31f72280f1f0e4faed9abb5d724fb5b3c01394d3805d6b009f664a17e5ae29"
+      }
+    },
+    "Spec": {
+      "candidate": "85e1c85d4f7115bf6b4684544b27350ef671d6cb",
+      "blocking_findings": 0,
+      "nonblocking_findings": 0,
+      "record": {
+        "path": ".scratch/ticket12-budget-20261018/verification-storage-spec-85e1c85.md",
+        "sha256": "a281164e93e5235a4f6dc1e2a563bc54a58fa9b4d32885a908f1f5f17407a3a1"
+      }
+    }
+  },
+  "public_behavior_tests": 17,
+  "test_label": "storage_repair_230_final_storage_suite",
+  "test_exit_code": 0,
+  "offline_package_seconds": 16.490007900079945,
+  "test_record": ".scratch/ticket12-budget-20261018/verification-storage-tdd-20261019.md",
+  "new_root_plans": 0,
+  "provider_api_calls": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  },
+  "original_T0_status": "T0_A_incomplete",
+  "full_catalog_accepted": false,
+  "new_format_prepare_accepted": false,
+  "pending": "three_existing_object_bounded_storage_validation_only"
+}
