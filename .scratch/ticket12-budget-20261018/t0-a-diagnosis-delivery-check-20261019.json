@@ -1,0 +1,155 @@
+{
+  "schema_version": "ticket12-diagnostic-document-delivery-0.1.0",
+  "date": "2026-10-19",
+  "timezone": "Asia/Shanghai",
+  "review_baseline": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "status": "diagnostic_proposal_delivered_pending_R01_R05",
+  "inherited_T0_status": "T0_A_incomplete",
+  "documents": [
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-performance-storage-diagnosis-20261019.md",
+      "sha256": "d0c1cabfd92ae19912d722e06a4218224c692536cf54e9807a4e6df49ac880b9",
+      "bytes": 25188
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/t0-a-existing-evidence-20261019.md",
+      "sha256": "a93395675de29b240b2b0facc42b65baf232ef19be7bad84b49c114e49caba87",
+      "bytes": 18137
+    }
+  ],
+  "checks": {
+    "kind": "PowerShell_read_only_document_and_selected_file_checks_not_project_runtime",
+    "protected_file_count": 17,
+    "changed_protected_files": [],
+    "proposal_local_links": 19,
+    "missing_local_links": [],
+    "selected_tracked_source_diff_empty": true,
+    "resource_arithmetic_checked": true
+  },
+  "protected_files": [
+    {
+      "path": "t0_catalog.py",
+      "before_sha256": "fe40e1e33d69e72545dfaa4819f4a19f500f999e217ec59b95be368babd96bc5",
+      "after_sha256": "fe40e1e33d69e72545dfaa4819f4a19f500f999e217ec59b95be368babd96bc5"
+    },
+    {
+      "path": "model_adapter.py",
+      "before_sha256": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+      "after_sha256": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e"
+    },
+    {
+      "path": "recommendation_runner.py",
+      "before_sha256": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+      "after_sha256": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623"
+    },
+    {
+      "path": "evidence_access.py",
+      "before_sha256": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+      "after_sha256": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767"
+    },
+    {
+      "path": "provider_openai.py",
+      "before_sha256": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3",
+      "after_sha256": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3"
+    },
+    {
+      "path": "token_counting.py",
+      "before_sha256": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77",
+      "after_sha256": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77"
+    },
+    {
+      "path": "tests/test_t0_catalog.py",
+      "before_sha256": "90d49fc5b1dd0528c4bf3f888dd76ba4b3679a561dc391385004ac6f0273fb7b",
+      "after_sha256": "90d49fc5b1dd0528c4bf3f888dd76ba4b3679a561dc391385004ac6f0273fb7b"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/run_check.py",
+      "before_sha256": "a77a9a3462f796daae238e4e8b8e7aadca5acee67df588e8b20e2c69ecd155cb",
+      "after_sha256": "a77a9a3462f796daae238e4e8b8e7aadca5acee67df588e8b20e2c69ecd155cb"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py",
+      "before_sha256": "5d7431356b203eced1425075a1ef0edce6ae1e54eb64065a4b2049687a932a75",
+      "after_sha256": "5d7431356b203eced1425075a1ef0edce6ae1e54eb64065a4b2049687a932a75"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+      "before_sha256": "3fd2a3b96b95637528a350edafb40ab42c45db846087ffc0aaade0d0d634ad03",
+      "after_sha256": "3fd2a3b96b95637528a350edafb40ab42c45db846087ffc0aaade0d0d634ad03"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+      "before_sha256": "aa04468c35dfb8cc1225e26fb4338c7fd6f7e983da88240b691beaf2b83d3115",
+      "after_sha256": "aa04468c35dfb8cc1225e26fb4338c7fd6f7e983da88240b691beaf2b83d3115"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-implementation-confirmation-20261018.md",
+      "before_sha256": "5d0e8e3f8e9b8130214d1202de736a73d2fa1bb2a09cb0a52d759067a81e957f",
+      "after_sha256": "5d0e8e3f8e9b8130214d1202de736a73d2fa1bb2a09cb0a52d759067a81e957f"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-20261018.md",
+      "before_sha256": "887699ecd2bfadceb7114bd6d94403152a0dfe2a9b088e5ce32548dd75fdeef8",
+      "after_sha256": "887699ecd2bfadceb7114bd6d94403152a0dfe2a9b088e5ce32548dd75fdeef8"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-t0-a-execution-20261018.md",
+      "before_sha256": "cea36ed6a601c0dd2c33a4a01a617d1d5d866a2ae3d6fc3af4dc6131e0b8aa82",
+      "after_sha256": "cea36ed6a601c0dd2c33a4a01a617d1d5d866a2ae3d6fc3af4dc6131e0b8aa82"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "before_sha256": "7c8938f52811f939944b6f2337552af349ef96274cd4421ba4acbf1e1d57f33c",
+      "after_sha256": "7c8938f52811f939944b6f2337552af349ef96274cd4421ba4acbf1e1d57f33c"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "before_sha256": "c6a1519d4a64a91ef63557f5f7ded535d1d0ef13ad287fb5485028cee335d075",
+      "after_sha256": "c6a1519d4a64a91ef63557f5f7ded535d1d0ef13ad287fb5485028cee335d075"
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/state.json",
+      "before_sha256": "cb09edf8c46fd5e3b38c03c5ceeffb0ec7edc4e3ca4e82d87fc4f42f41698dd8",
+      "after_sha256": "cb09edf8c46fd5e3b38c03c5ceeffb0ec7edc4e3ca4e82d87fc4f42f41698dd8"
+    }
+  ],
+  "active_resources": {
+    "offline_ledger": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+    "offline_cumulative_seconds": 217.7244063001417,
+    "offline_total_limit_seconds": 1800,
+    "t0_ledger": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+    "t0_cumulative_seconds": 1797.3523884000024,
+    "t0_total_limit_seconds": 1800,
+    "t0_remaining_seconds": 2.6476115999976173,
+    "public_state": "untouched_reserved_plans_12_no_new_allocation"
+  },
+  "proposed_resources_not_active": {
+    "offline_package_seconds": 300,
+    "offline_new_allowance_seconds": 0,
+    "t0_additional_seconds": 60,
+    "t0_total_if_approved": 1860,
+    "t0_validation_package_seconds": 60,
+    "new_disk_bytes_across_both_domains": 268435456,
+    "new_public_plans": 0,
+    "existing_development_objects_to_validate": 3,
+    "full_A_generation_or_resume_authorized": false
+  },
+  "this_turn": {
+    "project_python_runs": 0,
+    "tests": 0,
+    "diagnostic_runs": 0,
+    "new_samples": 0,
+    "large_catalog_scans": 0,
+    "supplier_api_calls": 0,
+    "ledger_mutations": 0,
+    "production_code_changes": 0,
+    "existing_script_changes": 0,
+    "git_commits": 0
+  },
+  "limitations": [
+    "Selected-file hashes verify document-writing preservation; they do not replace unfinished full T0-A delivery checks.",
+    "All experimental measurements are inherited artifacts; no performance or round-trip measurement was rerun this turn.",
+    "Historical guard ledgers did not fingerprint the two diagnostic scripts; current hashes do not retroactively bind their historical bytes.",
+    "The proposed T0 allowance remains inactive until explicit user confirmation."
+  ]
+}
