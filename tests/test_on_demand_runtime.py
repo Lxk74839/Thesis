@@ -375,4 +375,3 @@ if __name__ == '__main__' and sys.argv[1:] == ['legacy-batch-regressions']:
         'test_four_quality_candidates_have_six_roles_and_nine_actual_calls',
         'test_normal_work_cannot_spend_the_final_model_slot'))
     raise SystemExit(not unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful())
-
