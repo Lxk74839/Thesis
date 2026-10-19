@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import zlib
 
 PROJECT = Path(__file__).resolve().parents[3]
 BASE = '88e8b8028bd40fb8a5c3f8fda994cbe9eef1324a'
@@ -70,6 +71,102 @@ def protection():
     return {name: file_info(name) for name in names if name and name not in MUTABLE_BASE}
 
 
+def stored_objects(directory):
+    """Independent decoder: no imports from the producer or provider mapper."""
+    manifest_path = project_path(directory / 'objects/manifest.json')
+    if not manifest_path.exists():
+        if (directory / 'objects/requests.pack').exists():
+            raise ValueError('missing_store_manifest')
+        catalog = json_file(directory / 'catalog.json')
+        if catalog['schema_version'] != 'T0-request-catalog-0.1.0':
+            raise ValueError('unsupported_legacy_catalog')
+        for name, expected in sorted(catalog['components'].items()):
+            if name.startswith('objects/'):
+                if not re.fullmatch(r'objects/[0-9a-f]{64}\.json', name):
+                    raise ValueError('invalid_legacy_object_path')
+                path = project_path(directory / name)
+                if file_info(path) != expected:
+                    raise ValueError('legacy_object_digest_mismatch')
+                yield json_file(path)
+        return
+    manifest = json_file(manifest_path)
+    omit = ('max_output_tokens', 'service_tier', 'store', 'stream')
+    if (manifest['schema_version'] != 'T0-single-W-store-0.1.0' or manifest['codec'] != 'zlib-level1'
+            or manifest['count_projection'] != 'openai-count-from-W-0.1.0' or manifest['count_omit'] != list(omit)
+            or manifest['complete'] is not True):
+        raise ValueError('unsupported_or_incomplete_store')
+    path = project_path(directory / 'objects/requests.pack')
+    info = file_info(path)
+    if info['sha256'] != manifest['pack_sha256']:
+        raise ValueError('pack_digest_mismatch')
+    seen, offset = set(), 0
+    with path.open('rb') as stream:
+        for record in manifest['records']:
+            if (not all(type(record[k]) is int for k in ('offset', 'bytes', 'raw_bytes', 'count_bytes'))
+                    or record['offset'] != offset or not 0 < record['bytes'] <= 16 * 1024**2 + 65536
+                    or offset + record['bytes'] > info['bytes'] or not 0 < record['raw_bytes'] <= 16 * 1024**2
+                    or not 0 < record['count_bytes'] <= 16 * 1024**2):
+                raise ValueError('invalid_object_index')
+            meta = record['metadata']
+            pid = meta['prepared_id']
+            if (not re.fullmatch('[0-9a-f]{64}', pid) or pid in seen
+                    or any(k in meta for k in ('wire_body', 'count_body', 'wire_utf8', 'count_utf8'))):
+                raise ValueError('invalid_object_identity')
+            seen.add(pid)
+            stream.seek(offset)
+            decoder = zlib.decompressobj()
+            try:
+                body = decoder.decompress(stream.read(record['bytes']), record['raw_bytes'] + 1)
+            except zlib.error:
+                raise ValueError('invalid_compressed_object') from None
+            if (len(body) != record['raw_bytes'] or not decoder.eof or decoder.unused_data or decoder.unconsumed_tail):
+                raise ValueError('invalid_compressed_object')
+            wire = json.loads(body)
+            count = {k: v for k, v in wire.items() if k not in omit}
+            payload = canonical(count)
+            if len(payload) != record['count_bytes']:
+                raise ValueError('count_bytes_mismatch')
+            yield {**meta, 'wire_body': wire, 'count_body': count, 'wire_utf8': body.decode(), 'count_utf8': payload.decode()}
+            offset += record['bytes']
+    if offset != info['bytes']:
+        raise ValueError('unindexed_pack_bytes')
+
+
+def object_info(prepared):
+    wire, count = prepared['wire_body'], prepared['count_body']
+    wb, pb = canonical(wire), canonical(count)
+    if (prepared['schema_version'] != 'openai-prepared-0.1.0' or prepared['status'] != 'prepared'
+            or prepared['mapper_version'] != 'openai-responses-mapper-0.1.0'
+            or prepared['model_id'] != wire['model'] or wire['model'] != MODEL
+            or wb.decode() != prepared['wire_utf8'] or pb.decode() != prepared['count_utf8']
+            or sha(wb) != prepared['wire_sha256'] or sha(pb) != prepared['count_payload_sha256']
+            or len(wb) != prepared['wire_bytes'] or max(len(wb), len(pb)) > 16 * 1024**2
+            or count != {k: v for k, v in wire.items() if k not in ('max_output_tokens', 'service_tier', 'store', 'stream')}
+            or prepared['role_schema_sha256'] != sha(canonical(wire['text']['format']['schema']))
+            or sha(canonical({k: prepared[k] for k in ('wire_sha256', 'count_payload_sha256', 'mapper_version',
+                'tool_schema_sha256', 'role_schema_sha256', 'project_id')})) != prepared['prepared_id']
+            or wire['reasoning'] != {'effort': 'none'} or wire['parallel_tool_calls'] is not False
+            or wire['truncation'] != 'disabled' or wire['service_tier'] != 'default'
+            or wire['store'] is not False or wire['stream'] is not False):
+        raise ValueError('prepared_contract_mismatch')
+    return (len(wb), len(pb), wire['max_output_tokens'])
+
+
+def check_objects(directory):
+    seen, wire_bytes, count_bytes = set(), 0, 0
+    for prepared in stored_objects(directory):
+        wb, pb, cap = object_info(prepared)
+        if prepared['prepared_id'] in seen:
+            raise ValueError('duplicate_prepared_object')
+        seen.add(prepared['prepared_id'])
+        wire_bytes += wb
+        count_bytes += pb
+    return {'schema_version': 't0-object-store-check-0.1.0', 'status': 'object_store_verified_only',
+        'complete': True, 'objects_verified': len(seen), 'wire_bytes': wire_bytes, 'count_payload_bytes': count_bytes,
+        'full_catalog_accepted': False, 'provider_api_calls': {'count': 0, 'generate': 0, 'other': 0},
+        'capacity_judgment': 'not_performed', 'root_plans_generated': 0}
+
+
 def check(auth, directory, protected):
     errors = []
     def need(value, code):
@@ -77,14 +174,15 @@ def check(auth, directory, protected):
             errors.append(code)
     catalog = json_file(directory / 'catalog.json')
     coverage = json_file(directory / 'coverage.json')
-    need(catalog['schema_version'] == 'T0-request-catalog-0.1.0', 'wrong_catalog_schema')
+    need(catalog['schema_version'] in ('T0-request-catalog-0.1.0', 'T0-request-catalog-0.2.0'), 'wrong_catalog_schema')
     need(auth['api_limits'] == {'count': 0, 'generate': 0, 'other': 0} and auth['approved'] is True, 'authorization_mismatch')
     need(catalog['scope'] == auth['scope'] and catalog['candidate'] == auth['candidate'] and catalog['sources'] == auth['sources'], 'source_binding_mismatch')
     need(catalog['project_id'] == 'UNBOUND-T0-DEV-CATALOG' and catalog['external_count_ready'] is False
         and catalog['execution_budget'] is None and catalog['execution_authorized'] is False, 'execution_gate_mismatch')
     missing_objects = set()
     for name, expected in catalog['components'].items():
-        if name not in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl', 'source-index.json', 'coverage.json') and not re.fullmatch('objects/[0-9a-f]{64}\\.json', name):
+        if name not in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl', 'source-index.json', 'coverage.json',
+                         'objects/requests.pack', 'objects/manifest.json') and not re.fullmatch(r'objects/[0-9a-f]{64}\.json', name):
             need(False, 'component_path_not_allowed')
             continue
         path = project_path(directory / name)
@@ -112,6 +210,28 @@ def check(auth, directory, protected):
     original_w, original_p, unique_w, unique_p = 0, 0, 0, 0
     objects, objects_info = set(), {}
     forbidden = ('user_id', 'assignment_reason', 'split_hash', 'component_path')
+    for prepared in stored_objects(directory):
+        sizes = object_info(prepared)
+        pid = prepared['prepared_id']
+        need(pid not in objects_info and prepared['input_tokens'] is None, 'duplicate_object_or_invented_count')
+        initial, profile = [], set()
+        for item in prepared['wire_body']['input']:
+            if 'role' not in item:
+                continue
+            try:
+                content = json.loads(item['content'])
+            except (ValueError, TypeError):
+                continue
+            if isinstance(content, dict) and 'root_task_id' in content:
+                initial.append((content['root_task_id'], 'H' in content and 'history' not in content
+                                and not any(name in content for name in forbidden)))
+            if isinstance(content, dict) and isinstance(content.get('runtime'), dict):
+                if content['runtime']['stage'] == '农产品画像':
+                    profile.update(content['runtime']['profile_candidates'])
+        need(not any(('"' + name + '":') in prepared['wire_utf8'] for name in forbidden), 'host_metadata_in_wire')
+        objects_info[pid] = (*sizes, initial, profile)
+        unique_w += sizes[0]
+        unique_p += sizes[1]
     for row in rows(directory / 'requests.jsonl'):
         key = (row['root_task_id'], row['view_label'], row['method'], 1)
         need(key in plan_keys and row['method'] in ('S', 'M'), 'orphan_or_R_request')
@@ -126,40 +246,12 @@ def check(auth, directory, protected):
         if not isinstance(pid, str) or not re.fullmatch('[0-9a-f]{64}', pid):
             need(False, 'object_path_not_allowed')
             continue
-        if pid in missing_objects:
-            continue
         if pid not in objects_info:
-            prepared = json_file(directory / 'objects' / (pid + '.json'))
-            wire, payload = prepared['wire_body'], prepared['count_body']
-            wb, pb = canonical(wire), canonical(payload)
-            need(prepared['model_id'] == wire['model'] == MODEL and prepared['input_tokens'] is None, 'model_or_token_mismatch')
-            need(wb.decode() == prepared['wire_utf8'] and pb.decode() == prepared['count_utf8'], 'incomplete_W_or_P')
-            need(sha(wb) == prepared['wire_sha256'] and sha(pb) == prepared['count_payload_sha256'], 'body_digest_mismatch')
-            need(len(wb) == prepared['wire_bytes'] and max(len(wb), len(pb)) <= 16 * 1024**2, 'body_limit_exceeded')
-            need(payload == {k: v for k, v in wire.items() if k not in ('max_output_tokens', 'service_tier', 'store', 'stream')}, 'wrong_count_projection')
-            need(sha(canonical({k: prepared[k] for k in ('wire_sha256', 'count_payload_sha256', 'mapper_version',
-                'tool_schema_sha256', 'role_schema_sha256', 'project_id')})) == pid, 'prepared_id_mismatch')
-            need(prepared['role_schema_sha256'] == sha(canonical(wire['text']['format']['schema'])), 'role_schema_mismatch')
-            need(wire['reasoning'] == {'effort': 'none'} and wire['parallel_tool_calls'] is False
-                and wire['truncation'] == 'disabled' and wire['store'] is False and wire['stream'] is False, 'wire_setting_mismatch')
-            for item in wire['input']:
-                if 'role' in item:
-                    try:
-                        content = json.loads(item['content'])
-                    except (ValueError, TypeError):
-                        continue
-                    if isinstance(content, dict) and 'root_task_id' in content:
-                        need(content['root_task_id'] == row['root_task_id'] and 'H' in content and 'history' not in content
-                            and not any(name in content for name in forbidden), 'unsafe_initial_projection')
-                    if isinstance(content, dict) and isinstance(content.get('runtime'), dict):
-                        runtime = content['runtime']
-                        if runtime['stage'] == '农产品画像':
-                            profiles.setdefault(key, set()).update(runtime['profile_candidates'])
-            need(not any(('"' + name + '":') in prepared['wire_utf8'] for name in forbidden), 'host_metadata_in_wire')
-            objects_info[pid] = (len(wb), len(pb), wire['max_output_tokens'])
-            unique_w += len(wb)
-            unique_p += len(pb)
-        wb, pb, cap = objects_info[pid]
+            need(False, 'missing_object')
+            continue
+        wb, pb, cap, initial, profile = objects_info[pid]
+        need(all(root == row['root_task_id'] and safe for root, safe in initial), 'unsafe_initial_projection')
+        profiles.setdefault(key, set()).update(profile)
         caps[key] += cap
         original_w += wb
         original_p += pb
@@ -188,6 +280,7 @@ def check(auth, directory, protected):
         need(plan['budget_candidate']['final_reserve']['model_calls'] == (0 if plan['method'] == 'R' else 1)
             and plan['budget_candidate']['final_reserve']['logical_tools'] == 1, 'final_reserve_mismatch')
     need(sum(counts.values()) == coverage['N'] <= 108800 and len(objects) == coverage['U'] <= coverage['N'], 'N_U_mismatch')
+    need(set(objects_info) == objects, 'unreferenced_objects')
     need((original_w, original_p, unique_w, unique_p) == tuple(coverage[k] for k in
         ('original_wire_bytes', 'original_count_payload_bytes', 'unique_wire_bytes', 'unique_count_payload_bytes')), 'byte_totals_mismatch')
     need(coverage['complete_input_tokens'] is None and coverage['actual_output_tokens'] is None
@@ -208,7 +301,7 @@ def check(auth, directory, protected):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('operation', choices=('snapshot', 'check'))
+    parser.add_argument('operation', choices=('snapshot', 'check', 'check-objects'))
     parser.add_argument('--output', required=True)
     parser.add_argument('--authorization')
     parser.add_argument('--catalog')
@@ -222,6 +315,8 @@ def main():
     try:
         if args.operation == 'snapshot':
             report = {'base': BASE, 'files': protection(), 'complete': True}
+        elif args.operation == 'check-objects':
+            report = check_objects(t0_path(args.catalog))
         else:
             authorization = t0_path(args.authorization)
             if not re.fullmatch('authorization(?:-[a-z0-9-]+)?\\.json', authorization.name):
@@ -232,7 +327,7 @@ def main():
                 raise ValueError('protection_path_not_allowed')
             report = check(json_file(authorization), catalog, protected)
     except (ValueError, OSError, KeyError, TypeError, IndexError) as exc:
-        report = {'complete': False, 'errors': ['delivery_check_incomplete', type(exc).__name__]}
+        report = {'complete': False, 'errors': ['delivery_check_incomplete', type(exc).__name__, str(exc)]}
     output.write_bytes(canonical(report) + b'\n')
     print(json.dumps({k: v for k, v in report.items() if k != 'files'}, ensure_ascii=False, sort_keys=True))
     return 0 if report['complete'] else 2

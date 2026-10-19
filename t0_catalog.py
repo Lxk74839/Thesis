@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import zlib
 
 from evidence_access import EvidenceSession, LocalEvidenceSource, decode, digest, encoded
 from joint_access import JointSession
@@ -39,6 +40,139 @@ LIMITS = {'model_calls': 17, 'input_tokens': 192000, 'output_tokens': 24000, 'lo
     'physical_tools': 256, 'candidates': 64, 'retries': 2, 'elapsed_ms': 900000, 'cost_microusd': 252017}
 FINAL = {'model_calls': 1, 'input_tokens': 8000, 'output_tokens': 1500, 'logical_tools': 1,
     'physical_tools': 0, 'candidates': 0, 'retries': 0, 'elapsed_ms': 60000, 'cost_microusd': 12751}
+STORE_SCHEMA = 'T0-single-W-store-0.1.0'
+COUNT_PROJECTION = 'openai-count-from-W-0.1.0'
+COUNT_OMIT = ('max_output_tokens', 'service_tier', 'store', 'stream')
+BODY_FIELDS = ('wire_body', 'count_body', 'wire_utf8', 'count_utf8')
+STORAGE_CONTRACT = {'path': CONTROL + 't0-a-performance-storage-diagnosis-20261019.md',
+                    'sha256': 'd0c1cabfd92ae19912d722e06a4218224c692536cf54e9807a4e6df49ac880b9'}
+STORAGE_CONFIRMATION = {'path': CONTROL + 'authorization-t0-a-storage-repair-20261019.md',
+                        'sha256': 'bbdd693957bc902f6af177d26ccd44896c44e7b67c5a208ecb46e0cac23dcc29'}
+
+
+class PreparedObjectWriter:
+    """Persist one complete canonical W per prepared object; never send requests."""
+    def __init__(self, output_dir, *, recompute=False):
+        self.directory = _path(output_dir) / 'objects'
+        _require(any(self.directory.is_relative_to(PROJECT / root) for root in
+                     ('data/ticket12-t0', '.tmp/ticket12-t0')), 'store_output_not_allowed')
+        if not recompute:
+            self.directory.mkdir(parents=True)
+        self.pack = None if recompute else (self.directory / 'requests.pack').open('xb')
+        self.offset, self.closed = 0, False
+        self.records = []
+        self.identities = {}
+        self.sha = hashlib.sha256()
+
+    def add(self, prepared):
+        from provider_openai import verify_prepared
+        _require(not self.closed, 'object_store_closed')
+        body = prepared['wire_utf8'].encode('utf-8')
+        oversize = max(len(body), len(prepared['count_utf8'].encode('utf-8'))) > 16 * 1024**2
+        _require(oversize or verify_prepared(prepared), 'invalid_stored_prepared')
+        metadata = copy.deepcopy({k: v for k, v in prepared.items() if k not in BODY_FIELDS})
+        binding = {k: v for k, v in metadata.items() if k != 'source'}
+        if prepared['prepared_id'] in self.identities:
+            _require(self.identities[prepared['prepared_id']] == binding, 'duplicate_prepared_binding_mismatch')
+            return prepared['prepared_id']
+        compressed = zlib.compress(body, 1)
+        record = {'metadata': metadata,
+            'offset': self.offset, 'bytes': len(compressed), 'raw_bytes': len(body),
+            'count_bytes': len(prepared['count_utf8'].encode('utf-8'))}
+        if oversize:
+            record['failure'] = 'body_limit_exceeded'
+        try:
+            if self.pack is not None:
+                _require(self.pack.write(compressed) == len(compressed), 'incomplete_object_write')
+        except (OSError, ValueError):
+            self.pack.truncate(record['offset'])
+            self.pack.seek(record['offset'])
+            raise
+        self.records.append(record)
+        self.offset += len(compressed)
+        self.sha.update(compressed)
+        self.identities[prepared['prepared_id']] = binding
+        _require(not oversize, 'body_limit_exceeded')
+        return prepared['prepared_id']
+
+    def close(self, *, complete=True, reason=None):
+        if self.closed:
+            return
+        if self.pack is not None:
+            self.pack.close()
+        self.closed = True
+        manifest = {'schema_version': STORE_SCHEMA, 'codec': 'zlib-level1',
+            'zlib_version': zlib.ZLIB_VERSION, 'zlib_runtime_version': zlib.ZLIB_RUNTIME_VERSION,
+            'count_projection': COUNT_PROJECTION, 'count_omit': list(COUNT_OMIT),
+            'complete': complete and not any(r.get('failure') for r in self.records),
+            'reason': reason, 'records': self.records, 'pack_sha256': self.sha.hexdigest()}
+        raw = encoded(manifest) + b'\n'
+        self.components = {'objects/requests.pack': {'bytes': self.offset, 'sha256': self.sha.hexdigest()},
+                           'objects/manifest.json': {'bytes': len(raw), 'sha256': digest(raw)}}
+        if self.pack is not None:
+            (self.directory / 'manifest.json').write_bytes(raw)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        self.close(complete=exc_type is None, reason=exc_type.__name__ if exc_type else None)
+
+
+def iter_prepared_objects(output_dir):
+    """Restore the existing prepared contract one object at a time."""
+    from provider_openai import verify_prepared
+    directory = _path(output_dir) / 'objects'
+    if not (directory / 'manifest.json').exists():
+        _require(not (directory / 'requests.pack').exists(), 'missing_store_manifest')
+        catalog = decode((directory.parent / 'catalog.json').read_bytes())
+        _require(catalog['schema_version'] == 'T0-request-catalog-0.1.0', 'unsupported_legacy_catalog')
+        for name, expected in sorted(catalog['components'].items()):
+            if name.startswith('objects/'):
+                _require(re.fullmatch(r'objects/[0-9a-f]{64}\.json', name), 'invalid_legacy_object_path')
+                raw = _path(directory.parent / name).read_bytes()
+                _require(len(raw) == expected['bytes'] and digest(raw) == expected['sha256'], 'legacy_object_digest_mismatch')
+                prepared = decode(raw)
+                _require(verify_prepared(prepared), 'invalid_stored_prepared')
+                yield prepared
+        return
+    manifest = decode((directory / 'manifest.json').read_bytes())
+    _require(manifest['schema_version'] == STORE_SCHEMA and manifest['codec'] == 'zlib-level1'
+        and manifest['count_projection'] == COUNT_PROJECTION and manifest['count_omit'] == list(COUNT_OMIT),
+        'unsupported_object_store')
+    _require(manifest['complete'] is True, 'object_store_incomplete')
+    with (directory / 'requests.pack').open('rb') as pack:
+        sha = hashlib.sha256()
+        for chunk in iter(lambda: pack.read(1024**2), b''):
+            sha.update(chunk)
+        size, offset, identities = pack.tell(), 0, set()
+        _require(sha.hexdigest() == manifest['pack_sha256'], 'pack_digest_mismatch')
+        for record in manifest['records']:
+            _require(all(type(record[k]) is int for k in ('offset', 'bytes', 'raw_bytes', 'count_bytes'))
+                and record['offset'] == offset and 0 < record['bytes'] <= 16 * 1024**2 + 65536
+                and offset + record['bytes'] <= size and 0 < record['raw_bytes'] <= 16 * 1024**2
+                and 0 < record['count_bytes'] <= 16 * 1024**2, 'invalid_object_index')
+            pid = record['metadata']['prepared_id']
+            _require(re.fullmatch('[0-9a-f]{64}', pid) and pid not in identities
+                and not any(k in record['metadata'] for k in BODY_FIELDS), 'invalid_object_identity')
+            identities.add(pid)
+            pack.seek(offset)
+            decoder = zlib.decompressobj()
+            try:
+                body = decoder.decompress(pack.read(record['bytes']), record['raw_bytes'] + 1)
+            except zlib.error:
+                raise ValueError('invalid_compressed_object') from None
+            _require(len(body) == record['raw_bytes'] and decoder.eof and not decoder.unused_data
+                and not decoder.unconsumed_tail, 'invalid_compressed_object')
+            wire = decode(body)
+            count = {k: v for k, v in wire.items() if k not in COUNT_OMIT}
+            payload = encoded(count)
+            prepared = {**record['metadata'], 'wire_body': wire, 'count_body': count,
+                        'wire_utf8': body.decode('utf-8'), 'count_utf8': payload.decode('utf-8')}
+            _require(len(payload) == record['count_bytes'] and verify_prepared(prepared), 'invalid_stored_prepared')
+            offset += record['bytes']
+            yield prepared
+        _require(offset == size, 'unindexed_pack_bytes')
 
 
 class _DigestStream:
@@ -568,6 +702,9 @@ def _authorization(path):
 
 
 def _compile(auth, output, *, recompute=False):
+    _require(not os.environ.get('THESIS_STORAGE_PACKAGE'), 'storage_package_new_plans_forbidden')
+    _checked(STORAGE_CONTRACT)
+    _checked(STORAGE_CONFIRMATION)
     _time_available()
     sources = auth['sources']
     if recompute:
@@ -607,8 +744,8 @@ def _compile(auth, output, *, recompute=False):
         'model_id': MODEL, 'provenance': 'synthetic', 'project_id': 'UNBOUND-T0-DEV-CATALOG'})
     role_schema_generator_sha = digest((PROJECT / 'provider_openai.py').read_bytes())
     if not recompute:
-        (output / 'objects').mkdir()
         (output / 'checks').mkdir()
+    object_store = PreparedObjectWriter(output, recompute=recompute)
     indexes, cache, objects = {}, {}, {}
     totals = dict.fromkeys(('plans', 'N', 'U', 'original_wire_bytes', 'original_count_payload_bytes',
         'unique_wire_bytes', 'unique_count_payload_bytes', 'missing_objects', 'failed_plans', 'excess_plans'), 0)
@@ -668,12 +805,10 @@ def _compile(auth, output, *, recompute=False):
                         totals['original_wire_bytes'] += wb
                         totals['original_count_payload_bytes'] += pb
                         if pid not in objects:
-                            raw = encoded({**prepared, 'catalog_metadata': {'provenance': 'synthetic',
+                            object_store.add({**prepared, 'catalog_metadata': {'provenance': 'synthetic',
                                 'tool_versions': {t['name']: t['version'] for t in logical['tools']},
-                                'role_schema_generator_sha256': role_schema_generator_sha}}) + b'\n'
-                            if not recompute:
-                                (output / 'objects' / (pid + '.json')).write_bytes(raw)
-                            objects[pid] = {'bytes': len(raw), 'sha256': digest(raw)}
+                                'role_schema_generator_sha256': role_schema_generator_sha}})
+                            objects[pid] = None
                             totals['unique_wire_bytes'] += wb
                             totals['unique_count_payload_bytes'] += pb
                         request_count += 1
@@ -748,6 +883,7 @@ def _compile(auth, output, *, recompute=False):
             target.close()
             components[name] = target.info()
         probes.close()
+        object_store.close(complete=not reasons, reason=reasons[0] if reasons else None)
     totals['U'] = len(objects)
     coverage = {**totals, 'expected_plans': len(views) * 3, 'by_method': dict(by_method),
         'by_view_method': dict(by_view_method), 'by_terminal': dict(by_terminal),
@@ -759,13 +895,13 @@ def _compile(auth, output, *, recompute=False):
     if not recompute:
         (output / 'coverage.json').write_bytes(raw)
     components['coverage.json'] = {'bytes': len(raw), 'sha256': digest(raw)}
-    for pid, info in objects.items():
-        components['objects/' + pid + '.json'] = info
-    catalog = {'schema_version': 'T0-request-catalog-0.1.0', 'scope': auth['scope'], 'base': BASE,
+    components.update(object_store.components)
+    catalog = {'schema_version': 'T0-request-catalog-0.2.0', 'scope': auth['scope'], 'base': BASE,
         'candidate': auth['candidate'], 'sources': auth['sources'], 'provenance': 'synthetic', 'script_version': SCRIPT,
         'composer_version': COMPOSER_VERSION, 'model_id': MODEL, 'mapper_version': 'openai-responses-mapper-0.1.0',
         'supplier_project_status': 'unbound', 'external_count_ready': False, 'project_id': 'UNBOUND-T0-DEV-CATALOG',
         'execution_budget': None, 'execution_authorized': False, 'budget_candidate': 'B02-A+B03',
+        'storage_contract': STORAGE_CONTRACT, 'storage_confirmation': STORAGE_CONFIRMATION,
         'acceptance_kind': 'declared_development_catalog_only' if development else 'public_synthetic_only',
         'complete': coverage['complete'], 'missing': coverage['missing_plans'], 'components': components}
     raw_catalog = encoded(catalog) + b'\n'

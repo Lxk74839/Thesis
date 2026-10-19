@@ -25,6 +25,10 @@ class CatalogTests(unittest.TestCase):
             '--authorization', str(authorization), '--output', str(self.work / output)],
             cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
 
+    def prepared_objects(self):
+        from t0_catalog import iter_prepared_objects
+        return {p['prepared_id']: p for p in iter_prepared_objects(self.work / 'catalog')}
+
     def save(self, name, value, raw=False):
         path = self.work / name
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -127,7 +131,7 @@ class CatalogTests(unittest.TestCase):
         requests = [json.loads(line) for line in (self.work / 'catalog/requests.jsonl').read_text(encoding='utf-8').splitlines()]
         self.assertTrue(requests)
         first = next(r for r in requests if r['method'] == 'M')
-        prepared = json.loads((self.work / 'catalog/objects' / (first['prepared_id'] + '.json')).read_text(encoding='utf-8'))
+        prepared = self.prepared_objects()[first['prepared_id']]
         wire = prepared['wire_body']
         original = json.loads(wire['input'][1]['content'])
         self.assertEqual(original['H'], [{'text': 'PUBLIC rice'}])
@@ -217,7 +221,7 @@ class CatalogTests(unittest.TestCase):
         acquisitions = [r for r in rows if r['output_kind'] == 'acquire']
         self.assertEqual(len(acquisitions), 2)
         self.assertEqual(acquisitions[0]['script_response']['message']['tool_requests'][0]['name'], 'acquire_batch')
-        second = json.loads((self.work / 'catalog/objects' / (acquisitions[1]['prepared_id'] + '.json')).read_text(encoding='utf-8'))
+        second = self.prepared_objects()[acquisitions[1]['prepared_id']]
         tool = next(i for i in second['wire_body']['input'] if i.get('type') == 'function_call_output')
         self.assertEqual(json.loads(tool['output'])['processed'], ['PUBLIC-A'])
         profile = next(r for r in rows if r['semantic_role'] == '农产品画像')
@@ -247,7 +251,7 @@ class CatalogTests(unittest.TestCase):
         target = self.work / 'catalog'
         coverage = json.loads((target / 'coverage.json').read_text(encoding='utf-8'))
         refs = [json.loads(line) for line in (target / 'requests.jsonl').read_text(encoding='utf-8').splitlines()]
-        objects = {p.stem: json.loads(p.read_text(encoding='utf-8')) for p in (target / 'objects').iterdir()}
+        objects = self.prepared_objects()
         self.assertEqual((coverage['plans'], coverage['N'], coverage['U']), (6, 52, len(objects)))
         self.assertEqual(coverage['by_method'], {'R': 2, 'S': 2, 'M': 2})
         self.assertEqual(coverage['original_wire_bytes'], sum(len(objects[r['prepared_id']]['wire_utf8'].encode()) for r in refs))
@@ -359,9 +363,11 @@ class CatalogTests(unittest.TestCase):
         self.assertFalse(coverage['complete'])
         self.assertIn('body_limit_exceeded', coverage['reasons'])
         self.assertEqual(coverage['N'], 1)
-        prepared = json.loads(next((target / 'objects').iterdir()).read_text(encoding='utf-8'))
-        self.assertGreater(prepared['wire_bytes'], 16 * 1024**2)
-        self.assertEqual(len(json.loads(prepared['wire_body']['input'][1]['content'])['H'][0]['text']), 8 * 1024**2 + 7)
+        import zlib
+        manifest = json.loads((target / 'objects/manifest.json').read_bytes())
+        wire = json.loads(zlib.decompress((target / 'objects/requests.pack').read_bytes()))
+        self.assertGreater(manifest['records'][0]['raw_bytes'], 16 * 1024**2)
+        self.assertEqual(len(json.loads(wire['input'][1]['content'])['H'][0]['text']), 8 * 1024**2 + 7)
         plans = [json.loads(line) for line in (target / 'roots.jsonl').read_text(encoding='utf-8').splitlines()]
         self.assertTrue(any(p.get('failure_reason') == 'body_limit_exceeded' for p in plans))
 
@@ -376,7 +382,7 @@ class CatalogTests(unittest.TestCase):
                 cwd=PROJECT, capture_output=True, text=True, encoding='utf-8')
         result = check('check-before.json')
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        next((self.work / 'catalog/objects').iterdir()).unlink()
+        (self.work / 'catalog/objects/requests.pack').unlink()
         result = check('check-after.json')
         self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
         report = json.loads((self.work / 'check-after.json').read_text(encoding='utf-8'))
@@ -441,7 +447,7 @@ class CatalogTests(unittest.TestCase):
         result = self.cli(authorization)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         first = json.loads((self.work / 'catalog/requests.jsonl').read_text(encoding='utf-8').splitlines()[0])
-        prepared = json.loads((self.work / 'catalog/objects' / (first['prepared_id'] + '.json')).read_text(encoding='utf-8'))
+        prepared = self.prepared_objects()[first['prepared_id']]
         original = json.loads(prepared['wire_body']['input'][1]['content'])
         self.assertEqual(original['request']['necessary_clauses'], [clause])
         self.assertEqual(original['request']['necessary_clauses'][0]['parameters']['required_test_scope'], ['SIM-Q1'])
@@ -503,7 +509,7 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         refs = [json.loads(line) for line in (self.work / 'catalog/requests.jsonl').read_text(encoding='utf-8').splitlines()]
         ref = next(r for r in refs if r['output_kind'] == 'acquire')
-        prepared = json.loads((self.work / 'catalog/objects' / (ref['prepared_id'] + '.json')).read_text(encoding='utf-8'))
+        prepared = self.prepared_objects()[ref['prepared_id']]
         self.assertEqual(prepared['catalog_metadata']['tool_versions']['acquire_batch'], 'restricted-evidence-batch-0.1.0')
         self.assertEqual(prepared['catalog_metadata']['tool_versions']['candidate_page'], 'joint-page-0.1.0')
         self.assertEqual(prepared['catalog_metadata']['role_schema_generator_sha256'],
@@ -643,6 +649,387 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(actual['terminal'], 'released', (actual['terminal'], actual['reason']))
         self.assertEqual((len(sends), actual['budget']['usage']['retries'], actual['feedback_round']), (13, 2, 1))
         self.assertEqual(actual['release_check']['issues'], [])
+
+
+class StorageTests(unittest.TestCase):
+    """Frozen PUBLIC objects exercise storage without expanding a root trace."""
+    def setUp(self):
+        label = os.environ['THESIS_BATCH_CHECK_LABEL']
+        self.work = PROJECT / '.tmp/ticket12-t0/storage-repair-20261019' / label / self._testMethodName
+        self.work.mkdir(parents=True)
+
+    def originals(self, case='baseline'):
+        package = json.loads((PROJECT / '.scratch/ticket12-budget-20261018/storage-repair-package-20261019.json').read_bytes())
+        entries = sorted((p for p in package['public_objects'] if '/catalog-' + case + '/objects/' in p['path']),
+                         key=lambda p: p['path'])
+        values = []
+        for entry in entries:
+            blob = (PROJECT / entry['path']).read_bytes()
+            self.assertEqual((len(blob), hashlib.sha256(blob).hexdigest()), (entry['bytes'], entry['sha256']))
+            values.append(json.loads(blob))
+        return values
+
+    def check_objects(self, target, name='check.json', operation='check-objects'):
+        import contextlib
+        import io
+        import runpy
+        from unittest.mock import patch
+        output = self.work / name
+        arguments = ['check_t0_catalog_delivery.py', operation, '--catalog', str(target), '--output', str(output)]
+        if operation == 'check':
+            arguments += ['--authorization', str(PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/public-baseline/authorization.json')]
+        with patch.object(sys, 'argv', arguments), contextlib.redirect_stdout(io.StringIO()):
+            try:
+                runpy.run_path(str(PROJECT / '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py'),
+                               run_name='__main__')
+            except SystemExit as exc:
+                code = exc.code
+        return code, json.loads(output.read_bytes()) if output.exists() else {}
+
+    def test_complete_prepared_objects_round_trip_without_changing_any_field(self):
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        originals = self.originals()
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            for value in originals:
+                writer.add(value)
+        restored = list(iter_prepared_objects(target))
+        self.assertEqual(len(restored), 26)
+        self.assertTrue(restored == originals, 'W/P bytes, metadata or identity changed')
+
+    def test_both_frozen_public_sets_meet_the_storage_stop_loss_target(self):
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        for case, old_bytes in (('baseline', 1710684), ('longH', 3861096)):
+            originals = self.originals(case)
+            target = self.work / case
+            with PreparedObjectWriter(target) as writer:
+                for value in originals:
+                    writer.add(value)
+            files = list((target / 'objects').iterdir())
+            self.assertEqual({p.name for p in files}, {'requests.pack', 'manifest.json'})
+            self.assertLessEqual(sum(p.stat().st_size for p in files), old_bytes // 10)
+            self.assertTrue(list(iter_prepared_objects(target)) == originals, case + ' round trip changed')
+
+    def test_duplicate_prepared_keeps_one_object_and_both_caller_sources(self):
+        import copy
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        first = self.originals()[0]
+        second = copy.deepcopy(first)
+        second['source']['attempt_id'] = 'PUBLIC-SECOND-ATTEMPT'
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            refs = [writer.add(first), writer.add(second)]
+        restored = list(iter_prepared_objects(target))
+        self.assertEqual(refs, [first['prepared_id'], first['prepared_id']])
+        self.assertEqual(len(restored), 1)
+        self.assertTrue(restored[0] == first, 'first object metadata was replaced')
+        self.assertEqual(second['source']['attempt_id'], 'PUBLIC-SECOND-ATTEMPT')
+
+    def test_inconsistent_prepared_bytes_and_bindings_are_rejected_even_for_duplicate_ids(self):
+        import copy
+        from t0_catalog import PreparedObjectWriter
+        original = self.originals()[0]
+        with PreparedObjectWriter(self.work / 'store') as writer:
+            writer.add(original)
+            for field, value in (('wire_utf8', original['wire_utf8'] + ' '),
+                                 ('count_utf8', original['count_utf8'] + ' '),
+                                 ('prepared_id', 'f' * 64), ('mapper_version', 'unknown-mapper')):
+                changed = copy.deepcopy(original)
+                changed[field] = value
+                with self.subTest(field=field), self.assertRaises(ValueError):
+                    writer.add(changed)
+            changed = copy.deepcopy(original)
+            changed['catalog_metadata']['tool_versions'] = {'PUBLIC-CHANGED': 'invalid'}
+            with self.assertRaises(ValueError):
+                writer.add(changed)
+
+    def test_legacy_public_objects_remain_readable_without_rewriting_them(self):
+        from t0_catalog import iter_prepared_objects
+        legacy = PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline'
+        self.assertTrue(list(iter_prepared_objects(legacy)) == self.originals(), 'legacy prepared objects changed')
+
+    def test_reader_rejects_corrupt_pack_index_projection_and_identity(self):
+        import copy
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            for value in self.originals()[:2]:
+                writer.add(value)
+        path = target / 'objects/manifest.json'
+        manifest = json.loads(path.read_bytes())
+        changes = [('pack_sha256', '0' * 64), ('codec', 'unknown'), ('count_projection', 'unknown'),
+                   ('count_omit', ['input']), ('schema_version', 'unknown')]
+        for field, value in changes:
+            changed = copy.deepcopy(manifest)
+            changed[field] = value
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                list(iter_prepared_objects(target))
+        for field, value in (('offset', 1), ('bytes', -1), ('raw_bytes', 16 * 1024**2 + 1), ('count_bytes', 0)):
+            changed = copy.deepcopy(manifest)
+            changed['records'][0][field] = value
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            with self.subTest(index_field=field), self.assertRaises(ValueError):
+                list(iter_prepared_objects(target))
+        for field in ('prepared_id', 'wire_sha256', 'count_payload_sha256', 'role_schema_sha256'):
+            changed = copy.deepcopy(manifest)
+            changed['records'][0]['metadata'][field] = 'f' * 64
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            with self.subTest(metadata_field=field), self.assertRaises(ValueError):
+                list(iter_prepared_objects(target))
+        for case in ('overlap', 'duplicate'):
+            changed = copy.deepcopy(manifest)
+            if case == 'overlap':
+                changed['records'][1]['offset'] = 0
+            else:
+                changed['records'].append(copy.deepcopy(changed['records'][0]))
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            with self.subTest(case=case), self.assertRaises(ValueError):
+                list(iter_prepared_objects(target))
+        path.write_text(json.dumps(manifest), encoding='utf-8')
+        pack = target / 'objects/requests.pack'
+        pack.write_bytes(pack.read_bytes()[:-1])
+        with self.assertRaises(ValueError):
+            list(iter_prepared_objects(target))
+
+    def test_interrupted_writer_keeps_complete_prefix_and_marks_store_incomplete(self):
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        target = self.work / 'store'
+        original = self.originals()[0]
+        with self.assertRaises(RuntimeError):
+            with PreparedObjectWriter(target) as writer:
+                writer.add(original)
+                raise RuntimeError('PUBLIC-STOP')
+        manifest = json.loads((target / 'objects/manifest.json').read_bytes())
+        self.assertFalse(manifest['complete'])
+        self.assertEqual(manifest['reason'], 'RuntimeError')
+        self.assertEqual(len(manifest['records']), 1)
+        self.assertGreater((target / 'objects/requests.pack').stat().st_size, 0)
+        with self.assertRaises(ValueError):
+            list(iter_prepared_objects(target))
+
+    def test_failed_filesystem_write_does_not_publish_an_unwritten_object(self):
+        import io
+        from unittest.mock import patch
+        from t0_catalog import PreparedObjectWriter
+        original_open = io.open
+
+        class FailingDisk:
+            def __init__(self, stream):
+                self.stream, self.writes = stream, 0
+
+            def __getattr__(self, name):
+                return getattr(self.stream, name)
+
+            def write(self, value):
+                self.writes += 1
+                if self.writes == 2:
+                    raise OSError('PUBLIC disk write limit')
+                return self.stream.write(value)
+
+        def opened(path, mode='r', *args, **kwargs):
+            stream = original_open(path, mode, *args, **kwargs)
+            return FailingDisk(stream) if Path(path).name == 'requests.pack' and mode == 'xb' else stream
+
+        target = self.work / 'store'
+        originals = self.originals()[:2]
+        with patch('io.open', opened), self.assertRaises(OSError):
+            with PreparedObjectWriter(target) as writer:
+                for value in originals:
+                    writer.add(value)
+        manifest = json.loads((target / 'objects/manifest.json').read_bytes())
+        self.assertFalse(manifest['complete'])
+        self.assertEqual(len(manifest['records']), 1)
+        self.assertEqual(manifest['records'][0]['metadata']['prepared_id'], originals[0]['prepared_id'])
+
+    def test_storage_reproduction_is_byte_stable_without_expanding_plans(self):
+        from t0_catalog import PreparedObjectWriter
+        originals = self.originals()
+        for name in ('first', 'second'):
+            with PreparedObjectWriter(self.work / name) as writer:
+                for value in originals:
+                    writer.add(value)
+        for name in ('requests.pack', 'manifest.json'):
+            self.assertEqual((self.work / 'first/objects' / name).read_bytes(),
+                             (self.work / 'second/objects' / name).read_bytes())
+
+    def test_oversize_W_is_kept_in_full_as_incomplete_evidence(self):
+        import copy
+        import zlib
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        value = copy.deepcopy(self.originals()[0])
+        for body_key, text_key, sha_key in (('wire_body', 'wire_utf8', 'wire_sha256'),
+                                          ('count_body', 'count_utf8', 'count_payload_sha256')):
+            value[body_key]['input'][0]['content'] += 'X' * (16 * 1024**2)
+            value[text_key] = json.dumps(value[body_key], ensure_ascii=False, sort_keys=True,
+                                        separators=(',', ':'), allow_nan=False)
+            value[sha_key] = hashlib.sha256(value[text_key].encode()).hexdigest()
+        value['wire_bytes'] = len(value['wire_utf8'].encode())
+        value['prepared_id'] = hashlib.sha256(json.dumps({k: value[k] for k in
+            ('wire_sha256', 'count_payload_sha256', 'mapper_version', 'tool_schema_sha256', 'role_schema_sha256', 'project_id')},
+            ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        target = self.work / 'store'
+        with self.assertRaises(ValueError):
+            with PreparedObjectWriter(target) as writer:
+                writer.add(value)
+        manifest = json.loads((target / 'objects/manifest.json').read_bytes())
+        self.assertFalse(manifest['complete'])
+        self.assertEqual(len(manifest['records']), 1)
+        pack = (target / 'objects/requests.pack').read_bytes()
+        self.assertEqual(zlib.decompress(pack), value['wire_utf8'].encode())
+        with self.assertRaises(ValueError):
+            list(iter_prepared_objects(target))
+
+    def test_independent_cli_accepts_object_storage_without_accepting_a_full_catalog(self):
+        from t0_catalog import PreparedObjectWriter
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            for value in self.originals():
+                writer.add(value)
+        for case, directory in (('new', target), ('legacy', PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline')):
+            code, result = self.check_objects(directory, case + '.json')
+            self.assertEqual(code, 0, result)
+            self.assertEqual(result['status'], 'object_store_verified_only')
+            self.assertEqual(result['objects_verified'], 26)
+            self.assertFalse(result['full_catalog_accepted'])
+            self.assertEqual(result['provider_api_calls'], {'count': 0, 'generate': 0, 'other': 0})
+
+    def test_recompute_rebuilds_component_digests_without_reading_or_writing_the_store(self):
+        import io
+        from unittest.mock import patch
+        from t0_catalog import PreparedObjectWriter
+        values, target = self.originals(), self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            for value in values:
+                writer.add(value)
+        expected = {'objects/' + p.name: {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
+                    for p in (target / 'objects').iterdir()}
+        original_open = io.open
+
+        def opened(path, *args, **kwargs):
+            if isinstance(path, (str, os.PathLike)) and Path(path).is_relative_to(target):
+                raise AssertionError('recompute touched original store')
+            return original_open(path, *args, **kwargs)
+
+        with patch('io.open', opened):
+            with PreparedObjectWriter(target, recompute=True) as rebuilt:
+                for value in values:
+                    rebuilt.add(value)
+        self.assertEqual(rebuilt.components, expected)
+
+    def test_independent_cli_rejects_corrupt_storage_and_partial_without_accepting_catalog(self):
+        import copy
+        from t0_catalog import PreparedObjectWriter
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            for value in self.originals()[:2]:
+                writer.add(value)
+        path = target / 'objects/manifest.json'
+        manifest = json.loads(path.read_bytes())
+        for index, (field, value) in enumerate((('codec', 'unknown'), ('count_omit', ['input']),
+                ('complete', False), ('pack_sha256', '0' * 64))):
+            changed = copy.deepcopy(manifest)
+            changed[field] = value
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            code, result = self.check_objects(target, 'reject-' + str(index) + '.json')
+            self.assertEqual(code, 2)
+            self.assertFalse(result['complete'])
+        for index, field in enumerate(('offset', 'raw_bytes', 'count_bytes')):
+            changed = copy.deepcopy(manifest)
+            changed['records'][0][field] = -1
+            path.write_text(json.dumps(changed), encoding='utf-8')
+            code, result = self.check_objects(target, 'index-' + str(index) + '.json')
+            self.assertEqual(code, 2)
+            self.assertFalse(result['complete'])
+        changed = copy.deepcopy(manifest)
+        changed['records'][0]['metadata']['prepared_id'] = 'f' * 64
+        path.write_text(json.dumps(changed), encoding='utf-8')
+        code, result = self.check_objects(target, 'identity.json')
+        self.assertEqual(code, 2)
+        self.assertFalse(result['complete'])
+
+    def test_full_checker_accepts_storage_conversion_but_still_rejects_incomplete_coverage(self):
+        from t0_catalog import PreparedObjectWriter
+        legacy = PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline'
+        target = self.work / 'catalog'
+        with PreparedObjectWriter(target) as writer:
+            for value in self.originals():
+                writer.add(value)
+        catalog = json.loads((legacy / 'catalog.json').read_bytes())
+        catalog['schema_version'] = 'T0-request-catalog-0.2.0'
+        for name in list(catalog['components']):
+            if name.startswith('objects/'):
+                del catalog['components'][name]
+            else:
+                (target / name).write_bytes((legacy / name).read_bytes())
+        catalog['components'].update(writer.components)
+        (target / 'catalog.json').write_text(json.dumps(catalog), encoding='utf-8')
+        code, result = self.check_objects(target, 'full.json', 'check')
+        self.assertEqual(code, 0, result)
+        coverage = json.loads((target / 'coverage.json').read_bytes())
+        coverage.update(complete=False, reasons=['PUBLIC-incomplete'])
+        blob = json.dumps(coverage).encode()
+        (target / 'coverage.json').write_bytes(blob)
+        catalog['components']['coverage.json'] = {'bytes': len(blob), 'sha256': hashlib.sha256(blob).hexdigest()}
+        (target / 'catalog.json').write_text(json.dumps(catalog), encoding='utf-8')
+        code, result = self.check_objects(target, 'partial-full.json', 'check')
+        self.assertEqual(code, 2)
+        self.assertIn('catalog_incomplete', result['errors'])
+
+    def test_development_validation_cli_denies_offline_before_reading_development_objects(self):
+        import contextlib
+        import io
+        import runpy
+        from unittest.mock import patch
+        script = PROJECT / '.scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py'
+        original_open = io.open
+
+        def opened(path, *args, **kwargs):
+            if isinstance(path, (str, os.PathLike)) and Path(path).is_relative_to(PROJECT / 'data/ticket12-t0/catalog-0.1.0'):
+                raise AssertionError('development read before program acceptance')
+            return original_open(path, *args, **kwargs)
+
+        output = io.StringIO()
+        with patch('io.open', opened), patch.object(sys, 'argv', [str(script), '--validate-storage']), contextlib.redirect_stdout(output):
+            with self.assertRaises(SystemExit) as stopped:
+                runpy.run_path(str(script), run_name='__main__')
+        self.assertEqual(stopped.exception.code, 2)
+        self.assertEqual(json.loads(output.getvalue())['reason'], 't0_domain_required')
+
+    def test_storage_does_not_grant_prepare_generation_or_count_export_permissions(self):
+        import contextlib
+        import io
+        from model_adapter import ModelAdapter
+        from provider_openai import MODEL
+        from t0_catalog import PreparedObjectWriter, main
+        from token_counting import main as count_main
+        target = self.work / 'store'
+        with PreparedObjectWriter(target) as writer:
+            writer.add(self.originals()[0])
+
+        def sender(*args, **kwargs):
+            raise AssertionError('supplier sender reached')
+
+        adapter = ModelAdapter(sender, capability_binding={'execution_kind': 't0_development_catalog',
+            'model_id': MODEL, 'provenance': 'synthetic', 'project_id': 'UNBOUND-T0-DEV-CATALOG'})
+        denied = adapter.invoke({'schema_version': 'rsm-model-prepare-0.1.0', 'execution_kind': 't0_development_catalog'})
+        self.assertEqual(denied['status'], 'preflight_denied')
+        self.assertFalse(denied['attempted'])
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            code = count_main(['export', '--prepared', str(target / 'objects/manifest.json'),
+                               '--output', str(self.work / 'count.json')])
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(output.getvalue())['provider_requests_sent'], 0)
+        self.assertFalse((self.work / 'count.json').exists())
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = main(['prepare', '--authorization',
+                str(PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/public-baseline/authorization.json'),
+                '--output', str(self.work / 'forbidden-generation')])
+        self.assertEqual(code, 2)
+        report = json.loads((self.work / 'forbidden-generation/run.json').read_bytes())
+        self.assertIn('storage_package_new_plans_forbidden', report['reasons'])
+        self.assertFalse((self.work / 'forbidden-generation/roots.jsonl').exists())
 
 
 if __name__ == '__main__':
