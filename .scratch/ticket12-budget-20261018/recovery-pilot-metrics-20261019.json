@@ -1,0 +1,239 @@
+{
+  "status": "T0_A_recovery_pilot_failed_not_accepted",
+  "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+  "by_root": [
+    {
+      "phase": "prepare",
+      "root": "A",
+      "plans": 3,
+      "attempts": 3,
+      "N": 34,
+      "W": 46087385,
+      "P": 46084699,
+      "seconds": 5.852902399958111,
+      "read_transfer_bytes": 30514587,
+      "write_transfer_bytes": 45873810,
+      "new_retained_root_artifact_bytes": 45865228,
+      "sampled_private_peak": 306561024,
+      "process_peak_upper": 312672256
+    },
+    {
+      "phase": "resume",
+      "root": "A",
+      "plans": 27,
+      "attempts": 27,
+      "N": 242,
+      "W": 213531273,
+      "P": 213512155,
+      "seconds": 26.356609199894592,
+      "read_transfer_bytes": 274265056,
+      "write_transfer_bytes": 109781154,
+      "new_retained_root_artifact_bytes": 109748410,
+      "sampled_private_peak": 1954639872,
+      "process_peak_upper": 1958477824
+    },
+    {
+      "phase": "resume",
+      "root": "B",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 264335590,
+      "P": 264313786,
+      "seconds": 27.479952199733816,
+      "read_transfer_bytes": 52430667,
+      "write_transfer_bytes": 145878489,
+      "new_retained_root_artifact_bytes": 145838089,
+      "sampled_private_peak": 2208538624,
+      "process_peak_upper": 2216681472
+    },
+    {
+      "phase": "resume",
+      "root": "C",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 257335590,
+      "P": 257313786,
+      "seconds": 26.391948900010902,
+      "read_transfer_bytes": 24488451,
+      "write_transfer_bytes": 124292586,
+      "new_retained_root_artifact_bytes": 124256234,
+      "sampled_private_peak": 2238853120,
+      "process_peak_upper": 2246774784
+    },
+    {
+      "phase": "resume",
+      "root": "D",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 257349922,
+      "P": 257328118,
+      "seconds": 27.29870429984294,
+      "read_transfer_bytes": 24652071,
+      "write_transfer_bytes": 152839814,
+      "new_retained_root_artifact_bytes": 152799046,
+      "sampled_private_peak": 2277007360,
+      "process_peak_upper": 2285137920
+    },
+    {
+      "phase": "recompute",
+      "root": "A",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 259618658,
+      "P": 259596854,
+      "seconds": 30.716110899986234,
+      "read_transfer_bytes": 305436745,
+      "write_transfer_bytes": 55688203,
+      "new_retained_root_artifact_bytes": 55672449,
+      "sampled_private_peak": 2151428096,
+      "process_peak_upper": 2155266048
+    },
+    {
+      "phase": "recompute",
+      "root": "B",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 264335590,
+      "P": 264313786,
+      "seconds": 27.993473900016397,
+      "read_transfer_bytes": 24987321,
+      "write_transfer_bytes": 50451247,
+      "new_retained_root_artifact_bytes": 50435953,
+      "sampled_private_peak": 2204061696,
+      "process_peak_upper": 2212192256
+    },
+    {
+      "phase": "recompute",
+      "root": "C",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 257335590,
+      "P": 257313786,
+      "seconds": 26.23024149995763,
+      "read_transfer_bytes": 25156341,
+      "write_transfer_bytes": 39913020,
+      "new_retained_root_artifact_bytes": 39899750,
+      "sampled_private_peak": 2237939712,
+      "process_peak_upper": 2246049792
+    },
+    {
+      "phase": "recompute",
+      "root": "D",
+      "plans": 30,
+      "attempts": 30,
+      "N": 276,
+      "W": 257349922,
+      "P": 257328118,
+      "seconds": 25.87507960019866,
+      "read_transfer_bytes": 25325361,
+      "write_transfer_bytes": 54580453,
+      "new_retained_root_artifact_bytes": 54564975,
+      "sampled_private_peak": 2281951232,
+      "process_peak_upper": 2288640000
+    }
+  ],
+  "stages": [
+    {
+      "label": "recovery_pilot_G0_001_snapshot",
+      "seconds": 6.839783699950203,
+      "exit_code": 0,
+      "job_read": 1032190132,
+      "job_write": 1681555,
+      "guard_read": 118342798,
+      "guard_write": 1441,
+      "job_peak": 47738880
+    },
+    {
+      "label": "recovery_pilot_G1_001_prepare",
+      "seconds": 6.7668119999580085,
+      "exit_code": 2,
+      "job_read": 567608390,
+      "job_write": 45888365,
+      "guard_read": 117407514,
+      "guard_write": 201,
+      "job_peak": 312672256
+    },
+    {
+      "label": "recovery_pilot_G1_002_resume",
+      "seconds": 168.25138809997588,
+      "exit_code": 0,
+      "job_read": 2082161129,
+      "job_write": 913460035,
+      "guard_read": 2919188032,
+      "guard_write": 214,
+      "job_peak": 2285137920
+    },
+    {
+      "label": "recovery_pilot_G1_003_recompute",
+      "seconds": 113.37759329995606,
+      "exit_code": 2,
+      "job_read": 898819461,
+      "job_write": 200636285,
+      "guard_read": 1980014311,
+      "guard_write": 218,
+      "job_peak": 2288640000
+    },
+    {
+      "label": "recovery_pilot_G1_004_independent_check",
+      "seconds": 29.50393589999294,
+      "exit_code": 1,
+      "job_read": 1848075943,
+      "job_write": 2251,
+      "guard_read": 520166512,
+      "guard_write": 225,
+      "job_peak": 589553664
+    }
+  ],
+  "current_pilot_bytes": 1155910870,
+  "current_pilot_files": 1336,
+  "formal_components": {
+    "coverage.json": {
+      "bytes": 890,
+      "sha256": "7e14a0ca048f2ee800dadb28ed4577e58f7a8fd3e0d92dede17c7a6260d7d218"
+    },
+    "dependencies.jsonl": {
+      "bytes": 187806182,
+      "sha256": "5855be03ec33a06a83931b3e87028c9fcb1787acad569bac8d584d4b139d4ffc"
+    },
+    "objects/manifest.json": {
+      "bytes": 1544355,
+      "sha256": "cd543b7fad825d08c2c051c562d4f1efb633a969b1ff005ec3b4a4c815cb3b56"
+    },
+    "objects/requests.pack": {
+      "bytes": 162222640,
+      "sha256": "1b9217edb737168fbd9dae27f9ea529bac4a1bd04ce38f2dd85dd31bf52d5da6"
+    },
+    "requests.jsonl": {
+      "bytes": 21063904,
+      "sha256": "3b1c121431f8e2ea6738adce7d06f4745a95296b4ee435a100131d091f67d3ab"
+    },
+    "roots.jsonl": {
+      "bytes": 4104548,
+      "sha256": "2e1569c935024be0c66e6e70412afacc0bf09593d3c7129c70b4a4c326c2a13a"
+    },
+    "source-index.json": {
+      "bytes": 15995,
+      "sha256": "e7de947e6920eb78cc0ab6e9e1cad05912bc23945c6a9d448f98bb24a1936e82"
+    }
+  },
+  "compiled_attempts": [
+    {
+      "scope": "development_catalog_only",
+      "count": 240
+    },
+    {
+      "scope": "public_catalog_test",
+      "count": 48
+    }
+  ],
+  "original_T0_status": "T0_A_incomplete",
+  "ticket12_open": true,
+  "independent_report_exists": false,
+  "prefix_unchanged": true
+}

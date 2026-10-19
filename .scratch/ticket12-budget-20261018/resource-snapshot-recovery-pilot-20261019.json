@@ -1,0 +1,54 @@
+{
+  "schema_version": "t0-recovery-pilot-resource-snapshot-0.1.0",
+  "status": "T0_A_recovery_pilot_failed_not_accepted",
+  "time": {
+    "G1": 318.9760250998829,
+    "G0": 6.839783699950203,
+    "t0": {
+      "historical_seconds": 1802.1127592999999,
+      "current_seconds": 2127.9285680998332,
+      "package_seconds": 325.81580879983335,
+      "total_limit": 3660,
+      "package_limit": 1800
+    },
+    "offline": {
+      "historical_seconds": 234.88381950024632,
+      "current_seconds": 273.6114838003705,
+      "package_seconds": 38.72766430012416,
+      "total_limit": 1800,
+      "package_limit": 900
+    }
+  },
+  "memory": {
+    "guard_reserved": 67108864,
+    "job_peak": 2288640000,
+    "limit": 4294967296,
+    "combined_upper": 2355748864
+  },
+  "disk": {
+    "charged_attempted_writes_and_precharges_bytes": 1239874434,
+    "other_audit_control_launcher_upper_bytes": 2347309,
+    "cross_domain_upper_bytes": 1242221743,
+    "limit_bytes": 6442450944,
+    "reserved_closeout_bytes": 536870912,
+    "public_charged_bytes": 10352722,
+    "public_limit": 536870912,
+    "pilot_charged_bytes": 1161161441,
+    "pilot_limit": 4294967296,
+    "pilot_retained_bytes": 1155910870,
+    "native_edit_control_precharge_bytes": 67108864,
+    "final_Git_commit_precharge_bytes": 1048576,
+    "new_observed_Git_charged_this_pass": 0,
+    "measurement": "cumulative attempted logical writes plus observed Git and conservative native/control/temporary bounds; no deletion refund; not physical device IO"
+  },
+  "attempts": {
+    "original_diagnostic_reserved": 12,
+    "pilot": 240,
+    "PUBLIC_limit": 48,
+    "pilot_limit": 360,
+    "PUBLIC": 48
+  },
+  "inflight": false,
+  "original_T0_status": "T0_A_incomplete",
+  "ticket12_open": true
+}

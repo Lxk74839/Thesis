@@ -1,0 +1,36 @@
+{
+  "schema_version": "t0-recovery-pilot-closeout-0.1.0",
+  "status": "T0_A_recovery_pilot_failed_not_accepted",
+  "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+  "protected_files": 1170,
+  "program_sources": 15,
+  "changed": [],
+  "ledger_prefixes": [
+    {
+      "domain": "offline",
+      "bytes": 313743,
+      "unchanged": true
+    },
+    {
+      "domain": "t0",
+      "bytes": 10439,
+      "unchanged": true
+    }
+  ],
+  "old_read_metadata_stat_unchanged": true,
+  "identity_key_stamp_unchanged": true,
+  "identity_key_body_reads_this_check": 0,
+  "original_diagnostic_reserved_plans": 12,
+  "logical_bytes_hashed": 524656557,
+  "native_check_seconds": 1.0762958,
+  "native_process_peak_paged_bytes": 81281024,
+  "api_calls": {
+    "count": 0,
+    "other": 0,
+    "generate": 0
+  },
+  "full_catalog_accepted": false,
+  "ticket12_open": true,
+  "original_T0_status": "T0_A_incomplete",
+  "no_inflight": true
+}

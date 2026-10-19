@@ -1,0 +1,104 @@
+{
+  "schema_version": "t0-recovery-pilot-execution-0.1.0",
+  "status": "T0_A_recovery_pilot_failed_not_accepted",
+  "base": "05889b62f3b4eca984416acbd3f0d48a1f4d4b35",
+  "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+  "program_review": {
+    "Spec": 0,
+    "Standards": 0
+  },
+  "G0_passed": true,
+  "G1_prepared_keys": 120,
+  "first_committed": 3,
+  "resumed": 117,
+  "prefix_unchanged": true,
+  "N": 1104,
+  "U": 1104,
+  "W": 1038639760,
+  "P": 1038552544,
+  "public_compile_attempts": 48,
+  "development_compile_attempts": 240,
+  "reproduction_match": false,
+  "changed_components": [
+    "objects/requests.pack",
+    "objects/manifest.json",
+    "requests.jsonl"
+  ],
+  "independent_check": {
+    "reason": "AttributeError: nonempty scope marker raw_utf8=null was encoded as if it were a body",
+    "success_report": false,
+    "exit_code": 1
+  },
+  "old_metadata_comparison": {
+    "prepared_id_mismatches": 39,
+    "old_object_bodies_read": 0,
+    "affected": [
+      "B/Q1/M",
+      "B/Q1/S",
+      "C/Q1/M",
+      "C/Q1/S"
+    ],
+    "W_P_length_mismatches": 0,
+    "old_objects_admitted": 0,
+    "requests_compared": 585
+  },
+  "artifacts": {
+    "data/ticket12-t0/recovery-pilot-20261019/source-receipt.json": {
+      "path": "data/ticket12-t0/recovery-pilot-20261019/source-receipt.json",
+      "bytes": 1604355,
+      "sha256": "4464a214b9daef5741fd73384b1c3ad8aab461e32f407cb88c1a4b9d0a2212da"
+    },
+    "data/ticket12-t0/recovery-pilot-20261019/authorization-recovery-pilot-20261019.json": {
+      "path": "data/ticket12-t0/recovery-pilot-20261019/authorization-recovery-pilot-20261019.json",
+      "bytes": 4693,
+      "sha256": "3db263f5a8e36917b7d5e607bf9025963a007bfdab6984e4710ae02fbc755e9c"
+    },
+    "data/ticket12-t0/recovery-pilot-20261019/pilot/catalog.json": {
+      "path": "data/ticket12-t0/recovery-pilot-20261019/pilot/catalog.json",
+      "bytes": 4619,
+      "sha256": "f14f92bbf730f8500ccdce991ad45ece2246a88f96a6332caf7dda3fbc2003ae"
+    },
+    "data/ticket12-t0/recovery-pilot-20261019/pilot/checkpoint.json": {
+      "path": "data/ticket12-t0/recovery-pilot-20261019/pilot/checkpoint.json",
+      "bytes": 58491,
+      "sha256": "8bdee77630beefe571fdc52a9f87567db176500b89c920570b3641af0031d141"
+    },
+    "data/ticket12-t0/recovery-pilot-20261019/pilot/checks/reproduction.json": {
+      "path": "data/ticket12-t0/recovery-pilot-20261019/pilot/checks/reproduction.json",
+      "bytes": 407,
+      "sha256": "69ca853ee77851168548c9117f6f588cdd6411ac5301491b3247be6a38a6fd53"
+    },
+    "data/recommendation-runtime-audit/ticket12-t0/recovery_pilot_G1_004_independent_check.txt": {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/recovery_pilot_G1_004_independent_check.txt",
+      "bytes": 2251,
+      "sha256": "68741a7c069538d78a430737400ba368208ea68f4536948fa131960939751452"
+    },
+    ".scratch/ticket12-budget-20261018/recovery-pilot-metrics-20261019.json": {
+      "path": ".scratch/ticket12-budget-20261018/recovery-pilot-metrics-20261019.json",
+      "bytes": 6783,
+      "sha256": "51f79b5516a75032dd2864c52c7113b8744c84ba8eb517edc4ed5ef268dd927f"
+    },
+    ".scratch/ticket12-budget-20261018/closeout-recovery-pilot-20261019.json": {
+      "path": ".scratch/ticket12-budget-20261018/closeout-recovery-pilot-20261019.json",
+      "bytes": 962,
+      "sha256": "49cfdb6f7db7620cde16513211550cca9283dc788af092ba76d212208c325adb"
+    }
+  },
+  "stopped_on_gate_failure": true,
+  "further_execution_under_this_result": false,
+  "new_resource_authorized": false,
+  "full_catalog_accepted": false,
+  "original_T0_status": "T0_A_incomplete",
+  "ticket12_open": true,
+  "G2_to_G6_executed": false,
+  "provider_api_calls": {
+    "count": 0,
+    "other": 0,
+    "generate": 0
+  },
+  "report": {
+    "path": ".scratch/ticket12-budget-20261018/execution-t0-a-recovery-pilot-20261019.md",
+    "bytes": 11197,
+    "sha256": "2b28f6833fe47c9f8c9291b7ffe12a777416982ad9479ae53f267449eeaabb0c"
+  }
+}
