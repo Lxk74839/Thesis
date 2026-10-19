@@ -1,0 +1,107 @@
+{
+  "schema_version": "t0-a-recovery-authorization-0.1.0",
+  "approved": false,
+  "status": "awaiting_program_acceptance",
+  "scope": "development_catalog_only",
+  "operation": "controlled_recovery",
+  "execution_stage": "pilot",
+  "base": "05889b62f3b4eca984416acbd3f0d48a1f4d4b35",
+  "candidate": null,
+  "program_acceptance": null,
+  "contract": {
+    "path": ".scratch/ticket12-budget-20261018/t0-a-controlled-recovery-contract-20261019.md",
+    "bytes": 33533,
+    "sha256": "6077490cfe64548d16f628ae2a2ab0677ba8b5754117812bb1873622fc868e70"
+  },
+  "human_confirmation": {
+    "path": ".scratch/ticket12-budget-20261018/authorization-recovery-pilot-20261019.md",
+    "bytes": 2673,
+    "sha256": "1853fde92162f3838da0de90b98a975f847a330f730bfaf3a1c742841a0af761"
+  },
+  "sources": {
+    "accounts": {
+      "bytes": 278669,
+      "path": "data/splits/grain-A-1.1.15/user-split-1.0.0/accounts.jsonl",
+      "sha256": "05fbfdfcb5829fe09c71279748d9707ac1e25c8af6d496113ed804c221c2cbb4"
+    },
+    "identity_key": {
+      "bytes": 32,
+      "path": "data/task-inputs/preference-task-1.0.0/id-key.bin",
+      "sha256": "d625d273299725dbd986e906d6573b0b32b626f928df64d95dfea8c3662af426"
+    },
+    "joint_acceptance": {
+      "bytes": 6134,
+      "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0-acceptance.json",
+      "sha256": "9937ff98a530b0b51cb072fc9d055da9bc11f006dcca8ac4296500bed3200976"
+    },
+    "joint_config": {
+      "bytes": 15474,
+      "path": "config/joint-task-package-0.1.0.json",
+      "sha256": "c8f6655ff21f189f28df316559208e29975eb3fa315c1373b50ec2802a4e6382"
+    },
+    "joint_record": {
+      "bytes": 3993,
+      "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0.json",
+      "sha256": "2226fb160a0e25cdf4c1ecf3b7bf213197de144bbd97286311b0bf0f58f9eb58"
+    },
+    "model_candidates": {
+      "bytes": 462812910,
+      "path": "data/joint-tasks/grain-A-1.1.15/joint-task-package-0.1.0/model/candidates.jsonl",
+      "sha256": "1df91556bc593668244795ee8077a55fa836d5b221a507867bd6f3662400462f"
+    },
+    "model_catalog": {
+      "bytes": 186370,
+      "path": "data/joint-tasks/grain-A-1.1.15/joint-task-package-0.1.0/model/catalog.jsonl",
+      "sha256": "30cf9a8c3cde2f2b7e9d8037b760922a36f478c9fcbcbd0248f279d581ab5339"
+    },
+    "model_manifest": {
+      "bytes": 392,
+      "path": "data/joint-tasks/grain-A-1.1.15/joint-task-package-0.1.0/model/manifest.json",
+      "sha256": "6ff11d9d409a37cfc3f6ef4fd2ba0b3a71a5d5c0d37ca3a8287772c05c7ac63d"
+    },
+    "model_roots": {
+      "bytes": 1570513,
+      "path": "data/joint-tasks/grain-A-1.1.15/joint-task-package-0.1.0/model/roots.jsonl",
+      "sha256": "f7d129d660cafa0db8cf61120058222aece379fe5ed50f274a430b4aacfd54ee"
+    },
+    "preference_config": {
+      "bytes": 1015,
+      "path": "config/preference-task-1.0.1.json",
+      "sha256": "834a19ed0d369d5e0e56a0243b23bf708c8e76798d882eff118adc3449ee4b2f"
+    },
+    "split_acceptance": {
+      "bytes": 13458,
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0-acceptance.json",
+      "sha256": "8af692d6409c8136bd67e6d5fbb696c9e725e53aea958ea639417153382d45ad"
+    },
+    "split_record": {
+      "bytes": 5262,
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0.json",
+      "sha256": "2da2aede2c3057c914621bfaf40d2d5ba81b3ad1a1b694451213ea8358a21131"
+    },
+    "view_bindings": {
+      "bytes": 45544436,
+      "path": "data/joint-tasks/grain-A-1.1.15/joint-task-package-0.1.0/view-bindings.jsonl",
+      "sha256": "e24f120e7b3d87c1eb6adf760ecf4cd377728fb21f1a2f9010be08b821b3c3ae"
+    }
+  },
+  "old_catalog": {
+    "path": "data/ticket12-t0/catalog-0.1.0/catalog.json",
+    "bytes": 3851579,
+    "sha256": "010c4157ca700744b85fec212eef318dc36b81ec29bae291642fcf7846c8824e"
+  },
+  "api_limits": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  },
+  "approved_stages": [
+    "G0",
+    "G1"
+  ],
+  "full_recovery_authorized": false,
+  "resource_package": {
+    "path": ".scratch/ticket12-budget-20261018/recovery-pilot-package-20261019.json",
+    "sha256": "6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b"
+  }
+}
