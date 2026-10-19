@@ -8,6 +8,18 @@ REQUEST_KEYS = set('schema_version execution_kind request_id attempt_id run_id s
                    'messages tools output_kind max_output_tokens input_token_upper_bound deadline_ms reservation_id'.split())
 
 
+def verify_on_demand_prepared(prepared):
+    from provider_openai import sha
+    try:
+        return (set(prepared) == {'schema_version', 'status', 'project_id', 'model_id', 'request', 'provenance', 'prepared_id'}
+            and prepared['schema_version'] == 'on-demand-fixture-prepared-0.1.0'
+            and prepared['status'] == 'prepared' and prepared['provenance'] == 'fixture'
+            and prepared['model_id'] is None and prepared['request']['model_id'] is None
+            and prepared['prepared_id'] == sha({k: v for k, v in prepared.items() if k != 'prepared_id'}))
+    except (ValueError, TypeError, KeyError):
+        return False
+
+
 def require(value):
     if not value:
         raise ValueError('invalid_model_contract')
@@ -102,6 +114,20 @@ class ModelAdapter:
     def prepare(self, request):
         from provider_openai import MODEL, prepare
         try:
+            if self.binding.get('execution_kind') == 'on_demand_public':
+                from provider_openai import sha
+                require(self.binding == {'execution_kind': 'on_demand_public', 'model_id': None,
+                    'provenance': 'fixture', 'project_id': self.binding.get('project_id')}
+                    and isinstance(self.binding['project_id'], str) and bool(self.binding['project_id']))
+                require(set(request) == (REQUEST_KEYS - {'input_token_upper_bound', 'deadline_ms', 'reservation_id'}) | {'output_schema'})
+                require(request['execution_kind'] == 'on_demand_public' and request['model_id'] is None)
+                validate_request({k: v for k, v in request.items() if k != 'output_schema'}, prepare_only=True)
+                result = {'schema_version': 'on-demand-fixture-prepared-0.1.0', 'status': 'prepared',
+                    'project_id': self.binding['project_id'], 'model_id': None,
+                    'request': copy.deepcopy(request), 'provenance': 'fixture'}
+                result['prepared_id'] = sha(result)
+                self.prepared[result['prepared_id']] = copy.deepcopy(result)
+                return result
             if request.get('schema_version') == 'rsm-model-prepare-0.1.0':
                 require(set(request) == (REQUEST_KEYS - {'input_token_upper_bound', 'deadline_ms', 'reservation_id'}) | {'output_schema'})
                 require(self.binding == {'execution_kind': 't0_development_catalog', 'model_id': MODEL,
@@ -131,13 +157,32 @@ class ModelAdapter:
             return error_result('preflight_denied', 'capability')
         if isinstance(request, dict) and request.get('schema_version') == 'rsm-model-request-0.3.0':
             return self._invoke_native(request)
+        demand = self.binding.get('execution_kind') == 'on_demand_public'
         try:
-            validate_request(request)
+            checked = copy.deepcopy(request)
+            if demand:
+                from provider_openai import sha
+                prepared = self.prepared.get(checked.pop('prepared_id'))
+                receipt = self.counter.receipts.get(checked.pop('count_receipt_id')) if self.counter is not None else None
+                output_schema = checked.pop('output_schema')
+                require(verify_on_demand_prepared(prepared) and receipt is not None
+                    and receipt['prepared_id'] == prepared['prepared_id'] and receipt['basis'] == 'fixture'
+                    and receipt['receipt_id'] == sha({k: v for k, v in receipt.items() if k != 'receipt_id'})
+                    and prepared['project_id'] == receipt['project_id'] == self.binding['project_id']
+                    and output_schema == prepared['request']['output_schema']
+                    and checked['input_token_upper_bound'] == receipt['input_tokens']
+                    and checked['attempt_id'] not in self.native_attempts)
+                require(all(checked[k] == v for k, v in prepared['request'].items()
+                            if k not in ('schema_version', 'output_schema')))
+            validate_request(checked)
         except (ValueError, TypeError, KeyError, AttributeError):
             return error_result('invalid_request', 'format')
-        if (self.binding != {'execution_kind': 'scripted_public', 'model_id': None, 'provenance': 'scripted'}
-                or request.get('execution_kind') != 'scripted_public' or request.get('model_id') is not None):
+        if ((not demand and self.binding != {'execution_kind': 'scripted_public', 'model_id': None, 'provenance': 'scripted'})
+                or request.get('execution_kind') != ('on_demand_public' if demand else 'scripted_public')
+                or request.get('model_id') is not None):
             return error_result('preflight_denied', 'capability')
+        if demand:
+            self.native_attempts.add(request['attempt_id'])
         try:
             raw = self.transport(copy.deepcopy(request))
         except (OSError, TimeoutError) as exc:
@@ -152,6 +197,8 @@ class ModelAdapter:
                 require(usage.get(subset) is None or usage[total] is None or usage[subset] <= usage[total])
         except (ValueError, TypeError, KeyError):
             return error_result('format_error', 'format', attempted=True, raw=copy.deepcopy(raw))
+        if demand and usage.get('input_tokens') is not None and usage['input_tokens'] != receipt['input_tokens']:
+            return error_result('usage_mismatch', 'unknown_usage', attempted=True, usage=usage, raw=copy.deepcopy(raw))
         try:
             require(isinstance(raw, dict) and set(raw) == {'request_id', 'model_id', 'finish_reason', 'message', 'usage', 'error'})
             require(raw['request_id'] == request['request_id'] and raw['model_id'] is None)
@@ -183,7 +230,8 @@ class ModelAdapter:
             return error_result('unknown_usage', 'unknown_usage', attempted=True, usage=usage, raw=copy.deepcopy(raw))
         return {'status': 'ok', 'request_id': request['request_id'], 'message': copy.deepcopy(raw['message']),
                 'usage': copy.deepcopy(raw['usage']), 'raw_response': copy.deepcopy(raw),
-                'usage_basis': 'synthetic', 'provenance': 'scripted', 'provider_requests_sent': 0,
+                'usage_basis': 'synthetic_fixture_units' if demand else 'synthetic',
+                'provenance': 'on_demand_public_fixture' if demand else 'scripted', 'provider_requests_sent': 0,
                 'attempted': True, 'usage_known': True, 'error': None}
 
     def _invoke_native(self, request):

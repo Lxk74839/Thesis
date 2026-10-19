@@ -19,10 +19,15 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
     from provider_openai import MODEL, role_output_schema
     batched = binding.get('orchestration') == 'batch32-0.1.0'
     queue = state['queue']
+    def originals(pack):
+        values = pack['originals'].values()
+        return sorted(values, key=lambda o: (o['registration']['target_kind'],
+            o['registration']['target_id'].encode('utf-8'), o['registration']['version'],
+            o['evidence_ref'].encode('utf-8'))) if binding['execution_kind'] == 'on_demand_public' else values
     facts = {parent: [{'data': json.loads(o['raw_utf8']), 'citation': {
         'evidence_ref': o['evidence_ref'], 'receipt_id': o['receipt_id'],
         'target_id': o['registration']['target_id'], 'version': o['registration']['version'], 'pointer': '/'}}
-        for o in pack['originals'].values()] for parent, pack in acquired['candidates'].items()}
+        for o in originals(pack)] for parent, pack in acquired['candidates'].items()}
     context = {'stage': stage, 'method': binding['method'],
         'current': queue[state['cursor']] if state['cursor'] < len(queue) and state['stop_reason'] is None else None,
         'necessary_clauses': binding['necessary_clauses'], 'facts': facts,
@@ -67,7 +72,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'request_id': request_id, 'attempt_id': request_id, 'run_id': binding['run_id'],
         'session_id': binding['run_id'] + ':' + effective, 'role': effective,
         'reply_to': state['messages'][-1]['role_message_id'] if state['messages'] else None,
-        'model_id': MODEL, 'messages': messages, 'tools': tools, 'output_kind': kind,
+        'model_id': None if binding['execution_kind'] == 'on_demand_public' else MODEL, 'messages': messages, 'tools': tools, 'output_kind': kind,
         'output_schema': role_output_schema(effective, kind, messages), 'max_output_tokens': output_cap}
 
 
@@ -102,6 +107,7 @@ class RecommendationRun:
         self.binding = copy.deepcopy(binding)
         self.batched = binding.get('orchestration') == 'batch32-0.1.0'
         self.native_fixture = binding.get('execution_kind') == 'openai_native_fixture'
+        self.on_demand = binding.get('execution_kind') == 'on_demand_public'
         self.evidence, self.model, self.budget = evidence, model, root_budget
         self.output_root = Path(output_root).resolve()
         if self.output_root != root_budget.journal_path.parent or evidence.root_budget is not root_budget:
@@ -131,6 +137,10 @@ class RecommendationRun:
                 contract_sha256='9cfd918e4b0e3e6316e2e0a62e6a42c8518c38ed990751448b2cbb215fcee08e')
             if self.model is not None and self.model.root_budget is None:
                 self.model.root_budget = root_budget
+        if self.on_demand:
+            self.state['preparations'] = []
+            self.state['versions'].update(runner='rsm-runner-on-demand-fixture-0.1.0',
+                adapter='rsm-model-adapter-on-demand-fixture-0.1.0')
         self.histories = {}
         self.call_ids = set()
         self.profile_batch_start = 0
@@ -146,8 +156,8 @@ class RecommendationRun:
 
     def _preflight(self):
         b = self.binding
-        valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
-            and b['execution_kind'] in ('scripted_public', 'openai_native_fixture') and b['fixture'] == 'public_runtime_adapter'
+        valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.3.0' if self.on_demand else 'rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
+            and b['execution_kind'] in ('scripted_public', 'openai_native_fixture', 'on_demand_public') and b['fixture'] == 'public_runtime_adapter'
             and b['execution_budget'] is None and b['execution_authorized'] is False
             and b['method'] in ('R', 'S', 'M') and b['arm'] in ('necessary', 'quality')
             and type(b['K']) is int and b['K'] == 10 and b['necessary_clauses'] == ['c1', 'c2']
@@ -161,6 +171,10 @@ class RecommendationRun:
                 and payload['H_sha256'] == b['H_sha256'] == digest(encoded(payload['H']))
                 and payload['request']['necessary_clauses'] == b['necessary_clauses'])
         source = Path(self.evidence.source.snapshot_ref['path']).resolve()
+        if self.on_demand:
+            valid = (valid and b.get('plan_source_scope') == 'public_fixture'
+                and b['root_task_id'].startswith('PUBLIC-')
+                and source.is_relative_to(PROJECT / '.tmp/recommendation-runtime'))
         valid = valid and any(source.is_relative_to(PROJECT / p) for p in
                               ('.tmp/recommendation-runtime', 'data/recommendation-runtime-audit'))
         if b['C']:
@@ -193,6 +207,9 @@ class RecommendationRun:
                 valid = (valid and self.batched and self.model.binding.get('project_id') == b.get('project_id')
                     and self.model.binding.get('execution_kind') == 'openai_native_fixture'
                     and self.model.root_budget is self.budget and self.model.counter is not None)
+            if self.on_demand:
+                valid = (valid and self.model.binding.get('execution_kind') == 'on_demand_public'
+                    and self.model.binding.get('model_id') is None and self.model.counter is not None)
         if not valid:
             raise RunStop('failed_protocol', 'runtime_preflight_failed')
 
@@ -383,7 +400,24 @@ class RecommendationRun:
                     remaining -= self.budget.final_reserve['elapsed_ms']
                 elapsed_upper = max(backoff + 1, min(elapsed_upper, remaining))
             native = None
+            prepared, count = None, None
             output_cap, cost_upper = 100000, 0
+            if self.on_demand:
+                from provider_openai import role_output_schema
+                logical = {'schema_version': 'rsm-model-prepare-0.1.0', 'execution_kind': 'on_demand_public',
+                    'request_id': message_id, 'attempt_id': message_id, 'run_id': self.binding['run_id'],
+                    'session_id': self.binding['run_id'] + ':' + role, 'role': role,
+                    'reply_to': self.state['messages'][-1]['role_message_id'] if self.state['messages'] else None,
+                    'model_id': None, 'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools),
+                    'output_kind': kind, 'output_schema': role_output_schema(role, kind, messages),
+                    'max_output_tokens': output_cap}
+                prepared = self.model.prepare(logical)
+                if prepared['status'] != 'prepared':
+                    raise RunStop('failed_protocol', 'on_demand_prepare_failed')
+                count = self.model.counter.count(prepared, authorization=None)
+                if count['status'] != 'counted' or count['basis'] != 'fixture':
+                    raise RunStop('incomplete_count', count['status'])
+                input_upper = count['input_tokens']
             if self.native_fixture:
                 from provider_openai import MODEL, cost_microusd, role_output_schema
                 available = self.budget.audit_view()
@@ -412,6 +446,9 @@ class RecommendationRun:
                 native.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
             intent = {'kind': 'model', 'role': role, 'request_id': message_id,
                       'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind}
+            if self.on_demand:
+                intent = {'kind': 'model', 'role': role, 'request_id': message_id, 'output_kind': kind,
+                          'prepared_id': prepared['prepared_id'], 'count_receipt_id': count['receipt_id']}
             if native is not None:
                 intent.update(prepared_id=prepared['prepared_id'], wire_sha256=prepared['wire_sha256'], count_receipt_id=count['receipt_id'])
             reservation = self.budget.reserve(intent,
@@ -433,18 +470,32 @@ class RecommendationRun:
             if native is not None:
                 request = {**native, 'input_token_upper_bound': input_upper,
                     'deadline_ms': int(started + elapsed_upper), 'reservation_id': reservation['reservation_id']}
+            if self.on_demand:
+                request.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
+                request['output_schema'] = copy.deepcopy(logical['output_schema'])
+                request_ref = self._trace_ref('request', request)
+                self.state['preparations'].append({'prepared_id': prepared['prepared_id'],
+                    'count': count, 'request_ref': request_ref})
             response = self.model.invoke(request)
+            if self.on_demand:
+                response_ref = self._trace_ref('response', response['raw_response'])
             late = self.budget.clock() > request['deadline_ms']
             usage = {k: response['usage'].get(k) for k in ('input_tokens', 'output_tokens', 'cost_microusd')}
-            if self.native_fixture and response['status'] == 'usage_mismatch':
+            if (self.native_fixture or self.on_demand) and response['status'] == 'usage_mismatch':
                 # Keep the conflicting provider usage in the response and the root reservation unresolved.
                 usage = dict.fromkeys(usage)
             usage['model_calls'] = int(response['attempted'])
-            self.budget.settle(reservation['reservation_id'], {'status': response['status'], 'usage': usage, 'late': late,
-                'request': copy.deepcopy(request), 'response': copy.deepcopy(response)})
+            observation = {'status': response['status'], 'usage': usage, 'late': late,
+                'request': copy.deepcopy(request), 'response': copy.deepcopy(response)}
+            if self.on_demand:
+                observation = {'status': response['status'], 'usage': usage, 'late': late,
+                    'request_ref': request_ref, 'response_ref': response_ref}
+            self.budget.settle(reservation['reservation_id'], observation)
             self.state['messages'].append({'role_message_id': message_id, 'role': role, 'request': request,
                 'response': copy.deepcopy(response), 'root_reservation_id': reservation['reservation_id'],
                 'provenance': response['provenance'], 'usage_basis': response['usage_basis']})
+            if self.on_demand:
+                self.state['messages'][-1].update(request_ref=request_ref, response_ref=response_ref)
             if self.budget.halted or late:
                 raise RunStop('incomplete_deadline' if late or self.budget.halted == 'deadline_exceeded' else 'failed_model',
                               self.budget.halted or 'deadline_exceeded')
@@ -850,10 +901,39 @@ class RecommendationRun:
         return copy.deepcopy(self.result)
 
     def _write_audit(self, path):
+        view = self.audit_view()
+        if self.on_demand:
+            view['messages'] = [{k: copy.deepcopy(v) for k, v in message.items()
+                if k not in ('request', 'response')} | {'response_summary': {k: copy.deepcopy(v)
+                    for k, v in message['response'].items() if k not in ('raw_response', 'message')}}
+                for message in self.state['messages']]
+            def references(value):
+                if isinstance(value, dict):
+                    return {k: references(v) for k, v in value.items() if k != 'raw_utf8'} | (
+                        {'raw_sha256': digest(value['raw_utf8'].encode()), 'raw_bytes': len(value['raw_utf8'].encode())}
+                        if isinstance(value.get('raw_utf8'), str) else
+                        {'raw_utf8': None} if 'raw_utf8' in value else {})
+                return [references(item) for item in value] if isinstance(value, list) else value
+            view = references(view)
         with path.open('xb') as stream:
-            stream.write(encoded(self.audit_view()) + b'\n')
+            stream.write(encoded(view) + b'\n')
             stream.flush()
             os.fsync(stream.fileno())
+
+    def _trace_ref(self, kind, value):
+        raw = encoded(value) + b'\n'
+        directory = self.output_root / 'trace'
+        directory.mkdir(exist_ok=True)
+        path = directory / (kind + '-' + digest(raw) + '.json')
+        if path.exists():
+            if path.read_bytes() != raw:
+                raise OSError('trace_binding_mismatch')
+        else:
+            with path.open('xb') as stream:
+                stream.write(raw)
+                stream.flush()
+                os.fsync(stream.fileno())
+        return {'path': path.relative_to(PROJECT).as_posix(), 'sha256': digest(raw), 'bytes': len(raw)}
 
     def audit_view(self):
         return copy.deepcopy({**self.state, 'evidence': self.evidence.audit_view(), 'budget': self.budget.audit_view(),

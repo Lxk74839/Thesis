@@ -148,6 +148,21 @@ class InputCounter:
         return manifest, intents, results, receipts
 
     def count(self, prepared, *, authorization):
+        if isinstance(prepared, dict) and prepared.get('schema_version') == 'on-demand-fixture-prepared-0.1.0':
+            from model_adapter import verify_on_demand_prepared
+            if not verify_on_demand_prepared(prepared) or prepared['project_id'] != self.project_id:
+                return {'status': 'invalid_prepared', 'input_tokens': None, 'basis': None}
+            if authorization is not None or self.fixture_count is None:
+                return {'status': 'count_missing', 'input_tokens': None, 'basis': None}
+            count = self.fixture_count(copy.deepcopy(prepared)) if callable(self.fixture_count) else self.fixture_count
+            if type(count) is not int or count < 0:
+                return {'status': 'invalid_count', 'input_tokens': None, 'basis': 'fixture'}
+            receipt = {'schema_version': 'on-demand-fixture-count-0.1.0', 'status': 'counted',
+                'prepared_id': prepared['prepared_id'], 'project_id': self.project_id,
+                'model_id': None, 'input_tokens': count, 'basis': 'fixture', 'provider_requests_sent': 0}
+            receipt['receipt_id'] = sha(receipt)
+            self.receipts[receipt['receipt_id']] = copy.deepcopy(receipt)
+            return receipt
         if not verify_prepared(prepared) or prepared['project_id'] != self.project_id:
             return {'status': 'invalid_prepared', 'input_tokens': None, 'basis': None}
         if authorization is not None:
