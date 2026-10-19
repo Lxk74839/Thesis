@@ -20,6 +20,20 @@ CONTROL = ROOT / '.scratch/ticket12-budget-20261018/storage-repair-package-20261
 CONTROL_SHA = '4eb74906d427cbf0822379ad4b30a84827853412683df62a948730f2e882b2a0'
 DISK = CONTROL.with_name('storage-repair-disk-writes-20261019.jsonl')
 CONTROL_OPEN = open
+PILOT_CONTROL = CONTROL.with_name('recovery-pilot-package-20261019.json')
+PILOT_SHA = '6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b'
+SETTLED = False
+
+
+def pilot_package():
+    raw = PILOT_CONTROL.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != PILOT_SHA:
+        raise SystemExit('pilot_package_binding_changed')
+    package = json.loads(raw)
+    ref = package['human_confirmation']
+    if hashlib.sha256((ROOT / ref['path']).read_bytes()).hexdigest() != ref['sha256']:
+        raise SystemExit('pilot_confirmation_changed')
+    return package
 
 
 def storage_package():
@@ -38,32 +52,36 @@ def storage_overhead_bytes(package):
     total = sum(p.stat().st_size for p in CONTROL.parent.rglob('*') if p.is_file())
     total += sum((ROOT / name).stat().st_size for name in ('t0_catalog.py', 'tests/test_t0_catalog.py'))
     commands = 0
+    prefix = package.get('label_prefix', 'storage_repair_')
     for domain in ('offline', 't0'):
         audit = (ROOT / package[domain]['ledger']).parent
-        total += sum(p.stat().st_size for p in audit.glob('storage_repair_*.txt'))
+        total += sum(p.stat().st_size for p in audit.glob(prefix + '*.txt'))
         pinned = next(p for p in package['protected_before'] if p['path'] == package[domain]['ledger'])
         total += (audit / 'resource-ledger.jsonl').stat().st_size - pinned['bytes']
-        commands += sum('storage_repair_' in line for line in (audit / 'resource-ledger.jsonl').read_text().splitlines())
+        commands += sum(prefix in line for line in (audit / 'resource-ledger.jsonl').read_text().splitlines())
     return total + (commands + 1) * 16384  # Conservative reserve for Conda launcher temporaries.
 
 
 def charge_git_outputs(package):
     """Git packs are data writes, not the small audit closeout reserve."""
     rows = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
-    seen = {row['git_output'] for row in rows if 'git_output' in row}
+    pilot = 'disk_ledger' in package
+    seen = {(row['git_output'], row.get('mtime_ns') if pilot else None) for row in rows if 'git_output' in row}
     additions = []
     if not seen:
         # Conservatively retain all earlier overhead observations, including loose
         # Git objects removed by automatic repacking before this first snapshot.
         prior = sum(row.get('other_disk_upper_bound_after', 0) for domain in ('offline', 't0')
                     for row in map(json.loads, (ROOT / package[domain]['ledger']).read_text().splitlines())
-                    if row.get('label', '').startswith('storage_repair_'))
+                    if row.get('label', '').startswith(package.get('label_prefix', 'storage_repair_')))
         additions.append({'bytes': prior, 'kind': 'data', 'git_output': 'prior_upper_bound'})
     since = (ROOT / package['human_confirmation']['path']).stat().st_mtime_ns
     for path in (ROOT / '.git/objects').rglob('*'):
         name = path.relative_to(ROOT).as_posix()
-        if path.is_file() and path.stat().st_mtime_ns >= since and name not in seen:
-            additions.append({'bytes': path.stat().st_size, 'kind': 'data', 'git_output': name})
+        if path.is_file() and path.stat().st_mtime_ns >= since:
+            stamp = path.stat().st_mtime_ns if pilot else None
+            if (name, stamp) not in seen:
+                additions.append({'bytes': path.stat().st_size, 'kind': 'data', 'git_output': name, 'mtime_ns': stamp})
     charged = sum(row['bytes'] for row in rows if row.get('kind', 'data') == 'data')
     _limit = package['disk']['data_bytes']
     with CONTROL_OPEN(DISK, 'a', encoding='utf-8') as stream:
@@ -80,9 +98,16 @@ def storage_child(arguments):
     import io
     import runpy
     sys.path.insert(0, str(ROOT))
-    package = storage_package()
+    global DISK
+    pilot = bool(os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE'))
+    package = pilot_package() if pilot else storage_package()
+    if pilot:
+        DISK = ROOT / package['disk_ledger']
     original = io.open
     roots = tuple(ROOT / path for path in package['output_roots'])
+    prior = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
+    charged = {kind: sum(r['bytes'] for r in prior if r.get('kind', 'data') == kind) for kind in ('data', 'closeout')}
+    by_area = {i: sum(r['bytes'] for r in prior if r.get('area') == i) for i in range(len(roots))}
 
     class File:
         def __init__(self, stream, path):
@@ -99,15 +124,23 @@ def storage_child(arguments):
 
         def write(self, value):
             length = len(value.encode(self.stream.encoding or 'utf-8')) if isinstance(value, str) else len(value)
-            kind = 'closeout' if self.path.suffix == '.json' else 'data'
-            charge_git_outputs(package)
-            rows = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
-            charged = sum(row['bytes'] for row in rows if row.get('kind', 'data') == kind)
-            limit = 4 * 1024**2 if kind == 'closeout' else package['disk']['data_bytes']
-            if charged + length > limit:
+            kind = ('closeout' if self.path.name in ('checkpoint.json', 'run.json') else 'data') if pilot else (
+                'closeout' if self.path.suffix == '.json' else 'data')
+            if not pilot:
+                charge_git_outputs(package)
+                rows = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
+                charged[kind] = sum(row['bytes'] for row in rows if row.get('kind', 'data') == kind)
+            limit = (256 * 1024**2 if pilot else 4 * 1024**2) if kind == 'closeout' else package['disk']['data_bytes']
+            if charged[kind] + length > limit:
                 raise OSError('storage_package_disk_limit')
+            area = next(i for i, root in enumerate(roots) if self.path.is_relative_to(root))
+            if pilot and by_area[area] + length > package[
+                    'public_bytes' if area == 0 else 'pilot_bytes']:
+                raise OSError('pilot_area_disk_limit')
             with original(DISK, 'a', encoding='utf-8') as counter:
-                counter.write(json.dumps({'bytes': length, 'kind': kind}) + '\n')
+                counter.write(json.dumps({'bytes': length, 'kind': kind, 'area': area}) + '\n')
+            charged[kind] += length
+            by_area[area] += length
             return self.stream.write(value)
 
         def writelines(self, values):
@@ -115,9 +148,32 @@ def storage_child(arguments):
                 self.write(value)
 
     def opened(file, mode='r', *args, **kwargs):
-        if not isinstance(file, (str, bytes, os.PathLike)) or not any(c in mode for c in 'wax+'):
+        if not isinstance(file, (str, bytes, os.PathLike)):
             return original(file, mode, *args, **kwargs)
         path = Path(file).absolute()
+        writing = any(c in mode for c in 'wax+')
+        if pilot and not writing:
+            legacy = ROOT / 'data/ticket12-t0/catalog-0.1.0'
+            if path.is_relative_to(legacy) and path.relative_to(legacy).as_posix() not in (
+                    'catalog.json', 'coverage.json', 'source-index.json', 'roots.jsonl', 'requests.jsonl', 'run.json'):
+                raise OSError('pilot_old_body_read_forbidden')
+            if path == ROOT / package['development_sources']['identity_key']['path']:
+                if (os.environ.get('THESIS_RECOVERY_STAGE') != 'G0' or arguments[:2] != [
+                        '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py', 'snapshot']):
+                    raise OSError('pilot_identity_read_not_authorized')
+                # An interrupted or failed first read cannot silently be repeated.
+                claim = roots[1] / 'identity-key-read-claim.json'
+                with opened(claim, 'x', encoding='utf-8') as stream:
+                    stream.write(json.dumps({'label': os.environ['THESIS_BATCH_CHECK_LABEL'], 'package_sha256': PILOT_SHA}) + '\n')
+                    stream.flush()
+                    os.fsync(stream.fileno())
+            if path.is_relative_to(ROOT / 'data') and any(part.lower() in (
+                    'evaluation', 'eval', 'gold', 'reference', 'uq', 'test-performance') for part in path.parts):
+                raise OSError('pilot_evaluation_read_forbidden')
+        if not writing:
+            return original(file, mode, *args, **kwargs)
+        if pilot and path == ROOT / package['attempt_ledger'] and mode in ('a', 'ab'):
+            return original(file, mode, *args, **kwargs)
         if '..' in path.parts or not any(path.is_relative_to(root) for root in roots):
             raise OSError('storage_package_write_outside_outputs')
         for parent in (path, *path.parents):
@@ -128,6 +184,11 @@ def storage_child(arguments):
         return File(original(file, mode, *args, **kwargs), path)
 
     io.open = builtins.open = opened
+    if pilot:
+        def audit(event, arguments):
+            if event in ('socket.connect', 'socket.sendto'):
+                raise OSError('pilot_network_forbidden')
+        sys.addaudithook(audit)
     if arguments[:1] == ['-m']:
         sys.argv = arguments[1:]
         runpy.run_module(arguments[1], run_name='__main__', alter_sys=True)
@@ -153,8 +214,12 @@ class Extended(ctypes.Structure):
                 ('job_limit', ctypes.c_size_t), ('process_peak', ctypes.c_size_t), ('job_peak', ctypes.c_size_t)]
 
 
+class Accounting(ctypes.Structure):
+    _fields_ = [('times', ctypes.c_longlong * 4), ('counts', wintypes.DWORD * 4), ('io', IO)]
+
+
 def main():
-    global AUDIT
+    global AUDIT, DISK, SETTLED
     assert Path(sys.prefix).resolve() == ROOT / '.conda/envs/Thesis'
     assert sys.version_info[:3] == (3, 13, 16)
     arguments = sys.argv[1:]
@@ -176,31 +241,43 @@ def main():
     label = arguments[0]
     if not label or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for c in label):
         raise SystemExit('invalid_check_label')
-    limit, package = LIMIT, None
+    limit, package, pilot, stage = LIMIT, None, label.startswith('recovery_pilot_'), None
     allowance = LIMIT - used
-    if label.startswith('storage_repair_'):
-        package = storage_package()
+    if label.startswith('storage_repair_') or pilot:
+        package = pilot_package() if pilot else storage_package()
+        if pilot:
+            DISK = ROOT / package['disk_ledger']
         settings = package[domain]
         pinned = next(p for p in package['protected_before'] if p['path'] == settings['ledger'])
         if hashlib.sha256(ledger.read_bytes()[:pinned['bytes']]).hexdigest() != pinned['sha256']:
             raise SystemExit('historical_ledger_changed')
         if domain == 't0':
-            extension = AUDIT / 'resource-limit-extension-20261019.json'
-            if hashlib.sha256(extension.read_bytes()).hexdigest() != 'c6b4eac9c73bda0deb51422d2c0419f5d3fa348577ee5a8359cd1851025a8b18':
+            extension = AUDIT / ('resource-limit-extension-recovery-pilot-20261019.json' if pilot else 'resource-limit-extension-20261019.json')
+            expected = 'aa4c3b12f3533675f6fab6909114d66b18b013260fa29eef181adb425da2fe50' if pilot else 'c6b4eac9c73bda0deb51422d2c0419f5d3fa348577ee5a8359cd1851025a8b18'
+            if hashlib.sha256(extension.read_bytes()).hexdigest() != expected:
                 raise SystemExit('T0_extension_binding_changed')
         limit = settings['limit_seconds']
         allowance = min(limit - used, settings['package_seconds'] - (used - settings['baseline_seconds']))
-        if allowance <= (15 if domain == 'offline' else 10):
+        if pilot:
+            allowance -= settings['reserve_seconds']
+            if domain == 't0':
+                stage = label.split('_')[2]
+                if stage not in package['approved_stages']:
+                    raise SystemExit('pilot_stage_not_authorized')
+                stage_used = sum(r['seconds'] for r in map(json.loads, ledger.read_text().splitlines())
+                                 if r.get('recovery_stage') == stage)
+                allowance = min(allowance, package['t0_stages'][stage] - stage_used)
+        if allowance <= (0 if pilot else 15 if domain == 'offline' else 10):
             raise SystemExit('storage_package_closeout_required')
         charge_git_outputs(package)
-        if storage_overhead_bytes(package) > 3 * 1024**2:
+        if storage_overhead_bytes(package) > (240 if pilot else 3) * 1024**2:
             raise SystemExit('storage_package_audit_closeout_required')
     if time.perf_counter() - START >= allowance:
         raise SystemExit('runtime_compute_limit_exhausted')
     source_paths = tuple(p for p in ('recommendation_runner.py', 'model_adapter.py', 'evidence_access.py',
                     'tests/test_batched_recommendation.py', 'provider_openai.py', 'token_counting.py',
                     'tests/provider_fixtures.py', 'tests/test_provider_openai.py', 'tests/test_token_counting.py',
-                    't0_catalog.py', 'tests/test_t0_catalog.py',
+                    't0_catalog.py', 'tests/test_t0_catalog.py', 'joint_access.py', 'joint_tasks.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/run_check.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py',
@@ -234,7 +311,9 @@ def main():
                    THESIS_RESOURCE_DOMAIN=domain, THESIS_RESOURCE_LEDGER=str(ledger),
                    THESIS_RESOURCE_DEADLINE_UNIX=str(time.time() + allowance - (time.perf_counter() - START)))
         if package:
-            env['THESIS_STORAGE_PACKAGE'] = str(CONTROL)
+            env['THESIS_RECOVERY_PILOT_PACKAGE' if pilot else 'THESIS_STORAGE_PACKAGE'] = str(PILOT_CONTROL if pilot else CONTROL)
+            if pilot:
+                env['THESIS_RECOVERY_STAGE'] = stage or 'PUBLIC'
         with output.open('xb') as stream:
             command = [str(Path(__file__)), '--storage-child', *arguments[1:]] if package else arguments[1:]
             child = subprocess.Popen([sys.executable, '-B', *command], cwd=ROOT,
@@ -244,16 +323,19 @@ def main():
                 child.wait()
                 raise ctypes.WinError(ctypes.get_last_error())
             while child.poll() is None:
-                if package:
+                if package and not pilot:
                     charge_git_outputs(package)
                 if (time.perf_counter() - START >= allowance or output.stat().st_size > 1024**2
-                        or package and storage_overhead_bytes(package) > 4 * 1024**2):
+                        or package and storage_overhead_bytes(package) > (256 if pilot else 4) * 1024**2):
                     kernel.TerminateJobObject(job, 3)
                     break
                 time.sleep(.025)
             code = child.wait()
     finally:
         kernel.QueryInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info), None)
+        accounting = Accounting()
+        if not kernel.QueryInformationJobObject(job, 8, ctypes.byref(accounting), ctypes.sizeof(accounting), None):
+            raise ctypes.WinError(ctypes.get_last_error())
         kernel.CloseHandle(job)
         seconds = time.perf_counter() - START
         row = {'label': label, 'seconds': seconds, 'cumulative_seconds': used + seconds,
@@ -261,6 +343,7 @@ def main():
                'guard_reserve_bytes': RESERVE, 'limit_bytes': 4 * 1024**3, 'limit_seconds': limit,
                'accounting': 'guard_start_to_child_completion_wall_time_including_failures',
                'guard': 'Windows_Job_tree_limit_plus_64MiB_guard_reserve', 'source_sha256': source_sha256,
+               'job_read_transfer_bytes': accounting.io.read_bytes, 'job_write_transfer_bytes': accounting.io.write_bytes,
                'source_changed_during_check': [p for p, sha in source_sha256.items()
                    if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != sha]}
         if package:
@@ -268,11 +351,14 @@ def main():
             row['package_limit_seconds'] = package[domain]['package_seconds']
             row['charged_data_bytes_after'] = sum(json.loads(line)['bytes'] for line in DISK.read_text().splitlines()) if DISK.exists() else 0
             row['other_disk_upper_bound_after'] = storage_overhead_bytes(package)
+            if pilot:
+                row['recovery_stage'] = stage or 'PUBLIC'
         with ledger.open('a', encoding='utf-8', newline='\n') as stream:
             stream.write(json.dumps(row, sort_keys=True) + '\n')
             stream.flush()
             os.fsync(stream.fileno())
         inflight.unlink()
+        SETTLED = True
     if output.exists():
         print(output.read_text(encoding='utf-8'), end='')
     print(json.dumps(row, sort_keys=True))
@@ -280,4 +366,23 @@ def main():
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except BaseException as exc:
+        if (not SETTLED and sys.argv[1:2] != ['--storage-child']
+                and any(arg.startswith('recovery_pilot_') for arg in sys.argv[1:])):
+            label = next(arg for arg in sys.argv[1:] if arg.startswith('recovery_pilot_'))
+            ledger = AUDIT / 'resource-ledger.jsonl'
+            if str(exc) != 'runtime_resource_usage_unresolved_no_new_work':
+                used = sum(json.loads(raw)['seconds'] for raw in ledger.read_text().splitlines())
+                seconds = time.perf_counter() - START
+                row = {'label': label, 'seconds': seconds, 'cumulative_seconds': used + seconds,
+                    'exit_code': 2, 'pre_child_failure': str(exc), 'recovery_stage': label.split('_')[2]
+                        if '--resource-domain' in sys.argv else 'PUBLIC', 'job_peak_commit_bytes': 0,
+                    'accounting': 'guard_start_to_pre_child_rejection_including_failure', 'source_changed_during_check': []}
+                with ledger.open('a', encoding='utf-8') as stream:
+                    stream.write(json.dumps(row, sort_keys=True) + '\n')
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                print(json.dumps(row, sort_keys=True))
+        raise

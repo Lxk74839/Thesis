@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import threading
 import time
 import zlib
 
@@ -48,6 +49,11 @@ STORAGE_CONTRACT = {'path': CONTROL + 't0-a-performance-storage-diagnosis-202610
                     'sha256': 'd0c1cabfd92ae19912d722e06a4218224c692536cf54e9807a4e6df49ac880b9'}
 STORAGE_CONFIRMATION = {'path': CONTROL + 'authorization-t0-a-storage-repair-20261019.md',
                         'sha256': 'bbdd693957bc902f6af177d26ccd44896c44e7b67c5a208ecb46e0cac23dcc29'}
+PILOT_CONTROL = CONTROL + 'recovery-pilot-package-20261019.json'
+PILOT_SHA = '6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b'
+PILOT_FILES = ('t0_catalog.py', 'tests/test_t0_catalog.py', CONTROL + 'diagnostics/run_check.py',
+    CONTROL + 'diagnostics/check_t0_catalog_delivery.py', 'model_adapter.py', 'provider_openai.py',
+    'token_counting.py', 'recommendation_runner.py', 'evidence_access.py', 'joint_access.py', 'joint_tasks.py')
 
 
 class PreparedObjectWriter:
@@ -178,8 +184,9 @@ def iter_prepared_objects(output_dir):
 
 
 class _DigestStream:
-    def __init__(self, path, recompute):
+    def __init__(self, path, recompute, consumer=None):
         self.stream = None if recompute else path.open('xb')
+        self.consumer = consumer
         self.sha, self.bytes = hashlib.sha256(), 0
         self.records, self.operations = 0, 0
 
@@ -189,6 +196,8 @@ class _DigestStream:
         self.records += 1
         if self.stream:
             self.stream.write(raw)
+        if self.consumer:
+            self.consumer(raw)
 
     def close(self):
         if self.stream:
@@ -300,7 +309,8 @@ def _prefix(view, candidate, run_id, sources, dependencies, probes, cache, metho
     stop = None
     for parent in order[:64]:
         if view['label'] not in sources:
-            sources[view['label']] = LocalEvidenceSource(view['snapshot'], indexed=True)
+            locator = _pilot_locator(view['snapshot']) if os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE') else view['snapshot']
+            sources[view['label']] = LocalEvidenceSource(locator, indexed=True)
         batch = batches[parent]
         template = _dependency(view, parent, batch, sources[view['label']], dependencies, probes, cache)
         namespace = 'synthetic-plan:' + digest(encoded([run_id, parent]))
@@ -678,6 +688,11 @@ def _authorization(path):
         auth = decode(path.read_bytes())
     except FileNotFoundError:
         raise ValueError('authorization_unavailable') from None
+    if isinstance(auth, dict) and auth.get('schema_version') == 't0-a-recovery-authorization-0.1.0':
+        _require(auth.get('execution_stage') == 'pilot' and auth.get('operation') == 'controlled_recovery',
+                 'pilot_stage_not_authorized')
+        return _pilot_authorization(auth)
+    _require(not os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE'), 'old_authorization_not_pilot')
     _require(isinstance(auth, dict) and set(auth) == AUTH_KEYS, 'invalid_authorization')
     _require(auth['schema_version'] == 't0-a-authorization-0.1.0' and auth['approved'] is True
         and auth['base'] == BASE and auth['budget_candidate'] == 'B02-A+B03'
@@ -703,13 +718,17 @@ def _authorization(path):
     return auth
 
 
-def _compile(auth, output, *, recompute=False):
+def _compile(auth, output, *, recompute=False, pilot=None):
     _require(not os.environ.get('THESIS_STORAGE_PACKAGE'), 'storage_package_new_plans_forbidden')
+    if pilot:
+        _pilot_attempt(auth, pilot['key'], pilot.get('purpose', 'recompute' if recompute else 'prepare'))
     _checked(STORAGE_CONTRACT)
     _checked(STORAGE_CONFIRMATION)
     _time_available()
     sources = auth['sources']
-    if recompute:
+    if pilot:
+        roots = {pilot['key'][0]}
+    elif recompute:
         first = decode((output / 'source-index.json').read_bytes())
         _require(first['selection_sources'] == {k: sources[k] for k in ('accounts', 'identity_key')}, 'selection_binding_changed')
         _checked(sources['accounts'])
@@ -722,11 +741,25 @@ def _compile(auth, output, *, recompute=False):
         del key, accounts
     _require(bool(roots), 'no_development_roots')
     development = auth['scope'] == 'development_catalog_only'
-    _require(not development or len(roots) == 320, 'development_root_count_mismatch')
+    _require(not development or pilot or len(roots) == 320, 'development_root_count_mismatch')
     intervals = []
-    model_roots = {r['root_task_id']: r for r in _selected(sources['model_roots'], roots, source_index=intervals)}
-    candidates = {r['root_task_id']: r for r in _selected(sources['model_candidates'], roots, source_index=intervals)}
-    views = _selected(sources['view_bindings'], roots, multiple=True, source_index=intervals)
+    def selected(role, multiple=False):
+        if not pilot:
+            return _selected(sources[role], roots, multiple, source_index=intervals)
+        result = []
+        with _path(sources[role]['path']).open('rb') as source:
+            for item in pilot['receipt']['source_index']['intervals']:
+                if item['component'] == sources[role] and item['root_task_id'] in roots:
+                    source.seek(item['offset'])
+                    raw = source.read(item['bytes'])
+                    _require(len(raw) == item['bytes'] and _top_root(raw) == item['root_task_id'], 'pilot_source_interval_mismatch')
+                    result.append(decode(raw))
+                    intervals.append(item)
+        _require(bool(result) and (multiple or len(result) == 1), 'pilot_source_interval_mismatch')
+        return result
+    model_roots = {r['root_task_id']: r for r in selected('model_roots')}
+    candidates = {r['root_task_id']: r for r in selected('model_candidates')}
+    views = selected('view_bindings', True)
     view_keys = [(v['root_task_id'], v['label']) for v in views]
     _require(len(view_keys) == len(set(view_keys)), 'duplicate_source_view')
     if development:
@@ -740,15 +773,17 @@ def _compile(auth, output, *, recompute=False):
         source_parent = _path(sources['model_roots']['path']).parent
         for view in views:
             if 'snapshot' in view:
-                _require(_path(view['snapshot']['path']).is_relative_to(source_parent), 'public_snapshot_outside_fixture')
+                locator = _pilot_locator(view['snapshot']) if pilot else view['snapshot']
+                _require(_path(locator['path']).is_relative_to(source_parent), 'public_snapshot_outside_fixture')
     products = [decode(raw) for raw in _checked(sources['model_catalog']).read_bytes().splitlines()]
     adapter = ModelAdapter(None, capability_binding={'execution_kind': 't0_development_catalog',
         'model_id': MODEL, 'provenance': 'synthetic', 'project_id': 'UNBOUND-T0-DEV-CATALOG'})
     role_schema_generator_sha = digest((PROJECT / 'provider_openai.py').read_bytes())
     if not recompute:
         (output / 'checks').mkdir()
-    object_store = PreparedObjectWriter(output, recompute=recompute)
-    indexes, cache, objects = {}, {}, {}
+    object_store = pilot['object_store'] if pilot and 'object_store' in pilot else PreparedObjectWriter(output, recompute=recompute)
+    indexes, cache = pilot['shared'] if pilot else ({}, {})
+    objects = {}
     totals = dict.fromkeys(('plans', 'N', 'U', 'original_wire_bytes', 'original_count_payload_bytes',
         'unique_wire_bytes', 'unique_count_payload_bytes', 'missing_objects', 'failed_plans', 'excess_plans'), 0)
     by_method, by_view_method, by_terminal = Counter(), Counter(), Counter()
@@ -759,13 +794,16 @@ def _compile(auth, output, *, recompute=False):
     if not recompute:
         (output / 'source-index.json').write_bytes(raw)
     components['source-index.json'] = {'bytes': len(raw), 'sha256': digest(raw)}
-    stream = _DigestStream(output / 'roots.jsonl', recompute)
-    requests = _DigestStream(output / 'requests.jsonl', recompute)
+    consumers = pilot.get('consumers', {}) if pilot else {}
+    stream = _DigestStream(output / 'roots.jsonl', recompute, consumers.get('roots.jsonl'))
+    requests = _DigestStream(output / 'requests.jsonl', recompute, consumers.get('requests.jsonl'))
     dependencies = _DigestStream(output / 'dependencies.jsonl', recompute)
     probes = _DigestStream(output / ('checks/probes-recompute.jsonl' if recompute else 'checks/probes.jsonl'), False)
     active = None
     try:
         for view in sorted(views, key=lambda r: (r['root_task_id'], r['label'])):
+            if pilot and view['label'] != pilot['key'][1]:
+                continue
             _time_available()
             root_id = view['root_task_id']
             root, candidate = model_roots[root_id], candidates[root_id]
@@ -784,6 +822,8 @@ def _compile(auth, output, *, recompute=False):
             payload['input_fingerprint'] = digest(encoded(payload))
             initial[0]['content'] = encoded(payload).decode()
             for method in ('R', 'S', 'M'):
+                if pilot and method != pilot['key'][2]:
+                    continue
                 run_id = 'synthetic:' + digest(encoded([root_id, view['label'], method]))
                 request_count, output_caps, repairs, feedback = 0, 0, 0, 0
                 prefix = None
@@ -885,18 +925,25 @@ def _compile(auth, output, *, recompute=False):
             target.close()
             components[name] = target.info()
         probes.close()
-        object_store.close(complete=not reasons, reason=reasons[0] if reasons else None)
+        if not pilot or 'object_store' not in pilot:
+            object_store.close(complete=not reasons, reason=reasons[0] if reasons else None)
     totals['U'] = len(objects)
     coverage = {**totals, 'expected_plans': len(views) * 3, 'by_method': dict(by_method),
         'by_view_method': dict(by_view_method), 'by_terminal': dict(by_terminal),
-        'missing_plans': len(views) * 3 - totals['plans'], 'duplicate_plans': 0, 'missing_stages': int(bool(reasons)),
+        'missing_plans': (1 if pilot else len(views) * 3) - totals['plans'], 'duplicate_plans': 0, 'missing_stages': int(bool(reasons)),
         'complete_input_tokens': None, 'actual_output_tokens': None, 'actual_generation_cost_microusd': None,
         'candidate_validation': 'failed' if totals['excess_plans'] else 'unknown_tokens_and_dynamic_admission',
-        'complete': totals['plans'] == len(views) * 3 and not reasons, 'reasons': reasons}
+        'complete': totals['plans'] == (1 if pilot else len(views) * 3) and not reasons, 'reasons': reasons}
+    if pilot:
+        coverage['expected_plans'] = 1
     raw = encoded(coverage) + b'\n'
     if not recompute:
         (output / 'coverage.json').write_bytes(raw)
     components['coverage.json'] = {'bytes': len(raw), 'sha256': digest(raw)}
+    if recompute and pilot:
+        return {'complete': coverage['complete'], 'coverage': coverage,
+            'actual_template_probes': probes.records, 'actual_template_dispatches': probes.operations,
+            'actual_source_io': {v: source.setup for v, source in indexes.items()}}
     components.update(object_store.components)
     catalog = {'schema_version': 'T0-request-catalog-0.2.0', 'scope': auth['scope'], 'base': BASE,
         'candidate': auth['candidate'], 'sources': auth['sources'], 'provenance': 'synthetic', 'script_version': SCRIPT,
@@ -926,6 +973,417 @@ def _compile(auth, output, *, recompute=False):
 
 
 
+def _pilot_package():
+    _require(digest(_path(PILOT_CONTROL).read_bytes()) == PILOT_SHA, 'pilot_package_binding_changed')
+    return decode(_path(PILOT_CONTROL).read_bytes())
+
+
+def _pilot_locator(ref):
+    # Only relocate the inherited host locator; retain the original view bytes in
+    # template identities, messages and provenance. The pinned snapshot is unchanged.
+    old = Path('C:/Users/Kane/Documents/CodexProject/Thesis')
+    path = Path(ref['path'])
+    if path.is_relative_to(old):
+        return {**ref, 'path': str(_path(PROJECT / path.relative_to(old)))}
+    _path(path)
+    return ref
+
+
+def _pilot_binding(auth):
+    return digest(encoded({k: v for k, v in auth.items() if k != 'source_receipt'}))
+
+
+def _pilot_program(auth, package):
+    ref = auth['program_acceptance']
+    _require(isinstance(ref, dict) and ref.get('path') == CONTROL +
+        'acceptance-t0-a-recovery-pilot-program-20261019.json', 'pilot_program_record_path_not_allowed')
+    _require(auth['scope'] == 'development_catalog_only' and auth['old_catalog'] == package['old_catalog']
+        and re.fullmatch('[0-9a-f]{40}', auth['candidate']) and os.environ.get('THESIS_RESOURCE_DOMAIN') == 't0'
+        and os.environ.get('THESIS_RECOVERY_STAGE') == 'G1' and auth['resource_ledger'] == package['t0']['ledger']
+        and _path(os.environ.get('THESIS_RESOURCE_LEDGER', '')) == _path(auth['resource_ledger']), 'pilot_execution_binding_mismatch')
+    accepted = decode(_content(ref))
+    _require(accepted['status'] == 'T0_A_recovery_pilot_program_accepted' and accepted['base'] == package['base']
+        and accepted['candidate'] == auth['candidate'] and accepted['resource_package'] == auth['resource_package']
+        and set(accepted['source_sha256']) == set(PILOT_FILES), 'pilot_program_acceptance_required')
+    for name, sha in accepted['source_sha256'].items():
+        _require(digest(_path(name).read_bytes()) == sha, 'program_source_changed')
+    for axis in ('Standards', 'Spec'):
+        review = accepted['reviews'][axis]
+        _require(review['candidate'] == auth['candidate'] and review['blocking_findings'] == 0
+            and review['record']['path'] == CONTROL + 'verification-recovery-pilot-' + axis.lower() + '-'
+                + auth['candidate'][:7] + '.md', 'program_review_required')
+        _checked(review['record'])
+    _require(not subprocess.check_output(['git', 'diff', '--name-only', auth['candidate'], '--', *PILOT_FILES],
+        cwd=PROJECT).strip(), 'program_source_changed')
+
+
+def _pilot_authorization(auth):
+    package = _pilot_package()
+    _require(set(auth) == AUTH_KEYS | {'operation', 'execution_stage', 'resource_package', 'source_receipt', 'old_catalog'},
+             'invalid_pilot_authorization')
+    _require(auth['approved'] is True and auth['base'] == package['base']
+        and auth['contract'] == package['contract'] and auth['human_confirmation'] == package['human_confirmation']
+        and auth['resource_package'] == {'path': PILOT_CONTROL, 'sha256': PILOT_SHA}
+        and auth['api_limits'] == package['api_limits'] and auth['budget_candidate'] == 'B02-A+B03'
+        and os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE') == str(_path(PILOT_CONTROL)), 'pilot_authorization_mismatch')
+    _checked(auth['contract'])
+    _checked(auth['human_confirmation'])
+    _require(auth['sources'] == package['public_sources' if auth['scope'] == 'public_catalog_test' else 'development_sources'],
+             'pilot_source_set_mismatch')
+    public = auth['scope'] == 'public_catalog_test'
+    if public:
+        _require(auth['candidate'] == 'PUBLIC' and os.environ.get('THESIS_RESOURCE_DOMAIN') == 'offline'
+            and auth['resource_ledger'] == package['offline']['ledger'], 'pilot_program_acceptance_required')
+    else:
+        _pilot_program(auth, package)
+    receipt_ref = auth['source_receipt']
+    _require(isinstance(receipt_ref, dict) and _path(receipt_ref['path']).is_relative_to(
+        _path(package['output_roots'][0 if public else 1])) and str(receipt_ref['path']).endswith('.json')
+        and 0 < receipt_ref['bytes'] <= 16 * 1024**2, 'pilot_receipt_path_not_allowed')
+    receipt = decode(_content(receipt_ref))
+    _require(receipt['complete'] is True and receipt['schema_version'] == 't0-recovery-pilot-receipt-0.1.0'
+        and receipt['authorization_binding'] == _pilot_binding(auth)
+        and set(receipt['source_sha256']) == set(PILOT_FILES)
+        and all(digest(_path(name).read_bytes()) == expected for name, expected in receipt['source_sha256'].items()),
+        'pilot_receipt_binding_mismatch')
+    _require((len(receipt['pilot_roots']) == 1 and receipt['pilot_roots'] == receipt['selected_roots']
+        and len(receipt['views']) == 1) if public else (len(receipt['selected_roots']) == 320
+        and len(set(receipt['pilot_roots'])) == 4 and set(receipt['pilot_roots']) <= set(receipt['selected_roots'])
+        and tuple(receipt['views']) == tuple(sorted(VIEWS))), 'pilot_selection_mismatch')
+    key_path = _path(auth['sources']['identity_key']['path'])
+    _require(receipt['identity_key_stamp'] == {'bytes': key_path.stat().st_size,
+        'mtime_ns': key_path.stat().st_mtime_ns}, 'pilot_identity_source_changed')
+    for role, ref in auth['sources'].items():
+        if role != 'identity_key':
+            _checked(ref)
+    return auth
+
+
+def _pilot_attempt(auth, key, purpose):
+    package = _pilot_package()
+    path = _path(package['attempt_ledger'])
+    entries = [decode(raw) for raw in path.read_bytes().splitlines()] if path.exists() else []
+    scope = auth['scope']
+    maximum = package['public_compile_attempts' if scope == 'public_catalog_test' else 'pilot_compile_attempts']
+    _require(sum(row['scope'] == scope for row in entries) < maximum, 'pilot_compile_attempt_limit')
+    with path.open('ab') as stream:
+        stream.write(encoded({'scope': scope, 'key': key, 'purpose': purpose,
+            'label': os.environ['THESIS_BATCH_CHECK_LABEL']}) + b'\n')
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def _pilot_json(path, value):
+    temporary = _path(str(path) + '.pending')
+    with temporary.open('wb') as stream:
+        stream.write(encoded(value) + b'\n')
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(temporary, _path(path))
+
+
+def _pilot_component(path):
+    size, sha = 0, hashlib.sha256()
+    with _path(path).open('rb') as stream:
+        for raw in iter(lambda: stream.read(1024**2), b''):
+            size += len(raw)
+            sha.update(raw)
+    return {'bytes': size, 'sha256': sha.hexdigest()}
+
+
+def _pilot_runtime():
+    import ctypes
+    from ctypes import wintypes
+    class Memory(ctypes.Structure):
+        _fields_ = [('cb', wintypes.DWORD), ('faults', wintypes.DWORD)] + [(name, ctypes.c_size_t) for name in
+            ('peak_working', 'working', 'peak_paged', 'paged', 'peak_nonpaged', 'nonpaged', 'pagefile', 'peak_pagefile', 'private')]
+    io, memory = (ctypes.c_ulonglong * 6)(), Memory()
+    memory.cb = ctypes.sizeof(memory)
+    handle = wintypes.HANDLE(-1)
+    if not ctypes.windll.kernel32.GetProcessIoCounters(handle, ctypes.byref(io)):
+        raise ctypes.WinError()
+    if not ctypes.windll.psapi.GetProcessMemoryInfo(handle, ctypes.byref(memory), memory.cb):
+        raise ctypes.WinError()
+    return {'read_transfer_bytes': io[3], 'write_transfer_bytes': io[4],
+            'private_bytes': memory.private, 'process_lifetime_peak_commit_bytes': memory.peak_pagefile}
+
+
+class _PilotCosts:
+    def __init__(self, purpose):
+        self.purpose, self.started, self.before = purpose, time.perf_counter(), _pilot_runtime()
+        self.by_root = {}
+
+    def run(self, key, action):
+        started, before, peak, stop = time.perf_counter(), _pilot_runtime(), [0], threading.Event()
+        def sample():
+            while not stop.is_set():
+                peak[0] = max(peak[0], _pilot_runtime()['private_bytes'])
+                stop.wait(.01)
+        thread = threading.Thread(target=sample, daemon=True)
+        thread.start()
+        report = {}
+        try:
+            report = action()
+            return report
+        finally:
+            stop.set()
+            thread.join()
+            after = _pilot_runtime()
+            row = self.by_root.setdefault(key[0], dict.fromkeys(('plans', 'attempts', 'N', 'wire_bytes', 'count_payload_bytes',
+                'seconds', 'read_transfer_bytes', 'write_transfer_bytes', 'sampled_peak_private_bytes',
+                'process_lifetime_peak_commit_bytes'), 0))
+            coverage = report.get('coverage', {})
+            row['attempts'] += 1
+            row['plans'] += int(report.get('complete', False))
+            for target, source in (('N', 'N'), ('wire_bytes', 'original_wire_bytes'), ('count_payload_bytes', 'original_count_payload_bytes')):
+                row[target] += coverage.get(source, 0)
+            row['seconds'] += time.perf_counter() - started
+            for name in ('read_transfer_bytes', 'write_transfer_bytes'):
+                row[name] += after[name] - before[name]
+            row['sampled_peak_private_bytes'] = max(row['sampled_peak_private_bytes'], peak[0], before['private_bytes'], after['private_bytes'])
+            row['process_lifetime_peak_commit_bytes'] = max(row['process_lifetime_peak_commit_bytes'], after['process_lifetime_peak_commit_bytes'])
+
+    def save(self, output):
+        after = _pilot_runtime()
+        total = time.perf_counter() - self.started
+        result = {'purpose': self.purpose, 'seconds': total, 'by_root': self.by_root,
+            'sample_period_ms': 10, 'peak_note': 'sampled root windows; process lifetime peak is a conservative per-root upper bound; guard records exact Job peak',
+            'io_note': 'Windows process IO transfer counters, including cached file IO and audit writes',
+            'controller_seconds': total - sum(r['seconds'] for r in self.by_root.values())}
+        for name in ('read_transfer_bytes', 'write_transfer_bytes'):
+            result[name] = after[name] - self.before[name]
+            result['controller_' + name] = result[name] - sum(r[name] for r in self.by_root.values())
+        _pilot_json(output / 'checks' / (self.purpose + '-costs.json'), result)
+
+
+def _pilot_coverage(totals, methods, views, terminals):
+    return {**totals, 'expected_plans': totals['plans'], 'by_method': dict(methods), 'by_view_method': dict(views),
+        'by_terminal': dict(terminals), 'missing_plans': 0, 'duplicate_plans': 0, 'missing_stages': 0,
+        'complete_input_tokens': None, 'actual_output_tokens': None, 'actual_generation_cost_microusd': None,
+        'candidate_validation': 'failed' if totals['excess_plans'] else 'unknown_tokens_and_dynamic_admission',
+        'complete': True, 'reasons': []}
+
+
+def _pilot_catalog(auth, components):
+    return {'schema_version': 'T0-request-catalog-0.2.0', 'scope': auth['scope'], 'base': _pilot_package()['base'],
+        'candidate': auth['candidate'], 'sources': auth['sources'], 'provenance': 'synthetic', 'script_version': SCRIPT,
+        'composer_version': COMPOSER_VERSION, 'model_id': MODEL, 'mapper_version': 'openai-responses-mapper-0.1.0',
+        'supplier_project_status': 'unbound', 'external_count_ready': False, 'project_id': 'UNBOUND-T0-DEV-CATALOG',
+        'execution_budget': None, 'execution_authorized': False, 'budget_candidate': 'B02-A+B03',
+        'storage_contract': STORAGE_CONTRACT, 'storage_confirmation': STORAGE_CONFIRMATION,
+        'acceptance_kind': 'declared_development_catalog_only' if auth['scope'] == 'development_catalog_only' else 'public_synthetic_only',
+        'complete': True, 'missing': 0, 'components': components, 'pilot_only': True,
+        'recovery_contract': auth['contract'], 'recovery_confirmation': auth['human_confirmation']}
+
+
+def _pilot_assemble(auth, receipt, output, committed):
+    destination = next((output / ('assembly-' + str(i)) for i in range(2)
+                        if not (output / ('assembly-' + str(i))).exists()), None)
+    _require(destination is not None, 'pilot_assembly_attempt_limit')
+    destination.mkdir()
+    components, templates, plans = {}, {}, []
+    totals = dict.fromkeys(('plans', 'N', 'U', 'original_wire_bytes', 'original_count_payload_bytes',
+        'unique_wire_bytes', 'unique_count_payload_bytes', 'missing_objects', 'failed_plans', 'excess_plans'), 0)
+    methods, views, terminals = Counter(), Counter(), Counter()
+    with (destination / 'roots.jsonl').open('xb') as roots, (destination / 'requests.jsonl').open('xb') as requests:
+        with PreparedObjectWriter(destination) as writer:
+            for item in committed:
+                directory = _path(output / item['path'])
+                catalog = decode((directory / 'catalog.json').read_bytes())
+                plan_raw = (directory / 'roots.jsonl').read_bytes()
+                plan = decode(plan_raw)
+                plans.append(plan)
+                roots.write(plan_raw)
+                with (directory / 'requests.jsonl').open('rb') as stream:
+                    for row in stream:
+                        requests.write(row)
+                for value in iter_prepared_objects(directory):
+                    writer.add(value)
+                offset = 0
+                with (directory / 'dependencies.jsonl').open('rb') as stream:
+                    for raw in stream:
+                        tid = decode(raw)['template_id']
+                        info = (directory / 'dependencies.jsonl', offset, len(raw), digest(raw))
+                        _require(tid not in templates or templates[tid][3] == info[3], 'duplicate_template_mismatch')
+                        templates[tid] = info
+                        offset += len(raw)
+                coverage = decode((directory / 'coverage.json').read_bytes())
+                for name in totals:
+                    if name not in ('U', 'unique_wire_bytes', 'unique_count_payload_bytes'):
+                        totals[name] += coverage[name]
+                methods[plan['method']] += 1
+                views[plan['view_label'] + '/' + plan['method']] += 1
+                terminals[plan['planned_terminal']] += 1
+        components.update(writer.components)
+        totals['U'] = len(writer.records)
+        totals['unique_wire_bytes'] = sum(row['raw_bytes'] for row in writer.records)
+        totals['unique_count_payload_bytes'] = sum(row['count_bytes'] for row in writer.records)
+    with (destination / 'dependencies.jsonl').open('xb') as stream:
+        for tid in sorted(templates):
+            path, offset, size, expected = templates[tid]
+            with path.open('rb') as source:
+                source.seek(offset)
+                raw = source.read(size)
+            _require(digest(raw) == expected, 'committed_template_changed')
+            stream.write(raw)
+    index = copy.deepcopy(receipt['source_index'])
+    index['selected_roots'] = receipt['pilot_roots']
+    index['intervals'] = [row for row in index['intervals'] if row['root_task_id'] in receipt['pilot_roots']]
+    _pilot_json(destination / 'source-index.json', index)
+    coverage = _pilot_coverage(totals, methods, views, terminals)
+    _pilot_json(destination / 'coverage.json', coverage)
+    for name in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl', 'source-index.json', 'coverage.json'):
+        components[name] = _pilot_component(destination / name)
+    catalog = _pilot_catalog(auth, components)
+    _pilot_json(destination / 'catalog.json', catalog)
+    (output / 'objects').mkdir(exist_ok=True)
+    for name in (*components, 'catalog.json'):
+        with (destination / name).open('r+b') as stream:
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(destination / name, output / name)
+    return {'status': 'PUBLIC_recovery_pilot_prepared_only' if auth['scope'] == 'public_catalog_test' else
+            'T0_A_recovery_pilot_prepared_only', 'complete': True, **totals,
+            'catalog_sha256': digest(encoded(catalog) + b'\n'), 'full_catalog_accepted': False, 'original_T0_status': 'T0_A_incomplete'}
+
+
+def _pilot_prepare(auth, output, costs, *, resume=False):
+    receipt = decode(_content(auth['source_receipt']))
+    keys = [(root, view, method, 1) for root in sorted(receipt['pilot_roots'])
+            for view in sorted(receipt['views']) for method in ('R', 'S', 'M')]
+    shared, committed = ({}, {}), []
+    (output / 'checks').mkdir(exist_ok=True)
+    if not resume:
+        (output / 'staging').mkdir()
+    checkpoint = {'schema_version': 't0-recovery-pilot-checkpoint-0.1.0', 'binding': _pilot_binding(auth),
+        'source_receipt': auth['source_receipt'], 'source_sha256': receipt['source_sha256'], 'committed': committed}
+    if resume:
+        saved = decode(_path(output / 'checkpoint.json').read_bytes())
+        _require(all(saved[k] == checkpoint[k] for k in ('schema_version', 'binding', 'source_receipt', 'source_sha256')),
+                 'pilot_checkpoint_binding_mismatch')
+        _require(len(saved['committed']) <= len(keys), 'pilot_checkpoint_prefix_mismatch')
+        for i, item in enumerate(saved['committed']):
+            _require(tuple(item['key']) == keys[i] and re.fullmatch('staging/' + digest(encoded(keys[i])) + '-[0-2]', item['path']),
+                     'pilot_checkpoint_prefix_mismatch')
+            leaf = _path(output / item['path'])
+            _require(_pilot_component(leaf / 'catalog.json') == item['catalog'], 'committed_catalog_changed')
+            _require(_pilot_component(leaf / 'commit.json') == item['commit'], 'committed_record_changed')
+            seal = decode((leaf / 'commit.json').read_bytes())
+            _require(seal == {'key': item['key'], 'catalog_sha256': item['catalog']['sha256'],
+                'probes': item['probes'], 'binding': checkpoint['binding'], 'source_receipt': auth['source_receipt']},
+                'committed_record_binding_mismatch')
+            _require(_pilot_component(leaf / 'checks/probes.jsonl') == item['probes'], 'committed_probes_changed')
+            catalog = decode((leaf / 'catalog.json').read_bytes())
+            _require(set(catalog['components']) == {'roots.jsonl', 'requests.jsonl', 'dependencies.jsonl', 'source-index.json',
+                'coverage.json', 'objects/requests.pack', 'objects/manifest.json'} and catalog['complete'] is True
+                and catalog['scope'] == auth['scope'] and catalog['candidate'] == auth['candidate']
+                and catalog['sources'] == auth['sources'], 'committed_catalog_binding_mismatch')
+            for name, expected in catalog['components'].items():
+                _require(_pilot_component(leaf / name) == expected, 'committed_component_changed')
+            with (leaf / 'dependencies.jsonl').open('rb') as stream:
+                for raw in stream:
+                    template = decode(raw)
+                    _require(template['template_id'] not in shared[1] or shared[1][template['template_id']] == template,
+                        'duplicate_template_mismatch')
+                    shared[1][template['template_id']] = template
+            committed.append(item)
+        if 'delivery_catalog' in saved:
+            _require(len(committed) == len(keys) and _pilot_component(output / 'catalog.json') == saved['delivery_catalog'],
+                'committed_delivery_changed')
+            catalog = decode((output / 'catalog.json').read_bytes())
+            _require(catalog == _pilot_catalog(auth, catalog['components']), 'committed_delivery_binding_mismatch')
+            for name, expected in catalog['components'].items():
+                _require(_pilot_component(output / name) == expected, 'committed_delivery_changed')
+            coverage = decode((output / 'coverage.json').read_bytes())
+            return {'status': 'PUBLIC_recovery_pilot_prepared_only' if auth['scope'] == 'public_catalog_test' else
+                'T0_A_recovery_pilot_prepared_only', **coverage, 'complete': True,
+                'catalog_sha256': saved['delivery_catalog']['sha256'], 'full_catalog_accepted': False,
+                'original_T0_status': 'T0_A_incomplete', 'already_committed': True}
+    for key in keys:
+        if key in [tuple(item['key']) for item in committed]:
+            continue
+        _time_available()
+        number = 0
+        leaf = output / 'staging' / (digest(encoded(key)) + '-0')
+        while leaf.exists():
+            number += 1
+            _require(number <= 2, 'pilot_plan_retry_limit')
+            leaf = output / 'staging' / (digest(encoded(key)) + '-' + str(number))
+        leaf.mkdir()
+        report = costs.run(key, lambda: _compile(auth, leaf, pilot={'key': key, 'receipt': receipt, 'shared': shared,
+            'purpose': 'resume' if resume else 'prepare'}))
+        _require(report['complete'], 'pilot_plan_incomplete')
+        raw = (leaf / 'catalog.json').read_bytes()
+        for name in (*decode(raw)['components'], 'catalog.json'):
+            with _path(leaf / name).open('r+b') as stream:
+                stream.flush()
+                os.fsync(stream.fileno())
+        probes = _pilot_component(leaf / 'checks/probes.jsonl')
+        _pilot_json(leaf / 'commit.json', {'key': key, 'catalog_sha256': digest(raw), 'probes': probes,
+            'binding': checkpoint['binding'], 'source_receipt': auth['source_receipt']})
+        committed.append({'key': key, 'path': leaf.relative_to(output).as_posix(),
+            'catalog': {'bytes': len(raw), 'sha256': digest(raw)}, 'probes': probes,
+            'commit': _pilot_component(leaf / 'commit.json')})
+        _pilot_json(output / 'checkpoint.json', checkpoint)
+        if auth['scope'] == 'development_catalog_only' and not resume and len(committed) == 3:
+            _pilot_json(output / 'checks/pilot-prefix.json', checkpoint)
+            return {'status': 'pilot_checkpoint_ready', 'complete': False, 'committed_plans': 3,
+                'remaining_plans': len(keys) - 3, 'full_catalog_accepted': False, 'original_T0_status': 'T0_A_incomplete'}
+    del shared
+    result = _pilot_assemble(auth, receipt, output, committed)
+    checkpoint['delivery_catalog'] = _pilot_component(output / 'catalog.json')
+    _pilot_json(output / 'checkpoint.json', checkpoint)
+    return result
+
+
+def _pilot_recompute(auth, output, costs):
+    receipt = decode(_content(auth['source_receipt']))
+    original = decode((output / 'catalog.json').read_bytes())
+    _require(digest((output / 'catalog.json').read_bytes()) == decode((output / 'run.json').read_bytes())['catalog_sha256'],
+             'first_catalog_changed')
+    keys = [(root, view, method, 1) for root in sorted(receipt['pilot_roots'])
+            for view in sorted(receipt['views']) for method in ('R', 'S', 'M')]
+    shared, roots, requests = ({}, {}), _DigestStream(None, True), _DigestStream(None, True)
+    plans, reports = [], []
+    def root(raw):
+        roots.write(raw)
+        plans.append(decode(raw))
+    with PreparedObjectWriter(output, recompute=True) as writer:
+        for key in keys:
+            spool = output / 'checks/recompute' / digest(encoded(key))
+            (spool / 'checks').mkdir(parents=True)
+            report = costs.run(key, lambda: _compile(auth, spool, recompute=True, pilot={'key': key, 'receipt': receipt, 'shared': shared,
+                'object_store': writer, 'consumers': {'roots.jsonl': root, 'requests.jsonl': requests.write}}))
+            _require(report['complete'], 'pilot_recompute_incomplete')
+            reports.append(report)
+    dependencies = _DigestStream(None, True)
+    for tid in sorted(shared[1]):
+        dependencies.write(encoded(shared[1][tid]) + b'\n')
+    totals = {name: sum(report['coverage'][name] for report in reports) for name in
+        ('plans', 'N', 'original_wire_bytes', 'original_count_payload_bytes', 'missing_objects', 'failed_plans', 'excess_plans')}
+    totals.update(U=len(writer.records), unique_wire_bytes=sum(r['raw_bytes'] for r in writer.records),
+                  unique_count_payload_bytes=sum(r['count_bytes'] for r in writer.records))
+    coverage = _pilot_coverage(totals, Counter(p['method'] for p in plans),
+        Counter(p['view_label'] + '/' + p['method'] for p in plans), Counter(p['planned_terminal'] for p in plans))
+    index = copy.deepcopy(receipt['source_index'])
+    index['selected_roots'] = receipt['pilot_roots']
+    index['intervals'] = [r for r in index['intervals'] if r['root_task_id'] in receipt['pilot_roots']]
+    components = {**writer.components, 'roots.jsonl': roots.info(), 'requests.jsonl': requests.info(),
+                  'dependencies.jsonl': dependencies.info()}
+    for name, value in (('source-index.json', index), ('coverage.json', coverage)):
+        raw = encoded(value) + b'\n'
+        components[name] = {'bytes': len(raw), 'sha256': digest(raw)}
+    raw = encoded(_pilot_catalog(auth, components)) + b'\n'
+    changed = [name for name in components if components[name] != original['components'].get(name)]
+    match = not changed and digest(raw) == digest((output / 'catalog.json').read_bytes())
+    result = {'status': 'stable_content_reproduced' if match else 'stable_content_mismatch', 'complete': match, 'match': match,
+        'recomputed_N': totals['N'], 'recomputed_U': totals['U'], 'changed_components': changed,
+        'recomputed_catalog_sha256': digest(raw), 'second_catalog_written': False, 'identity_key_read': False,
+        'actual_template_probes': sum(r['actual_template_probes'] for r in reports), 'full_catalog_accepted': False}
+    _pilot_json(output / 'checks/reproduction.json', result)
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
@@ -933,6 +1391,8 @@ def main(argv=None):
     prepare.add_argument('--authorization', required=True)
     prepare.add_argument('--output', required=True)
     prepare.add_argument('--recompute-digests', action='store_true', help='Recompute stable content without writing a second catalog')
+    prepare.add_argument('--resume', action='store_true')
+    prepare.add_argument('--recover-from')
     args = parser.parse_args(argv)
     try:
         output = _path(args.output)
@@ -943,7 +1403,7 @@ def main(argv=None):
     if not any(output.is_relative_to(p) and output != p for p in allowed):
         print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['output_not_allowed']}))
         return 2
-    if output.exists() and not args.recompute_digests:
+    if output.exists() and not (args.recompute_digests or args.resume):
         print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['output_already_exists']}))
         return 2
     if args.recompute_digests:
@@ -953,13 +1413,23 @@ def main(argv=None):
         if (output / 'checks/reproduction.json').exists() or (output / 'checks/probes-recompute.jsonl').exists():
             print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['reproduction_already_attempted']}))
             return 2
-    else:
+    elif not args.resume:
         output.mkdir(parents=True)
     try:
-        report = _compile(_authorization(args.authorization), output, recompute=args.recompute_digests)
+        _require(args.recover_from is None, 'pilot_full_recovery_not_authorized')
+        auth = _authorization(args.authorization)
+        if auth['schema_version'] == 't0-a-recovery-authorization-0.1.0':
+            costs = _PilotCosts('recompute' if args.recompute_digests else 'resume' if args.resume else 'prepare')
+            (output / 'checks').mkdir(exist_ok=True)
+            try:
+                report = _pilot_recompute(auth, output, costs) if args.recompute_digests else _pilot_prepare(auth, output, costs, resume=args.resume)
+            finally:
+                costs.save(output)
+        else:
+            report = _compile(auth, output, recompute=args.recompute_digests)
     except (ValueError, OSError, KeyError, TypeError) as exc:
         reason = str(exc) if type(exc) is ValueError else type(exc).__name__
-        report = {'status': 'T0_A_incomplete', 'complete': False, 'reasons': [reason]}
+        report = {'status': 'T0_A_incomplete', 'complete': False, 'reasons': [reason], 'detail': str(exc)}
     report['provider_api_calls'] = {'count': 0, 'generate': 0, 'other': 0}
     report_path = output / ('checks/reproduction-failure.json' if args.recompute_digests else 'run.json')
     if not args.recompute_digests or not report.get('match'):

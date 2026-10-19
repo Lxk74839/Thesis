@@ -1051,5 +1051,320 @@ class StorageTests(unittest.TestCase):
             junction.rmdir()
 
 
+class RecoveryPilotTests(unittest.TestCase):
+    """New public CLI behavior, using the frozen PUBLIC facts without regeneration."""
+    def setUp(self):
+        self.work = PROJECT / '.tmp/ticket12-t0/recovery-pilot-20261019' / os.environ['THESIS_BATCH_CHECK_LABEL'] / hashlib.sha256(self._testMethodName.encode()).hexdigest()[:12]
+        self.work.mkdir(parents=True)
+        self.control = PROJECT / '.scratch/ticket12-budget-20261018'
+        self.package = json.loads((self.control / 'recovery-pilot-package-20261019.json').read_bytes())
+
+    def authorization(self):
+        auth = json.loads((PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/public-baseline/authorization.json').read_bytes())
+        auth.update(schema_version='t0-a-recovery-authorization-0.1.0', base=self.package['base'],
+            contract=self.package['contract'], human_confirmation=self.package['human_confirmation'],
+            operation='controlled_recovery', execution_stage='pilot',
+            resource_package={'path': '.scratch/ticket12-budget-20261018/recovery-pilot-package-20261019.json',
+                'sha256': '6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b'},
+            source_receipt=None, old_catalog=self.package['old_catalog'])
+        original = PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/catalog.json'
+        auth['old_catalog'] = {'path': original.relative_to(PROJECT).as_posix(),
+            'bytes': original.stat().st_size, 'sha256': hashlib.sha256(original.read_bytes()).hexdigest()}
+        path = self.work / 'authorization.json'
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        return path, auth
+
+    def cli(self, auth, *extra, name='pilot'):
+        import contextlib
+        import io
+        from t0_catalog import main
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = main(['prepare', '--authorization', str(auth), '--output', str(self.work / name), *extra])
+        return code, json.loads((self.work / name / 'run.json').read_bytes())
+
+    def checker(self, operation, auth, name, *extra):
+        import contextlib
+        import io
+        import runpy
+        from unittest.mock import patch
+        path = self.work / name
+        with patch.object(sys, 'argv', ['checker', operation, '--authorization', str(auth), '--output', str(path), *extra]), contextlib.redirect_stdout(io.StringIO()):
+            try:
+                runpy.run_path(str(self.control / 'diagnostics/check_t0_catalog_delivery.py'), run_name='__main__')
+            except SystemExit as exc:
+                code = exc.code
+        return code, json.loads(path.read_bytes())
+
+    def test_full_recovery_stage_is_denied_before_any_plan_attempt(self):
+        path, auth = self.authorization()
+        auth['execution_stage'] = 'recovery'
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        code, report = self.cli(path)
+        self.assertEqual(code, 2)
+        self.assertIn('pilot_stage_not_authorized', report['reasons'])
+        self.assertFalse((self.work / 'pilot/roots.jsonl').exists())
+
+    def test_independent_snapshot_binds_the_frozen_public_selection_without_exposing_identity(self):
+        path, auth = self.authorization()
+        code, report = self.checker('snapshot', path, 'receipt.json')
+        self.assertEqual(code, 0)
+        self.assertEqual(report['status'], 'PUBLIC_recovery_source_bound_only')
+        expected = json.loads((PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline/source-index.json').read_bytes())
+        self.assertEqual(report['selected_roots'], expected['selected_roots'])
+        self.assertEqual(len(report['pilot_roots']), 1)
+        self.assertEqual(report['identity_key_body_reads'], 1)
+        self.assertFalse(report['full_catalog_accepted'])
+        raw = (self.work / 'receipt.json').read_text(encoding='utf-8')
+        self.assertNotIn('PUBLIC-IDENTITY', raw)
+        self.assertNotIn('PUBLIC-DEV', raw)
+
+    def bound_authorization(self):
+        path, auth = self.authorization()
+        code, receipt = self.checker('snapshot', path, 'receipt.json')
+        self.assertEqual(code, 0)
+        raw = (self.work / 'receipt.json').read_bytes()
+        auth['source_receipt'] = {'path': (self.work / 'receipt.json').relative_to(PROJECT).as_posix(),
+            'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        return path, auth
+
+    def test_prepare_commits_the_frozen_public_plans_and_preserves_complete_prepared_bytes(self):
+        from t0_catalog import iter_prepared_objects
+        path, auth = self.bound_authorization()
+        code, report = self.cli(path)
+        self.assertEqual(code, 0, report)
+        self.assertTrue(report['complete'])
+        self.assertEqual(report['plans'], 3)
+        self.assertEqual(report['N'], 26)
+        checkpoint = json.loads((self.work / 'pilot/checkpoint.json').read_bytes())
+        self.assertEqual(len(checkpoint['committed']), 3)
+        originals = {p['prepared_id']: p for p in iter_prepared_objects(PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/catalog-baseline')}
+        actual = {p['prepared_id']: p for p in iter_prepared_objects(self.work / 'pilot')}
+        self.assertEqual(actual, originals)
+
+    def test_resume_keeps_committed_prefix_and_retries_only_the_uncommitted_plan(self):
+        from unittest.mock import patch
+        path, auth = self.bound_authorization()
+        original_replace = os.replace
+        def replace(source, target):
+            if Path(target).name == 'checkpoint.json' and len(json.loads(Path(source).read_bytes())['committed']) == 2:
+                raise OSError('PUBLIC checkpoint write failure')
+            return original_replace(source, target)
+        with patch('os.replace', replace):
+            code, failed = self.cli(path)
+        self.assertEqual(code, 2)
+        checkpoint_path = self.work / 'pilot/checkpoint.json'
+        first = json.loads(checkpoint_path.read_bytes())['committed'][0]
+        code, restored = self.cli(path, '--resume')
+        self.assertEqual(code, 0, restored)
+        final = json.loads(checkpoint_path.read_bytes())
+        self.assertEqual(final['committed'][0], first)
+        self.assertEqual(len(final['committed']), 3)
+        self.assertEqual(restored['N'], 26)
+        self.assertEqual(restored['plans'], 3)
+
+    def test_recompute_uses_frozen_inputs_without_reading_first_output_bodies_or_identity_key(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.bound_authorization()
+        code, report = self.cli(path)
+        self.assertEqual(code, 0)
+        original_open = io.open
+        target = self.work / 'pilot'
+        forbidden = {target / name for name in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl')}
+        forbidden.add(PROJECT / auth['sources']['identity_key']['path'])
+        def opened(file, mode='r', *args, **kwargs):
+            actual = Path(file)
+            if 'r' in mode and (actual in forbidden or actual.is_relative_to(target / 'objects')):
+                raise AssertionError('first output body or identity key read during recompute')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, ignored = self.cli(path, '--recompute-digests')
+        self.assertEqual(code, 0)
+        result = json.loads((target / 'checks/reproduction.json').read_bytes())
+        self.assertTrue(result['match'])
+        self.assertEqual(result['recomputed_N'], 26)
+        self.assertFalse(result['second_catalog_written'])
+
+    def test_independent_pilot_delivery_covers_all_plans_but_never_accepts_full_A(self):
+        path, auth = self.bound_authorization()
+        self.assertEqual(self.cli(path)[0], 0)
+        code, report = self.checker('check-pilot', path, 'pilot-check.json', '--catalog', str(self.work / 'pilot'))
+        self.assertEqual(code, 0, report)
+        self.assertEqual(report['status'], 'PUBLIC_recovery_pilot_verified_only')
+        self.assertEqual(report['plans'], 3)
+        self.assertEqual(report['N'], 26)
+        self.assertFalse(report['full_catalog_accepted'])
+        code, full = self.checker('check', path, 'full-check.json', '--catalog', str(self.work / 'pilot'))
+        self.assertEqual(code, 2)
+        self.assertIn('pilot_not_full_delivery', full['errors'])
+
+    def test_independent_checker_rejects_forged_dependency_body_even_when_component_hashes_are_updated(self):
+        path, auth = self.bound_authorization()
+        self.assertEqual(self.cli(path)[0], 0)
+        target = self.work / 'pilot'
+        dependency = target / 'dependencies.jsonl'
+        values = [json.loads(row) for row in dependency.read_bytes().splitlines()]
+        def forge(value):
+            if isinstance(value, dict):
+                if 'raw_utf8' in value and isinstance(value.get('source'), dict) and 'component_path' in value['source']:
+                    value['raw_utf8'] += 'PUBLIC-forged-body'
+                    return True
+                return any(forge(v) for v in value.values())
+            return isinstance(value, list) and any(forge(v) for v in value)
+        self.assertTrue(forge(values[0]))
+        raw = b''.join((json.dumps(v, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n').encode() for v in values)
+        dependency.write_bytes(raw)
+        catalog_path = target / 'catalog.json'
+        catalog = json.loads(catalog_path.read_bytes())
+        catalog['components']['dependencies.jsonl'] = {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+        catalog_path.write_text(json.dumps(catalog), encoding='utf-8')
+        code, report = self.checker('check-pilot', path, 'forged-check.json', '--catalog', str(target))
+        self.assertEqual(code, 2, report)
+        self.assertIn('pilot_dependency_source_mismatch', report['errors'])
+
+    def test_prepare_reports_per_root_costs_and_passes_the_source_aware_independent_check(self):
+        path, auth = self.bound_authorization()
+        code, report = self.cli(path)
+        self.assertEqual(code, 0)
+        costs = json.loads((self.work / 'pilot/checks/prepare-costs.json').read_bytes())
+        self.assertEqual(costs['purpose'], 'prepare')
+        self.assertEqual(len(costs['by_root']), 1)
+        root = next(iter(costs['by_root'].values()))
+        self.assertEqual(root['plans'], 3)
+        self.assertEqual(root['N'], 26)
+        self.assertEqual(root['wire_bytes'], 386237)
+        self.assertEqual(root['count_payload_bytes'], 384183)
+        self.assertGreater(root['seconds'], 0)
+        self.assertGreater(root['read_transfer_bytes'], 0)
+        self.assertGreater(root['write_transfer_bytes'], 0)
+        self.assertGreater(root['sampled_peak_private_bytes'], 0)
+        code, verified = self.checker('check-pilot', path, 'source-aware.json', '--catalog', str(self.work / 'pilot'))
+        self.assertEqual(code, 0, verified)
+        self.assertGreater(verified['dependency_templates_verified'], 0)
+
+    def test_unapproved_authorization_and_receipt_paths_are_denied_before_reading_their_bodies(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.authorization()
+        original_open = io.open
+        blocked = {PROJECT / auth['sources']['identity_key']['path'], PROJECT / 'AGENTS.md'}
+        def opened(file, mode='r', *args, **kwargs):
+            if 'r' in mode and Path(file) in blocked:
+                raise AssertionError('unapproved authorization reached a protected body')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            old = PROJECT / '.tmp/ticket12-t0/diagnosis-20261019/public-baseline/authorization.json'
+            code, report = self.cli(old, name='old')
+            self.assertEqual(code, 2)
+            self.assertIn('old_authorization_not_pilot', report['reasons'])
+            entry = next(p for p in self.package['protected_before'] if p['path'] == 'AGENTS.md')
+            auth['source_receipt'] = entry
+            path.write_text(json.dumps(auth), encoding='utf-8')
+            code, report = self.cli(path, name='unsafe')
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_receipt_path_not_allowed', report['reasons'])
+
+    def test_development_source_substitution_is_denied_before_identity_or_receipt_reads(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.authorization()
+        auth.update(scope='development_catalog_only', candidate='0' * 40)
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        original_open = io.open
+        def opened(file, mode='r', *args, **kwargs):
+            if 'r' in mode and Path(file).name == 'id-key.bin':
+                raise AssertionError('unaccepted program reached identity key')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, report = self.cli(path)
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_source_set_mismatch', report['reasons'])
+            code, report = self.checker('snapshot', path, 'denied.json')
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_source_set_mismatch', report['errors'])
+
+    def test_development_program_record_path_is_rejected_before_body_expansion(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.authorization()
+        auth.update(scope='development_catalog_only', candidate='0' * 40,
+            sources=self.package['development_sources'], old_catalog=self.package['old_catalog'],
+            program_acceptance={'path': 'AGENTS.md', 'sha256': '0' * 64})
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        original_open = io.open
+        def opened(file, mode='r', *args, **kwargs):
+            if 'r' in mode and (Path(file).name == 'id-key.bin' or Path(file) == PROJECT / 'AGENTS.md'):
+                raise AssertionError('unaccepted program reached protected body')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, report = self.cli(path)
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_program_record_path_not_allowed', report['reasons'])
+            code, report = self.checker('snapshot', path, 'program-denied.json')
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_program_record_path_not_allowed', report['errors'])
+
+    def test_snapshot_rejects_unbound_old_catalog_before_reading_identity(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.authorization()
+        auth['old_catalog'] = {'path': 'AGENTS.md', 'bytes': 1, 'sha256': '0' * 64}
+        path.write_text(json.dumps(auth), encoding='utf-8')
+        original_open = io.open
+        def opened(file, mode='r', *args, **kwargs):
+            if 'r' in mode and (Path(file).name == 'id-key.bin' or Path(file) == PROJECT / 'AGENTS.md'):
+                raise AssertionError('unbound old catalog reached protected body')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, report = self.checker('snapshot', path, 'old-denied.json')
+        self.assertEqual(code, 2)
+        self.assertIn('pilot_original_catalog_not_allowed', report['errors'])
+
+    def test_full_recovery_flags_and_old_bodies_are_not_available_in_the_pilot(self):
+        path, auth = self.authorization()
+        code, report = self.cli(path, '--recover-from', 'data/ticket12-t0/catalog-0.1.0')
+        self.assertEqual(code, 2)
+        self.assertIn('pilot_full_recovery_not_authorized', report['reasons'])
+        for name in ('objects/unused.json', 'dependencies.jsonl', 'checks/probes.jsonl'):
+            with self.assertRaisesRegex(OSError, 'pilot_old_body_read_forbidden'):
+                (PROJECT / 'data/ticket12-t0/catalog-0.1.0' / name).open('rb')
+        with self.assertRaisesRegex(OSError, 'pilot_identity_read_not_authorized'):
+            (PROJECT / self.package['development_sources']['identity_key']['path']).open('rb')
+
+    def test_completed_resume_keeps_the_delivery_unchanged_and_recomputation_remains_independent(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.bound_authorization()
+        code, report = self.cli(path)
+        self.assertEqual(code, 0, report)
+        target = self.work / 'pilot'
+        catalog = json.loads((target / 'catalog.json').read_bytes())
+        stamps = {name: ((target / name).stat().st_mtime_ns, (target / name).read_bytes())
+            for name in (*catalog['components'], 'catalog.json')}
+        code, report = self.cli(path, '--resume')
+        self.assertEqual(code, 0, report)
+        self.assertEqual({name: ((target / name).stat().st_mtime_ns, (target / name).read_bytes())
+            for name in stamps}, stamps)
+        original_open = io.open
+        forbidden = {target / name for name in ('roots.jsonl', 'requests.jsonl', 'dependencies.jsonl')}
+        forbidden.add(PROJECT / auth['sources']['identity_key']['path'])
+        def opened(file, mode='r', *args, **kwargs):
+            actual = Path(file)
+            if 'r' in mode and (actual in forbidden or actual.is_relative_to(target / 'objects')):
+                raise AssertionError('recompute read the first delivery or identity key')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, ignored = self.cli(path, '--recompute-digests')
+        self.assertEqual(code, 0)
+        reproduction = json.loads((target / 'checks/reproduction.json').read_bytes())
+        self.assertTrue(reproduction['match'])
+        self.assertEqual(reproduction['recomputed_N'], 26)
+        code, checked = self.checker('check-pilot', path, 'final-check.json', '--catalog', str(target))
+        self.assertEqual(code, 0, checked)
+        self.assertEqual(checked['N'], 26)
+        self.assertGreater(checked['dependency_templates_verified'], 0)
+
+
 if __name__ == '__main__':
     unittest.main()
