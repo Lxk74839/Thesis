@@ -1365,6 +1365,47 @@ class RecoveryPilotTests(unittest.TestCase):
         self.assertEqual(checked['N'], 26)
         self.assertGreater(checked['dependency_templates_verified'], 0)
 
+    def test_outside_package_output_is_rejected_before_any_directory_creation(self):
+        import contextlib
+        import io
+        import runpy
+        from unittest.mock import patch
+        from t0_catalog import main
+        path, auth = self.authorization()
+        forbidden = PROJECT / 'data/ticket12-t0/catalog-0.1.0/pilot-forbidden-new-output'
+        with patch('os.mkdir', side_effect=AssertionError('outside package directory creation')) as mkdir:
+            with contextlib.redirect_stdout(io.StringIO()) as text:
+                code = main(['prepare', '--authorization', str(path), '--output', str(forbidden)])
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_output_not_allowed', json.loads(text.getvalue())['reasons'])
+            with patch.object(sys, 'argv', ['checker', 'snapshot', '--authorization', str(path),
+                    '--output', str(forbidden / 'receipt.json')]), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaisesRegex(SystemExit, 'pilot_output_not_allowed'):
+                    runpy.run_path(str(self.control / 'diagnostics/check_t0_catalog_delivery.py'), run_name='__main__')
+            mkdir.assert_not_called()
+        self.assertFalse(forbidden.exists())
+
+    def test_quality_dependencies_are_bound_and_changes_are_denied_before_compilation(self):
+        import io
+        from unittest.mock import patch
+        path, auth = self.bound_authorization()
+        receipt = json.loads((self.work / 'receipt.json').read_bytes())
+        required = {'evidence_verification.py', 'quality_fusion.py', 'sim_normal.py', 'sim_scenarios.py'}
+        self.assertTrue(required <= set(receipt['source_sha256']))
+        original_open = io.open
+        def opened(file, mode='r', *args, **kwargs):
+            if 'r' in mode and Path(file) == PROJECT / 'evidence_verification.py':
+                return io.BytesIO(b'PUBLIC changed compiler dependency')
+            return original_open(file, mode, *args, **kwargs)
+        with patch('io.open', opened):
+            code, report = self.cli(path)
+            self.assertEqual(code, 2, report)
+            self.assertIn('pilot_receipt_binding_mismatch', report['reasons'])
+            code, report = self.checker('check-pilot', path, 'changed-compiler.json', '--catalog', str(self.work / 'pilot'))
+            self.assertEqual(code, 2)
+            self.assertIn('pilot_receipt_binding_mismatch', report['errors'])
+        self.assertFalse((self.work / 'pilot/staging').exists())
+
 
 if __name__ == '__main__':
     unittest.main()

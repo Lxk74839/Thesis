@@ -109,6 +109,17 @@ def storage_child(arguments):
     charged = {kind: sum(r['bytes'] for r in prior if r.get('kind', 'data') == kind) for kind in ('data', 'closeout')}
     by_area = {i: sum(r['bytes'] for r in prior if r.get('area') == i) for i in range(len(roots))}
 
+    def write_path(file):
+        path = Path(file).absolute()
+        if '..' in path.parts or not any(path.is_relative_to(root) for root in roots):
+            raise OSError('storage_package_write_outside_outputs')
+        for parent in (path, *path.parents):
+            if parent.exists() and (parent.is_symlink() or parent.is_junction()):
+                raise OSError('storage_package_reparse_write')
+            if parent == ROOT:
+                break
+        return path
+
     class File:
         def __init__(self, stream, path):
             self.stream, self.path = stream, path
@@ -174,17 +185,27 @@ def storage_child(arguments):
             return original(file, mode, *args, **kwargs)
         if pilot and path == ROOT / package['attempt_ledger'] and mode in ('a', 'ab'):
             return original(file, mode, *args, **kwargs)
-        if '..' in path.parts or not any(path.is_relative_to(root) for root in roots):
-            raise OSError('storage_package_write_outside_outputs')
-        for parent in (path, *path.parents):
-            if parent.exists() and (parent.is_symlink() or parent.is_junction()):
-                raise OSError('storage_package_reparse_write')
-            if parent == ROOT:
-                break
+        write_path(path)
         return File(original(file, mode, *args, **kwargs), path)
 
     io.open = builtins.open = opened
     if pilot:
+        mkdir, replace, rename, unlink, rmdir = os.mkdir, os.replace, os.rename, os.unlink, os.rmdir
+        def directory(file, *args, **kwargs):
+            write_path(file)
+            return mkdir(file, *args, **kwargs)
+        def move(operation, source, target, *args, **kwargs):
+            write_path(source)
+            write_path(target)
+            return operation(source, target, *args, **kwargs)
+        def remove(operation, file, *args, **kwargs):
+            write_path(file)
+            return operation(file, *args, **kwargs)
+        os.mkdir = directory
+        os.replace = lambda source, target, *a, **k: move(replace, source, target, *a, **k)
+        os.rename = lambda source, target, *a, **k: move(rename, source, target, *a, **k)
+        os.unlink = lambda file, *a, **k: remove(unlink, file, *a, **k)
+        os.rmdir = lambda file, *a, **k: remove(rmdir, file, *a, **k)
         def audit(event, arguments):
             if event in ('socket.connect', 'socket.sendto'):
                 raise OSError('pilot_network_forbidden')
@@ -218,8 +239,23 @@ class Accounting(ctypes.Structure):
     _fields_ = [('times', ctypes.c_longlong * 4), ('counts', wintypes.DWORD * 4), ('io', IO)]
 
 
+def source_digest(name):
+    try:
+        return hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+    except OSError:
+        return None
+
+
+def process_io():
+    counters = IO()
+    if not ctypes.windll.kernel32.GetProcessIoCounters(wintypes.HANDLE(-1), ctypes.byref(counters)):
+        raise ctypes.WinError()
+    return counters
+
+
 def main():
     global AUDIT, DISK, SETTLED
+    guard_before = process_io()
     assert Path(sys.prefix).resolve() == ROOT / '.conda/envs/Thesis'
     assert sys.version_info[:3] == (3, 13, 16)
     arguments = sys.argv[1:]
@@ -278,12 +314,13 @@ def main():
                     'tests/test_batched_recommendation.py', 'provider_openai.py', 'token_counting.py',
                     'tests/provider_fixtures.py', 'tests/test_provider_openai.py', 'tests/test_token_counting.py',
                     't0_catalog.py', 'tests/test_t0_catalog.py', 'joint_access.py', 'joint_tasks.py',
+                    'evidence_verification.py', 'quality_fusion.py', 'sim_normal.py', 'sim_scenarios.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/run_check.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py',
                     '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py')
                     if (ROOT / p).exists())
-    source_sha256 = {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in source_paths}
+    source_sha256 = {p: source_digest(p) for p in source_paths}
     output = AUDIT / (label + '.txt')
     with inflight.open('x', encoding='utf-8', newline='\n') as stream:
         json.dump({'label': label, 'guard_pid': os.getpid(), 'started_at_unix': time.time(),
@@ -304,6 +341,7 @@ def main():
     info.basic.flags = 0x200 | 0x2000
     info.job_limit = 4 * 1024**3 - RESERVE
     code = 2
+    changed_while_running, next_source_check = [], time.perf_counter()
     try:
         if not kernel.SetInformationJobObject(job, 9, ctypes.byref(info), ctypes.sizeof(info)):
             raise ctypes.WinError(ctypes.get_last_error())
@@ -323,6 +361,12 @@ def main():
                 child.wait()
                 raise ctypes.WinError(ctypes.get_last_error())
             while child.poll() is None:
+                if pilot and time.perf_counter() >= next_source_check:
+                    changed_while_running = [p for p, sha in source_sha256.items() if source_digest(p) != sha]
+                    next_source_check = time.perf_counter() + .25
+                    if changed_while_running:
+                        kernel.TerminateJobObject(job, 3)
+                        break
                 if package and not pilot:
                     charge_git_outputs(package)
                 if (time.perf_counter() - START >= allowance or output.stat().st_size > 1024**2
@@ -337,6 +381,7 @@ def main():
         if not kernel.QueryInformationJobObject(job, 8, ctypes.byref(accounting), ctypes.sizeof(accounting), None):
             raise ctypes.WinError(ctypes.get_last_error())
         kernel.CloseHandle(job)
+        guard_after = process_io()
         seconds = time.perf_counter() - START
         row = {'label': label, 'seconds': seconds, 'cumulative_seconds': used + seconds,
                'exit_code': code, 'job_peak_commit_bytes': info.job_peak,
@@ -344,8 +389,10 @@ def main():
                'accounting': 'guard_start_to_child_completion_wall_time_including_failures',
                'guard': 'Windows_Job_tree_limit_plus_64MiB_guard_reserve', 'source_sha256': source_sha256,
                'job_read_transfer_bytes': accounting.io.read_bytes, 'job_write_transfer_bytes': accounting.io.write_bytes,
-               'source_changed_during_check': [p for p, sha in source_sha256.items()
-                   if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != sha]}
+               'guard_read_transfer_bytes': guard_after.read_bytes - guard_before.read_bytes,
+               'guard_write_transfer_bytes': guard_after.write_bytes - guard_before.write_bytes,
+               'source_changed_during_check': sorted(set(changed_while_running) | {p for p, sha in source_sha256.items()
+                   if source_digest(p) != sha})}
         if package:
             row['package_seconds_after'] = used + seconds - package[domain]['baseline_seconds']
             row['package_limit_seconds'] = package[domain]['package_seconds']

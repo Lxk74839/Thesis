@@ -53,7 +53,8 @@ PILOT_CONTROL = CONTROL + 'recovery-pilot-package-20261019.json'
 PILOT_SHA = '6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b'
 PILOT_FILES = ('t0_catalog.py', 'tests/test_t0_catalog.py', CONTROL + 'diagnostics/run_check.py',
     CONTROL + 'diagnostics/check_t0_catalog_delivery.py', 'model_adapter.py', 'provider_openai.py',
-    'token_counting.py', 'recommendation_runner.py', 'evidence_access.py', 'joint_access.py', 'joint_tasks.py')
+    'token_counting.py', 'recommendation_runner.py', 'evidence_access.py', 'joint_access.py', 'joint_tasks.py',
+    'evidence_verification.py', 'quality_fusion.py', 'sim_normal.py', 'sim_scenarios.py')
 
 
 class PreparedObjectWriter:
@@ -1403,6 +1404,11 @@ def main(argv=None):
     if not any(output.is_relative_to(p) and output != p for p in allowed):
         print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['output_not_allowed']}))
         return 2
+    if os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE'):
+        root = _path(_pilot_package()['output_roots'][1 if os.environ.get('THESIS_RESOURCE_DOMAIN') == 't0' else 0])
+        if output == root or not output.is_relative_to(root):
+            print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['pilot_output_not_allowed']}))
+            return 2
     if output.exists() and not (args.recompute_digests or args.resume):
         print(json.dumps({'status': 'T0_A_incomplete', 'reasons': ['output_already_exists']}))
         return 2

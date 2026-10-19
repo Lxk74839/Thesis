@@ -28,3 +28,11 @@
 G0真实320根HMAC、确定四根、旧2403计划元数据流式盘点的正向路径必须由程序双轴通过后的真实G0验证；PUBLIC一根不用于虚构四根选择。原始大对象、依赖、probe未在实施阶段读取；最终真实G0/G1结果另行归档，不以PUBLIC通过代替。
 
 计量口径：原guard墙钟含启动、失败及收尾；Windows Job记录树内存峰值及IO；计划窗口每10ms采样私有内存，并另列进程生命周期峰值上界与控制器残余。原生文件编辑/控制材料、Conda临时文件采用单独保守磁盘上界，生产输出每次尝试写入累计，删除不退款；不能把采样峰值或保守上界误称精确物理磁盘/逐根峰值。
+
+98c09de首次双轴：Standards 1个阻塞、Spec 2个阻塞，原报告分别保留。输出mkdir之前缺少新包路径门（两轴共同发现）、Q1/Q2编译依赖未全部纳入候选门。
+
+- 265_output_path_red→266_output_path_green：系统os.mkdir陷阱证明生产prepare和独立snapshot在越界输出下尚未有任何目录副作用即拒绝。守护同时覆盖mkdir/rename/replace/unlink/rmdir；既有只读目录保持无变化。
+- 267_compiler_binding_red→268_compiler_binding_green：独立snapshot必须包含evidence_verification、quality_fusion及其sim_normal/sim_scenarios导入闭包；对读取边界返回变化后的编译依赖字节，生产与独立check-pilot均在编译前拒绝。实际只读源文件未改。
+- 程序/receipt/candidate门绑定四个白名单文件加11个只读编译/导入依赖，共15件；guard运行中每250ms检查源码变化，检测即终止Job。读写量分别记录Job与守护本身。
+
+268之后PUBLIC仍45/48、真实0；离线包累计37.888368300162256秒。原生编辑/控制材料和未单独观测的启动小临时文件另保守计入64MiB，属于6GiB总上限中的数据消耗，不追加额度；Git和受控输出继续逐项另计。

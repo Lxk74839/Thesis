@@ -23,7 +23,8 @@ PILOT_FILES = ('t0_catalog.py', 'tests/test_t0_catalog.py',
     '.scratch/ticket12-budget-20261018/diagnostics/run_check.py',
     '.scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py',
     'model_adapter.py', 'provider_openai.py', 'token_counting.py', 'recommendation_runner.py',
-    'evidence_access.py', 'joint_access.py', 'joint_tasks.py')
+    'evidence_access.py', 'joint_access.py', 'joint_tasks.py', 'evidence_verification.py', 'quality_fusion.py',
+    'sim_normal.py', 'sim_scenarios.py')
 
 
 def pilot_program(auth, package):
@@ -754,6 +755,10 @@ def main():
     parser.add_argument('--protection')
     args = parser.parse_args()
     output = project_path(args.output)
+    if os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE'):
+        root = project_path(json_file(PILOT_CONTROL)['output_roots'][1 if os.environ.get('THESIS_RESOURCE_DOMAIN') == 't0' else 0])
+        if output == root or not output.is_relative_to(root):
+            raise SystemExit('pilot_output_not_allowed')
     allowed = (PROJECT / 'data/ticket12-t0', PROJECT / '.tmp/ticket12-t0')
     if not any(output.is_relative_to(p) for p in allowed) or output.exists():
         raise SystemExit('new_output_in_T0_directory_required')
