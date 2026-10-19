@@ -1,0 +1,276 @@
+{
+  "schema_version": "t0-storage-component-acceptance-0.1.0",
+  "date": "2026-10-19",
+  "status": "T0_A_storage_component_verified_only",
+  "complete": true,
+  "base": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "candidate": "f97203ab2984b0d86006f72cee70e9a4e78230b1",
+  "ticket12_closed": false,
+  "original_T0_status": "T0_A_incomplete",
+  "new_format_prepare_accepted": false,
+  "full_catalog_accepted": false,
+  "runtime": {
+    "offline": {
+      "ledger": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "baseline_seconds": 217.7244063001417,
+      "package_seconds": 17.15941320010461,
+      "package_limit_seconds": 300,
+      "cumulative_seconds": 234.88381950024632,
+      "limit_seconds": 1800,
+      "package_commands": 34,
+      "inflight_present": false
+    },
+    "t0": {
+      "ledger": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "baseline_seconds": 1797.3523884000024,
+      "package_seconds": 4.760370899997497,
+      "package_limit_seconds": 60,
+      "cumulative_seconds": 1802.1127592999999,
+      "limit_seconds": 1860,
+      "package_commands": 2,
+      "inflight_present": false
+    }
+  },
+  "memory": {
+    "maximum_job_commit_bytes": 196710400.0,
+    "guard_reserve_bytes": 67108864,
+    "maximum_plus_reserve_bytes": 263819264.0,
+    "limit_bytes": 4294967296
+  },
+  "disk": {
+    "charged_writes_bytes": 36321908.0,
+    "data_charged_bytes": 35467239.0,
+    "json_closeout_charged_bytes": 854669.0,
+    "other_upper_bound_bytes": 1324413.0,
+    "git_after_last_guard_bytes": null,
+    "final_record_and_Git_closeout_reserve_bytes": 524288,
+    "total_upper_bound_bytes": 38170609.0,
+    "rounded_upper_bound_bytes": 41943040,
+    "approved_total_limit_bytes": 268435456,
+    "data_limit_bytes": 260046848,
+    "json_closeout_limit_bytes": 4194304,
+    "other_closeout_limit_bytes": 4194304,
+    "deletions_refunded": false,
+    "git_prior_upper_bound_bytes": 4956144,
+    "output_files": [
+      {
+        "path": ".tmp/ticket12-t0/storage-repair-20261019",
+        "files": 188,
+        "bytes": 4246069.0
+      },
+      {
+        "path": "data/ticket12-t0/storage-repair-validation-20261019",
+        "files": 5,
+        "bytes": 743368.0
+      }
+    ]
+  },
+  "program_behavior_tests": 17,
+  "post_guard_fix_directed_checks": [
+    "storage_repair_231_git_meter_green",
+    "storage_repair_232_git_meter_repeat_green"
+  ],
+  "verified_development_objects": 3,
+  "source_read_bytes": 26462299,
+  "request_rows_read": 17,
+  "request_prefix_bytes": 376578,
+  "original_object_bytes": 22234142,
+  "pack_and_manifest_bytes": 739626,
+  "W_P_bytes_sha_prepared_id_metadata_match": true,
+  "source_files_unchanged": [
+    {
+      "path": "t0_catalog.py",
+      "unchanged": true
+    },
+    {
+      "path": "tests/test_t0_catalog.py",
+      "unchanged": true
+    },
+    {
+      "path": "model_adapter.py",
+      "unchanged": true
+    },
+    {
+      "path": "provider_openai.py",
+      "unchanged": true
+    },
+    {
+      "path": "token_counting.py",
+      "unchanged": true
+    },
+    {
+      "path": "recommendation_runner.py",
+      "unchanged": true
+    },
+    {
+      "path": "evidence_access.py",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/run_check.py",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+      "unchanged": true
+    }
+  ],
+  "protected_readonly_unchanged": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "1a81969eceadbd34701bb3e19793e6917cbfb3d335f9ebbfa305362a4c8a00ab",
+      "unchanged": true
+    },
+    {
+      "path": "model_adapter.py",
+      "sha256": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+      "unchanged": true
+    },
+    {
+      "path": "provider_openai.py",
+      "sha256": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3",
+      "unchanged": true
+    },
+    {
+      "path": "token_counting.py",
+      "sha256": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77",
+      "unchanged": true
+    },
+    {
+      "path": "recommendation_runner.py",
+      "sha256": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+      "unchanged": true
+    },
+    {
+      "path": "evidence_access.py",
+      "sha256": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+      "sha256": "3fd2a3b96b95637528a350edafb40ab42c45db846087ffc0aaade0d0d634ad03",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-performance-storage-diagnosis-20261019.md",
+      "sha256": "d0c1cabfd92ae19912d722e06a4218224c692536cf54e9807a4e6df49ac880b9",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-storage-repair-20261019.md",
+      "sha256": "bbdd693957bc902f6af177d26ccd44896c44e7b67c5a208ecb46e0cac23dcc29",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/t0-a-implementation-confirmation-20261018.md",
+      "sha256": "5d0e8e3f8e9b8130214d1202de736a73d2fa1bb2a09cb0a52d759067a81e957f",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/authorization-t0-a-20261018.md",
+      "sha256": "887699ecd2bfadceb7114bd6d94403152a0dfe2a9b088e5ce32548dd75fdeef8",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-t0-a-execution-20261018.md",
+      "sha256": "cea36ed6a601c0dd2c33a4a01a617d1d5d866a2ae3d6fc3af4dc6131e0b8aa82",
+      "unchanged": true
+    },
+    {
+      "path": ".tmp/ticket12-t0/diagnosis-20261019/state.json",
+      "sha256": "cb09edf8c46fd5e3b38c03c5ceeffb0ec7edc4e3ca4e82d87fc4f42f41698dd8",
+      "unchanged": true
+    }
+  ],
+  "original_ledger_prefixes": [
+    {
+      "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "bytes": 240273,
+      "sha256": "7c8938f52811f939944b6f2337552af349ef96274cd4421ba4acbf1e1d57f33c",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "bytes": 6483,
+      "sha256": "c6a1519d4a64a91ef63557f5f7ded535d1d0ef13ad287fb5485028cee335d075",
+      "unchanged": true
+    }
+  ],
+  "public_frozen_objects_checked": 52,
+  "public_frozen_objects_unchanged": true,
+  "public_reserved_plans": 12,
+  "new_root_plans": 0,
+  "original_directory_enumerated": false,
+  "provider_api_calls": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  },
+  "artifacts": [
+    {
+      "path": "data/ticket12-t0/storage-repair-validation-20261019/storage_repair_006_three_existing_validation/selection.json",
+      "bytes": 1549,
+      "sha256": "ffe50a9f5a8a5b3a1c29a353517e7a6df243cea52f5d34183dca9c7761afb397"
+    },
+    {
+      "path": "data/ticket12-t0/storage-repair-validation-20261019/storage_repair_006_three_existing_validation/validation.json",
+      "bytes": 1871,
+      "sha256": "73daba97dea842af9b3e5161665dfbf0cd95ab1b7399c931fc0dba938cc16570"
+    },
+    {
+      "path": "data/ticket12-t0/storage-repair-validation-20261019/storage_repair_006_three_existing_validation/object-check.json",
+      "bytes": 322,
+      "sha256": "7887785590f95a78c57444f00741036f042e29a129c4161af0ab4951f8bd7fa1"
+    },
+    {
+      "path": "data/ticket12-t0/storage-repair-validation-20261019/storage_repair_006_three_existing_validation/objects/requests.pack",
+      "bytes": 735001,
+      "sha256": "cc9acd9582938508ac4bb73f637b74836ca2d946f74375f505debecdb4287754"
+    },
+    {
+      "path": "data/ticket12-t0/storage-repair-validation-20261019/storage_repair_006_three_existing_validation/objects/manifest.json",
+      "bytes": 4625,
+      "sha256": "19a802b09ea9007822b0c22a3a4298fa021fc5d2324be4a010341e103f7a0c4b"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-storage-tdd-20261019.md",
+      "bytes": 7882,
+      "sha256": "fa11a05d80ab686aaa6abd6550a372ceeb04c0949b760547aeb9e3f7a2f168a9"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/acceptance-t0-a-storage-program-final-20261019.json",
+      "bytes": 3779,
+      "sha256": "42fe997f12b83c07a87692a72ce58d4025de4bec37a7e0e82e9e885aa44445a8"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-storage-standards-f97203a.md",
+      "bytes": 2333,
+      "sha256": "56d8281f23bdfc6780ff18620fc93bc2f9f8d7be58ff1e8065371b5adf9b3392"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/verification-storage-spec-f97203a.md",
+      "bytes": 2118,
+      "sha256": "93cbe1aca464dc1f93d3daec23533e5235833ad47c67269b4f3ccdb49d497828"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-limit-extension-20261019.json",
+      "bytes": 686,
+      "sha256": "c6b4eac9c73bda0deb51422d2c0419f5d3fa348577ee5a8359cd1851025a8b18"
+    }
+  ],
+  "scope_limitations": [
+    "not_full_A",
+    "not_new_format_prepare_end_to_end",
+    "not_capacity_or_throughput_prediction",
+    "no_full_rerun_or_continuation",
+    "no_C_B_P1"
+  ]
+}
