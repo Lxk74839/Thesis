@@ -1031,6 +1031,25 @@ class StorageTests(unittest.TestCase):
         self.assertIn('storage_package_new_plans_forbidden', report['reasons'])
         self.assertFalse((self.work / 'forbidden-generation/roots.jsonl').exists())
 
+    @unittest.skipUnless(os.name == 'nt', 'Windows junction boundary')
+    def test_object_directory_junction_is_rejected_before_following_its_target(self):
+        from t0_catalog import PreparedObjectWriter, iter_prepared_objects
+        other, target = self.work / 'other-store', self.work / 'store'
+        with PreparedObjectWriter(other) as writer:
+            writer.add(self.originals()[0])
+        target.mkdir()
+        junction = target / 'objects'
+        subprocess.run(['cmd', '/c', 'mklink', '/J', str(junction), str(other / 'objects')],
+                       check=True, capture_output=True)
+        try:
+            with self.assertRaisesRegex(ValueError, 'reparse_path'):
+                list(iter_prepared_objects(target))
+            code, result = self.check_objects(target)
+            self.assertEqual(code, 2)
+            self.assertFalse(result['complete'])
+        finally:
+            junction.rmdir()
+
 
 if __name__ == '__main__':
     unittest.main()

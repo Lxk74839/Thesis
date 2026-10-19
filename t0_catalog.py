@@ -122,10 +122,12 @@ class PreparedObjectWriter:
 def iter_prepared_objects(output_dir):
     """Restore the existing prepared contract one object at a time."""
     from provider_openai import verify_prepared
-    directory = _path(output_dir) / 'objects'
-    if not (directory / 'manifest.json').exists():
-        _require(not (directory / 'requests.pack').exists(), 'missing_store_manifest')
-        catalog = decode((directory.parent / 'catalog.json').read_bytes())
+    directory = _path(_path(output_dir) / 'objects')
+    manifest_path = _path(directory / 'manifest.json')
+    pack_path = _path(directory / 'requests.pack')
+    if not manifest_path.exists():
+        _require(not pack_path.exists(), 'missing_store_manifest')
+        catalog = decode(_path(directory.parent / 'catalog.json').read_bytes())
         _require(catalog['schema_version'] == 'T0-request-catalog-0.1.0', 'unsupported_legacy_catalog')
         for name, expected in sorted(catalog['components'].items()):
             if name.startswith('objects/'):
@@ -136,12 +138,12 @@ def iter_prepared_objects(output_dir):
                 _require(verify_prepared(prepared), 'invalid_stored_prepared')
                 yield prepared
         return
-    manifest = decode((directory / 'manifest.json').read_bytes())
+    manifest = decode(manifest_path.read_bytes())
     _require(manifest['schema_version'] == STORE_SCHEMA and manifest['codec'] == 'zlib-level1'
         and manifest['count_projection'] == COUNT_PROJECTION and manifest['count_omit'] == list(COUNT_OMIT),
         'unsupported_object_store')
     _require(manifest['complete'] is True, 'object_store_incomplete')
-    with (directory / 'requests.pack').open('rb') as pack:
+    with pack_path.open('rb') as pack:
         sha = hashlib.sha256()
         for chunk in iter(lambda: pack.read(1024**2), b''):
             sha.update(chunk)

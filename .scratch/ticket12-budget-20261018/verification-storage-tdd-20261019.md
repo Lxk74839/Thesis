@@ -29,6 +29,8 @@ conda run -p D:\Work\Codex\Project\Thesis\.conda\envs\Thesis --no-capture-output
 | 三件验证先检查T0域 | 224→225 | 新模式未接入时尝试打开原分析stdout，被写保护拒绝；未启动旧worker/读取开发对象。新模式在离线域先返回t0_domain_required |
 | prepare-only/count拒绝与新计划0 | 226首次GREEN | 替代sender未触发、原count导出拒绝新store、本包prepare在展开前拒绝 |
 | 16项新增行为合并验证 | 227 | 16通过；未运行CatalogTests的生成型测试或其它已接受组合 |
+| objects目录联接必须先拒绝 | 228→229 | Windows真实junction曾被reader跟随→逐层检查objects、manifest、pack及旧catalog路径；reader和独立CLI均拒绝，联接目标原件保持 |
+| 边界修复后的相关合并验证 | 230 | 17项存储行为通过；仅因上述新修复重验该存储套件 |
 
 本轮没有测试私有hash/parser/helper，没有重新生成PUBLIC事实或根轨迹。新的超界/损坏输入是从冻结prepared对象派生的测试副本，不形成新根计划。文件系统写失败只在系统I/O边界替代；实际writer、reader及独立CLI均执行真实代码。
 
@@ -37,3 +39,7 @@ conda run -p D:\Work\Codex\Project\Thesis\.conda\envs\Thesis --no-capture-output
 资源基础设施在首次RED前安装：原账前缀绑定、离线本包300秒、T0扩展1860且本包60秒、Windows Job树4GiB、数据/审计写入门及固定输出范围。此安装如实记为授权基础设施，不伪记功能RED。所有上述失败和子进程均计入原离线账，未从T0账扣除或挪用。
 
 截至227，本包原离线账新增13.059852000093088秒，原累计230.7842583002348秒；累计受控数据写入3,183,221字节，守护给出的其它磁盘保守上界1,152,733字节。原T0四行历史未变，三件真实验证尚未执行；须固定candidate双轴无阻塞后才能开始。
+
+首个固定candidate为b1a50e37714edeebee68a8837ee19273df0a56bd，Standards/Spec两份原独立静态报告均为0发现、0阻塞，报告原文保留。其后补充公共边界测试228得到真实RED，按上述229最小修复；未用原静态结论覆盖新源码。修复后固定新candidate并作独立复审，再归档程序接受。
+
+截至230，本包原离线账新增16.490007900079945秒，原累计234.21441420022165秒；累计受控写入4,485,556字节，其它磁盘保守上界1,293,674字节。17项合并验证实际unittest耗时2.593秒，守护计入2.796432500006631秒。T0真实验证仍未启动。
