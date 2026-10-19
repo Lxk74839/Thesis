@@ -19,6 +19,7 @@ RESERVE = 64 * 1024**2
 CONTROL = ROOT / '.scratch/ticket12-budget-20261018/storage-repair-package-20261019.json'
 CONTROL_SHA = '4eb74906d427cbf0822379ad4b30a84827853412683df62a948730f2e882b2a0'
 DISK = CONTROL.with_name('storage-repair-disk-writes-20261019.jsonl')
+CONTROL_OPEN = open
 
 
 def storage_package():
@@ -43,10 +44,34 @@ def storage_overhead_bytes(package):
         pinned = next(p for p in package['protected_before'] if p['path'] == package[domain]['ledger'])
         total += (audit / 'resource-ledger.jsonl').stat().st_size - pinned['bytes']
         commands += sum('storage_repair_' in line for line in (audit / 'resource-ledger.jsonl').read_text().splitlines())
-    since = (ROOT / package['human_confirmation']['path']).stat().st_mtime_ns
-    total += sum(p.stat().st_size for p in (ROOT / '.git/objects').rglob('*')
-                 if p.is_file() and p.stat().st_mtime_ns >= since)
     return total + (commands + 1) * 16384  # Conservative reserve for Conda launcher temporaries.
+
+
+def charge_git_outputs(package):
+    """Git packs are data writes, not the small audit closeout reserve."""
+    rows = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
+    seen = {row['git_output'] for row in rows if 'git_output' in row}
+    additions = []
+    if not seen:
+        # Conservatively retain all earlier overhead observations, including loose
+        # Git objects removed by automatic repacking before this first snapshot.
+        prior = sum(row.get('other_disk_upper_bound_after', 0) for domain in ('offline', 't0')
+                    for row in map(json.loads, (ROOT / package[domain]['ledger']).read_text().splitlines())
+                    if row.get('label', '').startswith('storage_repair_'))
+        additions.append({'bytes': prior, 'kind': 'data', 'git_output': 'prior_upper_bound'})
+    since = (ROOT / package['human_confirmation']['path']).stat().st_mtime_ns
+    for path in (ROOT / '.git/objects').rglob('*'):
+        name = path.relative_to(ROOT).as_posix()
+        if path.is_file() and path.stat().st_mtime_ns >= since and name not in seen:
+            additions.append({'bytes': path.stat().st_size, 'kind': 'data', 'git_output': name})
+    charged = sum(row['bytes'] for row in rows if row.get('kind', 'data') == 'data')
+    _limit = package['disk']['data_bytes']
+    with CONTROL_OPEN(DISK, 'a', encoding='utf-8') as stream:
+        for row in additions:
+            stream.write(json.dumps(row) + '\n')
+            charged += row['bytes']
+    if charged > _limit:
+        raise SystemExit('storage_package_data_closeout_required')
 
 
 def storage_child(arguments):
@@ -75,6 +100,7 @@ def storage_child(arguments):
         def write(self, value):
             length = len(value.encode(self.stream.encoding or 'utf-8')) if isinstance(value, str) else len(value)
             kind = 'closeout' if self.path.suffix == '.json' else 'data'
+            charge_git_outputs(package)
             rows = [json.loads(row) for row in DISK.read_text().splitlines()] if DISK.exists() else []
             charged = sum(row['bytes'] for row in rows if row.get('kind', 'data') == kind)
             limit = 4 * 1024**2 if kind == 'closeout' else package['disk']['data_bytes']
@@ -166,6 +192,7 @@ def main():
         allowance = min(limit - used, settings['package_seconds'] - (used - settings['baseline_seconds']))
         if allowance <= (15 if domain == 'offline' else 10):
             raise SystemExit('storage_package_closeout_required')
+        charge_git_outputs(package)
         if storage_overhead_bytes(package) > 3 * 1024**2:
             raise SystemExit('storage_package_audit_closeout_required')
     if time.perf_counter() - START >= allowance:
@@ -217,6 +244,8 @@ def main():
                 child.wait()
                 raise ctypes.WinError(ctypes.get_last_error())
             while child.poll() is None:
+                if package:
+                    charge_git_outputs(package)
                 if (time.perf_counter() - START >= allowance or output.stat().st_size > 1024**2
                         or package and storage_overhead_bytes(package) > 4 * 1024**2):
                     kernel.TerminateJobObject(job, 3)

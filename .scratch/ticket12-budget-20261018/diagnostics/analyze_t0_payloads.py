@@ -319,7 +319,7 @@ def validate_storage():
               'original_T0_status': 'T0_A_incomplete', 'provider_api_calls': {'count': 0, 'generate': 0, 'other': 0}}
     try:
         assert Path(os.environ['THESIS_RESOURCE_LEDGER']) == ROOT / package['t0']['ledger'], 'wrong_T0_ledger'
-        accepted = json.loads((control / 'acceptance-t0-a-storage-program-20261019.json').read_bytes())
+        accepted = json.loads((control / 'acceptance-t0-a-storage-program-final-20261019.json').read_bytes())
         assert (accepted['status'] == 'T0_A_storage_program_accepted' and accepted['base'] == package['base']
                 and re.fullmatch('[0-9a-f]{40}', accepted['candidate'])), 'program_acceptance_required'
         required = {'t0_catalog.py', 'tests/test_t0_catalog.py', 'model_adapter.py', 'provider_openai.py',
