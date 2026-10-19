@@ -1,0 +1,1 @@
+{"status": "frozen_references_only", "plan_id": "9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088", "counts": {"users": 100, "development_overlap": 0, "scenarios": 18, "bindings": 1800, "tasks": 5000, "model_tasks": 3400}, "provider_requests_sent": 0}

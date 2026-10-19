@@ -1,0 +1,6 @@
+test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal (tests.test_on_demand_runtime.DispatchBoundary.test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.187s
+
+OK

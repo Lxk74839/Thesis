@@ -1,0 +1,6 @@
+test_a_task_cannot_dispatch_another_roots_runtime (tests.test_on_demand_runtime.DispatchBoundary.test_a_task_cannot_dispatch_another_roots_runtime) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.060s
+
+OK

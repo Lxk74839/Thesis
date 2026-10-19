@@ -1,0 +1,6 @@
+test_V15_new_refutation_and_expiry_are_refuted (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V15_new_refutation_and_expiry_are_refuted) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.041s
+
+OK

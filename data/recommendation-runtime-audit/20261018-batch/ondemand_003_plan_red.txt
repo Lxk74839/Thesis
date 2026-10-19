@@ -1,0 +1,14 @@
+test_fixed_test_pool_produces_a_small_complete_plan (tests.test_experiment_runner.PlanningBoundary.test_fixed_test_pool_produces_a_small_complete_plan) ... ERROR
+
+======================================================================
+ERROR: test_fixed_test_pool_produces_a_small_complete_plan (tests.test_experiment_runner.PlanningBoundary.test_fixed_test_pool_produces_a_small_complete_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_experiment_runner.py", line 64, in test_fixed_test_pool_produces_a_small_complete_plan
+    from experiment_runner import build_plan
+ModuleNotFoundError: No module named 'experiment_runner'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.265s
+
+FAILED (errors=1)

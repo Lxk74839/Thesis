@@ -1,0 +1,76 @@
+test_offline_package_blocks_network_before_connect (tests.test_experiment_runner.GuardBoundary.test_offline_package_blocks_network_before_connect) ... ok
+test_accepted_component_row_counts_do_not_change_snapshot_identity (tests.test_experiment_runner.PlanningBoundary.test_accepted_component_row_counts_do_not_change_snapshot_identity) ... ok
+test_fixed_test_pool_produces_a_small_complete_plan (tests.test_experiment_runner.PlanningBoundary.test_fixed_test_pool_produces_a_small_complete_plan) ... ok
+test_independent_check_does_not_accept_a_different_views_snapshot (tests.test_experiment_runner.PlanningBoundary.test_independent_check_does_not_accept_a_different_views_snapshot) ... ok
+test_independent_plan_check_rejects_a_resealed_duplicate_task (tests.test_experiment_runner.PlanningBoundary.test_independent_plan_check_rejects_a_resealed_duplicate_task) ... ok
+test_sampling_ignores_cohort_order_and_private_answers (tests.test_experiment_runner.PlanningBoundary.test_sampling_ignores_cohort_order_and_private_answers) ... ok
+test_V02_mismatched_original_is_pending (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V02_mismatched_original_is_pending) ... ok
+test_V04_wrong_registration_issuer_is_pending (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V04_wrong_registration_issuer_is_pending) ... ok
+test_V08_revoked_pass_is_pending (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V08_revoked_pass_is_pending) ... ok
+test_V10_legal_new_pass_is_supported (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V10_legal_new_pass_is_supported) ... ok
+test_V11_denied_report_does_not_become_supported (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V11_denied_report_does_not_become_supported) ... ok
+test_V13_missing_and_conflicting_objects_are_reported_separately (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V13_missing_and_conflicting_objects_are_reported_separately) ... ok
+test_V14_conflict_and_expiry_remain_conflict (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V14_conflict_and_expiry_remain_conflict) ... ok
+test_V15_new_refutation_and_expiry_are_refuted (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V15_new_refutation_and_expiry_are_refuted) ... ok
+test_M_constructs_only_actual_requests_with_no_old_model_default (tests.test_on_demand_runtime.DispatchBoundary.test_M_constructs_only_actual_requests_with_no_old_model_default) ... ok
+test_S_and_M_keep_distinct_root_accounts_and_the_same_public_information (tests.test_on_demand_runtime.DispatchBoundary.test_S_and_M_keep_distinct_root_accounts_and_the_same_public_information) ... ok
+test_a_task_cannot_dispatch_another_roots_runtime (tests.test_on_demand_runtime.DispatchBoundary.test_a_task_cannot_dispatch_another_roots_runtime) ... ok
+test_actual_requests_retain_the_prepared_output_schema (tests.test_on_demand_runtime.DispatchBoundary.test_actual_requests_retain_the_prepared_output_schema) ... ok
+test_an_unfinished_dispatch_intent_stops_before_any_model_or_evidence_work (tests.test_on_demand_runtime.DispatchBoundary.test_an_unfinished_dispatch_intent_stops_before_any_model_or_evidence_work) ... ok
+test_count_drift_preserves_raw_usage_and_stops_unsettled (tests.test_on_demand_runtime.DispatchBoundary.test_count_drift_preserves_raw_usage_and_stops_unsettled) ... ok
+test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order (tests.test_on_demand_runtime.DispatchBoundary.test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order) ... ok
+test_independent_audit_check_rejects_a_resealed_request_schema_change (tests.test_on_demand_runtime.DispatchBoundary.test_independent_audit_check_rejects_a_resealed_request_schema_change) ... ok
+test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original) ... ok
+test_known_retry_is_charged_to_the_same_root (tests.test_on_demand_runtime.DispatchBoundary.test_known_retry_is_charged_to_the_same_root) ... ok
+test_ordinary_work_cannot_consume_the_final_model_reserve (tests.test_on_demand_runtime.DispatchBoundary.test_ordinary_work_cannot_consume_the_final_model_reserve) ... ok
+test_prepared_identity_survives_JSON_reload_in_another_process (tests.test_on_demand_runtime.DispatchBoundary.test_prepared_identity_survives_JSON_reload_in_another_process) ... ok
+test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal (tests.test_on_demand_runtime.DispatchBoundary.test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal) ... ok
+test_quality_components_share_one_M_anchor_without_extra_model_work (tests.test_on_demand_runtime.DispatchBoundary.test_quality_components_share_one_M_anchor_without_extra_model_work) ... ok
+test_real_scope_with_missing_configuration_never_reaches_an_injected_sender (tests.test_on_demand_runtime.DispatchBoundary.test_real_scope_with_missing_configuration_never_reaches_an_injected_sender) ... ok
+test_unknown_usage_keeps_reservation_and_repeated_dispatch_does_not_retry (tests.test_on_demand_runtime.DispatchBoundary.test_unknown_usage_keeps_reservation_and_repeated_dispatch_does_not_retry) ... ok
+test_unbound_provider_mode_never_reaches_the_transport (tests.test_model_adapter.ModelAdapterTests.test_unbound_provider_mode_never_reaches_the_transport) ... ok
+test_cache_and_reasoning_are_subsets_not_additional_tokens (tests.test_model_adapter.ModelAdapterTests.test_cache_and_reasoning_are_subsets_not_additional_tokens) ... ok
+test_extra_host_identity_and_unmatched_tool_results_are_rejected_before_transport (tests.test_model_adapter.ModelAdapterTests.test_extra_host_identity_and_unmatched_tool_results_are_rejected_before_transport) ... ok
+test_literal_fixture_count_is_bound_to_full_prepared_request_and_never_official (tests.test_token_counting.InputCountingTests.test_literal_fixture_count_is_bound_to_full_prepared_request_and_never_official) ... ok
+test_missing_offline_receipt_keeps_count_unknown_and_never_sends (tests.test_token_counting.InputCountingTests.test_missing_offline_receipt_keeps_count_unknown_and_never_sends) ... ok
+test_four_quality_candidates_have_six_roles_and_nine_actual_calls (tests.test_batched_recommendation.BatchedRecommendationTests.test_four_quality_candidates_have_six_roles_and_nine_actual_calls) ... ERROR
+test_normal_work_cannot_spend_the_final_model_slot (tests.test_batched_recommendation.BatchedRecommendationTests.test_normal_work_cannot_spend_the_final_model_slot) ... ERROR
+
+======================================================================
+ERROR: test_four_quality_candidates_have_six_roles_and_nine_actual_calls (tests.test_batched_recommendation.BatchedRecommendationTests.test_four_quality_candidates_have_six_roles_and_nine_actual_calls)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_batched_recommendation.py", line 81, in setUp
+    parent.mkdir(parents=True, exist_ok=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\Lib\pathlib\_local.py", line 722, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.scratch\ticket12-budget-20261018\diagnostics\run_check.py", line 220, in directory
+    write_path(file)
+    ~~~~~~~~~~^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.scratch\ticket12-budget-20261018\diagnostics\run_check.py", line 135, in write_path
+    raise OSError('storage_package_write_outside_outputs')
+OSError: storage_package_write_outside_outputs
+
+======================================================================
+ERROR: test_normal_work_cannot_spend_the_final_model_slot (tests.test_batched_recommendation.BatchedRecommendationTests.test_normal_work_cannot_spend_the_final_model_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_batched_recommendation.py", line 81, in setUp
+    parent.mkdir(parents=True, exist_ok=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\Lib\pathlib\_local.py", line 722, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.scratch\ticket12-budget-20261018\diagnostics\run_check.py", line 220, in directory
+    write_path(file)
+    ~~~~~~~~~~^^^^^^
+  File "D:\Work\Codex\Project\Thesis\.scratch\ticket12-budget-20261018\diagnostics\run_check.py", line 135, in write_path
+    raise OSError('storage_package_write_outside_outputs')
+OSError: storage_package_write_outside_outputs
+
+----------------------------------------------------------------------
+Ran 37 tests in 8.561s
+
+FAILED (errors=2)

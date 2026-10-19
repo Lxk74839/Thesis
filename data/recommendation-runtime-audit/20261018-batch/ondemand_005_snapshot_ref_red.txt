@@ -1,0 +1,16 @@
+test_accepted_component_row_counts_do_not_change_snapshot_identity (tests.test_experiment_runner.PlanningBoundary.test_accepted_component_row_counts_do_not_change_snapshot_identity) ... ERROR
+
+======================================================================
+ERROR: test_accepted_component_row_counts_do_not_change_snapshot_identity (tests.test_experiment_runner.PlanningBoundary.test_accepted_component_row_counts_do_not_change_snapshot_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_experiment_runner.py", line 84, in test_accepted_component_row_counts_do_not_change_snapshot_identity
+    result = build_plan(self.fixture.refs, '20261019', Path(self.temp.name) / 'plan')
+  File "D:\Work\Codex\Project\Thesis\experiment_runner.py", line 128, in build_plan
+    raise ValueError('scenario_binding_mismatch')
+ValueError: scenario_binding_mismatch
+
+----------------------------------------------------------------------
+Ran 1 test in 0.598s
+
+FAILED (errors=1)

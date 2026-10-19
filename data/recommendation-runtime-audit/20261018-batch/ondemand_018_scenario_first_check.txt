@@ -1,0 +1,6 @@
+test_V08_revoked_pass_is_pending (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V08_revoked_pass_is_pending) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.039s
+
+OK

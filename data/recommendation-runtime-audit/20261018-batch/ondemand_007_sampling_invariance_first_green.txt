@@ -1,0 +1,6 @@
+test_sampling_ignores_cohort_order_and_private_answers (tests.test_experiment_runner.PlanningBoundary.test_sampling_ignores_cohort_order_and_private_answers) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.651s
+
+OK

@@ -1,0 +1,6 @@
+test_accepted_component_row_counts_do_not_change_snapshot_identity (tests.test_experiment_runner.PlanningBoundary.test_accepted_component_row_counts_do_not_change_snapshot_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.667s
+
+OK

@@ -1,0 +1,6 @@
+test_V04_wrong_registration_issuer_is_pending (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V04_wrong_registration_issuer_is_pending) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.034s
+
+OK

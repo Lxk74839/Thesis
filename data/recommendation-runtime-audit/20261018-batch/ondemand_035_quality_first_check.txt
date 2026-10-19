@@ -1,0 +1,6 @@
+test_quality_components_share_one_M_anchor_without_extra_model_work (tests.test_on_demand_runtime.DispatchBoundary.test_quality_components_share_one_M_anchor_without_extra_model_work) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.518s
+
+OK

@@ -1,0 +1,6 @@
+test_known_retry_is_charged_to_the_same_root (tests.test_on_demand_runtime.DispatchBoundary.test_known_retry_is_charged_to_the_same_root) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.217s
+
+OK

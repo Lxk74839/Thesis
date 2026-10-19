@@ -1,0 +1,6 @@
+test_offline_package_blocks_network_before_connect (tests.test_experiment_runner.GuardBoundary.test_offline_package_blocks_network_before_connect) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

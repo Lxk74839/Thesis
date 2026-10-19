@@ -1,0 +1,14 @@
+test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal (tests.test_on_demand_runtime.DispatchBoundary.test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal) ... ERROR
+
+======================================================================
+ERROR: test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal (tests.test_on_demand_runtime.DispatchBoundary.test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 50, in test_public_rule_task_finishes_and_repeat_dispatch_reuses_terminal
+    from experiment_runner import run_task
+ImportError: cannot import name 'run_task' from 'experiment_runner' (D:\Work\Codex\Project\Thesis\experiment_runner.py)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.014s
+
+FAILED (errors=1)

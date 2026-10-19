@@ -1,0 +1,6 @@
+test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order (tests.test_on_demand_runtime.DispatchBoundary.test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.224s
+
+OK

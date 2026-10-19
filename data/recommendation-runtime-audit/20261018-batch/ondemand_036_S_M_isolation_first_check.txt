@@ -1,0 +1,6 @@
+test_S_and_M_keep_distinct_root_accounts_and_the_same_public_information (tests.test_on_demand_runtime.DispatchBoundary.test_S_and_M_keep_distinct_root_accounts_and_the_same_public_information) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.432s
+
+OK

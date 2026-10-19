@@ -1,0 +1,6 @@
+test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.215s
+
+OK

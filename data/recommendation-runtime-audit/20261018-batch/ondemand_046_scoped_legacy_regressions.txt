@@ -1,0 +1,7 @@
+test_four_quality_candidates_have_six_roles_and_nine_actual_calls (__main__.ScopedBatchRegression.test_four_quality_candidates_have_six_roles_and_nine_actual_calls) ... ok
+test_normal_work_cannot_spend_the_final_model_slot (__main__.ScopedBatchRegression.test_normal_work_cannot_spend_the_final_model_slot) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.604s
+
+OK

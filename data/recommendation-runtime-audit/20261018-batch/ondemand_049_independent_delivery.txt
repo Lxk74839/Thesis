@@ -1,0 +1,1 @@
+{"plan_id": "9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088", "public_runs": 13, "report": "data/recommendation-runtime-audit/ticket12-100x18/independent-delivery-7a5f141.json", "status": "passed_100x18_offline_preparation_only"}

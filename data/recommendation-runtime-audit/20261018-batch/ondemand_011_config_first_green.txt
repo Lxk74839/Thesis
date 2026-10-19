@@ -1,0 +1,6 @@
+test_real_scope_with_missing_configuration_never_reaches_an_injected_sender (tests.test_on_demand_runtime.DispatchBoundary.test_real_scope_with_missing_configuration_never_reaches_an_injected_sender) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.064s
+
+OK

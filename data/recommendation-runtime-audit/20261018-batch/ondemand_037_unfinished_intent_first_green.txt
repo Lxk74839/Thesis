@@ -1,0 +1,6 @@
+test_an_unfinished_dispatch_intent_stops_before_any_model_or_evidence_work (tests.test_on_demand_runtime.DispatchBoundary.test_an_unfinished_dispatch_intent_stops_before_any_model_or_evidence_work) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.069s
+
+OK

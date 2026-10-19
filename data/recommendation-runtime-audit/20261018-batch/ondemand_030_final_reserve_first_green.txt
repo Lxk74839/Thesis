@@ -1,0 +1,6 @@
+test_ordinary_work_cannot_consume_the_final_model_reserve (tests.test_on_demand_runtime.DispatchBoundary.test_ordinary_work_cannot_consume_the_final_model_reserve) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.168s
+
+OK

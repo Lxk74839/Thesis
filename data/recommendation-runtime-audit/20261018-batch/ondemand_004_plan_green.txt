@@ -1,0 +1,6 @@
+test_fixed_test_pool_produces_a_small_complete_plan (tests.test_experiment_runner.PlanningBoundary.test_fixed_test_pool_produces_a_small_complete_plan) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.694s
+
+OK

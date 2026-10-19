@@ -1,0 +1,6 @@
+test_actual_requests_retain_the_prepared_output_schema (tests.test_on_demand_runtime.DispatchBoundary.test_actual_requests_retain_the_prepared_output_schema) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.205s
+
+OK

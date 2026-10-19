@@ -1,0 +1,6 @@
+test_prepared_identity_survives_JSON_reload_in_another_process (tests.test_on_demand_runtime.DispatchBoundary.test_prepared_identity_survives_JSON_reload_in_another_process) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.117s
+
+OK

@@ -1,0 +1,6 @@
+test_count_drift_preserves_raw_usage_and_stops_unsettled (tests.test_on_demand_runtime.DispatchBoundary.test_count_drift_preserves_raw_usage_and_stops_unsettled) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.055s
+
+OK

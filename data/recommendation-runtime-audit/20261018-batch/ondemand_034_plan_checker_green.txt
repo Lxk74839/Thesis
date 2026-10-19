@@ -1,0 +1,6 @@
+test_independent_plan_check_rejects_a_resealed_duplicate_task (tests.test_experiment_runner.PlanningBoundary.test_independent_plan_check_rejects_a_resealed_duplicate_task) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.957s
+
+OK

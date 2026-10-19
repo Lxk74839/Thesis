@@ -1,0 +1,779 @@
+{
+  "schema_version": "test100-offline-resource-closeout-0.1.0",
+  "scope": "100x18_offline_preparation_only",
+  "candidate": "7a5f1412845b8a3db47562f71facce10a5d2dc4f",
+  "status": "within_approved_limits",
+  "time": {
+    "offline_baseline_seconds": 273.6114838003705,
+    "package_charged_seconds": 276.46978969971553,
+    "package_limit_seconds": 900,
+    "original_offline_charged_seconds": 550.081273500086,
+    "original_offline_limit_seconds": 1800,
+    "package_remaining_seconds": 623.5302103002845,
+    "accounting_notes": [
+      "Includes all RED/failure attempts, guarded child work, Conda launcher settlement and native overhead.",
+      "120s is a conservative upper precharge for root native read/archival/remaining Git closeout. It is not a measured duration.",
+      "Standards native 1.9925637s rounded to 2s; Spec 14s conservative upper due to three truncated tool timings.",
+      "No later project Python work is authorized by this closeout; only the reserved native archival and Git submission remain.",
+      "Raw-log archival whitespace/filter checks initially failed; byte-preserving output-only Git attributes resolved them. These native failures and follow-up are included in the 120s conservative charge."
+    ],
+    "entries": [
+      {
+        "label": "ondemand_000_native_archive",
+        "seconds": 2.351537,
+        "cumulative_seconds": 275.9630208003705,
+        "exit_code": 0,
+        "accounting": "native_stopwatch_plus_2_seconds_conservative_setup_read_precharge"
+      },
+      {
+        "label": "ondemand_001_guard_red",
+        "seconds": 2.174722899973858,
+        "cumulative_seconds": 278.13774370034434,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_002_guard_green",
+        "seconds": 0.14627560001099482,
+        "cumulative_seconds": 278.28401930035534,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_002_guard_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 280.28401930035534,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_003_plan_red",
+        "seconds": 0.4289009000058286,
+        "cumulative_seconds": 280.71292020036117,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_003_plan_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 282.71292020036117,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_004_plan_green",
+        "seconds": 0.8639062999864109,
+        "cumulative_seconds": 283.5768265003476,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_004_plan_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 285.5768265003476,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_005_snapshot_ref_red",
+        "seconds": 0.7920293999486603,
+        "cumulative_seconds": 286.36885590029624,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_005_snapshot_ref_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 288.36885590029624,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_006_snapshot_ref_green",
+        "seconds": 0.8648357999627478,
+        "cumulative_seconds": 289.233691700259,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_006_snapshot_ref_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 291.233691700259,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_007_sampling_invariance_first_green",
+        "seconds": 1.8063775000046007,
+        "cumulative_seconds": 293.0400692002636,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_007_sampling_invariance_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 295.0400692002636,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_008_plan_source_freeze",
+        "seconds": 3.399707500007935,
+        "cumulative_seconds": 298.4397767002715,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_008_plan_source_freeze_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 300.4397767002715,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_009_rule_dispatch_red",
+        "seconds": 0.21020239999052137,
+        "cumulative_seconds": 300.64997910026204,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_009_rule_dispatch_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 302.64997910026204,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_010_rule_dispatch_green",
+        "seconds": 0.3545069999527186,
+        "cumulative_seconds": 303.00448610021476,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_010_rule_dispatch_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 305.00448610021476,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_011_config_first_green",
+        "seconds": 0.2205013000057079,
+        "cumulative_seconds": 305.22498740022047,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_011_config_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 307.22498740022047,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_012_model_path_red",
+        "seconds": 0.3099952999618836,
+        "cumulative_seconds": 307.53498270018235,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_012_model_path_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 309.53498270018235,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_013_model_path_green",
+        "seconds": 0.4520520000369288,
+        "cumulative_seconds": 309.9870347002193,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_013_model_path_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 311.9870347002193,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_014_fact_order_red",
+        "seconds": 0.4238063000375405,
+        "cumulative_seconds": 312.4108410002568,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_014_fact_order_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 314.4108410002568,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_015_fact_order_green",
+        "seconds": 0.42479829996591434,
+        "cumulative_seconds": 314.83563930022274,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_015_fact_order_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 316.83563930022274,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_016_scenario_first_check",
+        "seconds": 0.24893830000655726,
+        "cumulative_seconds": 317.0845776002293,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_016_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 319.0845776002293,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_017_scenario_first_check",
+        "seconds": 0.24623069999506697,
+        "cumulative_seconds": 319.33080830022436,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_017_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 321.33080830022436,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_018_scenario_first_check",
+        "seconds": 0.2455692000221461,
+        "cumulative_seconds": 321.5763775002465,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_018_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 323.5763775002465,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_019_scenario_first_check",
+        "seconds": 0.24521359999198467,
+        "cumulative_seconds": 323.8215911002385,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_019_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 325.8215911002385,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_020_scenario_first_check",
+        "seconds": 0.24802210001507774,
+        "cumulative_seconds": 326.06961320025357,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_020_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 328.06961320025357,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_021_scenario_first_check",
+        "seconds": 0.2703367000212893,
+        "cumulative_seconds": 328.33994990027486,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_021_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 330.33994990027486,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_022_scenario_first_check",
+        "seconds": 0.24386029999004677,
+        "cumulative_seconds": 330.5838102002649,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_022_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 332.5838102002649,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_023_scenario_first_check",
+        "seconds": 0.24691210000310093,
+        "cumulative_seconds": 332.830722300268,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_023_scenario_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 334.830722300268,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_024_task_isolation_first_green",
+        "seconds": 0.27441989997169003,
+        "cumulative_seconds": 335.1051422002397,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_024_task_isolation_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 337.1051422002397,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_025_failure_meter_first_green",
+        "seconds": 0.4243646999821067,
+        "cumulative_seconds": 337.5295069002218,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_025_failure_meter_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 339.5295069002218,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_026_unknown_first_green",
+        "seconds": 0.29904730000998825,
+        "cumulative_seconds": 339.8285542002318,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_026_unknown_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 341.8285542002318,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_027_count_drift_red",
+        "seconds": 0.42361100000562146,
+        "cumulative_seconds": 342.2521652002374,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_027_count_drift_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 344.2521652002374,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_028_count_drift_green",
+        "seconds": 0.24886769999284297,
+        "cumulative_seconds": 344.50103290023026,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_028_count_drift_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 346.50103290023026,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_029_process_reload_first_green",
+        "seconds": 1.3114743999904022,
+        "cumulative_seconds": 347.81250730022066,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_029_process_reload_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 349.81250730022066,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_030_final_reserve_first_green",
+        "seconds": 0.37330709997331724,
+        "cumulative_seconds": 350.185814400194,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_030_final_reserve_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 352.185814400194,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_031_null_checker_red",
+        "seconds": 0.7382068999577314,
+        "cumulative_seconds": 352.9240213001517,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_031_null_checker_red_launcher",
+        "seconds": 4,
+        "cumulative_seconds": 356.9240213001517,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_032_null_checker_green",
+        "seconds": 0.45202289998997003,
+        "cumulative_seconds": 357.3760442001417,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_032_null_checker_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 359.3760442001417,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_033_plan_checker_red",
+        "seconds": 0.9316863999702036,
+        "cumulative_seconds": 360.3077306001119,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_033_plan_checker_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 362.3077306001119,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_034_plan_checker_green",
+        "seconds": 1.1401184999849647,
+        "cumulative_seconds": 363.44784910009685,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_034_plan_checker_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 365.44784910009685,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_035_quality_first_check",
+        "seconds": 0.7357285000034608,
+        "cumulative_seconds": 366.1835776001003,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_035_quality_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 368.1835776001003,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_036_S_M_isolation_first_check",
+        "seconds": 0.6297937000053935,
+        "cumulative_seconds": 368.8133713001057,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_036_S_M_isolation_first_check_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 370.8133713001057,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_037_unfinished_intent_first_green",
+        "seconds": 0.27388620004057884,
+        "cumulative_seconds": 371.0872575001463,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_037_unfinished_intent_first_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 373.0872575001463,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_038_schema_trace_red",
+        "seconds": 0.4269765000208281,
+        "cumulative_seconds": 373.5142340001671,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_038_schema_trace_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 375.5142340001671,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_039_schema_trace_green",
+        "seconds": 0.3999360000016168,
+        "cumulative_seconds": 375.9141700001687,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_039_schema_trace_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 377.9141700001687,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_040_snapshot_association_red",
+        "seconds": 0.9884697999805212,
+        "cumulative_seconds": 378.90263980014925,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_040_snapshot_association_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 380.90263980014925,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_041_snapshot_association_green",
+        "seconds": 0.9641041000140831,
+        "cumulative_seconds": 381.8667439001633,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_041_snapshot_association_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 383.8667439001633,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_042_request_binding_red",
+        "seconds": 0.5878904999699444,
+        "cumulative_seconds": 384.4546344001333,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_042_request_binding_red_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 386.4546344001333,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_043_request_binding_green",
+        "seconds": 0.6600291999639012,
+        "cumulative_seconds": 387.1146636000972,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_043_request_binding_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 389.1146636000972,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_044_journal_header_green",
+        "seconds": 0.8649005999905057,
+        "cumulative_seconds": 389.9795642000877,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_044_journal_header_green_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 391.9795642000877,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_045_new_and_direct_regressions",
+        "seconds": 8.790539500012528,
+        "cumulative_seconds": 400.7701037001002,
+        "exit_code": 1,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_045_new_and_direct_regressions_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 402.7701037001002,
+        "exit_code": 1,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_046_scoped_legacy_regressions",
+        "seconds": 1.810478699975647,
+        "cumulative_seconds": 404.58058240007585,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_046_scoped_legacy_regressions_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 406.58058240007585,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_047_native_candidate",
+        "seconds": 2.5554384,
+        "cumulative_seconds": 409.13602080007587,
+        "exit_code": 0,
+        "accounting": "native_commit_stopwatch_plus_2_1_seconds_first_launcher_conservative_topup"
+      },
+      {
+        "label": "ondemand_048_native_whitespace_close",
+        "seconds": 0.167663,
+        "cumulative_seconds": 409.3036838000759,
+        "exit_code": 0,
+        "accounting": "native_stopwatch"
+      },
+      {
+        "label": "ondemand_049_independent_delivery",
+        "seconds": 2.7775897000101395,
+        "cumulative_seconds": 412.081273500086,
+        "exit_code": 0,
+        "accounting": "guard_start_to_child_completion_wall_time_including_failures"
+      },
+      {
+        "label": "ondemand_049_independent_delivery_launcher",
+        "seconds": 2,
+        "cumulative_seconds": 414.081273500086,
+        "exit_code": 0,
+        "accounting": "outer_conda_stopwatch_minus_guard_already_charged"
+      },
+      {
+        "label": "ondemand_050_standards_review_native",
+        "seconds": 2.0,
+        "cumulative_seconds": 416.081273500086,
+        "exit_code": 0,
+        "accounting": "rounded_up_tool_wall_clock_1.9925637s_12_readonly_commands"
+      },
+      {
+        "label": "ondemand_051_spec_review_native_upper",
+        "seconds": 14.0,
+        "cumulative_seconds": 430.081273500086,
+        "exit_code": 0,
+        "accounting": "conservative_14s_upper_14_readonly_commands_3_tool_timers_truncated"
+      },
+      {
+        "label": "ondemand_052_native_read_and_closeout_upper",
+        "seconds": 120.0,
+        "cumulative_seconds": 550.081273500086,
+        "exit_code": 0,
+        "accounting": "conservative_upper_for_unsettled_root_native_reads_archival_hashing_and_remaining_git_closeout_not_exact_measurement"
+      }
+    ]
+  },
+  "writes": {
+    "charged_cumulative_bytes": 279434979,
+    "python_attempted_write_bytes": 212326115,
+    "native_git_control_precharge_bytes": 67108864,
+    "total_limit_bytes": 1073741824,
+    "closeout_reserve_bytes": 268435456,
+    "ordinary_limit_bytes": 805306368,
+    "closeout_reserve_consumed_bytes": 0,
+    "inherited_prior_upper_bytes": 1242221743,
+    "no_deletion_refunds": true,
+    "notes": "Native source/docs/control/Git writes are conservatively charged inside the 64MiB precharge; this is an upper charge, not a measured filesystem allocation."
+  },
+  "memory": {
+    "job_limit_bytes": 4227858432,
+    "guard_reserve_bytes": 67108864,
+    "total_limit_bytes": 4294967296,
+    "max_observed_job_commit_bytes": 109068288,
+    "max_job_plus_guard_reserve_bytes": 176177152,
+    "native_closeout_process_peak_working_set_bytes": 124149760,
+    "notes": "Runtime Python tree enforced by Windows Job plus 64MiB guard reserve. Review native command peaks were not separately instrumented; reported runtime envelope is not an all-process measured simultaneous peak."
+  },
+  "invariants": {
+    "protected_files_verified": 161,
+    "old_offline_prefix_bytes": 398959,
+    "old_offline_prefix_sha256": "13d8e30714ac37aa250150a0e6f22b1bd2a61e4cb1141bc3de15001564649b19",
+    "reviewed_candidate_files_unchanged": true,
+    "pending_resource_records": 0,
+    "environment": "D:/Work/Codex/Project/Thesis/.conda/envs/Thesis",
+    "new_dependencies": 0,
+    "real_recommendation_runs": 0,
+    "real_effect_evaluations": 0,
+    "bootstrap_runs": 0,
+    "api_calls": {
+      "count": 0,
+      "generate": 0,
+      "other": 0
+    },
+    "old_G1": "failed_not_accepted",
+    "T0_status": "T0_A_incomplete",
+    "G2_G6": "not_advanced"
+  },
+  "references": {
+    "offline_ledger": {
+      "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "bytes": 563604,
+      "sha256": "dbede74e8c6d12dd6a6ce9b4dbe013c8425b6c86de851c77b2054dc3b16ca626"
+    },
+    "new_disk_ledger": {
+      "path": ".scratch/ticket12-budget-20261018/on-demand-disk-20261019.jsonl",
+      "bytes": 143069,
+      "sha256": "02a8852815e6f3a0468d21dffb0c829450c291bacaf9c2b67aead3facc1b72f3"
+    },
+    "old_T0_ledger": {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "bytes": 25417,
+      "sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca"
+    },
+    "evidence_index": {
+      "path": ".scratch/ticket12-budget-20261018/evidence-index-test100-20261019.json",
+      "bytes": 210514,
+      "sha256": "92571ca9650457dc19fd542d28f73ae8872da1b6ceccbc8aad35974f7c62cd22"
+    }
+  }
+}

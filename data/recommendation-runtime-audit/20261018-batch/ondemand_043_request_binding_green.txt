@@ -1,0 +1,17 @@
+test_independent_audit_check_rejects_a_resealed_request_schema_change (tests.test_on_demand_runtime.DispatchBoundary.test_independent_audit_check_rejects_a_resealed_request_schema_change) ... ok
+test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original) ... FAIL
+
+======================================================================
+FAIL: test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 201, in test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original
+    self.assertEqual(checked.returncode, 0, checked.stdout.decode() + checked.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"status": "failed", "reason": "'status'"}
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.454s
+
+FAILED (failures=1)

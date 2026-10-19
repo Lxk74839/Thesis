@@ -1,0 +1,22 @@
+test_count_drift_preserves_raw_usage_and_stops_unsettled (tests.test_on_demand_runtime.DispatchBoundary.test_count_drift_preserves_raw_usage_and_stops_unsettled) ... FAIL
+
+======================================================================
+FAIL: test_count_drift_preserves_raw_usage_and_stops_unsettled (tests.test_on_demand_runtime.DispatchBoundary.test_count_drift_preserves_raw_usage_and_stops_unsettled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 156, in test_count_drift_preserves_raw_usage_and_stops_unsettled
+    self.assertEqual((result['terminal'], len(transport.requests)), ('failed_model', 1))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('released', 9) != ('failed_model', 1)
+
+First differing element 0:
+'released'
+'failed_model'
+
+- ('released', 9)
++ ('failed_model', 1)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.235s
+
+FAILED (failures=1)

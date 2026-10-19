@@ -1,0 +1,42 @@
+test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order (tests.test_on_demand_runtime.DispatchBoundary.test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order) ... FAIL
+
+======================================================================
+FAIL: test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order (tests.test_on_demand_runtime.DispatchBoundary.test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 108, in test_fact_order_is_stable_when_the_model_reads_refs_in_reverse_order
+    self.assertEqual([fact['citation']['target_id'] for fact in frame['facts']['PUBLIC-A']],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ['BATCH-A', 'E-harvest', 'E-inspection', 'E-packaging', 'E-retail', 'E-storage', 'E-transport',
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         'D-inspection_report', 'D-inspection_sample', 'D-retail_status'])
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['D-retail_status', 'D-inspection_report', [112 chars]H-A'] != ['BATCH-A', 'E-harvest', 'E-inspection', 'E[112 chars]tus']
+
+First differing element 0:
+'D-retail_status'
+'BATCH-A'
+
+- ['D-retail_status',
++ ['BATCH-A',
++  'E-harvest',
++  'E-inspection',
++  'E-packaging',
++  'E-retail',
++  'E-storage',
++  'E-transport',
+   'D-inspection_report',
+   'D-inspection_sample',
++  'D-retail_status']
+-  'E-retail',
+-  'E-transport',
+-  'E-inspection',
+-  'E-storage',
+-  'E-packaging',
+-  'E-harvest',
+-  'BATCH-A']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.222s
+
+FAILED (failures=1)

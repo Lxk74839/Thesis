@@ -1,0 +1,6 @@
+test_V10_legal_new_pass_is_supported (tests.test_on_demand_runtime.AdditionalEvidenceBoundary.test_V10_legal_new_pass_is_supported) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.047s
+
+OK

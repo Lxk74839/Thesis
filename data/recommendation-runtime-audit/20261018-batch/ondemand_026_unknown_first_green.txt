@@ -1,0 +1,6 @@
+test_unknown_usage_keeps_reservation_and_repeated_dispatch_does_not_retry (tests.test_on_demand_runtime.DispatchBoundary.test_unknown_usage_keeps_reservation_and_repeated_dispatch_does_not_retry) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.084s
+
+OK

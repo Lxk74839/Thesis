@@ -1,0 +1,16 @@
+test_independent_check_does_not_accept_a_different_views_snapshot (tests.test_experiment_runner.PlanningBoundary.test_independent_check_does_not_accept_a_different_views_snapshot) ... FAIL
+
+======================================================================
+FAIL: test_independent_check_does_not_accept_a_different_views_snapshot (tests.test_experiment_runner.PlanningBoundary.test_independent_check_does_not_accept_a_different_views_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_experiment_runner.py", line 139, in test_independent_check_does_not_accept_a_different_views_snapshot
+    self.assertEqual(checked.returncode, 2, checked.stdout.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"counts": {"bindings": 1800, "development_overlap": 0, "model_tasks": 3400, "scenarios": 18, "tasks": 5000, "users": 100}, "plan_id": "0debb01afdaf273c0154afc5c76b4de73aea070b1da73432fdfad4ac4945fde5", "provider_requests_sent": 0, "recommendation_runs": 0, "status": "passed_reference_preparation_only"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.844s
+
+FAILED (failures=1)

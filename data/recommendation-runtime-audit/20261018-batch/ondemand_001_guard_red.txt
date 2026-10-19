@@ -1,0 +1,19 @@
+test_offline_package_blocks_network_before_connect (tests.test_experiment_runner.GuardBoundary.test_offline_package_blocks_network_before_connect) ... FAIL
+
+======================================================================
+FAIL: test_offline_package_blocks_network_before_connect (tests.test_experiment_runner.GuardBoundary.test_offline_package_blocks_network_before_connect)
+----------------------------------------------------------------------
+ConnectionRefusedError: [WinError 10061] 由于目标计算机积极拒绝，无法连接。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_experiment_runner.py", line 9, in test_offline_package_blocks_network_before_connect
+    with self.assertRaisesRegex(OSError, 'on_demand_network_forbidden'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "on_demand_network_forbidden" does not match "[WinError 10061] 由于目标计算机积极拒绝，无法连接。"
+
+----------------------------------------------------------------------
+Ran 1 test in 2.035s
+
+FAILED (failures=1)

@@ -1,0 +1,15 @@
+test_actual_requests_retain_the_prepared_output_schema (tests.test_on_demand_runtime.DispatchBoundary.test_actual_requests_retain_the_prepared_output_schema) ... FAIL
+
+======================================================================
+FAIL: test_actual_requests_retain_the_prepared_output_schema (tests.test_on_demand_runtime.DispatchBoundary.test_actual_requests_retain_the_prepared_output_schema)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 254, in test_actual_requests_retain_the_prepared_output_schema
+    self.assertTrue(all(request.get('output_schema', {}).get('type') == 'object' for request in transport.requests))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 1 test in 0.211s
+
+FAILED (failures=1)

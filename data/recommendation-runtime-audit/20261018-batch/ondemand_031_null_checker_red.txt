@@ -1,0 +1,16 @@
+test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original) ... FAIL
+
+======================================================================
+FAIL: test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original (tests.test_on_demand_runtime.DispatchBoundary.test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 201, in test_independent_check_accepts_a_nonempty_null_scope_but_rejects_missing_original
+    self.assertEqual(checked.returncode, 0, checked.stdout.decode() + checked.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\python.exe: can't open file 'D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket12-budget-20261018\\diagnostics\\check_on_demand_delivery.py': [Errno 2] No such file or directory
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.169s
+
+FAILED (failures=1)

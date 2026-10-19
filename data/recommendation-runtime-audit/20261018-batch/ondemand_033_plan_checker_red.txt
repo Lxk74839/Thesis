@@ -1,0 +1,16 @@
+test_independent_plan_check_rejects_a_resealed_duplicate_task (tests.test_experiment_runner.PlanningBoundary.test_independent_plan_check_rejects_a_resealed_duplicate_task) ... FAIL
+
+======================================================================
+FAIL: test_independent_plan_check_rejects_a_resealed_duplicate_task (tests.test_experiment_runner.PlanningBoundary.test_independent_plan_check_rejects_a_resealed_duplicate_task)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_experiment_runner.py", line 111, in test_independent_plan_check_rejects_a_resealed_duplicate_task
+    self.assertEqual(passed.returncode, 0, passed.stdout.decode() + passed.stderr.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : {"status": "failed", "reason": "usage: check_on_demand_delivery.py audit PATH"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.756s
+
+FAILED (failures=1)

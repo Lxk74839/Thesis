@@ -1,0 +1,22 @@
+test_M_constructs_only_actual_requests_with_no_old_model_default (tests.test_on_demand_runtime.DispatchBoundary.test_M_constructs_only_actual_requests_with_no_old_model_default) ... FAIL
+
+======================================================================
+FAIL: test_M_constructs_only_actual_requests_with_no_old_model_default (tests.test_on_demand_runtime.DispatchBoundary.test_M_constructs_only_actual_requests_with_no_old_model_default)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 86, in test_M_constructs_only_actual_requests_with_no_old_model_default
+    self.assertEqual((result['terminal'], result['usage']['model_calls']), ('released', 9))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('failed_model', 0) != ('released', 9)
+
+First differing element 0:
+'failed_model'
+'released'
+
+- ('failed_model', 0)
++ ('released', 9)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.066s
+
+FAILED (failures=1)

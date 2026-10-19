@@ -1,0 +1,16 @@
+test_independent_audit_check_rejects_a_resealed_request_schema_change (tests.test_on_demand_runtime.DispatchBoundary.test_independent_audit_check_rejects_a_resealed_request_schema_change) ... FAIL
+
+======================================================================
+FAIL: test_independent_audit_check_rejects_a_resealed_request_schema_change (tests.test_on_demand_runtime.DispatchBoundary.test_independent_audit_check_rejects_a_resealed_request_schema_change)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_on_demand_runtime.py", line 272, in test_independent_audit_check_rejects_a_resealed_request_schema_change
+    self.assertEqual(checked.returncode, 2, checked.stdout.decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2 : {"audit_sha256": "e0ffeb2cb26072a6e6ba77bea020e9d0bfda885fa0d9e9ec48ae067a8194ea29", "model_attempts": 9, "null_scopes": 0, "path": ".tmp/recommendation-runtime/tmpzltit5pq/runs/1/bad-audit.json", "provider_requests_sent": 0, "status": "passed_public_audit_only"}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.366s
+
+FAILED (failures=1)
