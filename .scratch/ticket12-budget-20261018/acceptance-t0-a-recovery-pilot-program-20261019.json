@@ -1,0 +1,61 @@
+{
+  "schema_version": "t0-recovery-pilot-program-acceptance-0.1.0",
+  "status": "T0_A_recovery_pilot_program_accepted",
+  "base": "05889b62f3b4eca984416acbd3f0d48a1f4d4b35",
+  "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+  "resource_package": {
+    "path": ".scratch/ticket12-budget-20261018/recovery-pilot-package-20261019.json",
+    "sha256": "6da3c084bc2b1b298994f692db13d9b885dbd97cf180904e7a31cfefcb61c93b"
+  },
+  "source_sha256": {
+    "t0_catalog.py": "5cf17b78b8b9e3e7887848560f3c3cd122de6e582921b9aabbda49cf1b84745e",
+    "tests/test_t0_catalog.py": "3417a799dc98357c71255ebbbb934da4e42e641cdb5be9449f55c7d9cf3434d7",
+    ".scratch/ticket12-budget-20261018/diagnostics/run_check.py": "1e67f8c8f85cdd0d48ecf7bfe727a954d5577970e1f1502b9a8018218ebd36ce",
+    ".scratch/ticket12-budget-20261018/diagnostics/check_t0_catalog_delivery.py": "76baeb9475ede3db38b3daf0712d4fc47818f029cc6991f207e3fbf6ef5a9ee3",
+    "model_adapter.py": "57c36adf432e62eb4b702ab640028ea8036ebf5c309a0f90e680f6c45c5d076e",
+    "provider_openai.py": "4a35e7c0a5a2fc780c9020ff55d1175ebf70af943600e4384def0fe6bf2890e3",
+    "token_counting.py": "7304e7dfbd835e672a98ee3679cb8dd15fecd8270db13adf015c2b952db70b77",
+    "recommendation_runner.py": "7a5837e33d7b88db915620b78a4275a0d2cd2b8caaf9ef682f308b9f7f93b623",
+    "evidence_access.py": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767",
+    "joint_access.py": "6def552c391fe3e48273a49853a1f01201afaea354f27939a9d6aaf932554f04",
+    "joint_tasks.py": "fab8e94b95b50f3757ae4d613d90149c74ca221f540ae1cb378af5c5cbc57044",
+    "evidence_verification.py": "23140365ba9dad08aa70af2842dc5844ecd3bf0603d4d330663cccdda000b133",
+    "quality_fusion.py": "d3f3309eff8e17126111e002cae11d261a53302eb76dfbd29e930706a6345657",
+    "sim_normal.py": "f68ccefab60f4acaf3b77dcc0acd624900415a6d4b8910cd0b45ebcc5a8389f0",
+    "sim_scenarios.py": "43b8ef5c3ba3e8e2e79d47b5ebb6215cca8a7b7dd4b8f1f617af01a3dfc0c609"
+  },
+  "reviews": {
+    "Standards": {
+      "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+      "blocking_findings": 0,
+      "record": {
+        "path": ".scratch/ticket12-budget-20261018/verification-recovery-pilot-standards-85686ef.md",
+        "bytes": 919,
+        "sha256": "29fb1e06e457d6dd1ae33f5d928813e5245c22275b1548557ca962b557d7f54a"
+      }
+    },
+    "Spec": {
+      "candidate": "85686efd88551c7201c4157e482d71be41927e82",
+      "blocking_findings": 0,
+      "record": {
+        "path": ".scratch/ticket12-budget-20261018/verification-recovery-pilot-spec-85686ef.md",
+        "bytes": 668,
+        "sha256": "0309e6e156988284c67cbb7663eee10193960698040c72f83aee4138a62b65e2"
+      }
+    }
+  },
+  "tdd": {
+    "path": ".scratch/ticket12-budget-20261018/tdd-recovery-pilot-20261019.md",
+    "bytes": 5685,
+    "sha256": "986965ffa871cc8455d17d19b0ca48275120ccdae75c4ea27f02e19e3c2a7d96"
+  },
+  "public_compile_attempts": 48,
+  "original_storage_tests_inherited": 17,
+  "full_catalog_accepted": false,
+  "original_T0_status": "T0_A_incomplete",
+  "api_limits": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  }
+}
