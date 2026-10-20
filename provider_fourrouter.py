@@ -204,12 +204,18 @@ def normalize(envelope, request, *, pricing, engineering=False):
             status=status if status in ('incomplete', 'failed', 'cancelled', 'queued', 'in_progress') else 'unknown')
     if not isinstance(body.get('output'), list) or not body['output']:
         raise ProtocolError('output_item', 'invalid_output_shape', field='output')
-    calls, texts, seen = [], [], set()
+    calls, texts, seen, reasoning_items = [], [], set(), []
     prior = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', [])}
     for index, item in enumerate(body['output']):
         if not isinstance(item, dict):
             raise ProtocolError('output_item', 'invalid_output_item', field='output', output_index=index)
         kind = item.get('type')
+        if kind == 'reasoning' and set(item) <= {'type', 'id', 'summary', 'status'} and item.get('summary') == []:
+            if (not isinstance(item.get('id'), str) or not item['id'].startswith('rs_')
+                    or len(item['id']) > 128 or item.get('status', 'completed') != 'completed'):
+                raise ProtocolError('output_item', 'invalid_reasoning_metadata', field='reasoning', output_index=index)
+            reasoning_items.append({'output_index': index, 'id': item['id'], 'summary_count': 0})
+            continue
         if kind not in ('function_call', 'message'):
             raise ProtocolError('output_item', 'unsupported_output_type', field='type', output_index=index,
                 item_type=kind if kind in ('reasoning', 'refusal') else 'unknown')
@@ -258,7 +264,8 @@ def normalize(envelope, request, *, pricing, engineering=False):
         raise ProtocolError('native_usage', 'native_cost_unknown', field='cost_microusd')
     return {'status': 'ok', 'request_id': request['request_id'], 'attempted': True,
         'message': {'role': 'assistant', 'content': content, 'tool_requests': calls}, 'usage': usage,
-        'raw_response': response_diagnostic(envelope), 'usage_known': not engineering, 'error': None,
+        'raw_response': response_diagnostic(envelope) | ({'reasoning_items': reasoning_items} if reasoning_items else {}),
+        'usage_known': not engineering, 'error': None,
         'provider_request_id': envelope.get('request_id'), 'provider_response_id': body.get('id'),
         'returned_model': body['model']}
 
