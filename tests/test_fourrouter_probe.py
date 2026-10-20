@@ -65,6 +65,7 @@ class ManualProbe(unittest.TestCase):
         prepared = prepare_probe(public_path=self.public)
         self.assertEqual(prepared['endpoint'], 'https://4router.net/v1/responses')
         self.assertEqual(prepared['request']['model'], 'gpt-6-luna')
+        self.assertEqual(prepared['request']['reasoning'], {'effort': 'none'})
         self.assertEqual((prepared['max_generate_requests'], prepared['max_count_requests']), (2, 0))
         self.assertIsNone(prepared['cost'])
         self.assertFalse(prepared['execution_authorized'])
@@ -73,14 +74,15 @@ class ManualProbe(unittest.TestCase):
         self.assertIn('PUBLIC-REF-1', json.dumps(prepared['request']))
         self.assertNotIn('api_key', json.dumps(prepared))
 
-    def test_probe_refuses_network_before_even_reading_the_local_secret(self):
+    def test_probe_refuses_empty_PUBLIC_credentials_without_sending(self):
         from fourrouter_probe import main
         stdout = io.StringIO()
         with contextlib.redirect_stdout(stdout):
-            code = main(['probe'], public_path=self.public, credential_path=PROJECT / '.secrets/4router.json')
+            code = main(['probe'], public_path=self.public, credential_path=self.credentials,
+                        receipt_path=self.root / 'unused.jsonl')
         result = json.loads(stdout.getvalue())
         self.assertEqual(code, 2)
-        self.assertEqual(result['status'], 'contract_confirmation_required')
+        self.assertEqual(result['status'], 'invalid_local_configuration')
         self.assertEqual(result['provider_requests_sent'], 0)
         self.assertIsNone(result['cost'])
 
