@@ -1,0 +1,22 @@
+{
+  "peak_job_commit_bytes": 41824256.0,
+  "generate_api": 0,
+  "combined_seconds": 1838.542203800137,
+  "resource_acceptance": false,
+  "other_api": 0,
+  "historical_ledger_prefix_unchanged": true,
+  "memory_limit_bytes": 4294967296,
+  "charged_write_upper_bytes": 16778736,
+  "offline_limit_seconds": 1800,
+  "write_limit_bytes": 134217728,
+  "credential_reads": 0,
+  "offline_cumulative_seconds": 1838.542203800137,
+  "offline_excess_seconds": 38.54220380013703,
+  "local_charged_seconds": 84.55375549999985,
+  "count_api": 0,
+  "inherited_offline_seconds": 1753.9884483001372,
+  "historical_write_excess_retained": true,
+  "S_actual_execution_seconds": 0,
+  "local_limit_seconds": 180,
+  "T0_ledger_unchanged": true
+}
