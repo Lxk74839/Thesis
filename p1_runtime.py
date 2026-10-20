@@ -39,6 +39,9 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     if relation['root_task_id'] != D1 or scene['label'] != 'V00' or task['method'] != method:
         raise ValueError('P1_scope_mismatch')
     missing = []
+    project_id = cfg['model_binding'].get('project_id')
+    if not isinstance(project_id, str) or not project_id.strip():
+        missing.append('project_id')
     if cfg['model_binding'].get('provenance') != '4router':
         missing.append('fixture_cannot_authorize_D1')
     if (cfg['model_binding'].get('execution_kind'), cfg['model_binding'].get('model_id'),
