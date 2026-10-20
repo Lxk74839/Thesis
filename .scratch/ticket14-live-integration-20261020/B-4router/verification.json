@@ -1,0 +1,113 @@
+{
+  "json_valid": true,
+  "token_group": null,
+  "remaining_blockers": [
+    "token_group_binding_and_exact_model_account_availability",
+    "actual_rates_and_billing_rules",
+    "reliable_complete_Responses_input_count_contract",
+    "B_local_resources_and_trial_limits_approval",
+    "channel_tool_strict_schema_usage_and_identity_verification"
+  ],
+  "stage_A_six_archives_unchanged": true,
+  "api_budget": null,
+  "confirmed_parameters": {
+    "model_id": "gpt-6-luna",
+    "channel": "4Router",
+    "repeat": 1,
+    "users": 100,
+    "scenes": 18,
+    "base_url": "https://4router.net/v1"
+  },
+  "formal_six_files_unchanged": true,
+  "execution_authorized": false,
+  "baseline_commit": "f62591d89417b71fed26655cb38bc38ec48ed141",
+  "status": "documentation_only_checked_not_implementation_acceptance",
+  "resource": {
+    "basis": "conservative_documentation_cost_upper_not_new_implementation_or_trial_budget",
+    "T0_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+    "memory_peak_measured": false,
+    "stage_A_balance_transferred": false,
+    "original_ledger_prefix_bytes": 991808,
+    "offline_after_seconds": 1137.4871598001369,
+    "ledger_label": "ticket14_B_4router_documentation_20261020_upper",
+    "ledger_only_appended": true,
+    "write_upper_bytes": 1048576,
+    "offline_limit_seconds": 1800,
+    "inherited_plus_documentation_write_upper_bytes": 1643816454,
+    "inherited_write_upper_bytes": 1642767878,
+    "original_ledger_prefix_sha256": "26a5a45eb212784b5a5d01c20d6bce1f4e353bfe6d8dd20c3b63f603f003fc52",
+    "offline_before_seconds": 1077.4871598001369,
+    "agent_reported_research_tool_wall_seconds_approx": 13.4,
+    "seconds_upper": 60,
+    "PUBLIC_probe_fee_budget": null,
+    "artifact_bytes_excluding_this_record": 29998,
+    "B_implementation_budget": null,
+    "T0_unchanged": true,
+    "agent_time_included_in_upper": true
+  },
+  "public_sources_are_not_network_validation": true,
+  "date": "2026-10-20",
+  "project_code_or_tests_run": 0,
+  "real_recommendations": 0,
+  "pricing": null,
+  "pilot_manifest_unchanged": true,
+  "formal_frozen_files": [
+    {
+      "sha256": "ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/plan.json",
+      "bytes": 3910
+    },
+    {
+      "sha256": "806ad3dd8d3a8cddadec9a32369e7232f54c5f78731e614e1190839257ed5ca3",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/root-references.jsonl",
+      "bytes": 76909
+    },
+    {
+      "sha256": "fe400606662853114b4b09765f06e33acb33fd3d42ac13150401869e8ea47898",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/sample-users.jsonl",
+      "bytes": 18992
+    },
+    {
+      "sha256": "b61a9253ee20f69d081d457fc17c40f2afb8ff6cf8afedb08e798263c705f582",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/scenes.jsonl",
+      "bytes": 8070
+    },
+    {
+      "sha256": "c4ebb869c0a89fe26699c66549cb1c39711853ac2f70e68346a33a3b8cd15173",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/tasks.jsonl",
+      "bytes": 1011600
+    },
+    {
+      "sha256": "6a9bfe4844e1eb46236ce0f3b505db269cbd5f332997466cc24945f1dc81b3a5",
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/user-scenarios.jsonl",
+      "bytes": 667560
+    }
+  ],
+  "provider_api": {
+    "other": 0,
+    "count": 0,
+    "generate": 0
+  },
+  "real_evaluations": 0,
+  "implementation_started": false,
+  "credential_reads": 0,
+  "config_executable": false,
+  "production_and_test_code_unchanged": true,
+  "files": [
+    {
+      "sha256": "3caf6ac9508404755944ca4ea094f943bb4ef0e38547263e6773844ef2f2a873",
+      "path": ".scratch/ticket14-live-integration-20261020/B-4router/plan.md",
+      "bytes": 15856
+    },
+    {
+      "sha256": "60430de52751fd3367c0be940928048e3e549fe00017efdda9ace6d2af717526",
+      "path": ".scratch/ticket14-live-integration-20261020/B-4router/config.draft.json",
+      "bytes": 5746
+    },
+    {
+      "sha256": "5c8fbc1fdbc04728c30e8e926b66e5d5df2e8a4a0cc6e4f20a207790c5b1036b",
+      "path": ".scratch/ticket14-live-integration-20261020/B-4router/public-sources.md",
+      "bytes": 8396
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "schema_version": "ticket14-4router-configuration-draft-0.1.0",
+  "status": "draft_incomplete_not_executable",
+  "config_id": null,
+  "confirmation_source": "current_user_message_2026-10-20_channel_endpoint_exact_model_target_scope_only",
+  "stage_A": {
+    "code_candidate": "e34ef4a2a291e21184f5cc37e20a0d7983d2a1b2",
+    "archive_commit": "f62591d89417b71fed26655cb38bc38ec48ed141",
+    "acceptance_path": ".scratch/ticket14-live-integration-20261020/acceptance.md"
+  },
+  "frozen_plan_ref": {
+    "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/plan.json",
+    "bytes": 3910,
+    "sha256": "ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316"
+  },
+  "parent_plan_id": "9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088",
+  "experiment_scope": {
+    "status": "target_scope_confirmed_execution_not_authorized",
+    "source_scope": "accepted_test_pool",
+    "users": 100,
+    "scenarios": 18,
+    "repeat": 1,
+    "methods": "exactly_as_frozen_plan_including_Q_M_only",
+    "frozen_task_count": 5000,
+    "frozen_model_task_count": 3400,
+    "api_call_budget_inferred_from_task_count": false
+  },
+  "development_pilot_ref": {
+    "pilot_id": "6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1",
+    "path": "data/recommendation-runtime-audit/ticket14-development/pilot/manifest.json",
+    "bytes": 4139,
+    "sha256": "bbd56be7fc0fff5615ed12fd20106bdabf0a4e95fcc9814cb5309fe96a1c11d7",
+    "execution_authorized": false
+  },
+  "model_binding": {
+    "channel": "4Router",
+    "base_url": "https://4router.net/v1",
+    "model_id": "gpt-6-luna",
+    "pricing": null,
+    "api_budget": null
+  },
+  "token_group": null,
+  "group_binding_method": null,
+  "tenant_project_binding": null,
+  "protocol_proposal": {
+    "api": "responses",
+    "mapper_version_proposed": "4router-responses-mapper-0.1.0",
+    "generation_endpoint_candidate": "https://4router.net/v1/responses",
+    "count_endpoint_candidate": "https://4router.net/v1/responses/input_tokens",
+    "count_endpoint_confirmed": null,
+    "capabilities": {
+      "responses_documentation": "client_configuration_claim_only",
+      "account_exact_model_available": null,
+      "custom_function_call_roundtrip": null,
+      "strict_text_json_schema": null,
+      "complete_input_preflight_count": null,
+      "native_usage_field_mapping": null,
+      "provider_request_id_mapping": null,
+      "error_mapping": null,
+      "network_validation_performed": false
+    },
+    "runtime_parameters_confirmed": {
+      "reasoning_effort": null,
+      "service_tier": null,
+      "max_output_tokens": null,
+      "stream": null,
+      "store": null,
+      "parallel_tool_calls": null,
+      "truncation": null,
+      "timeout_ms": null,
+      "max_request_bytes": null,
+      "max_response_bytes": null,
+      "context_limit": null,
+      "output_limit": null,
+      "returned_model_identity_rule": null
+    },
+    "runtime_parameter_suggestions_not_defaults": {
+      "reasoning_effort": "none",
+      "stream": false,
+      "store": false,
+      "parallel_tool_calls": false,
+      "truncation": "disabled",
+      "implicit_redirects": false,
+      "automatic_retries": false,
+      "automatic_model_fallback": false,
+      "remote_conversation_or_compaction": false
+    },
+    "preflight_count": {
+      "confirmed_method": null,
+      "coverage_evidence_ref": null,
+      "receipt_schema_version": null,
+      "native_usage_comparison_rule": null,
+      "count_price_evidence_ref": null,
+      "input_projection_fields_proposed": [
+        "model",
+        "instructions_if_present",
+        "input_including_all_history_calls_results_and_required_continuation_items",
+        "tools_and_parameter_schemas",
+        "text.format_and_role_schema",
+        "reasoning",
+        "tool_choice_and_other_actual_input_settings"
+      ],
+      "omitted_fields_allowlist_confirmed": null,
+      "allow_character_or_fixture_or_local_partial_token_estimate": false,
+      "allow_cross_provider_count_receipt": false,
+      "allow_old_T0_authorization": false
+    },
+    "documentation_sources": [
+      "https://docs.4router.net/guides/codex/",
+      "https://docs.4router.net/guides/model-groups/",
+      "https://developers.openai.com/api/docs/guides/token-counting",
+      "https://developers.openai.com/api/docs/guides/function-calling",
+      "https://developers.openai.com/api/docs/guides/structured-outputs"
+    ]
+  },
+  "pricing_required_fields": [
+    "currency_and_billing_unit",
+    "token_group_multiplier_and_inclusion_rule",
+    "uncached_input_cached_read_cache_write_output_rates",
+    "reasoning_and_hidden_output_inclusion_rule",
+    "context_and_service_tier_rules",
+    "count_success_failure_and_generation_failure_charges",
+    "effective_time_and_evidence_reference",
+    "cost_microusd_conversion_and_rounding_rule"
+  ],
+  "root_limits": null,
+  "final_reserve": null,
+  "Q_prefix_limit": null,
+  "role_output_caps": null,
+  "local_implementation_resource_limits": null,
+  "credential_source_ref": null,
+  "execution_authorized": false,
+  "authorizations": {
+    "PUBLIC_protocol_probe": null,
+    "development_pilot": null,
+    "formal_frozen_test100": null
+  },
+  "current_provider_api_permissions": {
+    "generate": 0,
+    "count": 0,
+    "other": 0
+  },
+  "PUBLIC_protocol_probe_proposal": {
+    "status": "proposal_not_authorization",
+    "max_count_calls_proposed": 2,
+    "max_generate_calls_proposed": 2,
+    "max_other_calls_proposed": 0,
+    "concurrency_proposed": 1,
+    "retries_proposed": 0,
+    "fee_budget": null,
+    "max_output_tokens": null,
+    "deadline_ms": null,
+    "allowed_probe_operation_ids": null,
+    "contains_real_user_or_reference_data": false,
+    "execution_authorized": false
+  }
+}
