@@ -139,6 +139,10 @@ def closed_schema(schema):
 
 
 def prepare(request, project_id):
+    return prepare_responses(request, project_id, model_id=MODEL, mapper=MAPPER, legacy_options=True)
+
+
+def prepare_responses(request, project_id, *, model_id, mapper, legacy_options=False):
     request = copy.deepcopy(request)
     closed_schema(request['output_schema'])
     if request['output_schema'].get('type') != 'object':
@@ -160,16 +164,18 @@ def prepare(request, project_id):
             items.append({'role': message['role'], 'content': text})
     tools = [{'type': 'function', 'name': t['name'], 'description': t.get('description', t['name']),
               'parameters': copy.deepcopy(t['input_schema']), 'strict': True} for t in request['tools']]
-    wire = {'model': MODEL, 'input': items, 'tools': tools,
+    wire = {'model': model_id, 'input': items, 'tools': tools,
         'text': {'format': {'type': 'json_schema', 'name': 'rsm_' + request['output_kind'],
                            'strict': True, 'schema': copy.deepcopy(request['output_schema'])}},
         'reasoning': {'effort': 'none'}, 'parallel_tool_calls': False,
-        'tool_choice': 'auto' if tools else 'none', 'truncation': 'disabled',
-        'max_output_tokens': request['max_output_tokens'], 'service_tier': 'default', 'store': False, 'stream': False}
+        'tool_choice': 'auto' if tools else 'none',
+        'max_output_tokens': request['max_output_tokens'], 'store': False, 'stream': False}
+    if legacy_options:
+        wire.update(truncation='disabled', service_tier='default')
     count = {k: copy.deepcopy(v) for k, v in wire.items()
              if k not in ('max_output_tokens', 'service_tier', 'store', 'stream')}
-    result = {'schema_version': 'openai-prepared-0.1.0', 'status': 'prepared', 'model_id': MODEL,
-        'project_id': project_id, 'mapper_version': MAPPER, 'tool_schema_sha256': sha(request['tools']),
+    result = {'schema_version': 'openai-prepared-0.1.0', 'status': 'prepared', 'model_id': model_id,
+        'project_id': project_id, 'mapper_version': mapper, 'tool_schema_sha256': sha(request['tools']),
         'role_schema_sha256': sha(request['output_schema']), 'wire_body': wire, 'count_body': count,
         'wire_utf8': canonical(wire), 'count_utf8': canonical(count),
         'wire_sha256': sha(wire), 'count_payload_sha256': sha(count), 'input_tokens': None, 'missing': [],

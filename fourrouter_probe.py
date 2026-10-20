@@ -122,21 +122,21 @@ def _native_usage(value):
     return None
 
 
-def _request_bytes(request):
+def _request_bytes(request, max_request_bytes=8192):
     raw = json.dumps(request).encode('utf-8')
-    if len(raw) > 8192:
+    if type(max_request_bytes) is not int or not 0 < max_request_bytes <= 2 * 1024**2 or len(raw) > max_request_bytes:
         raise ValueError('request_body_limit')
     return raw
 
 
-def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run):
+def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run, max_request_bytes=8192):
     """One process, one POST; run() kills the worker on timeout, with no replay."""
     unknown = {'http_status': None, 'body': None, 'request_id': None}
     try:
-        _request_bytes(request)
+        _request_bytes(request, max_request_bytes)
         child = process_run([sys.executable, '-B', str(Path(__file__).resolve()), '_http_once'],
             input=json.dumps({'endpoint': endpoint, 'request': request, 'api_key': api_key,
-                              'timeout': timeout}).encode('utf-8'),
+                              'timeout': timeout, 'max_request_bytes': max_request_bytes}).encode('utf-8'),
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=timeout, check=False)
         if child.returncode != 0:
             return unknown
@@ -146,13 +146,14 @@ def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess
         return unknown
 
 
-def http_response(endpoint, request, api_key, timeout, *, connection_factory=http.client.HTTPSConnection):
+def http_response(endpoint, request, api_key, timeout, *, connection_factory=http.client.HTTPSConnection,
+                  max_request_bytes=8192):
     """Single HTTPS request; HTTP redirects are returned, never followed."""
     result = {'http_status': None, 'body': None, 'request_id': None}
     if endpoint != 'https://4router.net/v1/responses':
         return result
     try:
-        raw_body = _request_bytes(request)
+        raw_body = _request_bytes(request, max_request_bytes)
     except ValueError:
         return result
     connection = connection_factory('4router.net', timeout=timeout)
@@ -266,8 +267,9 @@ def main(argv=None, *, public_path=PUBLIC_CONFIG, credential_path=LOCAL_CREDENTI
         return 0 if result['status'] == 'protocol_passed' else 2
     if argv == ['_http_once']:
         try:
-            data = json.loads(sys.stdin.buffer.read(131072))
-            result = http_response(data['endpoint'], data['request'], data['api_key'], data['timeout'])
+            data = json.loads(sys.stdin.buffer.read(8 * 1024**2 + 1))
+            result = http_response(data['endpoint'], data['request'], data['api_key'], data['timeout'],
+                                   max_request_bytes=data.get('max_request_bytes', 8192))
         except (OSError, ValueError, TypeError, KeyError):
             result = {'http_status': None, 'body': None, 'request_id': None}
         print(json.dumps(result))

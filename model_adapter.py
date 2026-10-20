@@ -112,8 +112,13 @@ class ModelAdapter:
         self.native_attempts = set()
 
     def prepare(self, request):
-        from provider_openai import MODEL, prepare
         try:
+            if self.binding.get('execution_kind') == 'fourrouter_responses':
+                from provider_fourrouter import prepare
+                result = prepare(request, self.binding)
+                self.prepared[result['prepared_id']] = copy.deepcopy(result)
+                return copy.deepcopy(result)
+            from provider_openai import MODEL, prepare
             if self.binding.get('execution_kind') == 'on_demand_public':
                 from provider_openai import sha
                 require(self.binding == {'execution_kind': 'on_demand_public', 'model_id': None,
@@ -151,6 +156,12 @@ class ModelAdapter:
             return {'status': 'invalid_request', 'input_tokens': None, 'missing': ['invalid_native_contract']}
 
     def invoke(self, request):
+        if self.binding.get('execution_kind') == 'fourrouter_responses':
+            from provider_fourrouter import contract_missing, not_started
+            missing = contract_missing(self.binding, self.counter)
+            if missing:
+                return not_started(missing)
+            return self._invoke_native(request)
         if (self.binding.get('execution_kind') == 't0_development_catalog'
                 or isinstance(request, dict) and (request.get('schema_version') == 'rsm-model-prepare-0.1.0'
                     or request.get('execution_kind') == 't0_development_catalog')):
@@ -235,19 +246,37 @@ class ModelAdapter:
                 'attempted': True, 'usage_known': True, 'error': None}
 
     def _invoke_native(self, request):
-        from provider_openai import cost_microusd, normalize, normalized_usage, terminal_error, verify_prepared
+        router = self.binding.get('execution_kind') == 'fourrouter_responses'
+        if router:
+            import provider_fourrouter as provider
+            cost_microusd = lambda i, o: provider.upper_cost(i, o, pricing=self.binding['pricing'])
+            normalize = lambda raw, req: provider.normalize(raw, req, pricing=self.binding['pricing'])
+            normalized_usage = lambda raw: provider.normalized_usage(raw, pricing=self.binding['pricing'])
+            terminal_error, verify_prepared = provider.terminal_error, provider.verify_prepared
+        else:
+            from provider_openai import cost_microusd, normalize, normalized_usage, terminal_error, verify_prepared
         try:
             require(set(request) == REQUEST_KEYS | {'output_schema', 'prepared_id', 'count_receipt_id'})
             prepared = copy.deepcopy(self.prepared[request['prepared_id']])
             require(verify_prepared(prepared))
+            if router:
+                require(prepared['wire_bytes'] <= self.binding['max_request_bytes'])
             again = self.prepare({k: v for k, v in request.items() if k not in ('prepared_id', 'count_receipt_id')})
             require(again.get('prepared_id') == prepared['prepared_id'])
             require(all(prepared['source'][k] == request[k] for k in ('run_id', 'session_id', 'role', 'output_kind')))
             count = self.counter.count(prepared, authorization=None)
-            require(count['status'] == 'counted' and count['basis'] == 'fixture'
+            require(count['status'] == 'counted' and count['basis'] == (
+                        'verified_full_input' if router and self.binding.get('provenance') != 'fixture' else 'fixture')
                     and count['receipt_id'] == request['count_receipt_id'])
+            if router:
+                from provider_openai import sha
+                require(count['prepared_id'] == prepared['prepared_id'] and count['wire_sha256'] == prepared['wire_sha256']
+                    and count['model_id'] == prepared['model_id'] and count['project_id'] == prepared['project_id']
+                    and count['receipt_id'] == sha({k: v for k, v in count.items() if k != 'receipt_id'}))
             i, cap = count['input_tokens'], prepared['wire_body']['max_output_tokens']
-            require(request['input_token_upper_bound'] == i and 0 < cap <= 128000 and i + cap <= 400000)
+            require(request['input_token_upper_bound'] == i and 0 < cap <= (
+                self.binding['max_output_tokens'] if router else 128000)
+                and i + cap <= (self.binding['context_token_limit'] if router else 400000))
             audit = self.root_budget.audit_view()
             entry = audit['reservations'][request['reservation_id']]
             require(not audit['halted'] and audit['binding']['run_id'] == request['run_id']
@@ -264,7 +293,7 @@ class ModelAdapter:
             reserved_end = self.root_budget.started + reservation['usage_before']['elapsed_ms'] + entry['held']['elapsed_ms']
             require(reservation['phase'] == phase and self.root_budget.clock() <= request['deadline_ms'] <= min(end, reserved_end))
         except (ValueError, TypeError, KeyError, AttributeError, StopIteration):
-            return error_result('preflight_denied', 'capability')
+            return provider.not_started(['count_reservation_or_deadline']) if router else error_result('preflight_denied', 'capability')
         self.native_attempts.add(request['reservation_id'])
         try:
             raw = self.transport(prepared['wire_utf8'], deadline_ms=request['deadline_ms'])
@@ -285,6 +314,8 @@ class ModelAdapter:
                 except (ValueError, TypeError, KeyError, AttributeError):
                     usage = None
                 status, category = terminal_error(raw) if isinstance(raw, dict) else ('format_error', 'format')
+                if router and status == 'format_error' and usage is not None and usage.get('cost_microusd') is None:
+                    status, category = 'unknown_usage', 'unknown_usage'
                 if status in ('provider_binding_mismatch', 'unsupported_provider_tool') and usage is not None:
                     usage['cost_microusd'] = None
                 result = error_result(status, category, attempted=True, usage=usage, raw=copy.deepcopy(raw))
@@ -297,11 +328,22 @@ class ModelAdapter:
             body = raw.get('body', {}) if isinstance(raw, dict) else {}
             body = body if isinstance(body, dict) else {}
             headers = raw.get('headers') if isinstance(raw, dict) and isinstance(raw.get('headers'), dict) else {}
-            result.update(provider_request_id=headers.get('x-request-id'),
+            result.update(provider_request_id=raw.get('request_id') if router else headers.get('x-request-id'),
                 provider_response_id=body.get('id'), returned_model=body.get('model'), service_tier=body.get('service_tier'))
         if self.root_budget.clock() > request['deadline_ms']:
             result = {**result, 'status': 'usage_mismatch' if result['status'] == 'usage_mismatch' else 'timeout', 'late': True,
                 'error': {'category': 'timeout', 'code': 'late_result', 'retryable': False, 'request_sent': None}}
             result.pop('message', None)
-        result.update(provenance='fixture', usage_basis='fixture', provider_requests_sent=0)
+        if router:
+            fixture = self.binding.get('provenance') == 'fixture'
+            result.update(provenance='fixture' if fixture else '4router',
+                usage_basis='fixture' if fixture else 'provider_native',
+                provider_requests_sent=0 if fixture else 1 if 'raw' in locals() and isinstance(raw.get('http_status'), int) else None)
+            if 'raw' in locals():
+                result['raw_response'] = provider.response_diagnostic(raw)
+            if result.get('error'):
+                result['error']['retryable'] = False
+            result['usage_diagnostic'] = provider.usage_diagnostic(raw.get('body')) if 'raw' in locals() else {'state': 'unknown', 'usage': None}
+        else:
+            result.update(provenance='fixture', usage_basis='fixture', provider_requests_sent=0)
         return result

@@ -72,7 +72,8 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'request_id': request_id, 'attempt_id': request_id, 'run_id': binding['run_id'],
         'session_id': binding['run_id'] + ':' + effective, 'role': effective,
         'reply_to': state['messages'][-1]['role_message_id'] if state['messages'] else None,
-        'model_id': None if binding['execution_kind'] == 'on_demand_public' else MODEL, 'messages': messages, 'tools': tools, 'output_kind': kind,
+        'model_id': ('gpt-6-luna' if binding['execution_kind'] == 'fourrouter_responses' else
+                     None if binding['execution_kind'] == 'on_demand_public' else MODEL), 'messages': messages, 'tools': tools, 'output_kind': kind,
         'output_schema': role_output_schema(effective, kind, messages), 'max_output_tokens': output_cap}
 
 
@@ -107,6 +108,7 @@ class RecommendationRun:
         self.binding = copy.deepcopy(binding)
         self.batched = binding.get('orchestration') == 'batch32-0.1.0'
         self.native_fixture = binding.get('execution_kind') == 'openai_native_fixture'
+        self.fourrouter = binding.get('execution_kind') == 'fourrouter_responses'
         self.on_demand = binding.get('execution_kind') == 'on_demand_public'
         self.evidence, self.model, self.budget = evidence, model, root_budget
         self.output_root = Path(output_root).resolve()
@@ -129,7 +131,7 @@ class RecommendationRun:
                 tools='restricted-evidence-batch-0.1.0', prompt='rsm-batch-safe-prompt-0.1.0',
                 contract_sha256='2c2376c3965a5910b4b2a89b081a87b4f8634ecfd6c9907cdf727831eb5a838b')
         self.result = None
-        if self.native_fixture:
+        if self.native_fixture or self.fourrouter:
             self.state['preparations'] = []
             self.state['versions'].update(baseline='023a6cc5b906541f01b56cfd805594719bfac557',
                 runner='rsm-runner-native-fixture-0.1.0', adapter='rsm-model-adapter-native-0.1.0',
@@ -141,6 +143,9 @@ class RecommendationRun:
             self.state['preparations'] = []
             self.state['versions'].update(runner='rsm-runner-on-demand-fixture-0.1.0',
                 adapter='rsm-model-adapter-on-demand-fixture-0.1.0')
+        if self.fourrouter:
+            self.state['versions'].update(baseline='1d688a3ddee04f634773ad62204a69f45fd55f19',
+                runner='rsm-runner-4router-0.1.0', adapter='rsm-model-adapter-4router-0.1.0', prompt=COMPOSER_VERSION)
         self.histories = {}
         self.call_ids = set()
         self.profile_batch_start = 0
@@ -158,9 +163,15 @@ class RecommendationRun:
 
     def _preflight(self):
         b = self.binding
-        valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.3.0' if self.on_demand else 'rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
-            and b['execution_kind'] in ('scripted_public', 'openai_native_fixture', 'on_demand_public') and b['fixture'] == 'public_runtime_adapter'
-            and b['execution_budget'] is None and b['execution_authorized'] is False
+        execution_scope = (b['fixture'] == 'public_runtime_adapter'
+                           and b['execution_budget'] is None and b['execution_authorized'] is False)
+        if self.fourrouter and b.get('fixture') is None:
+            from p1_runtime import D1, PILOT_ID, TASK_KEYS
+            execution_scope = (b['plan_source_scope'] == 'development_pilot' and b['root_task_id'] == D1
+                and b.get('pilot_id') == PILOT_ID and b.get('task_key') == TASK_KEYS.get(b['method'])
+                and b['execution_authorized'] is True and b['execution_budget'] == self.budget.limits)
+        valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.4.0' if self.fourrouter else 'rsm-run-0.3.0' if self.on_demand else 'rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
+            and b['execution_kind'] in ('scripted_public', 'openai_native_fixture', 'on_demand_public', 'fourrouter_responses') and execution_scope
             and b['method'] in ('R', 'S', 'M') and b['arm'] in ('necessary', 'quality')
             and type(b['K']) is int and b['K'] == 10 and b['necessary_clauses'] == ['c1', 'c2']
             and len(b['C']) == len(set(b['C'])) == len(b['base_scores']) == len(b['batches'])
@@ -181,6 +192,10 @@ class RecommendationRun:
             valid = (valid and b.get('plan_source_scope') == 'public_fixture'
                 and b['root_task_id'].startswith('PUBLIC-')
                 and source.is_relative_to(PROJECT / '.tmp/recommendation-runtime'))
+        if self.fourrouter and b['fixture'] == 'public_runtime_adapter':
+            valid = (valid and b['root_task_id'].startswith('PUBLIC-')
+                and source.is_relative_to(PROJECT / '.tmp/recommendation-runtime')
+                and (self.model is None or self.model.binding.get('provenance') == 'fixture'))
         valid = valid and any(source.is_relative_to(PROJECT / p) for p in
                               ('.tmp/recommendation-runtime', 'data/recommendation-runtime-audit'))
         if b['C']:
@@ -209,10 +224,13 @@ class RecommendationRun:
                                   ('model_calls', 'input_tokens', 'output_tokens', 'cost_microusd'))
         else:
             valid = valid and self.model is not None
-            if self.native_fixture:
+            if self.native_fixture or self.fourrouter:
                 valid = (valid and self.batched and self.model.binding.get('project_id') == b.get('project_id')
-                    and self.model.binding.get('execution_kind') == 'openai_native_fixture'
+                    and self.model.binding.get('execution_kind') == ('fourrouter_responses' if self.fourrouter else 'openai_native_fixture')
                     and self.model.root_budget is self.budget and self.model.counter is not None)
+                if self.fourrouter and b.get('fixture') is None:
+                    valid = (valid and self.model.binding.get('provenance') == '4router'
+                             and self.model.binding.get('execution_authorized') is True)
             if self.on_demand:
                 valid = (valid and self.model.binding.get('execution_kind') == 'on_demand_public'
                     and self.model.binding.get('model_id') is None and self.model.counter is not None)
@@ -292,7 +310,7 @@ class RecommendationRun:
             'original_terminal': self.state.get('anchor_original_terminal', self.state['terminal']),
             'anchor_consistency': self.state.get('anchor_consistency', 'not_applicable'),
             'execution_kind': self.binding['execution_kind'],
-            'anchor_kind': 'native_provider_fixture' if self.native_fixture else 'scripted_protocol_fixture'}
+            'anchor_kind': '4router_responses' if self.fourrouter else 'native_provider_fixture' if self.native_fixture else 'scripted_protocol_fixture'}
         failed = self.state['terminal'] not in ('released', 'valid_empty')
         components = {}
         for mode in ('full', 'no_quality', 'mean_quality'):
@@ -315,7 +333,7 @@ class RecommendationRun:
             quality=quality, ordered=self._order(), role=role, kind=kind, stage=stage,
             output_cap=1500 if kind == 'final_submit' else 8192,
             request_id=self.binding['run_id'] + ':message:' + str(len(self.state['messages'])),
-            protocol=self.state['versions']['runner'] if self.native_fixture else self.version, history=history)
+            protocol=self.state['versions']['runner'] if self.native_fixture or self.fourrouter else self.version, history=history)
 
     def _context(self, stage):
         return self._composed('需求解析', 'analysis', stage)['messages'][-1]['content']['runtime']
@@ -424,16 +442,24 @@ class RecommendationRun:
                 if count['status'] != 'counted' or count['basis'] != 'fixture':
                     raise RunStop('incomplete_count', count['status'])
                 input_upper = count['input_tokens']
-            if self.native_fixture:
-                from provider_openai import MODEL, cost_microusd, role_output_schema
+            if self.native_fixture or self.fourrouter:
+                if self.fourrouter:
+                    from provider_fourrouter import MODEL, contract_missing, upper_cost as cost_microusd, role_output_schema
+                    missing = contract_missing(self.model.binding, self.model.counter)
+                    if missing:
+                        raise RunStop('not_started', ','.join(missing))
+                else:
+                    from provider_openai import MODEL, cost_microusd, role_output_schema
                 available = self.budget.audit_view()
                 output_left = available['limits']['output_tokens'] - available['usage']['output_tokens'] - available['held']['output_tokens']
                 if kind != 'final_submit':
                     output_left -= available['final_reserve']['output_tokens']
                 output_cap = min(1500 if kind == 'final_submit' else 8192, output_left)
+                if self.fourrouter:
+                    output_cap = min(output_cap, self.model.binding['max_output_tokens'])
                 if output_cap <= 0:
                     raise RunStop('incomplete_budget', 'output_capacity_exhausted')
-                native = {'schema_version': 'rsm-model-request-0.3.0', 'execution_kind': 'openai_native_fixture',
+                native = {'schema_version': 'rsm-model-request-0.3.0', 'execution_kind': self.binding['execution_kind'],
                     'request_id': message_id, 'attempt_id': message_id, 'run_id': self.binding['run_id'],
                     'session_id': self.binding['run_id'] + ':' + role, 'role': role,
                     'reply_to': self.state['messages'][-1]['role_message_id'] if self.state['messages'] else None,
@@ -443,12 +469,16 @@ class RecommendationRun:
                 prepared = self.model.prepare(native)
                 if prepared['status'] != 'prepared':
                     raise RunStop('failed_protocol', 'native_prepare_failed')
+                if self.fourrouter and prepared.get('missing'):
+                    raise RunStop('not_started', ','.join(prepared['missing']))
                 count = self.model.counter.count(prepared, authorization=None)
                 self.state['preparations'].append({'prepared': prepared, 'count': count})
-                if count['status'] != 'counted' or count['basis'] != 'fixture':
+                if count['status'] != 'counted' or count['basis'] != (
+                        'verified_full_input' if self.fourrouter and self.model.binding.get('provenance') != 'fixture' else 'fixture'):
                     raise RunStop('incomplete_count', count['status'])
                 input_upper = count['input_tokens']
-                cost_upper = cost_microusd(input_upper, output_cap)
+                cost_upper = (cost_microusd(input_upper, output_cap, pricing=self.model.binding['pricing'])
+                              if self.fourrouter else cost_microusd(input_upper, output_cap))
                 native.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
             intent = {'kind': 'model', 'role': role, 'request_id': message_id,
                       'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind}
@@ -487,7 +517,7 @@ class RecommendationRun:
                 response_ref = self._trace_ref('response', response['raw_response'])
             late = self.budget.clock() > request['deadline_ms']
             usage = {k: response['usage'].get(k) for k in ('input_tokens', 'output_tokens', 'cost_microusd')}
-            if (self.native_fixture or self.on_demand) and response['status'] == 'usage_mismatch':
+            if (self.native_fixture or self.fourrouter or self.on_demand) and response['status'] == 'usage_mismatch':
                 # Keep the conflicting provider usage in the response and the root reservation unresolved.
                 usage = dict.fromkeys(usage)
             usage['model_calls'] = int(response['attempted'])
