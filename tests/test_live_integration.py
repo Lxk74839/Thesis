@@ -221,6 +221,35 @@ class LiveIntegration(unittest.TestCase):
             load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': file_ref(run.output_root / 'task.json')},
                                    reference_sources=references)
 
+    def test_evaluation_reads_shared_view_rows_and_added_scene_templates(self):
+        from experiment_io import load_evaluation_inputs
+        references = self.evaluation_sources()
+        relations = [json.loads(raw) for raw in (self.plan / 'user-scenarios.jsonl').read_bytes().splitlines()]
+        views = [json.loads(Path(row['existing_binding_ref']['path']).read_bytes()) for row in relations]
+        shared = self.root / 'sources/shared-views.jsonl'
+        store_lines(shared, [{'unused': 'PUBLIC first row'}] + views)
+        offset = len(wire({'unused': 'PUBLIC first row'}) + b'\n')
+        for line, (row, view) in enumerate(zip(relations, views), 2):
+            raw = wire(view) + b'\n'
+            row['existing_binding_ref'] = {'path': str(shared), 'offset': offset, 'line': line,
+                'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
+            offset += len(raw)
+        template = relations[0]['existing_binding_ref']
+        for index in (2, 4, 8, 10, 11, 13, 14, 15):
+            relations[index].pop('existing_binding_ref')
+            relations[index]['request_template_ref'] = template
+        relations[2].pop('request_template_ref')  # accepted frozen rows may use the V00 fallback
+        self.manifest['components']['user-scenarios.jsonl'] = {
+            k: v for k, v in store_lines(self.plan / 'user-scenarios.jsonl', relations).items() if k != 'path'}
+        self.manifest.pop('plan_id')
+        self.manifest['plan_id'] = sha(self.manifest)
+        store(self.plan / 'plan.json', self.manifest)
+        plan, observations = load_evaluation_inputs(self.plan, execution_index={}, reference_sources=references)
+        self.assertEqual((len(plan['scenes']), len(observations)), (18, 50))
+        added = next(o for o in observations if o['task']['scene'] == 'V02')
+        self.assertEqual((added['task']['view_id'], added['task']['request_profile_id']),
+                         ('PUBLIC-VIEW-V02', 'PUBLIC-R1-R5'))
+
     def test_M_external_double_keeps_fixture_provenance_through_scoring(self):
         from experiment_io import load_evaluation_inputs
         from experiment_runner import run_task
@@ -415,6 +444,73 @@ class LiveIntegration(unittest.TestCase):
             (PROJECT / 'live-A-forbidden.txt').write_text('PUBLIC')
         with self.assertRaisesRegex(OSError, 'network_forbidden'):
             socket.create_connection(('127.0.0.1', 1), timeout=.1)
+
+    def test_count_drift_keeps_unknown_totals_and_known_attempt_subtotal(self):
+        from experiment_io import load_evaluation_inputs
+        from experiment_runner import run_task
+        from tests.runtime_fixtures import ScriptedTransport
+        from tests.test_on_demand_runtime import public_model
+        self.task.update(method='M', uses_model=True)
+        self.record['limits'].update(model_calls=1000, input_tokens=10000000, output_tokens=10000000, cost_microusd=10000000)
+        self.record['final_reserve'].update(model_calls=1, input_tokens=100000, output_tokens=100000)
+        self.write_plan()
+        references = self.evaluation_sources()
+        def drift(request, raw, context):
+            if request['request_id'].endswith(':1'):
+                raw['usage']['input_tokens'] -= 1
+        transport = ScriptedTransport(mutate=drift)
+        _, run = self.make_assembled(public_model(transport))
+        result = run_task(self.plan, 'PUBLIC-TASK', runtime=run, output_root=run.output_root, execution_record=self.record)
+        self.assertEqual((result['terminal'], len(transport.requests)), ('failed_model', 2))
+        self.assertEqual(run.state['messages'][1]['response']['status'], 'usage_mismatch')
+        self.assertIsNotNone(run.state['messages'][1]['response']['usage']['input_tokens'])
+        _, observations = load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': file_ref(run.output_root / 'task.json')},
+                                                reference_sources=references)
+        usage = next(o for o in observations if o['task']['task_key'] == 'PUBLIC-TASK')['execution']['usage']
+        self.assertIsNone(usage['input_tokens'])
+        self.assertIsNone(usage['output_tokens'])
+        self.assertIsNone(usage['cost_microusd'])
+        self.assertEqual(usage['known_subtotal'], run.state['messages'][0]['response']['usage'])
+
+    def test_evaluation_requires_each_actual_request_and_response_trace(self):
+        from experiment_io import load_evaluation_inputs
+        from experiment_runner import run_task
+        from tests.runtime_fixtures import ScriptedTransport
+        from tests.test_on_demand_runtime import public_model
+        self.task.update(method='M', uses_model=True)
+        self.record['limits'].update(model_calls=1000, input_tokens=10000000, output_tokens=10000000, cost_microusd=10000000)
+        self.record['final_reserve'].update(model_calls=1, input_tokens=100000, output_tokens=100000)
+        self.write_plan()
+        references = self.evaluation_sources()
+        _, run = self.make_assembled(public_model(ScriptedTransport()))
+        result = run_task(self.plan, 'PUBLIC-TASK', runtime=run, output_root=run.output_root, execution_record=self.record)
+        audit = json.loads(Path(result['audit_path']).read_bytes())
+        for key in ('request_ref', 'response_ref'):
+            with self.subTest(trace=key):
+                path = PROJECT / audit['messages'][0][key]['path']
+                raw = path.read_bytes()
+                path.unlink()
+                with self.assertRaises(FileNotFoundError):
+                    load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': file_ref(run.output_root / 'task.json')},
+                                           reference_sources=references)
+                path.write_bytes(raw)
+
+    def test_success_requires_same_run_final_commit_and_audit_settlement(self):
+        from experiment_io import load_evaluation_inputs
+        from experiment_runner import run_task
+        references = self.evaluation_sources()
+        _, run = self.make_assembled()
+        result = run_task(self.plan, 'PUBLIC-TASK', runtime=run, output_root=run.output_root, execution_record=self.record)
+        journal_path = PROJECT / result['budget_ref']['path']
+        original = [json.loads(raw) for raw in journal_path.read_bytes().splitlines()]
+        for operation in ('final', 'commit', 'seal_audit'):
+            with self.subTest(missing_settlement=operation):
+                reservation = next(r['reservation_id'] for r in original if r.get('operation') == operation)
+                changed = [r for r in original if not (r.get('reservation_id') == reservation and r['status'] == 'settled')]
+                altered = result | {'budget_ref': store_lines(journal_path, changed)}
+                task_ref = store(run.output_root / 'task.json', altered)
+                with self.assertRaisesRegex(ValueError, 'settlement_binding_mismatch'):
+                    load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': task_ref}, reference_sources=references)
 
     def test_added_scene_uses_exact_snapshot_and_original_request_template(self):
         from experiment_runner import assemble_task

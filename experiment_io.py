@@ -16,7 +16,13 @@ def _public_path(path):
 
 
 def _read(ref):
-    raw = _public_path(ref['path']).read_bytes()
+    path = _public_path(ref['path'])
+    if 'offset' in ref:
+        with path.open('rb') as stream:
+            stream.seek(ref['offset'])
+            raw = stream.read(ref['bytes'])
+    else:
+        raw = path.read_bytes()
     if len(raw) != ref['bytes'] or digest(raw) != ref['sha256']:
         raise ValueError('artifact_binding_mismatch')
     return raw
@@ -65,10 +71,20 @@ def _execution(task, ref, plan_id):
     if _public_path(result['budget_ref']['path']) != directory / 'budget.jsonl':
         raise ValueError('budget_scope_mismatch')
     journal = [json.loads(raw) for raw in _read(result['budget_ref']).splitlines()]
-    settled = {r['reservation_id']: r for r in journal if r.get('status') == 'settled'}
-    final_ids = [r['reservation_id'] for r in journal if r.get('operation') == 'final']
-    gate = bool(final_ids) and all(settled.get(i, {}).get('observation', {}).get('status') == 'ok' for i in final_ids)
+    settled = {r['reservation_id']: r for r in journal if r.get('status') in ('settled', 'unresolved')}
+    closing = [r for r in journal if r.get('status') == 'reserved'
+               and r.get('operation') in ('final', 'commit', 'seal_audit')]
+    gate = (len(closing) == 3 and [r['operation'] for r in closing] == ['final', 'commit', 'seal_audit']
+        and all(r['phase'] == 'final' and r['reservation_id'].startswith(result['run_id'] + ':')
+            and settled.get(r['reservation_id'], {}).get('status') == 'settled'
+            and settled[r['reservation_id']]['observation']['status'] == 'ok'
+            and not settled[r['reservation_id']]['observation'].get('late') for r in closing))
     if success:
+        if (not gate or journal[0].get('kind') != 'init' or journal[0]['binding'] != actual
+                or audit['budget']['binding'] != actual
+                or audit['budget']['receipts'] != journal[1:-1]
+                or journal[-1] != settled[closing[-1]['reservation_id']]):
+            raise ValueError('settlement_binding_mismatch')
         publication_path = _public_path(result['publication_path'])
         if _public_path(result['publication_ref']['path']) != publication_path:
             raise ValueError('publication_binding_mismatch')
@@ -77,13 +93,40 @@ def _execution(task, ref, plan_id):
         publication_verified = (publication_path.parent == directory and digest(raw) == audit['publication_record_sha256']
             and publication['run_id'] == result['run_id'] and publication['terminal'] == result['terminal']
             and publication['G'] == audit['G'] and publication['A_sha256'] == digest(encoded(acquired))
+            and publication['draft'] == audit['drafts'][-1] and publication['draft_sha256'] == digest(encoded(publication['draft']))
+            and publication['cursor'] == audit['cursor']
+            and publication['budget']['binding']['run_id'] == result['run_id']
+            and publication['budget']['receipts'] == journal[1:1 + len(publication['budget']['receipts'])]
             and [r['parent_asin'] for r in publication['draft']['items']] == result['delivered'] == audit['delivered'])
         if not publication_verified:
             raise ValueError('publication_binding_mismatch')
-    usages = [m['response_summary']['usage'] for m in audit['messages']]
-    usage = {'basis': 'synthetic_fixture_units'}
+    attempts = [m['root_reservation_id'] for m in audit['messages']]
+    model_reservations = {r['reservation_id']: r for r in journal if r.get('status') == 'reserved'
+                          and isinstance(r.get('operation'), dict) and r['operation'].get('kind') == 'model'}
+    if (len(attempts) != len(set(attempts)) or set(attempts) != set(model_reservations)
+            or any(i not in settled for i in attempts)):
+        raise ValueError('budget_attempt_binding_mismatch')
+    for message in audit['messages']:
+        reservation = model_reservations[message['root_reservation_id']]
+        observation = settled[message['root_reservation_id']]['observation']
+        for key in ('request_ref', 'response_ref'):
+            if (message[key] != observation[key]
+                    or _public_path(message[key]['path']).parent != directory / 'trace'):
+                raise ValueError('trace_binding_mismatch')
+        request = json.loads(_read(message['request_ref']))
+        _read(message['response_ref'])
+        if (request['run_id'] != result['run_id'] or request['reservation_id'] != message['root_reservation_id']
+                or request['request_id'] != message['role_message_id']
+                or message['response_summary'].get('request_id', message['role_message_id']) != message['role_message_id']
+                or observation['status'] != message['response_summary']['status']
+                or any(request[k] != reservation['operation'][k] for k in (
+                    'request_id', 'role', 'output_kind', 'prepared_id', 'count_receipt_id'))):
+            raise ValueError('trace_binding_mismatch')
+    usages = [settled[i]['usage'] for i in attempts]
+    usage = {'basis': 'synthetic_fixture_units', 'known_subtotal': {}}
     for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
         values = [u.get(key) for u in usages]
+        usage['known_subtotal'][key] = sum(v for v in values if v is not None)
         usage[key] = sum(values) if all(v is not None for v in values) else None
     states = {p: a['evidence_state'] for p, a in audit['assessments'].items()}
     execution = {'task_key': task['task_key'], 'binding': binding, 'started': True,
@@ -132,7 +175,15 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources):
         applicability[root] = {}
         for scene in rows['scenes.jsonl']:
             relation = next(b for b in rows['user-scenarios.jsonl'] if b['root_task_id'] == root and b['view_id'] == scene['view_id'])
-            view = json.loads(_read(relation['existing_binding_ref']))
+            view_ref = relation.get('existing_binding_ref') or relation.get('request_template_ref')
+            if view_ref is None:
+                normal_scene = next(s for s in rows['scenes.jsonl'] if s['label'] == 'V00')
+                normal = next(b for b in rows['user-scenarios.jsonl'] if b['root_task_id'] == root
+                              and b['view_id'] == normal_scene['view_id'])
+                view_ref = normal['existing_binding_ref']
+            view = json.loads(_read(view_ref))
+            if 'existing_binding_ref' not in relation:
+                view = view | {k: scene[k] for k in ('label', 'view_id', 'snapshot', 'snapshot_id', 'arm')}
             if (view['root_task_id'] != root or view['snapshot_id'] != scene['snapshot_id']
                     or view['snapshot'] != scene['snapshot'] or any(view[k] != assembly['root'][k]
                         for k in ('C_sha256', 'H_sha256', 'base_scores_sha256'))):
