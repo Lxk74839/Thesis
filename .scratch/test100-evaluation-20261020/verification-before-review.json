@@ -1,0 +1,46 @@
+{
+  "status": "passed_offline_public_checks",
+  "protected_files": 18,
+  "protected_changed": [],
+  "historical_offline_prefix_unchanged": true,
+  "public_output_root": ".tmp/experiment-evaluation/public-cli-76nc2xko/output",
+  "public_users": 2,
+  "public_tasks": 100,
+  "public_components": [
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-76nc2xko\\output\\scene-summary.jsonl",
+      "bytes": 69008,
+      "sha256": "2b865ad78557b43e90564b852f0398ca96f6eaf7539e70ea439dbf25506c01b2",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-76nc2xko\\output\\summary.json",
+      "bytes": 2553,
+      "sha256": "fc6baccedd358ff13079cc42119b02427ef05a2dd44a0801dd08e40700b85e39",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-76nc2xko\\output\\task-scores.jsonl",
+      "bytes": 170668,
+      "sha256": "8d6084fc2ee24eb06db972847c96079d2cff794f98e39a45c8c9abbc08cdf715",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-76nc2xko\\output\\user-pairs.jsonl",
+      "bytes": 523,
+      "sha256": "fa8de70b8bb869168919e8372c6c62a787e49468140893cd188a6ffe3b7c10a8",
+      "bound": true
+    }
+  ],
+  "C1": 0.25,
+  "C2": 0.25,
+  "C3": 0.18453512321427123,
+  "C4": 0.18453512321427123,
+  "new_behaviors": 21,
+  "outer_tests": 22,
+  "legacy_assertion_cases": 2,
+  "real_recommendations": 0,
+  "real_evaluations": 0,
+  "real_statistics": 0,
+  "provider_API_calls": 0
+}
