@@ -26,3 +26,5 @@
 {"label":"p1r_013_scope_green","phase":"after","package_seconds_left":182.49776459999975,"offline_seconds_left":273.64269189986317,"write_bytes_left":116840059.0,"charged_write_upper_bytes":17377669.0,"provider_requests_sent":0}
 {"label":"p1r_014_final_increment","phase":"before","package_seconds_left":182.49776459999975,"offline_seconds_left":273.64269189986317,"write_bytes_left":116840059.0,"charged_write_upper_bytes":17377669.0,"provider_requests_sent":0}
 {"label":"p1r_014_final_increment","phase":"after","package_seconds_left":180.0169626999998,"offline_seconds_left":271.1618899998632,"write_bytes_left":116495047.0,"charged_write_upper_bytes":17722681.0,"provider_requests_sent":0}
+{"label":"p1r_live_017_R_once","phase":"before","package_seconds_left":178.8751351999997,"offline_seconds_left":270.0200624998631,"write_bytes_left":116495047.0,"charged_write_upper_bytes":17722681.0,"provider_requests_sent":0}
+{"label":"p1r_live_017_R_once","phase":"after","package_seconds_left":176.55678699999976,"offline_seconds_left":267.70171429986317,"write_bytes_left":115979141.0,"charged_write_upper_bytes":18238587.0,"provider_requests_sent":0}

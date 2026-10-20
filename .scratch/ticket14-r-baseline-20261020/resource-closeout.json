@@ -1,0 +1,91 @@
+{
+  "scope": "ticket14-D1-V00-R-once",
+  "base": "ed69dc2b2a6630d424e263fd3b43eb1879432669",
+  "code_candidate": "84db61f2d1959b6c53e5d87b1c831e6936ab1c2e",
+  "implementation_increment_tests": "passed",
+  "standards_findings": 0,
+  "spec_findings": 0,
+  "real_R_engineering_acceptance": "failed",
+  "terminal": "failed_protocol",
+  "reason": "runtime_preflight_failed",
+  "task_key": "7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874",
+  "run_id": "P1-D1-V00-R-R-ONCE-20261020",
+  "real_execution_attempts": 1,
+  "automatic_retries": 0,
+  "further_code_or_tests_after_real_failure": false,
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "qualified_count": 0,
+  "recommendation_count": 0,
+  "publication_path": null,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\audit.json",
+  "model_usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_microusd": 0
+  },
+  "boundary_attempts": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "guard_attempts": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "generate_api": 0,
+  "count_api": 0,
+  "other_api": 0,
+  "actual_credentials_read": 0,
+  "network_requests": 0,
+  "independent_evaluation_read": 0,
+  "package_seconds": 63.443213000000455,
+  "package_limit_seconds": 240,
+  "closeout_reserve_seconds": 40,
+  "inherited_offline_seconds": 1468.8550727001366,
+  "cumulative_offline_seconds": 1532.2982857001368,
+  "offline_limit_seconds": 1800,
+  "R_execution_seconds": 0.34163610002724454,
+  "R_execution_limit_seconds": 120,
+  "R_guard_and_child_seconds": 0.43117009999696165,
+  "charged_write_upper_bytes": 18238587,
+  "write_limit_bytes": 134217728,
+  "R_actual_output_bytes": 512986,
+  "R_guarded_write_upper_bytes": 663164,
+  "R_output_limit_bytes": 67108864,
+  "native_upper_seconds": 30,
+  "native_upper_bytes": 16777216,
+  "native_precharge_is_measurement": false,
+  "job_peak_commit_bytes": 26042368.0,
+  "guard_memory_reserve_bytes": 67108864,
+  "job_limit_bytes": 4294967296,
+  "native_global_memory_peak_measured": null,
+  "historical_ledger_prefix_unchanged": true,
+  "t0_ledger_unchanged": true,
+  "prior_write_excess_not_refunded": true,
+  "run_checks_before": 15,
+  "run_checks_after": 15,
+  "resource_acceptance": "passed_existing_conservative_accounting",
+  "permit_consumed": true,
+  "S_M_or_formal100_authorized": false,
+  "closeout_in_precharged_native_upper": true,
+  "files": [
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\attempt.json",
+      "bytes": 242,
+      "sha256": "72e8c09aaa2c30f406546e8c1ea4557a3c68a95bfe44472cee5c763351be3950"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\audit.json",
+      "bytes": 362804,
+      "sha256": "3dc1812eeab47d5c59bbc3b63c41b0a43bae7872047eb45d58ac29331a80e298"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\budget.jsonl",
+      "bytes": 149940,
+      "sha256": "ad1db5ba70e20bbc27640d67b1e7e9425366a8e2ef1a502357769de7dcc60a6f"
+    }
+  ]
+}
