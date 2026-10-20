@@ -1,0 +1,73 @@
+{
+  "task_key": "7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874",
+  "run_id": "P1-D1-V00-R-R-FROZEN-RETRY-20261020",
+  "terminal": "released",
+  "started": true,
+  "candidate_count": 1493,
+  "verified_count": 10,
+  "qualified_count": 10,
+  "recommendation_count": 10,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-FROZEN-RETRY-20261020\\audit.json",
+  "publication_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-FROZEN-RETRY-20261020\\publication.json",
+  "model_usage": {
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_microusd": 0
+  },
+  "sample_recommendations": [
+    {
+      "parent_asin": "B0B5L9Y7HQ",
+      "sim_batch_id": "b_9aba7c151863c1389f1080ce290a5cf5ecfae409080a20cfa9ec8cd23ffdda12",
+      "reasons": [
+        "检验必要条件有完整有效支持（SIM）。",
+        "核验时点的在售必要条件有完整有效支持（SIM）。"
+      ]
+    },
+    {
+      "parent_asin": "B08C9J2F39",
+      "sim_batch_id": "b_1a5eddc7a2ed83f61938c6bc7b6a44fe72a22df15c2d6d30b6afa6f85209bd1c",
+      "reasons": [
+        "检验必要条件有完整有效支持（SIM）。",
+        "核验时点的在售必要条件有完整有效支持（SIM）。"
+      ]
+    },
+    {
+      "parent_asin": "B078BMGDYV",
+      "sim_batch_id": "b_9ae3465e736201eca7a7e773ecd7d95dca3e0a65a89c3e844a8edc68bb919596",
+      "reasons": [
+        "检验必要条件有完整有效支持（SIM）。",
+        "核验时点的在售必要条件有完整有效支持（SIM）。"
+      ]
+    }
+  ],
+  "provider_requests_sent": 0,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "stop_reason": "first_10_qualified",
+  "reason": null,
+  "model_messages": 0,
+  "release_scope": "development_pilot",
+  "code_candidate": "e07175e4b2e65c19c1b2b4254a0b51c43a69fadc",
+  "method": "R",
+  "elapsed_seconds": 6.613841300015338,
+  "guarded_write_upper_bytes": 3113564,
+  "storage_limit_bytes": 67108864,
+  "boundary_attempts": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "guard_attempts": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "generate_api": 0,
+  "count_api": 0,
+  "other_api": 0,
+  "actual_credentials_read": 0,
+  "network_requests": 0,
+  "independent_evaluation_read": 0,
+  "engineering_only": true,
+  "execution_attempts": 1
+}
