@@ -1,0 +1,58 @@
+{
+  "generate_send_attempts": 1,
+  "package_charged_seconds": 494.3983247000724,
+  "historical_ledger_prefix_unchanged": true,
+  "combined_historical_seconds": 2820.7473636001805,
+  "other_api": 0,
+  "new_resource_acceptance": true,
+  "reserve_seconds": 120,
+  "write_upper_bytes": 19191787.0,
+  "diagnostic_job_peak_commit_bytes": 48615424,
+  "historical_separate_S_execution_seconds": 28.152021199985814,
+  "S_started": false,
+  "P1_output_bytes": 15822023.0,
+  "memory_limit_bytes": 4294967296,
+  "diagnostic_network_30s_passed": false,
+  "diagnostic_limit_bytes": 1048576,
+  "historical_excess_retained": true,
+  "offline_cumulative_seconds": 2762.1486407002103,
+  "write_limit_bytes": 134217728,
+  "package_left_seconds": 105.60167529992759,
+  "inherited_offline_seconds": 2267.750316000138,
+  "diagnostic_runtime_artifact_bytes": 3872.0,
+  "offline_left_seconds": 117.85135929978969,
+  "count_api": 0,
+  "new_S_execution_seconds": 0,
+  "test_job_peak_commit_bytes": 29810688.0,
+  "old_evidence": [
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-result.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-claim.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-resources.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/audit.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/budget.jsonl",
+      "unchanged": true
+    }
+  ],
+  "diagnostic_execution_limit_seconds": 45,
+  "generate_actual_requests": null,
+  "diagnostic_execution_seconds": 30.44670169998426,
+  "package_limit_seconds": 600,
+  "T0_ledger_unchanged": true,
+  "P1_limit_bytes": 67108864,
+  "diagnostic_protocol_passed": false,
+  "offline_limit_seconds": 2880,
+  "S_authorization_consumed": false
+}

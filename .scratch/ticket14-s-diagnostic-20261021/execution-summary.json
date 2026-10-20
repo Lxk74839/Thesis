@@ -1,0 +1,15 @@
+{
+  "diagnostic_limit_bytes": 1048576,
+  "S_authorization_consumed": false,
+  "send_attempts": 1,
+  "no_retry": true,
+  "count": 0,
+  "S_started": false,
+  "reason": "diagnostic_deadline_exceeded_unknown_send_state",
+  "actual_request_count": null,
+  "diagnostic_runtime_artifact_bytes": 3872.0,
+  "independent_evaluation_read": 0,
+  "P1_output_bytes": 15822023.0,
+  "response_workers": 1,
+  "other": 0
+}
