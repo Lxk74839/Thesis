@@ -1,0 +1,48 @@
+{
+  "inherited_offline_seconds": 2040.0128015001371,
+  "local_charged_seconds": 123.2295959000005,
+  "local_limit_seconds": 180,
+  "local_seconds_left": 56.770404099999496,
+  "closeout_reserve_seconds": 30,
+  "offline_cumulative_seconds": 2163.2423974001376,
+  "offline_limit_seconds": 2280,
+  "offline_seconds_left": 116.75760259986237,
+  "local_charged_write_upper_bytes": 19726871,
+  "local_write_limit_bytes": 67108864,
+  "local_job_peak_commit_bytes": 38916096.0,
+  "memory_limit_bytes": 4294967296,
+  "historical_separate_S_charged_seconds": 28.152021199985814,
+  "new_S_execution_seconds": 0,
+  "combined_historical_charged_seconds": 2191.3944186001236,
+  "historical_ledger_prefix_unchanged": true,
+  "old_evidence": [
+    {
+      "unchanged": true,
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-result.json"
+    },
+    {
+      "unchanged": true,
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-claim.json"
+    },
+    {
+      "unchanged": true,
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-resources.jsonl"
+    },
+    {
+      "unchanged": true,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/audit.json"
+    },
+    {
+      "unchanged": true,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/budget.jsonl"
+    }
+  ],
+  "T0_ledger_unchanged": true,
+  "historical_time_and_write_excess_retained": true,
+  "local_resource_acceptance": true,
+  "generate_api": 0,
+  "count_api": 0,
+  "other_api": 0,
+  "actual_credentials_read": 0,
+  "new_execution_authorized": false
+}
