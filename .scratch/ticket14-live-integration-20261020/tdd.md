@@ -34,3 +34,5 @@ PUBLIC原件来自手写事实与独立字面量状态、目标和手算期望�
 053新增全集24项通过。054归档重跑触发原脚本xb防覆盖拒绝，未覆盖首轮公开分数／汇总；保留失败记录，后续仅改用-final新文件名归档最终PUBLIC结果，不运行新推荐。
 
 899d5e3第二轮：前三项Spec问题已确认修复，Standards仅1项非阻塞重复逻辑判断，按最小修改原则保留。Spec追加实际A／assessment／G／闭合证明关联缺口：058三种矛盾PUBLIC产物（assessment、G、completion）RED→059 GREEN，并定向验证正常及未知usage失败。转换仅核现有封存证明，不重取证或重新运行生产核验；闭合检查沿用advance_allowed、enumeration_complete、attempts_settled，不能把正常Pending等同未闭合。060同时加入合法拒绝原文后Pending闭合的首次验证；最终新增共26项，17组实际RED→GREEN、9项首次已满足。旧26项直接回归对应代码未再改动，不重复上游验收。
+
+060实际26项全部通过（unittest 5.566秒），061归档最终PUBLIC样例的50槽分数和incomplete汇总。最终代码候选e34ef4a2a291e21184f5cc37e20a0d7983d2a1b2，经同一BASE...candidate两个独立轴静态复审：Standards硬违反0／阻塞0／非阻塞判断1，Spec发现0。累计4项范围内Spec阻塞均复现修复；不实施非阻塞重构。固定该候选后仅补验收、审查和资源归档文档，源码与测试原字节未动。各批验证及资源口径见acceptance.md，未声称同次运行52项测试。

@@ -1,0 +1,78 @@
+{
+  "candidate": "e34ef4a2a291e21184f5cc37e20a0d7983d2a1b2",
+  "new_dependencies": 0,
+  "scope": "ticket14-A-offline-integration",
+  "next_stage_authorized_resources": 0,
+  "offline_ledger_as_closed": {
+    "sha256": "26a5a45eb212784b5a5d01c20d6bce1f4e353bfe6d8dd20c3b63f603f003fc52",
+    "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+    "bytes": 991808
+  },
+  "notes": [
+    "Conservative upper bounds are not measured usage.",
+    "All failed launches remain charged; launcher correction is append-only.",
+    "Root native closeout work remains within the existing 60s/32MiB upper precharge; no new allowance.",
+    "T0 and prior accepted packages unchanged; remaining package balance grants no future authorization."
+  ],
+  "time": {
+    "upper_breakdown": {
+      "draft": 30,
+      "first_33_launcher_rounding_topup": 33,
+      "root_native_including_closeout": 60
+    },
+    "package_seconds": 287.77081800009796,
+    "closeout_reserve_seconds": 180,
+    "last_label": "liveA_063_spec_review",
+    "conservative_upper_seconds": 123,
+    "ordinary_limit_seconds": 720,
+    "accounting": "inherited_command_time_ledger_not_conversation_wall_time",
+    "offline_limit_seconds": 1800,
+    "failed_guard_launches": 20,
+    "baseline_offline_seconds": 789.7163418000389,
+    "guard_launches": 55,
+    "review_seconds": 7.368722900000001,
+    "package_limit_seconds": 900,
+    "guard_seconds": 50.15024270012509,
+    "launcher_seconds": 107.25185239997299,
+    "offline_cumulative_seconds": 1077.4871598001369
+  },
+  "memory": {
+    "coverage": "guarded_Thesis_child_process_trees_only_not_full_native_PS_Git_peak",
+    "max_job_peak_commit_bytes": 55943168,
+    "limit_bytes": 4294967296,
+    "accounted_job_plus_reserve_bytes": 123052032,
+    "guard_reserve_bytes": 67108864
+  },
+  "api": {
+    "real_statistics": 0,
+    "credential_reads": 0,
+    "generate": 0,
+    "real_evaluations": 0,
+    "count": 0,
+    "real_recommendations": 0,
+    "other": 0
+  },
+  "environment": "D:/Work/Codex/Project/Thesis/.conda/envs/Thesis",
+  "offline_original_prefix": {
+    "sha256": "4b49b8ede46c80f9b18c2f237d3674b28f45cba1fa7eedc7477e722af6635207",
+    "unchanged": true,
+    "bytes": 767278
+  },
+  "disk": {
+    "draft_upper_bytes": 1048576,
+    "inherited_plus_package_upper_bytes": 1642767878,
+    "deletion_refunds": 0,
+    "closeout_reserve_bytes": 67108864,
+    "inherited_prior_upper_bytes": 1572133042,
+    "package_limit_bytes": 268435456,
+    "records": 8971,
+    "charged_upper_bytes": 70634836,
+    "guard_accounted_write_bytes": 36031828,
+    "ledger": {
+      "sha256": "9d1713f73fae8c29b9295d46ec0f6dbe93559a4379ae306aaedf1b295160c128",
+      "path": ".scratch/ticket14-live-integration-20261020/disk.jsonl",
+      "bytes": 387036
+    },
+    "native_sources_docs_git_closeout_upper_bytes": 33554432
+  }
+}
