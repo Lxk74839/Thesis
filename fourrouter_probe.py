@@ -12,7 +12,7 @@ import time
 PROJECT = Path(__file__).resolve().parent
 PUBLIC_CONFIG = PROJECT / '.scratch/ticket14-live-integration-20261020/B-4router/config.draft.json'
 LOCAL_CREDENTIAL = PROJECT / '.secrets/4router.json'
-LIVE_RECEIPT = PROJECT / '.scratch/ticket14-public-once-20261020/result.jsonl'
+LIVE_RECEIPT = PROJECT / '.scratch/ticket14-public-8k-once-20261020/result.jsonl'
 
 
 def _public_binding(path):
@@ -122,10 +122,18 @@ def _native_usage(value):
     return None
 
 
+def _request_bytes(request):
+    raw = json.dumps(request).encode('utf-8')
+    if len(raw) > 8192:
+        raise ValueError('request_body_limit')
+    return raw
+
+
 def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run):
     """One process, one POST; run() kills the worker on timeout, with no replay."""
     unknown = {'http_status': None, 'body': None, 'request_id': None}
     try:
+        _request_bytes(request)
         child = process_run([sys.executable, '-B', str(Path(__file__).resolve()), '_http_once'],
             input=json.dumps({'endpoint': endpoint, 'request': request, 'api_key': api_key,
                               'timeout': timeout}).encode('utf-8'),
@@ -143,9 +151,13 @@ def http_response(endpoint, request, api_key, timeout, *, connection_factory=htt
     result = {'http_status': None, 'body': None, 'request_id': None}
     if endpoint != 'https://4router.net/v1/responses':
         return result
+    try:
+        raw_body = _request_bytes(request)
+    except ValueError:
+        return result
     connection = connection_factory('4router.net', timeout=timeout)
     try:
-        connection.request('POST', '/v1/responses', body=json.dumps(request).encode('utf-8'),
+        connection.request('POST', '/v1/responses', body=raw_body,
             headers={'Authorization': 'Bearer ' + api_key, 'Content-Type': 'application/json'})
         response = connection.getresponse()
         result.update(http_status=response.status, request_id=response.getheader('x-request-id'))
@@ -165,7 +177,7 @@ def run_live_probe(*, public_path=PUBLIC_CONFIG, credential_path=LOCAL_CREDENTIA
     result = {'provenance': 'live_HTTP', 'status': 'not_started', 'send_attempts': 0,
         'provider_requests_sent': 0, 'count_requests_sent': 0, 'other_API_requests_sent': 0,
         'responses': [], 'tool_call_valid': False, 'tool_result_sent': False,
-        'strict_json_valid': False, 'cost': None, 'network_seconds': 0}
+        'strict_json_valid': False, 'request_body_bytes': [], 'cost': None, 'network_seconds': 0}
     receipt = Path(receipt_path)
     if receipt.exists():
         return result | {'status': 'authorization_already_consumed'}
@@ -186,11 +198,17 @@ def run_live_probe(*, public_path=PUBLIC_CONFIG, credential_path=LOCAL_CREDENTIA
         record()
         started = clock()
         def transport(endpoint, request):
+            try:
+                body_size = len(_request_bytes(request))
+            except ValueError:
+                result['error'] = 'request_body_limit'
+                raise
             remaining = 60 - (clock() - started)
             if remaining <= 0:
                 result['error'] = 'total_deadline'
                 raise TimeoutError('probe_deadline')
             result['send_attempts'] += 1
+            result['request_body_bytes'].append(body_size)
             result['provider_requests_sent'] = None
             result['status'] = 'sending'
             result['tool_call_valid'] = result['send_attempts'] == 2

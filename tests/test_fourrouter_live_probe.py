@@ -51,6 +51,8 @@ class LiveProbe(unittest.TestCase):
         self.assertTrue(result['tool_call_valid'])
         self.assertTrue(result['tool_result_sent'])
         self.assertTrue(result['strict_json_valid'])
+        self.assertEqual(len(result['request_body_bytes']), 2)
+        self.assertTrue(all(0 < size <= 8192 for size in result['request_body_bytes']))
         self.assertIsNone(result['cost'])
         self.assertEqual(result['responses'][0]['usage']['input_tokens'], 40)
         self.assertEqual(result['responses'][1]['request_id'], 'PUBLIC-http-2')
@@ -199,6 +201,63 @@ class LiveProbe(unittest.TestCase):
         self.assertEqual(calls[0][:3], ('4router.net', 'POST', '/v1/responses'))
         result = send_response('https://PUBLIC.invalid/v1/responses', {}, 'PUBLIC-SYNTHETIC-KEY', 2)
         self.assertEqual(result, {'http_status': None, 'body': None, 'request_id': None})
+
+    def test_oversized_tool_continuation_is_rejected_before_second_dispatch(self):
+        from fourrouter_probe import run_live_probe
+        reply = copy.deepcopy(self.replies[0])
+        reply['body']['output'][0]['call_id'] = 'PUBLIC-call-' + 'X' * 8192
+        calls = []
+        def sender(*args):
+            calls.append(args)
+            return reply
+        result = run_live_probe(public_path=self.public, credential_path=self.credentials,
+            receipt_path=self.receipt, sender=sender)
+        self.assertEqual((result['status'], result['send_attempts'], len(calls)), ('protocol_failed', 1, 1))
+        self.assertEqual(result['error'], 'request_body_limit')
+        self.assertEqual(result['provider_requests_sent'], 1)
+        self.assertTrue(result['tool_call_valid'])
+        self.assertFalse(result['tool_result_sent'])
+        self.assertEqual(len(result['request_body_bytes']), 1)
+        self.assertLessEqual(result['request_body_bytes'][0], 8192)
+
+    def test_sender_rejects_8193_bytes_or_escaped_unicode_before_starting_worker(self):
+        from fourrouter_probe import send_response
+        calls = []
+        def process_run(*args, **kwargs):
+            calls.append(1)
+            return subprocess.CompletedProcess([], 0, stdout=b'{"http_status":200}')
+        for request in ({'PUBLIC': 'X' * 8179}, {'PUBLIC': '\u6c49' * 1400}):
+            reply = send_response('https://4router.net/v1/responses', request,
+                                  'PUBLIC-SYNTHETIC-KEY', 30, process_run=process_run)
+            self.assertIsNone(reply['http_status'])
+            self.assertEqual(calls, [])
+
+    def test_HTTP_sends_exactly_8192_bytes_but_refuses_8193_before_connecting(self):
+        from fourrouter_probe import http_response
+        connections, bodies = [], []
+        class Connection:
+            def __init__(self, *args, **kwargs):
+                connections.append(1)
+            def request(self, method, path, **kwargs):
+                bodies.append(kwargs['body'])
+            def getresponse(self):
+                return self
+            status = 200
+            def getheader(self, name):
+                return None
+            def read(self, limit):
+                return b'{}'
+            def close(self):
+                pass
+        # {"PUBLIC": ""} is 14 ASCII bytes: 8178 payload bytes total exactly 8192.
+        reply = http_response('https://4router.net/v1/responses', {'PUBLIC': 'X' * 8178},
+            'PUBLIC-SYNTHETIC-KEY', 30, connection_factory=Connection)
+        self.assertEqual(reply['http_status'], 200)
+        self.assertEqual(len(bodies[0]), 8192)
+        reply = http_response('https://4router.net/v1/responses', {'PUBLIC': 'X' * 8179},
+            'PUBLIC-SYNTHETIC-KEY', 30, connection_factory=Connection)
+        self.assertIsNone(reply['http_status'])
+        self.assertEqual((len(connections), len(bodies)), (1, 1))
 
 
 if __name__ == '__main__':
