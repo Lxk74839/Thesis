@@ -1,0 +1,56 @@
+{
+  "scope": "ticket14-frozen-R-preflight-retry-once",
+  "label_prefix": "p1freeze_",
+  "base": "d4a96c5b00b170f7a2a7d13a8d4bd3f544727fbf",
+  "inherited_offline_seconds": 1532.2982857001368,
+  "offline_limit_seconds": 1800,
+  "package_limit_seconds": 240,
+  "closeout_reserve_seconds": 40,
+  "write_limit_bytes": 134217728,
+  "closeout_reserve_bytes": 8388608,
+  "native_upper_seconds": 30,
+  "native_upper_write_bytes": 16777216,
+  "test_admission_seconds": 15,
+  "test_admission_write_bytes": 8388608,
+  "execution_limit_seconds": 120,
+  "execution_admission_seconds": 125,
+  "execution_admission_write_bytes": 75497472,
+  "memory_limit_bytes": 4294967296,
+  "R_output_limit_bytes": 67108864,
+  "historical_offline_ledger_bytes": 1292669,
+  "historical_offline_ledger_sha256": "01d35741f49b9b11000ee2df4d16806cea9d65350e14027faa18f5ace1137b4e",
+  "t0_ledger_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "original_evidence": [
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-r-baseline-20261020\\result.json",
+      "bytes": 1439,
+      "sha256": "cb7630f5f51fc78685cb5d08fa87ac051fbd77921607b3e7db04cac1712f5796"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\audit.json",
+      "bytes": 362804,
+      "sha256": "3dc1812eeab47d5c59bbc3b63c41b0a43bae7872047eb45d58ac29331a80e298"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\budget.jsonl",
+      "bytes": 149940,
+      "sha256": "ad1db5ba70e20bbc27640d67b1e7e9425366a8e2ef1a502357769de7dcc60a6f"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-R-R-ONCE-20261020\\attempt.json",
+      "bytes": 242,
+      "sha256": "72e8c09aaa2c30f406546e8c1ea4557a3c68a95bfe44472cee5c763351be3950"
+    }
+  ],
+  "generate_api": 0,
+  "count_api": 0,
+  "other_api": 0,
+  "read_actual_credentials": 0,
+  "execution_methods": [
+    "R"
+  ],
+  "task_key": "7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874",
+  "execution_attempts": 1,
+  "native_accounting": "conservative_upper_not_measurement_includes_all_native_ops_balances_docs_Git_closeout",
+  "historical_write_excess_not_refunded": true
+}

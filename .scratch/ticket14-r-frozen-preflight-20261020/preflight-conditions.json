@@ -1,0 +1,28 @@
+[
+  {
+    "case": "test_real_1493_candidate_assembly_passes_complete_preflight_without_execution",
+    "conditions": {
+      "budget_binding": true,
+      "schema_version": true,
+      "execution_kind": true,
+      "development_identity": true,
+      "method_and_arm": true,
+      "K_and_clauses": true,
+      "C_shapes": true,
+      "score_values": true,
+      "C_hash": true,
+      "scores_hash": true,
+      "initial_root_H_clauses": true,
+      "assembled_projection_hash": true,
+      "source_ref_equality": true,
+      "legacy_source_root_informational_only": false,
+      "frozen_source_error": null,
+      "joint_C_scores_batches": true,
+      "first_evidence_candidate": true,
+      "R_zero_limits_and_reserve": true,
+      "quality_branch": "not_applicable_necessary",
+      "model_branch": "not_applicable_R",
+      "PUBLIC_and_on_demand_branches": "not_applicable_real_4router"
+    }
+  }
+]

@@ -5,8 +5,8 @@ import json
 import time
 from pathlib import Path
 
-from evidence_access import PROJECT
-from experiment_runner import _task_plan, assemble_task
+from evidence_access import PROJECT, digest
+from experiment_runner import _path, _task_plan, assemble_task
 from provider_fourrouter import contract_missing
 from p1_storage import P1StorageGuard
 
@@ -80,6 +80,46 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
         'terminal': 'not_started' if missing else 'ready', 'started': False,
         'missing': sorted(set(missing)), 'provider_requests_sent': 0,
         'input_tokens': None, 'pricing': cfg['model_binding'].get('pricing'), 'usage': None}
+
+
+def frozen_snapshot_error(binding, snapshot_ref):
+    """Admit only the accepted D1/V00/R snapshot; never authorize a directory."""
+    try:
+        _, manifest, rows = _task_plan(PILOT)
+        if (manifest['pilot_id'] != PILOT_ID or manifest['parent_plan_id'] != PLAN_ID
+                or binding.get('pilot_id') != PILOT_ID or binding.get('root_task_id') != D1
+                or binding.get('task_key') != TASK_KEYS['R'] or binding.get('method') != 'R'
+                or binding.get('plan_source_scope') != 'development_pilot' or binding.get('fixture') is not None):
+            return 'frozen_task_identity'
+        task = next(t for t in rows['tasks.jsonl'] if t['task_key'] == TASK_KEYS['R'])
+        relation = next(r for r in rows['user-scenarios.jsonl'] if r['binding_id'] == task['binding_id'])
+        scene = next(s for s in rows['scenes.jsonl'] if s['view_id'] == relation['view_id'])
+        root = next(r for r in rows['root-references.jsonl'] if r['root_task_id'] == D1)
+        if (relation['root_task_id'] != D1 or scene['label'] != 'V00'
+                or binding.get('view_id') != scene['view_id'] or binding.get('arm') != scene['arm']
+                or binding.get('snapshot_id') != scene['snapshot_id']):
+            return 'frozen_view_binding'
+        if any(binding.get(b) != root[r] for b, r in (
+                ('C_sha256', 'C_sha256'), ('H_sha256', 'H_sha256'), ('base_score_sha256', 'base_scores_sha256'))):
+            return 'frozen_input_binding'
+        expected = scene['snapshot']
+        if snapshot_ref != expected or binding.get('source_snapshot_ref') != expected:
+            return 'frozen_snapshot_reference'
+        path = _path(snapshot_ref['path'])
+        if path.resolve(strict=True) != _path(expected['path']).resolve(strict=True):
+            return 'frozen_snapshot_path'
+        raw = path.read_bytes()
+        if len(raw) != expected['bytes']:
+            return 'frozen_snapshot_bytes'
+        if digest(raw) != expected['sha256']:
+            return 'frozen_snapshot_sha256'
+        snapshot = json.loads(raw)
+        if (snapshot['snapshot_id'] != scene['snapshot_id'] or snapshot['verify_at_ms'] != binding['verify_at_ms']
+                or snapshot.get('read_principal_id', binding['principal_id']) != binding['principal_id']):
+            return 'frozen_snapshot_identity'
+    except (OSError, ValueError, TypeError, KeyError, StopIteration):
+        return 'frozen_source_validation'
+    return None
 
 
 def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT):

@@ -196,8 +196,14 @@ class RecommendationRun:
             valid = (valid and b['root_task_id'].startswith('PUBLIC-')
                 and source.is_relative_to(PROJECT / '.tmp/recommendation-runtime')
                 and (self.model is None or self.model.binding.get('provenance') == 'fixture'))
-        valid = valid and any(source.is_relative_to(PROJECT / p) for p in
-                              ('.tmp/recommendation-runtime', 'data/recommendation-runtime-audit'))
+        source_error = None
+        if self.fourrouter and b.get('fixture') is None:
+            from p1_runtime import frozen_snapshot_error
+            source_error = frozen_snapshot_error(b, self.evidence.source.snapshot_ref)
+            valid = valid and source_error is None
+        else:
+            valid = valid and any(source.is_relative_to(PROJECT / p) for p in
+                                  ('.tmp/recommendation-runtime', 'data/recommendation-runtime-audit'))
         if b['C']:
             joint = self.evidence.joint
             valid = valid and joint is not None and (joint.candidates['C'], joint.candidates['b'], joint.candidates['batches']) == (b['C'], b['base_scores'], b['batches'])
@@ -235,7 +241,7 @@ class RecommendationRun:
                 valid = (valid and self.model.binding.get('execution_kind') == 'on_demand_public'
                     and self.model.binding.get('model_id') is None and self.model.counter is not None)
         if not valid:
-            raise RunStop('failed_protocol', 'runtime_preflight_failed')
+            raise RunStop('failed_protocol', source_error or 'runtime_preflight_failed')
 
     def _check_tool(self, result):
         if result['status'] == 'ok':

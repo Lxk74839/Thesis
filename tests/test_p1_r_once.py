@@ -11,7 +11,7 @@ PACKAGE = p1.PROJECT / '.scratch/ticket14-r-baseline-20261020'
 
 
 class ROnce(unittest.TestCase):
-    def test_original_R_factory_preserves_full_C_zero_model_usage_and_development_scope(self):
+    def test_PUBLIC_inputs_cannot_be_relabelled_as_frozen_development_scope(self):
         from tests.runtime_fixtures import RuntimeFixture
         from p1_storage import P1StorageGuard
         parent = p1.PROJECT / '.tmp/recommendation-runtime/R-once'
@@ -20,6 +20,9 @@ class ROnce(unittest.TestCase):
             fixture = RuntimeFixture(Path(tmp))
             fixture.candidates(['PUBLIC-A', 'PUBLIC-B'])
             source = fixture.make('R')
+            public_result = source.run()
+            self.assertEqual(public_result['terminal'], 'released')
+            self.assertEqual(public_result['release_scope'], 'public_fixture_only')
             binding = source.binding | {'root_task_id': p1.D1, 'plan_source_scope': 'development_pilot',
                 'task_key': p1.TASK_KEYS['R']}
             assembly = {'binding': binding, 'root': {'root_task_id': p1.D1, 'H': [], 'H_sha256': binding['H_sha256']},
@@ -35,17 +38,17 @@ class ROnce(unittest.TestCase):
             with guard:
                 run = p1.build_runtime(assembly, cfg, 'R', counter=None, output_root=root)
                 result = run.run()
-            self.assertEqual(result['terminal'], 'released', result.get('reason'))
+            self.assertEqual(result['terminal'], 'failed_protocol')
+            self.assertEqual(result['reason'], 'frozen_view_binding')
             self.assertEqual(result['binding']['C'], ['PUBLIC-A', 'PUBLIC-B'])
-            self.assertEqual(len(result['assessments']), 2)
-            self.assertEqual(len(result['delivered']), 2)
+            self.assertEqual(len(result['assessments']), 0)
+            self.assertEqual(len(result['delivered']), 0)
             self.assertIsNone(run.model)
             self.assertEqual({k: result['budget']['usage'][k] for k in (
                 'model_calls', 'input_tokens', 'output_tokens', 'cost_microusd')},
                 {'model_calls': 0, 'input_tokens': 0, 'output_tokens': 0, 'cost_microusd': 0})
             self.assertEqual(guard.attempts, {'network': 0, 'credentials': 0, 'evaluation': 0})
-            publication = json.loads(Path(result['publication_path']).read_bytes())
-            self.assertEqual(publication['release_scope'], 'development_pilot')
+            self.assertIsNone(result['publication_path'])
 
     def test_failed_R_assembly_is_claimed_and_cannot_be_automatically_repeated(self):
         from p1_storage import P1StorageGuard
