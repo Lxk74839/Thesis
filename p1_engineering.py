@@ -71,7 +71,7 @@ class SEngineeringBudget(RootBudget):
 def invoke(adapter, request):
     """Keep prepared-body, reservation, nonce, deadline and response validation."""
     import provider_fourrouter as provider
-    from model_adapter import REQUEST_KEYS, require, error_result, validate_call
+    from model_adapter import REQUEST_KEYS, require, error_result
     diagnostic = None
     try:
         budget = adapter.root_budget
@@ -108,23 +108,29 @@ def invoke(adapter, request):
         return provider.not_started(['S_engineering_reservation_or_deadline']) | {'preflight_diagnostic': diagnostic}
     adapter.native_attempts.add(request['reservation_id'])
     raw = None
+    observed_usage = None
     try:
         raw = adapter.transport(prepared['wire_utf8'], deadline_ms=request['deadline_ms'])
+        observed_usage = provider.engineering_usage(raw)
         result = provider.normalize(raw, request, pricing=None, engineering=True)
-        calls = result['message']['tool_requests']
-        prior = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', [])}
-        require(len({c['call_id'] for c in calls}) == len(calls) and not prior.intersection(c['call_id'] for c in calls))
-        for call in calls:
-            validate_call(call, request['tools'])
-        require(result['usage']['output_tokens'] is None or result['usage']['output_tokens'] <= cap)
-    except (OSError, TimeoutError, ValueError, TypeError, KeyError, AttributeError):
-        code = ('timeout' if isinstance(raw, dict) and raw.get('http_status') is None else
-            'provider_binding_mismatch' if isinstance(raw, dict) and isinstance(raw.get('body'), dict)
-            and raw['body'].get('model') != 'gpt-6-luna' else 'engineering_response_error')
-        result = error_result(code, 'protocol', attempted=True)
+        if result['usage']['output_tokens'] is not None and result['usage']['output_tokens'] > cap:
+            raise provider.ProtocolError('native_usage', 'output_token_cap_exceeded', field='output_tokens')
+    except provider.ProtocolError as exc:
+        result = error_result(exc.diagnostic['code'], 'protocol', attempted=True, usage=observed_usage)
+        result['protocol_diagnostic'] = exc.diagnostic
+    except (OSError, TimeoutError) as exc:
+        code = 'transport_timeout' if isinstance(exc, TimeoutError) else 'transport_error'
+        result = error_result(code, 'transport', attempted=True, usage=observed_usage)
+        result['protocol_diagnostic'] = {'stage': 'transport', 'code': code}
+    except (ValueError, TypeError, KeyError, AttributeError):
+        result = error_result('response_validation_unknown', 'protocol', attempted=True, usage=observed_usage)
+        result['protocol_diagnostic'] = {'stage': 'unknown', 'code': 'response_validation_unknown'}
     late = budget.clock() > request['deadline_ms']
     if late:
-        result = error_result('timeout', 'timeout', attempted=True)
+        if not result.get('error'):
+            result = error_result('response_late', 'timeout', attempted=True, usage=observed_usage)
+        result['deadline_diagnostic'] = {'stage': 'deadline', 'code': 'response_late'}
+        result['late'] = True
     fixture = adapter.binding.get('provenance') == 'fixture'
     diagnostic = provider.response_diagnostic(raw) if isinstance(raw, dict) else {
         'http_status': None, 'returned_model': None, 'response_id': None, 'request_id': None,

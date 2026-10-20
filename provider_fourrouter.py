@@ -12,6 +12,23 @@ MAPPER = '4router-responses-mapper-0.1.0'
 RATE_KEYS = ('input_microusd_per_million', 'output_microusd_per_million', 'cached_microusd_per_million')
 
 
+class ProtocolError(ValueError):
+    """Fixed codes and structural locations, never provider text or exception prose."""
+    def __init__(self, stage, code, **location):
+        self.diagnostic = {'stage': stage, 'code': code, **location}
+        super().__init__(code)
+
+
+def _decode_response_JSON(text, code, **location):
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ProtocolError('json_decode', code, position=exc.pos, line=exc.lineno,
+            column=exc.colno, **location) from None
+    except (TypeError, ValueError):
+        raise ProtocolError('json_decode', code, **location) from None
+
+
 def contract_missing(binding, counter):
     missing = []
     from p1_engineering import authorized
@@ -102,6 +119,13 @@ def usage_diagnostic(body):
         return {'state': 'parser_rejected', 'usage': None}
 
 
+def engineering_usage(envelope):
+    """Independently observed counters survive unrelated output protocol failures."""
+    diagnostic = usage_diagnostic(envelope.get('body') if isinstance(envelope, dict) else None)
+    return (diagnostic['usage'] or dict.fromkeys(('input_tokens', 'output_tokens',
+        'cached_input_tokens', 'reasoning_output_tokens'))) | {'cost_microusd': None}
+
+
 def verify_prepared(prepared):
     try:
         return (prepared['schema_version'] == '4router-prepared-0.1.0'
@@ -165,34 +189,73 @@ def terminal_error(envelope):
 
 def normalize(envelope, request, *, pricing, engineering=False):
     from model_adapter import validate_call
+    if not isinstance(envelope, dict):
+        raise ProtocolError('response_status', 'invalid_response_envelope', field='body')
+    if envelope.get('http_status') != 200:
+        raise ProtocolError('response_status', 'http_status_not_200', field='http_status')
+    if not isinstance(envelope.get('body'), dict):
+        raise ProtocolError('response_status', 'invalid_response_body', field='body')
     body = envelope['body']
-    if envelope['http_status'] != 200 or body['model'] != MODEL or body['status'] != 'completed':
-        raise ValueError('invalid_response')
-    if any(item['type'] not in ('function_call', 'message') for item in body['output']):
-        raise ValueError('unsupported_output')
-    calls = [{'call_id': item['call_id'], 'name': item['name'], 'arguments': json.loads(item['arguments'])}
-             for item in body['output'] if item['type'] == 'function_call']
-    texts = [c['text'] for item in body['output'] if item['type'] == 'message'
-             for c in item['content'] if c['type'] == 'output_text']
+    if body.get('model') != MODEL:
+        raise ProtocolError('response_status', 'model_mismatch', field='model')
+    if body.get('status') != 'completed':
+        status = body.get('status')
+        raise ProtocolError('response_status', 'response_not_completed', field='status',
+            status=status if status in ('incomplete', 'failed', 'cancelled', 'queued', 'in_progress') else 'unknown')
+    if not isinstance(body.get('output'), list) or not body['output']:
+        raise ProtocolError('output_item', 'invalid_output_shape', field='output')
+    calls, texts, seen = [], [], set()
+    prior = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', [])}
+    for index, item in enumerate(body['output']):
+        if not isinstance(item, dict):
+            raise ProtocolError('output_item', 'invalid_output_item', field='output', output_index=index)
+        kind = item.get('type')
+        if kind not in ('function_call', 'message'):
+            raise ProtocolError('output_item', 'unsupported_output_type', field='type', output_index=index,
+                item_type=kind if kind in ('reasoning', 'refusal') else 'unknown')
+        if kind == 'function_call':
+            arguments = _decode_response_JSON(item.get('arguments'), 'invalid_tool_JSON',
+                field='arguments', output_index=index)
+            call = {'call_id': item.get('call_id'), 'name': item.get('name'), 'arguments': arguments}
+            try:
+                validate_call(call, request['tools'])
+            except (ValueError, TypeError, KeyError):
+                raise ProtocolError('tool_call', 'invalid_tool_call', field='function_call', output_index=index) from None
+            if call['call_id'] in seen or call['call_id'] in prior:
+                raise ProtocolError('tool_call', 'reused_tool_call_id', field='call_id', output_index=index)
+            seen.add(call['call_id'])
+            calls.append(call)
+        else:
+            if not isinstance(item.get('content'), list):
+                raise ProtocolError('output_item', 'invalid_content_shape', field='content', output_index=index)
+            for content_index, part in enumerate(item['content']):
+                if not isinstance(part, dict) or part.get('type') != 'output_text':
+                    raise ProtocolError('output_item', 'unsupported_content_type', field='type',
+                        output_index=index, content_index=content_index)
+                if not isinstance(part.get('text'), str):
+                    raise ProtocolError('output_item', 'invalid_output_text', field='text',
+                        output_index=index, content_index=content_index)
+                texts.append(part['text'])
     if calls:
         if texts:
-            raise ValueError('mixed_output')
-        for call in calls:
-            validate_call(call, request['tools'])
+            raise ProtocolError('output_item', 'mixed_tool_and_text_output', field='output')
         content = None
     else:
-        content = json.loads(''.join(texts))
+        content = _decode_response_JSON(''.join(texts), 'invalid_role_JSON', field='output_text')
         if not matches(content, request['output_schema']):
-            raise ValueError('invalid_role_output')
+            raise ProtocolError('role_schema', 'role_schema_mismatch', field='output_schema')
     if engineering:
         diagnostic = usage_diagnostic(body)
         if diagnostic['state'] == 'parser_rejected':
-            raise ValueError('invalid_native_usage')
-        usage = (diagnostic['usage'] or dict.fromkeys(('input_tokens', 'output_tokens', 'cached_input_tokens', 'reasoning_output_tokens'))) | {'cost_microusd': None}
+            raise ProtocolError('native_usage', 'invalid_native_usage', field='usage')
+        usage = engineering_usage(envelope)
     else:
-        usage = normalized_usage(envelope, pricing=pricing)
+        try:
+            usage = normalized_usage(envelope, pricing=pricing)
+        except (ValueError, TypeError, KeyError, AttributeError):
+            raise ProtocolError('native_usage', 'native_usage_unavailable', field='usage') from None
     if not engineering and usage['cost_microusd'] is None:
-        raise ValueError('unknown_cost')
+        raise ProtocolError('native_usage', 'native_cost_unknown', field='cost_microusd')
     return {'status': 'ok', 'request_id': request['request_id'], 'attempted': True,
         'message': {'role': 'assistant', 'content': content, 'tool_requests': calls}, 'usage': usage,
         'raw_response': response_diagnostic(envelope), 'usage_known': not engineering, 'error': None,
