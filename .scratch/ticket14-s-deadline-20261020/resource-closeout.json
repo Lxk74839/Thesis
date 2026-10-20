@@ -1,0 +1,64 @@
+{
+  "inherited_offline_seconds": 1918.826199600137,
+  "local_charged_seconds": 121.18660190000014,
+  "local_limit_seconds": 300,
+  "local_seconds_left": 178.81339809999986,
+  "closeout_reserve_seconds": 45,
+  "offline_cumulative_seconds": 2040.0128015001371,
+  "offline_limit_seconds": 2280,
+  "offline_seconds_left": 239.98719849986287,
+  "local_charged_write_upper_bytes": 47420957,
+  "local_write_limit_bytes": 134217728,
+  "local_job_peak_commit_bytes": 148791296.0,
+  "new_S_measured_Job_seconds": 22.76864259998547,
+  "new_S_launcher_conservative_upper_seconds": 2.1723799,
+  "new_S_execution_charged_seconds": 24.94102249998547,
+  "new_S_execution_limit_seconds": 360,
+  "historical_separate_S_execution_seconds": 3.2109987000003457,
+  "combined_charged_seconds": 2068.164822700123,
+  "execution_job_peak_commit_bytes": 60338176,
+  "execution_job_write_transfer_bytes": 7076033,
+  "memory_limit_bytes": 4294967296,
+  "P1_shared_actual_bytes": 15819084,
+  "P1_shared_guarded_charge_bytes": 17092630,
+  "P1_shared_limit_bytes": 67108864,
+  "historical_ledger_prefix_unchanged": true,
+  "prior_evidence": [
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-claim.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-result.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-resources.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/attempt.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/audit.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/budget.jsonl",
+      "unchanged": true
+    }
+  ],
+  "T0_ledger_unchanged": true,
+  "historical_time_and_write_excess_retained": true,
+  "local_resource_acceptance": true,
+  "engineering_passed": false,
+  "token_cost_metering_complete": false,
+  "generate_api": 1,
+  "count_api": 0,
+  "other_api": 0,
+  "actual_credentials_read": 1,
+  "independent_evaluation_read": 0,
+  "new_execution_attempts": 1,
+  "automatic_retry": 0
+}

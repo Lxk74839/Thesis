@@ -1,0 +1,37 @@
+{
+  "attempt_exists": false,
+  "P1_shared_actual_bytes": 9357634,
+  "local_seconds_left": 178.81339809999986,
+  "execution_ledger_exists": false,
+  "offline_seconds_left": 239.98719849986287,
+  "claim_exists": false,
+  "review_seconds": 63.872,
+  "receipt_exists": false,
+  "local_write_bytes_left": 86796771,
+  "prior_evidence": [
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-claim.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-result.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-resources.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/attempt.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/audit.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/budget.jsonl",
+      "unchanged": true
+    }
+  ]
+}
