@@ -12,3 +12,5 @@
 {"label":"seng_006_direct","phase":"after","package_seconds_left":101.49209159999987,"offline_seconds_left":139.5151705998628,"write_bytes_left":88331407.0,"charged_write_upper_bytes":45886321.0,"provider_requests_sent":0}
 {"label":"seng_007_error_stops","phase":"before","package_seconds_left":101.49209159999987,"offline_seconds_left":139.5151705998628,"write_bytes_left":88331407.0,"charged_write_upper_bytes":45886321.0,"provider_requests_sent":0}
 {"label":"seng_007_error_stops","phase":"after","package_seconds_left":98.64014069999985,"offline_seconds_left":136.6632196998628,"write_bytes_left":85255148.0,"charged_write_upper_bytes":48962580.0,"provider_requests_sent":0}
+{"label":"seng_008_candidate","phase":"before","package_seconds_left":98.64014069999985,"offline_seconds_left":136.6632196998628,"write_bytes_left":85255148.0,"charged_write_upper_bytes":48962580.0,"provider_requests_sent":0}
+{"label":"seng_008_candidate","phase":"after","package_seconds_left":93.62547269999982,"offline_seconds_left":131.64855169986276,"write_bytes_left":76542744.0,"charged_write_upper_bytes":57674984.0,"provider_requests_sent":0}
