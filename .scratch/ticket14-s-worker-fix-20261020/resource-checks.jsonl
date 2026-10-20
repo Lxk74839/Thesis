@@ -1,0 +1,4 @@
+{"label":"sworker_001_red","phase":"before","package_seconds_left":170.0,"offline_seconds_left":36.01155169986282,"write_bytes_left":117440512.0,"charged_write_upper_bytes":16777216.0,"provider_requests_sent":0}
+{"label":"sworker_001_red","phase":"after","package_seconds_left":167.99902120000002,"offline_seconds_left":34.01057289986284,"write_bytes_left":117439485.0,"charged_write_upper_bytes":16778243.0,"provider_requests_sent":0}
+{"label":"sworker_002_green","phase":"before","package_seconds_left":167.99902120000002,"offline_seconds_left":34.01057289986284,"write_bytes_left":117439485.0,"charged_write_upper_bytes":16778243.0,"provider_requests_sent":0}
+{"label":"sworker_002_green","phase":"after","package_seconds_left":165.88324450000005,"offline_seconds_left":31.894796199862867,"write_bytes_left":117438992.0,"charged_write_upper_bytes":16778736.0,"provider_requests_sent":0}

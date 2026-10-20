@@ -1,0 +1,19 @@
+{
+  "closeout_reserve_bytes": 1048576,
+  "offline_limit_seconds": 1800,
+  "S_execution_permission_unconsumed": true,
+  "package_limit_seconds": 180,
+  "base": "4af304c",
+  "native_upper_seconds": 10,
+  "inherited_offline_seconds": 1753.9884483001372,
+  "test_admission_write_bytes": 1048576,
+  "test_admission_seconds": 3,
+  "scope": "ticket14-S-Windows-worker-fix",
+  "historical_ledger_sha256": "b7258081b60df3338a9be66bd455ce9748341443b433416837526fbb49539f7c",
+  "native_upper_write_bytes": 16777216,
+  "S_execution_allowance_seconds": 360,
+  "historical_write_excess_retained": true,
+  "write_limit_bytes": 134217728,
+  "historical_ledger_bytes": 1348415,
+  "closeout_reserve_seconds": 2
+}

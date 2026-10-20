@@ -3,6 +3,7 @@ import builtins
 import io
 import os
 from pathlib import Path
+import subprocess
 import sys
 
 
@@ -38,12 +39,16 @@ class P1StorageGuard:
         if event.startswith(('socket.', 'http.client.', 'subprocess.')):
             expected = [sys.executable, '-B', str(Path(__file__).resolve().with_name('fourrouter_probe.py')), '_http_once']
             if (event == 'subprocess.Popen' and self.S_authorized and self.sender_active
-                    and args[0] == sys.executable and args[1] == expected):
+                    and args[0] in (None, sys.executable)
+                    and args[1] in (expected, subprocess.list2cmdline(expected))
+                    and args[2] is None and args[3] is None):
                 self.allowed['response_workers'] += 1
                 return
             self.attempts['network'] += 1
             raise OSError('R_network_forbidden')
         if event == 'open' and isinstance(args[0], (str, bytes, os.PathLike)):
+            if self.S_authorized and self.sender_active and os.fsdecode(args[0]) == os.devnull:
+                return
             path = Path(os.fsdecode(args[0])).absolute()
             parts = {p.lower() for p in path.parts}
             if '.secrets' in parts or path.name == 'id-key.bin':
