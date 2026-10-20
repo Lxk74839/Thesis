@@ -20,8 +20,8 @@ class P1StorageGuard:
         self.allowed = {'credentials': 0, 'response_workers': 0}
 
     def authorize_S(self, authorization_id):
-        from p1_engineering import AUTHORIZATION
-        if not self.active or authorization_id != AUTHORIZATION:
+        from p1_engineering import AUTHORIZATIONS
+        if not self.active or authorization_id not in AUTHORIZATIONS:
             raise OSError('S_sender_not_authorized')
         self.S_authorized = True
 

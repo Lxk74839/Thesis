@@ -4,17 +4,28 @@ import copy
 from evidence_access import RootBudget
 
 AUTHORIZATION = 'S-ENGINEERING-ONCE-20261020'
+RETRY_AUTHORIZATION = 'S-DEADLINE-RETRY-20261020'
+AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION)
 TASK = 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'
 UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
 
 
 def authorized(binding):
-    return (binding.get('engineering_authorization') == AUTHORIZATION
+    return (binding.get('engineering_authorization') in AUTHORIZATIONS
         and binding.get('execution_authorized') is True
         and binding.get('execution_kind') == 'fourrouter_responses'
         and isinstance(binding.get('project_id'), str) and bool(binding['project_id'].strip())
         and (binding.get('model_id'), binding.get('channel'), binding.get('base_url')) == (
             'gpt-6-luna', '4Router', 'https://4router.net/v1'))
+
+
+def reservation_deadline(budget, reservation_id):
+    """The window frozen by reserve(), never shifted by subsequent I/O."""
+    receipt = next(r for r in budget.receipts if r.get('reservation_id') == reservation_id and 'phase' in r)
+    root_end = budget.started + budget.limits['elapsed_ms'] - (
+        budget.final_reserve['elapsed_ms'] if receipt['phase'] == 'work' else 0)
+    reserved_end = budget.started + receipt['usage_before']['elapsed_ms'] + receipt['held']['elapsed_ms']
+    return min(root_end, reserved_end)
 
 
 class SEngineeringBudget(RootBudget):
@@ -26,8 +37,8 @@ class SEngineeringBudget(RootBudget):
         real = (binding.get('task_key') == TASK and binding.get('fixture') is None
             and binding.get('plan_source_scope') == 'development_pilot'
             and binding.get('root_task_id') == '015b0ca5bdc7b75fd7714222a065ff02e02b6eda723c60b7396ab7a2e8b0b88e'
-            and binding.get('authorization_id') == AUTHORIZATION
-            and binding['run_id'] == 'P1-D1-V00-S-' + AUTHORIZATION)
+            and binding.get('authorization_id') in AUTHORIZATIONS
+            and binding['run_id'] == 'P1-D1-V00-S-' + binding['authorization_id'])
         if binding.get('method') != 'S' or not (public or real):
             raise ValueError('S_engineering_scope')
         if (not 1 <= limits['model_calls'] <= 12 or not 1500 <= limits['request_output_tokens'] <= 98304
@@ -61,9 +72,12 @@ def invoke(adapter, request):
     """Keep prepared-body, reservation, nonce, deadline and response validation."""
     import provider_fourrouter as provider
     from model_adapter import REQUEST_KEYS, require, error_result, validate_call
+    diagnostic = None
     try:
         budget = adapter.root_budget
         require(type(budget) is SEngineeringBudget and authorized(adapter.binding))
+        if budget.binding.get('fixture') is None:
+            require(adapter.binding['engineering_authorization'] == budget.binding['authorization_id'])
         require(set(request) == REQUEST_KEYS | {'output_schema', 'prepared_id', 'count_receipt_id'})
         require(request['count_receipt_id'] is None and request['input_token_upper_bound'] is None)
         prepared = adapter.prepared[request['prepared_id']]
@@ -84,11 +98,14 @@ def invoke(adapter, request):
             'wire_sha256': prepared['wire_sha256'], 'count_receipt_id': None}.items()))
         require(entry['held']['model_calls'] == 1 and entry['held']['request_output_tokens'] >= cap)
         reservation = next(r for r in audit['receipts'] if r.get('reservation_id') == request['reservation_id'] and 'phase' in r)
-        end = budget.started + budget.limits['elapsed_ms'] - (budget.final_reserve['elapsed_ms'] if phase == 'work' else 0)
-        reserved_end = budget.started + reservation['usage_before']['elapsed_ms'] + entry['held']['elapsed_ms']
-        require(entry['phase'] == phase and budget.clock() <= request['deadline_ms'] <= min(end, reserved_end))
+        now, frozen_end = budget.clock(), reservation_deadline(budget, request['reservation_id'])
+        diagnostic = {'request_id': request['request_id'], 'reservation_id': request['reservation_id'],
+            'now_ms': now, 'deadline_ms': request['deadline_ms'], 'reserved_deadline_ms': frozen_end,
+            'phase_matches': entry['phase'] == reservation['phase'] == phase,
+            'not_expired': now <= request['deadline_ms'], 'within_reserved_window': request['deadline_ms'] <= frozen_end}
+        require(all(diagnostic[k] for k in ('phase_matches', 'not_expired', 'within_reserved_window')))
     except (ValueError, TypeError, KeyError, AttributeError, StopIteration):
-        return provider.not_started(['S_engineering_reservation_or_deadline'])
+        return provider.not_started(['S_engineering_reservation_or_deadline']) | {'preflight_diagnostic': diagnostic}
     adapter.native_attempts.add(request['reservation_id'])
     raw = None
     try:

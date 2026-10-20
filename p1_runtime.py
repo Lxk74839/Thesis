@@ -28,9 +28,11 @@ def _valid_budget(table):
 
 
 def _engineering_config(cfg, method):
-    from p1_engineering import AUTHORIZATION, authorized
+    from p1_engineering import AUTHORIZATIONS, authorized
     return (method == 'S' and authorized(cfg['model_binding'])
-        and cfg.get('authorization_id') == AUTHORIZATION and cfg.get('execution_authorized') is True
+        and cfg.get('authorization_id') in AUTHORIZATIONS
+        and cfg['model_binding'].get('engineering_authorization') == cfg.get('authorization_id')
+        and cfg.get('execution_authorized') is True
         and cfg.get('authorized_task_keys') == [TASK_KEYS['S']])
 
 
@@ -111,10 +113,10 @@ def frozen_snapshot_error(binding, snapshot_ref):
     """Admit frozen R or this independently authorized S; never a directory."""
     try:
         _, manifest, rows = _task_plan(PILOT)
-        from p1_engineering import AUTHORIZATION
+        from p1_engineering import AUTHORIZATIONS
         method = binding.get('method')
-        allowed = method == 'R' or (method == 'S' and binding.get('authorization_id') == AUTHORIZATION
-            and binding.get('run_id') == 'P1-D1-V00-S-' + AUTHORIZATION)
+        allowed = method == 'R' or (method == 'S' and binding.get('authorization_id') in AUTHORIZATIONS
+            and binding.get('run_id') == 'P1-D1-V00-S-' + binding['authorization_id'])
         if (manifest['pilot_id'] != PILOT_ID or manifest['parent_plan_id'] != PLAN_ID
                 or binding.get('pilot_id') != PILOT_ID or binding.get('root_task_id') != D1
                 or not allowed or binding.get('task_key') != TASK_KEYS.get(method)

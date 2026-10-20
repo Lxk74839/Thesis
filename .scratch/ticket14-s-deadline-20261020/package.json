@@ -1,0 +1,52 @@
+{
+  "native_upper_write_bytes": 33554432,
+  "package_limit_seconds": 300,
+  "test_admission_write_bytes": 16777216,
+  "historical_ledger_bytes": 1370432,
+  "memory_limit_bytes": 4294967296,
+  "offline_limit_seconds": 2280,
+  "historical_excess_retained": true,
+  "closeout_reserve_seconds": 45,
+  "write_limit_bytes": 134217728,
+  "native_upper_seconds": 30,
+  "inherited_offline_seconds": 1918.826199600137,
+  "S_execution_limit_seconds": 360,
+  "historical_ledger_sha256": "23cde37a59cbeff1014370f5adc82e6dac1ea228cc1c58c09fea7bc79ec9b402",
+  "scope": "ticket14-S-reserved-deadline-fix-retry",
+  "old_evidence": [
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-claim.json",
+      "bytes": 266,
+      "sha256": "f2dc821663996ae86627e2ebcce979437ca371b08e12ad3c150b0b7b6803ef50"
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-result.json",
+      "bytes": 1519,
+      "sha256": "40225a329fce5fe1387e7a44f567d461d4cd6d3fe5eef3a5c767344921f5b311"
+    },
+    {
+      "path": ".scratch/ticket14-s-engineering-20261020/execution-resources.jsonl",
+      "bytes": 657,
+      "sha256": "62de884bb0244a94458025d2bba0ac0c6a1010068991600098e60848b66b2881"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/attempt.json",
+      "bytes": 266,
+      "sha256": "4d2bc53c8e72ee42d58e1b48cae3e8a4aa18841cebe46c447f47beff86afe1d7"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/audit.json",
+      "bytes": 5186476,
+      "sha256": "2fb92d861e02fb2728fbc382b9de414172bc4204ab18548a59f404cba64bd75e"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/budget.jsonl",
+      "bytes": 1272590,
+      "sha256": "07f1959596d4c04e94a96a160e3a48c7dd0a209f82b15fcd5845a4d3ee991ab1"
+    }
+  ],
+  "new_authorization_id": "S-DEADLINE-RETRY-20261020",
+  "closeout_reserve_bytes": 8388608,
+  "base": "6c038ed",
+  "test_admission_seconds": 15
+}

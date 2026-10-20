@@ -523,6 +523,10 @@ class RecommendationRun:
             if native is not None:
                 request = {**native, 'input_token_upper_bound': input_upper,
                     'deadline_ms': int(started + elapsed_upper), 'reservation_id': reservation['reservation_id']}
+                if engineering:
+                    from p1_engineering import reservation_deadline
+                    request['deadline_ms'] = int(min(started + 30000,
+                        reservation_deadline(self.budget, reservation['reservation_id'])))
             if self.on_demand:
                 request.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
                 request['output_schema'] = copy.deepcopy(logical['output_schema'])

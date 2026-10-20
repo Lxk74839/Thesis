@@ -1,0 +1,18 @@
+{
+  "provenance": "fixture",
+  "candidate_count": 1493,
+  "request_id": "P1-D1-V00-S-S-ENGINEERING-ONCE-20261020:message:0",
+  "reservation_id": "P1-D1-V00-S-S-ENGINEERING-ONCE-20261020:0",
+  "deadline_ms": 167690,
+  "reserved_end_ms": 182443.252100016,
+  "within_reserved_window": true,
+  "transport_sentinel_calls": 1,
+  "clock_calls": 12,
+  "native_status": "engineering_response_error",
+  "missing": null,
+  "actual_POST_body_bytes": 602539,
+  "within_HTTP_window": true,
+  "real_HTTP_requests": 0,
+  "actual_credentials_read": 0,
+  "actual_claim_created": false
+}
