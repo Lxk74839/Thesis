@@ -17,7 +17,7 @@ spec = importlib.util.spec_from_file_location('existing_job_guard', ROOT / '.scr
 existing = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(existing)
 ledger = PACKAGE / 'execution-resources.jsonl'
-from run_once import ensure_first_execution, RUN_ID, p1
+from run_once import ensure_first_execution, RUN_ID, p1, artifact_bytes, write_artifact
 ensure_first_execution(PACKAGE, p1.OUTPUT / RUN_ID / 'attempt.json')
 offline = json.loads((ROOT / 'data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl').read_text().splitlines()[-1])['cumulative_seconds']
 kernel = ctypes.WinDLL('kernel32', use_last_error=True)
@@ -45,7 +45,8 @@ try:
         child.stdin.write(b'GO\n')
         child.stdin.close()
         while child.poll() is None:
-            if time.perf_counter() - START >= 45 or output.tell() > 1024**2:
+            if (time.perf_counter() - START >= 45 or output.tell() > 4096
+                    or artifact_bytes(PACKAGE, p1.OUTPUT / RUN_ID) > 1024**2 - 4096):
                 kernel.TerminateJobObject(job, 124)
                 break
             time.sleep(.025)
@@ -61,7 +62,6 @@ finally:
         'job_peak_commit_bytes': info.job_peak, 'memory_limit_bytes': 4 * 1024**3,
         'job_read_transfer_bytes': accounting.io.read_bytes, 'job_write_transfer_bytes': accounting.io.write_bytes,
         'historical_spending_not_reclassified': True}
-    with ledger.open('x', encoding='utf-8') as stream:
-        stream.write(json.dumps(row) + '\n')
+    write_artifact(ledger, (json.dumps(row) + '\n').encode(), package=PACKAGE, output=p1.OUTPUT / RUN_ID)
     print(json.dumps(row))
 raise SystemExit(code)

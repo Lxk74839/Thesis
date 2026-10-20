@@ -1,0 +1,22 @@
+{
+  "inherited_ledger_sha256": "98e3c288ee86c175bbbcf40a481dda118b58cab481a3a9c4f313754266b4bcb3",
+  "approved_generate_total": 13,
+  "package_seconds": 600,
+  "start_tick": 3913571927915,
+  "S_control": ".scratch/ticket14-s-complete-20261021",
+  "bootstrap_upper_seconds": 30,
+  "inherited_offline_seconds": 2267.750316000138,
+  "base": "73125bc8a31b04bb278b56d1974015e006f75369",
+  "memory_limit_bytes": 4294967296,
+  "count_api": 0,
+  "T0_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "inherited_ledger_bytes": 1448179,
+  "write_limit_bytes": 134217728,
+  "preserve_historical_excess": true,
+  "reserve_seconds": 120,
+  "native_write_upper_bytes": 16777216,
+  "offline_limit_seconds": 2880,
+  "diagnostic_control": ".scratch/ticket14-first-request-20261020",
+  "frequency": 10000000,
+  "other_api": 0
+}

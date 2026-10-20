@@ -18,6 +18,25 @@ AUTHORIZATION = 'S-FIRST-DIAGNOSTIC-20261020'
 RUN_ID = 'P1-D1-V00-S-' + AUTHORIZATION
 
 
+def artifact_bytes(package, output):
+    controls = ('execution-claim.json', 'execution-result.json', 'execution-resources.jsonl', 'execution.stdout')
+    return sum(p.stat().st_size for p in [*(Path(package) / n for n in controls),
+        *Path(output).rglob('*')] if p.is_file())
+
+
+def write_artifact(path, raw, *, package, output):
+    # Leave space for the bounded parent's stdout and resource receipt even on failure.
+    if artifact_bytes(package, output) + len(raw) + 8192 > 1024**2:
+        raise OSError('diagnostic_artifact_limit')
+    if Path(output).is_relative_to(p1.OUTPUT):
+        shared = sum(p.stat().st_size for p in p1.OUTPUT.rglob('*') if p.is_file())
+        outside = artifact_bytes(package, Path(package) / '__no_output__')
+        if shared + outside + len(raw) + 8192 > 64 * 1024**2:
+            raise OSError('shared_storage_limit')
+    with Path(path).open('xb') as stream:
+        stream.write(raw)
+
+
 def ensure_first_execution(package, attempt_path):
     if any((Path(package) / name).exists() for name in
            ('execution-claim.json', 'execution-result.json', 'execution-resources.jsonl')) or Path(attempt_path).exists():
@@ -27,9 +46,9 @@ def ensure_first_execution(package, attempt_path):
 
 def claim_first_execution(package, attempt_path, candidate):
     receipt = ensure_first_execution(package, attempt_path)
-    with (Path(package) / 'execution-claim.json').open('x', encoding='utf-8') as stream:
-        json.dump({'authorization_id': AUTHORIZATION, 'run_id': RUN_ID, 'responses_limit': 1,
-            'candidate': candidate}, stream)
+    write_artifact(Path(package) / 'execution-claim.json', encoded({'authorization_id': AUTHORIZATION,
+        'run_id': RUN_ID, 'responses_limit': 1, 'candidate': candidate}),
+        package=package, output=Path(attempt_path).parent)
     return receipt
 
 
@@ -45,7 +64,10 @@ def diagnose(request, prepared, *, sender, clock):
     start = clock()
     result = {'send_attempts': 1, 'responses_requests': None, 'count_api': 0, 'other_api': 0,
         'retries': 0, 'cost': None, 'strict_role_schema_valid': None, 'tool_call_valid': None,
-        'json_valid': None, 'protocol_diagnostic': None, 'terminal': 'diagnostic_failed'}
+        'json_valid': None, 'protocol_diagnostic': None, 'terminal': 'diagnostic_failed',
+        'usage': provider.engineering_usage({}), 'usage_diagnostic': {'state': 'unknown', 'usage': None},
+        'native_usage': None, 'http_status': None, 'returned_model': None, 'request_id': None,
+        'response_id': None, 'metering_status': 'unknown/incomplete'}
     try:
         envelope = sender(prepared['wire_utf8'], deadline_ms=start + 30000)
     except (OSError, ValueError, TypeError):
@@ -125,26 +147,28 @@ def main():
     with guard:
         request, prepared, meta = prepare_first_request()
         (p1.OUTPUT / RUN_ID).mkdir()
-        with (p1.OUTPUT / RUN_ID).joinpath('attempt.json').open('xb') as stream:
-            stream.write(encoded(meta))
+        write_artifact(p1.OUTPUT / RUN_ID / 'attempt.json', encoded(meta), package=PACKAGE, output=p1.OUTPUT / RUN_ID)
         guard.authorize_diagnostic(AUTHORIZATION)
-        with (p1.OUTPUT / RUN_ID / 'result.json').open('xb') as stream:
-            result = diagnose(request, prepared, sender=provider.make_sender(clock=lambda: time.monotonic() * 1000,
-                max_request_bytes=2 * 1024**2, storage_guard=guard), clock=lambda: time.monotonic() * 1000)
-            result.update(meta, code_candidate=candidate, publication_path=None, tool_executions=0,
-                engineering_run_completed=False, cost_metering_complete=False,
-                guard_allowed=guard.allowed, guard_denied=guard.attempts)
-            raw = encoded(result)
-            if len(raw) + len(encoded(meta)) > 1024**2:
-                raise OSError('diagnostic_artifact_limit')
-            stream.write(raw)
-    with receipt.open('x', encoding='utf-8') as stream:
-        json.dump(result, stream, ensure_ascii=False, indent=2)
-    print(json.dumps(result, ensure_ascii=False))
+        result = diagnose(request, prepared, sender=provider.make_sender(clock=lambda: time.monotonic() * 1000,
+            max_request_bytes=2 * 1024**2, storage_guard=guard), clock=lambda: time.monotonic() * 1000)
+        result.update(meta, code_candidate=candidate, publication_path=None, tool_executions=0,
+            engineering_run_completed=False, cost_metering_complete=False,
+            guard_allowed=guard.allowed, guard_denied=guard.attempts)
+        raw = encoded(result)
+        write_artifact(p1.OUTPUT / RUN_ID / 'result.json', raw, package=PACKAGE, output=p1.OUTPUT / RUN_ID)
+    summary = {'terminal': result['terminal'], 'result_path': str(p1.OUTPUT / RUN_ID / 'result.json'),
+        'sha256': digest(raw), 'responses_requests': result['responses_requests']}
+    write_artifact(receipt, encoded(summary), package=PACKAGE, output=p1.OUTPUT / RUN_ID)
+    print(json.dumps({'terminal': result['terminal'], 'receipt': receipt.name}))
     return 0
 
 
 if __name__ == '__main__':
     if sys.stdin.buffer.readline() != b'GO\n':
         raise SystemExit(2)
-    raise SystemExit(main())
+    try:
+        code = main()
+    except Exception:
+        print('{"terminal":"entry_failed_no_retry"}')
+        code = 2
+    raise SystemExit(code)

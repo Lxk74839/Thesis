@@ -9,6 +9,41 @@ from tests.test_fourrouter_protocol_diagnostics import public_request, public_re
 
 
 class FirstRequestDiagnostic(unittest.TestCase):
+    def test_all_artifact_copies_and_stdout_share_one_mib(self):
+        spec = importlib.util.spec_from_file_location('first_diagnostic_quota', Path(__file__).resolve().parents[1]
+            / '.scratch/ticket14-first-request-20261020/run_once.py')
+        entry = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(entry)
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[1] / '.tmp') as tmp:
+            package, output = Path(tmp) / 'control', Path(tmp) / 'output'
+            package.mkdir(); output.mkdir()
+            (package / 'execution.stdout').write_bytes(b'PUBLIC\n' * 100)
+            (package / 'execution-claim.json').write_bytes(b'{}')
+            entry.write_artifact(output / 'result.json', b'P' * 900000, package=package, output=output)
+            entry.write_artifact(package / 'execution-result.json', b'{}', package=package, output=output)
+            with self.assertRaises(OSError):
+                entry.write_artifact(output / 'overflow.json', b'X' * 150000, package=package, output=output)
+            self.assertFalse((output / 'overflow.json').exists())
+            self.assertEqual(entry.artifact_bytes(package, output), 900704)
+
+    def test_transport_failure_preserves_explicit_unknown_metering(self):
+        spec = importlib.util.spec_from_file_location('first_diagnostic_transport', Path(__file__).resolve().parents[1]
+            / '.scratch/ticket14-first-request-20261020/run_once.py')
+        entry = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(entry)
+        calls = []
+        def sender(wire, *, deadline_ms):
+            calls.append(True)
+            raise OSError('PUBLIC PRIVATE PROVIDER TEXT')
+        result = entry.diagnose(public_request(), {'wire_utf8': '{}'}, sender=sender, clock=lambda: 1000)
+        self.assertEqual(len(calls), 1)
+        self.assertIsNone(result['usage']['input_tokens'])
+        self.assertIsNone(result['usage']['output_tokens'])
+        self.assertIsNone(result['usage']['cost_microusd'])
+        self.assertEqual(result['usage_diagnostic'], {'state': 'unknown', 'usage': None})
+        self.assertEqual(result['metering_status'], 'unknown/incomplete')
+        self.assertNotIn('PRIVATE PROVIDER TEXT', str(result))
+
     def test_exclusive_claim_prevents_second_diagnostic(self):
         spec = importlib.util.spec_from_file_location('first_diagnostic_claim', Path(__file__).resolve().parents[1]
             / '.scratch/ticket14-first-request-20261020/run_once.py')
