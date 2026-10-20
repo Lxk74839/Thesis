@@ -8,3 +8,5 @@
 {"label":"sdeadline_004_control","phase":"after","package_seconds_left":247.66026499999998,"offline_seconds_left":308.834065399863,"write_bytes_left":87250694.0,"charged_write_upper_bytes":46967034.0,"provider_requests_sent":0}
 {"label":"sdeadline_005_grant","phase":"before","package_seconds_left":247.66026499999998,"offline_seconds_left":308.834065399863,"write_bytes_left":87250694.0,"charged_write_upper_bytes":46967034.0,"provider_requests_sent":0}
 {"label":"sdeadline_005_grant","phase":"after","package_seconds_left":245.39528640000003,"offline_seconds_left":306.56908679986304,"write_bytes_left":87098875.0,"charged_write_upper_bytes":47118853.0,"provider_requests_sent":0}
+{"label":"sdeadline_006_final","phase":"before","package_seconds_left":245.39528640000003,"offline_seconds_left":306.56908679986304,"write_bytes_left":87098875.0,"charged_write_upper_bytes":47118853.0,"provider_requests_sent":0}
+{"label":"sdeadline_006_final","phase":"after","package_seconds_left":242.68539809999993,"offline_seconds_left":303.85919849986294,"write_bytes_left":86796771.0,"charged_write_upper_bytes":47420957.0,"provider_requests_sent":0}

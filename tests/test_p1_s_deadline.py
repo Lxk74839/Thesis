@@ -104,6 +104,8 @@ class SDeadline(unittest.TestCase):
         request = self.reserved_request()
         self.run.model.invoke(request)
         self.assertEqual(len(self.calls), 1)
+        self.assertEqual(self.run.model.invoke(request)['status'], 'not_started')
+        self.assertEqual(len(self.calls), 1)
 
     def test_old_and_new_authorizations_cannot_be_crossed_at_adapter(self):
         from p1_engineering import RETRY_AUTHORIZATION
@@ -111,8 +113,6 @@ class SDeadline(unittest.TestCase):
         self.run.model.binding['engineering_authorization'] = RETRY_AUTHORIZATION
         self.assertEqual(self.run.model.invoke(request)['status'], 'not_started')
         self.assertEqual(len(self.calls), 0)
-        self.assertEqual(self.run.model.invoke(request)['status'], 'not_started')
-        self.assertEqual(len(self.calls), 1)
 
     def test_new_S_grant_exactly_binds_task_and_cannot_borrow_old_grant(self):
         from p1_engineering import RETRY_AUTHORIZATION, AUTHORIZATION

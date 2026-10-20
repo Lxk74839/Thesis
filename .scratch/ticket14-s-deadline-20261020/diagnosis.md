@@ -8,6 +8,6 @@ RED为同一S_engineering_reservation_or_deadline，哨兵0次。red-diagnostic.
 
 冻结窗口读取reserve receipt的usage_before/held/phase，与整根工作/最终期限取min；运行器再与当前时刻+30000取min并向下取整。适配器复用同一冻结窗口函数，继续拒绝过期、越界、phase/预留/nonce错误。诊断只含ID、时间、条件布尔。
 
-定向验证：原1493请求RED→GREEN；过期/越界/预留不匹配/重复消费拒绝；无usage原S完整fixture发布且计量unknown；新S独立授权的真实1493装配、预检、prepare→reserve→invoke→transport哨兵通过（实际POST编码大小校验，真实HTTP=0），旧新授权不能交叉使用。sdeadline_004七项通过，sdeadline_005交叉授权拒绝通过。无usage fixture沿用原固定公开内容；所有这些是离线fixture验收，不能算真实S。
+定向验证：原1493请求RED→GREEN；过期/越界/预留不匹配/重复消费拒绝；无usage原S完整fixture发布且计量unknown；新S独立授权的真实1493装配、预检、prepare→reserve→invoke→transport哨兵通过（实际POST编码大小校验，真实HTTP=0），旧新授权不能交叉使用。sdeadline_004七项通过。sdeadline_005新增测试时将重复消费末尾断言错误置入交叉授权测试，失败；仅修正本次测试分组后定向复验，不改变应用逻辑。无usage fixture沿用原固定公开内容；所有这些是离线fixture验收，不能算真实S。
 
 授权变化只增加确切S-DEADLINE-RETRY-20261020并绑定D1/V00/S及对应run_id；旧尝试claim和输出目录仍阻止复用旧许可。新控制入口调用已验收原执行/回执逻辑，独立目录；execution_guard逐字节复用既有Job守护，360秒另域记录。
