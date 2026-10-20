@@ -81,6 +81,7 @@ def _score_task(task, execution, reference):
     result['terminal'] = execution['terminal']
     if not execution['started']:
         return result | {'status': 'not_started', 'execution_state': 'not_started'}
+    result['usage'] = copy.deepcopy(execution['usage'])
     if execution['terminal'] in ('unresolved_attempt', 'running'):
         return result | {'status': 'unresolved', 'execution_state': 'unresolved'}
     success = execution['terminal'] in ('released', 'valid_empty')
@@ -100,10 +101,13 @@ def _score_task(task, execution, reference):
     gate = (release_valid and legal_shape and execution['gate_passed'] and execution['publication_verified']
             and set(delivered) <= set(execution['G'])
             and all(reference['states'][p] == 'Supported' for p in delivered))
+    preference_valid = legal_shape and release_valid and execution['gate_passed'] and execution['publication_verified']
+    if success and not preference_valid:
+        result.update(execution_state='failed', status='failed', reason='invalid_publication')
     metrics = {}
     for k in (1, 5, 10):
         rank = delivered.index(reference['target']) + 1 if reference['target'] in delivered else 0
-        gain = 1 / math.log2(rank + 1) if legal_shape and 0 < rank <= k else 0
+        gain = 1 / math.log2(rank + 1) if preference_valid and 0 < rank <= k else 0
         metrics[str(k)] = {'HR': int(gain > 0), 'NDCG_P': gain,
                            'EG_NDCG': gain if applicable else None,
                            'SJ_NDCG': (gain if gate else 0) if applicable else None}
@@ -141,7 +145,7 @@ def _quality(result, task, execution, reference):
         'A_sha256': _digest(acquired), 'G': execution['G'], 'C_sha256': _digest(task['C']),
         'base_score_sha256': task['base_scores_sha256'], 'H_sha256': task['H_sha256'],
         'repeat_id': task['repeat'], 'cursor': execution['cursor'], 'stop_reason': execution['stop_reason'],
-        'terminal': execution['terminal']}
+        'terminal': execution['terminal'], 'fusion_sha256': _digest(task['fusion'])}
     _require(all(anchor[k] == v for k, v in expected.items()), 'quality_anchor_mismatch')
     _require(all(acquired['binding'][k] == task[k] for k in ('root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms'))
              and acquired['candidate_binding']['C'] == task['C']
@@ -150,29 +154,15 @@ def _quality(result, task, execution, reference):
     admitted = {p for p, a in acquired['assessments'].items()
                 if a['eligible'] and a['evidence_state'] == 'Supported' and a['advance_allowed']}
     _require(admitted == set(execution['G']) and len(execution['G']) == len(admitted), 'quality_G_expansion')
-    rows = components['full']['candidates']
+    fusion = task['fusion']
+    _require(fusion['alpha'] == .5 and fusion['beta'] == [.25,.5,.25] and fusion['K'] == 10
+             and fusion['mode'] == 'full' and fusion['preference'] == {'source': 'experiment_design',
+                'dimensions': ['retail_stock'], 'weights': {'retail_stock': 1}}, 'quality_fusion_mismatch')
+    # Replay an accepted scoring component on actual M acquisitions, never on references/gold.
+    from evidence_verification import rank_acquired_quality
+    observed = rank_acquired_quality(fusion, acquired)
+    rows = observed['candidates']
     _require([r['parent_asin'] for r in rows] == task['C'], 'quality_candidate_scope')
-    for row in rows:
-        _require(row['z'] in (0, 1) and all(type(row[k]) in (int, float) and math.isfinite(row[k])
-                 and 0 <= row[k] <= 1 for k in ('q', 'm', 'T')), 'invalid_quality_factors')
-        originals = acquired['candidates'].get(row['parent_asin'], {}).get('originals', {})
-        materials = [json.loads(o['raw_utf8']) for o in originals.values() if o.get('raw_utf8')]
-        retail = next((m for m in materials if m['kind'] == 'retail_status'), None)
-        if row['z']:
-            _require(retail is not None and retail['evidence_id'] == row['citations']['retail_stock']['evidence_id']
-                     and retail['parent_asin'] == row['parent_asin'], 'quality_unacquired_fact')
-            stock = min(1, max(0, retail['facts']['stock_units'] / 100))
-            t = (retail['valid_to_ms'] - task['verify_at_ms']) / (retail['valid_to_ms'] - retail['valid_from_ms'])
-            arrival = next((m for m in materials if m['kind'] == 'transport_receipt'), None)
-            dispatch = any(m['kind'] == 'transport_dispatch' for m in materials)
-            checks = [bool(dispatch and arrival and all(retail[k] == arrival[k] for k in ('parent_asin', 'sim_batch_id'))),
-                bool(dispatch and arrival and retail['facts']['location_id'] == arrival['facts']['to_location_id']
-                     and retail['facts']['unit'] == arrival['facts']['unit'])]
-            q = .25 + .5*t + .25*sum(checks)/2
-            _require(abs(stock-row['m']) < 1e-12 and abs(t-row['T']) < 1e-12 and abs(q-row['q']) < 1e-12,
-                     'quality_factor_mismatch')
-        else:
-            _require(row['q'] == row['m'] == 0, 'quality_unacquired_fact')
     supported = [r['q'] for r in rows if r['z']]
     mean = math.fsum(supported) / len(supported) if supported else 0
     result['quality'] = {'A_sha256': anchor['A_sha256'], 'G': execution['G'][:],
@@ -180,6 +170,8 @@ def _quality(result, task, execution, reference):
     result['components'] = {}
     factor_keys = ('parent_asin', 'z', 'm', 'q', 'C', 'T', 'A', 'citations')
     factors = [{k: r[k] for k in factor_keys} for r in rows]
+    _require([{k: r[k] for k in factor_keys} for r in components['full']['candidates']] == factors,
+             'quality_unacquired_fact')
     for mode in modes:
         component = components[mode]
         _require(component['anchor'] == anchor and component['anchor_sha256'] == _digest(anchor)

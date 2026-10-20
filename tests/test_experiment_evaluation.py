@@ -38,9 +38,12 @@ def example(scene='V00', method='M', user='PUBLIC-U1'):
     return task, execution, reference
 
 
+def public_wire(value):
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+
+
 def public_digest(value):
-    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True,
-        separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+    return hashlib.sha256(public_wire(value)).hexdigest()
 
 
 def quality_example(scene='Q1', user='PUBLIC-U1'):
@@ -54,23 +57,87 @@ def quality_example(scene='Q1', user='PUBLIC-U1'):
                  A={'numerator': 2, 'denominator': 2}, T=t,
                  citations={'retail_stock': {'evidence_id': 'retail-' + p, 'pointer': '/facts/stock_units'}})
             for p, m, q, t in (('a', .75, .6, .2), ('b', 1, .9, .8), ('c', 0, .6, .2), ('d', 0, .6, .2))]
+    # Handwritten normal-v1 objects/registrations; no production generator or reference oracle.
+    stages = ('harvest', 'packaging', 'storage', 'inspection', 'transport', 'retail')
+    kinds = ('inspection_sample', 'inspection_report', 'retail_status', 'transport_dispatch', 'transport_receipt')
+    policy = {'policy_id': 'PUBLIC-policy', 'registrar_id': 'PUBLIC-registry', 'read_principal_id': task['principal_id'],
+        'issuers': [{'issuer_id': 'PUBLIC-issuer', 'may_create_batch': True,
+                     'event_stages': list(stages), 'material_kinds': list(kinds)}],
+        'read_scope': {'scope': 'current_snapshot_only', 'target_kinds': ['batch','event','material'], 'material_kinds': list(kinds)}}
+    candidates, scope_hashes = {}, {}
+    for row in rows:
+        parent, batch = row['parent_asin'], 'b'+row['parent_asin']
+        common = {'source': 'SIM', 'parent_asin': parent, 'sim_batch_id': batch, 'version': 1}
+        objects = [{**common, 'schema_version': 'sim-batch-1.0.0', 'issuer_id': 'PUBLIC-issuer', 'created_at_ms': 1}]
+        for index, stage in enumerate(stages):
+            objects.append({**common, 'schema_version': 'sim-event-1.0.0', 'event_id': parent+'-'+stage,
+                'stage': stage, 'actor_id': 'PUBLIC-issuer', 'event_start_ms': 10+20*index,
+                'event_end_ms': 11+20*index,
+                'predecessor_event_ids': [parent+'-'+stages[index-1]] if index else []})
+        sample = 'sample-'+parent
+        for kind, stage, issued, facts in (
+            ('inspection_sample', 'inspection', 72, {'sample_id': sample, 'sampled_at_ms': 70}),
+            ('inspection_report', 'inspection', 76, {'sample_id': sample, 'test_scope': ['SIM-Q1'],
+                'test_started_at_ms': 73, 'test_completed_at_ms': 74, 'conclusion': 'pass'}),
+            ('retail_status', 'retail', 112, {'stock_units': int(row['m']*100), 'location_id': 'shop',
+                'unit': 'SIM_PACK', 'status': 'on_sale', 'observed_at_ms': 111}),
+            ('transport_dispatch', 'transport', 92, {'transport_segment_id': 'segment-'+parent,
+                'from_location_id': 'warehouse', 'to_location_id': 'shop', 'quantity_units': 100,
+                'unit': 'SIM_PACK', 'departed_at_ms': 90}),
+            ('transport_receipt', 'transport', 102, {'transport_segment_id': 'segment-'+parent,
+                'from_location_id': 'warehouse', 'to_location_id': 'shop', 'quantity_units': 100,
+                'unit': 'SIM_PACK', 'arrived_at_ms': 100, 'handover_status': 'accepted'})):
+            material = {**common, 'schema_version': 'sim-material-1.0.0', 'kind': kind,
+                'evidence_id': ('retail-' if kind == 'retail_status' else kind+'-')+parent,
+                'issuer_id': 'PUBLIC-issuer', 'event_id': parent+'-'+stage, 'issued_at_ms': issued,
+                'temporal_mode': 'current_assertion' if kind == 'retail_status' else 'historical_fact', 'facts': facts}
+            if kind == 'retail_status':
+                material.update(valid_from_ms=0, valid_to_ms=5000 if parent == 'b' else 1250)
+            objects.append(material)
+        regs, originals = [], {}
+        for item in objects:
+            typ = item['schema_version'].split('-')[1]
+            identity = item[{'batch': 'sim_batch_id', 'event': 'event_id', 'material': 'evidence_id'}[typ]]
+            reg = {'target_kind': typ, 'target_id': identity, 'version': 1, 'parent_asin': parent,
+                'sim_batch_id': batch, 'event_id': item.get('event_id'), 'issuer_id': 'PUBLIC-issuer',
+                'source': 'SIM', 'receipt_status': 'accepted', 'registrar_id': 'PUBLIC-registry',
+                'registry_backend': 'local_sim_registry', 'registered_at_ms': item.get('issued_at_ms', item.get('event_end_ms', 1))+1,
+                'content_sha256': public_digest(item)}
+            regs.append(reg)
+            originals[identity] = {'raw_utf8': public_wire(item).decode(), 'registration': reg}
+        scope_hashes[parent] = public_digest(regs)
+        candidates[parent] = {'enumeration_complete': True, 'registrations': [{'record': r} for r in regs], 'originals': originals}
+    rules = {'attribute':'retail_stock','source':'experiment_design','weight':1,'stock_scale':100,
+        'C_slots':['retail_status'],'A_checks':['same_parent_batch','same_location_unit'],
+        'main_alpha':.5,'main_beta':[.25,.5,.25],'alpha_grid':[.25,.5,.75],
+        'beta_T_grid':[.25,.5,.75],'score_decimals':12}
+    policy_raw = public_wire(policy)+b'\n'
+    snapshot = {'schema_version': 'quality-snapshot-0.1.0', 'source': 'SIM', 'protocol_version': 'quality-preference-protocol-0.1.0',
+        'verify_at_ms': 1000, 'sealed_at_ms': 900 if scene == 'Q1' else 901, 'policy_id': 'PUBLIC-policy',
+        'read_principal_id': task['principal_id'], 'rules': rules, 'contract_sha256': public_digest(rules),
+        'scope_sha256': scope_hashes, 'components': {'policy.json': {'sha256': hashlib.sha256(policy_raw).hexdigest()},
+            'actions.jsonl': {'records': 0, 'bytes': 0, 'sha256': hashlib.sha256(b'').hexdigest()}}}
+    snapshot['snapshot_id'] = 'qf_'+hashlib.sha256(b'Thesis-quality-fusion:snapshot\0'+public_wire(snapshot)).hexdigest()
+    task['snapshot_id'] = snapshot['snapshot_id']
+    task['fusion'] = {'schema_version': 'fusion-binding-0.1.0', 'task_id': user, 'C': task['C'],
+        'C_sha256': public_digest(task['C']), 'H_sha256': task['H_sha256'], 'base_scores': task['base_scores'],
+        'base_score_version': 'public-worked-example', 'base_score_sha256': task['base_scores_sha256'],
+        'snapshot_id': task['snapshot_id'], 'verify_at_ms': 1000, 'principal_id': task['principal_id'],
+        'contract_sha256': snapshot['contract_sha256'], 'K': 10, 'alpha': .5, 'beta': [.25,.5,.25], 'mode': 'full',
+        'preference': {'source': 'experiment_design', 'dimensions': ['retail_stock'], 'weights': {'retail_stock': 1}}}
+    for binding in (execution['binding'], reference['binding']):
+        binding['snapshot_id'] = task['snapshot_id']
     acquired = {'binding': {'root_task_id': user, 'snapshot_id': task['snapshot_id'],
         'principal_id': task['principal_id'], 'verify_at_ms': 1000},
-        'candidate_binding': {'C': task['C'], 'base_scores': task['base_scores']},
-        'candidates': {r['parent_asin']: {'originals': {'retail-' + r['parent_asin']:
-            {'raw_utf8': json.dumps({'evidence_id': 'retail-' + r['parent_asin'], 'kind': 'retail_status',
-             'parent_asin': r['parent_asin'], 'sim_batch_id': 'b' + r['parent_asin'],
-             'facts': {'stock_units': r['m'] * 100, 'location_id': 'shop', 'unit': 'kg'},
-             'valid_from_ms': 1000 - (1-r['T'])*1000, 'valid_to_ms': 1000 + r['T']*1000})}}} for r in rows},
+        'candidate_binding': {'C': task['C'], 'base_scores': task['base_scores']}, 'candidates': candidates,
+        'context': {'snapshot': {'raw_utf8': public_wire(snapshot).decode()}, 'policy': {'raw_utf8': policy_raw.decode()},
+                    'actions_scope': {'raw_utf8': ''}},
         'assessments': {p: {'eligible': True, 'evidence_state': 'Supported', 'advance_allowed': True} for p in ('a', 'b')}}
-    for parent, pack in acquired['candidates'].items():
-        for kind in ('transport_dispatch', 'transport_receipt'):
-            pack['originals'][kind] = {'raw_utf8': json.dumps({'kind': kind, 'parent_asin': parent,
-                'sim_batch_id': 'b' + parent, 'facts': {'to_location_id': 'shop', 'unit': 'kg'}})}
     anchor = {'run_id': task['task_key'], 'root_task_id': user, 'snapshot_id': task['snapshot_id'],
         'A_sha256': public_digest(acquired), 'G': ['a', 'b'], 'C_sha256': public_digest(task['C']),
         'base_score_sha256': task['base_scores_sha256'], 'H_sha256': task['H_sha256'],
-        'repeat_id': 1, 'cursor': 4, 'stop_reason': 'fixed_candidate_prefix', 'terminal': 'released'}
+        'repeat_id': 1, 'cursor': 4, 'stop_reason': 'fixed_candidate_prefix', 'terminal': 'released',
+        'fusion_sha256': public_digest(task['fusion'])}
     execution.update(delivered=['b', 'a'], acquired=acquired, cursor=4, stop_reason='fixed_candidate_prefix')
     execution['components'] = {mode: {'anchor': copy.deepcopy(anchor), 'anchor_sha256': public_digest(anchor),
         'status': 'computed', 'G': ['a', 'b'], 'candidates': copy.deepcopy(rows),
@@ -180,6 +247,17 @@ class TaskScores(unittest.TestCase):
         self.assertEqual(missing['status'], 'pipeline_error')
         self.assertEqual(missing['error'], 'missing_execution_record')
 
+    def test_unresolved_execution_keeps_known_usage_without_a_score(self):
+        from experiment_evaluation import score_task
+        task, execution, reference = example()
+        execution.update(terminal='unresolved_attempt')
+        execution['usage']['output_tokens'] = None
+        result = score_task(task, execution, reference)
+        self.assertIsNone(result['metrics']['10']['SJ_NDCG'])
+        self.assertEqual(result['usage']['model_calls'], 2)
+        self.assertEqual(result['usage']['retries'], 1)
+        self.assertIsNone(result['usage']['output_tokens'])
+
     def test_wrong_reference_or_execution_binding_is_pipeline_error(self):
         from experiment_evaluation import score_task
         for mutation in ('snapshot', 'missing_state', 'execution_key', 'unknown_terminal'):
@@ -215,6 +293,16 @@ class TaskScores(unittest.TestCase):
         execution['complete_C'] = False
         self.assertEqual(score_task(task, execution, reference)['secondary']['necessary_satisfied'], 0)
 
+    def test_contradictory_valid_empty_cannot_get_preference_credit(self):
+        from experiment_evaluation import score_task
+        task, execution, reference = example()
+        execution.update(terminal='valid_empty', delivered=['b'])
+        result = score_task(task, execution, reference)
+        self.assertEqual(result['metrics']['10']['HR'], 0)
+        self.assertEqual(result['metrics']['10']['NDCG_P'], 0)
+        self.assertEqual(result['metrics']['10']['SJ_NDCG'], 0)
+        self.assertEqual(result['execution_state'], 'failed')
+
     def test_quality_uses_actual_M_anchor_and_full_C_mean(self):
         from experiment_evaluation import score_task
         result = score_task(*quality_example())
@@ -223,6 +311,16 @@ class TaskScores(unittest.TestCase):
         self.assertEqual(result['quality']['mean_denominator'], 4)
         self.assertAlmostEqual(result['quality']['mean_q'], .675)
         self.assertEqual(result['quality']['G'], ['a', 'b'])
+
+    def test_quality_accepts_batch_and_event_originals_without_kind(self):
+        from experiment_evaluation import score_task
+        task, execution, reference = quality_example()
+        originals = execution['acquired']['candidates']['a']['originals']
+        self.assertNotIn('kind', json.loads(originals['ba']['raw_utf8']))
+        self.assertNotIn('kind', json.loads(originals['a-harvest']['raw_utf8']))
+        result = score_task(task, execution, reference)
+        self.assertEqual(result['status'], 'scored', result.get('error'))
+        self.assertEqual(result['quality']['mean_denominator'], 4)
 
     def test_quality_failure_is_shared_and_reference_cannot_supply_missing_facts(self):
         from experiment_evaluation import score_task
@@ -247,6 +345,15 @@ class TaskScores(unittest.TestCase):
             else:
                 execution['components']['no_quality']['candidates'][0]['q'] = .8
             self.assertEqual(score_task(task, execution, reference)['status'], 'pipeline_error')
+
+    def test_component_z_cannot_remove_actual_support_from_mean(self):
+        from experiment_evaluation import score_task
+        task, execution, reference = quality_example()
+        for component in execution['components'].values():
+            candidate = next(r for r in component['candidates'] if r['parent_asin'] == 'c')
+            candidate.update(z=0, q=0, m=0)
+            component['mean_quality'] = {'value': .7, 'denominator': 3}
+        self.assertEqual(score_task(task, execution, reference)['status'], 'pipeline_error')
 
     def test_quality_G_is_a_fixed_set_and_cannot_be_expanded(self):
         from experiment_evaluation import score_task

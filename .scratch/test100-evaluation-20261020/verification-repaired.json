@@ -1,0 +1,32 @@
+{
+  "sample_evaluator_sha256": "182f0bc319deb94baaad8278dd48e67887975652876a66d2bec5cbf23a4bf314",
+  "provider_API_calls": 0,
+  "protected_files": 18,
+  "legacy_assertion_cases": 2,
+  "protected_changed": [],
+  "status": "passed_repaired_public_checks",
+  "real_evaluations": 0,
+  "sample_components": [
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-2f5xdbd6\\output\\scene-summary.jsonl",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-2f5xdbd6\\output\\summary.json",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-2f5xdbd6\\output\\task-scores.jsonl",
+      "bound": true
+    },
+    {
+      "path": ".tmp\\experiment-evaluation\\public-cli-2f5xdbd6\\output\\user-pairs.jsonl",
+      "bound": true
+    }
+  ],
+  "new_behaviors": 25,
+  "real_statistics": 0,
+  "sample_root": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output",
+  "real_recommendations": 0,
+  "outer_tests": 26
+}

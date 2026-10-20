@@ -10,6 +10,7 @@ Spec来源：draft.md、confirmation.md及原F1/F2已确认正文；最新人类
 - execution显式包含task_key、started和terminal；started=false且terminal=not_started/configuration_required是未执行；None/缺记录和未决意图为missing_record/unresolved，null且阻止完整结果。已开始的合法失败终态按F1计0。released/valid_empty需整表结构、共同门禁、publication一致性及G的记录。输出保留执行状态、NA原因和管线错误，不静默删任务。
 - 必要臂独立算HR/NDCG_P/EG/SJ的K1/5/10、违规/满足率、覆盖/填充、四态含Unassessed的混淆统计（固定S与其他候选分开）。参考NA不影响偏好评价。整张L门控，重复/C外/超K或非法尾部不能被前缀掩盖。空列表违规项率NA；F空的合法空需完整C闭合证明。
 - Q使用M的实际acquired(A_M)、G、cursor、终态及full/no_quality/mean_quality组件。组件冻结anchor字段和A摘要、G/C/base等绑定；原始q/m/z只取实际取得范围。评价侧无I/O地核验组件公式与排序、mean分母及full实际发布一致性，绝不从reference取q/m/z或补证；失败三组件共同0（参考NA仍NA）。不要求生产函数生成gold。
+- 首轮审查修复明确：Q task附带既有M绑定中的fusion对象，核anchor.fusion_sha256及F1固定参数。复用已接受的纯rank_acquired_quality，仅传fusion和实际A，核对实际z/m/q与组件；该调用是实际取得范围内的评分组件一致性检查，不生成F/target/四态gold，不传reference，不进行任何I/O/取证。手写夹具含完整batch/event/material/登记/策略/快照，期望仍为独立字面量。
 - summarize(plan, task_scores)是纯函数。plan包含source_scope、plan_id、users/scenes/tasks及评价侧预封存U8/UQ；输入任务唯一且全集外连接。原8固定各1/8，新8逐场景，Q各1/2。r=1。cohort由reference适用性与预封存掩码核对，不依结果成功。相关必需项缺失则对应用户/点估计/区间null，不缩cohort；全包未齐状态incomplete。
 - C1=M-S、C2=M-R、C3=full-no_quality、C4=full-mean_quality。先用户内汇总，再配对均值。U8/UQ排序为UTF-8字节，随机Random(seed).randrange(n)顺序；各50,000整行重采样，两比较共享索引与索引摘要；seed=20261016/20261017，type7的.00625/.99375，近似同时95%，无主p值。n<2不造区间，退化标注；实际精度单列，不据此宣称充分。975仅historical说明。
 - usage每个真实task只计一次（Q三组件不复制），包含失败与重试；保留单位/usage_basis，未知null+已知小计/未知数量。价格未绑定cost=null；不得将公开合成单位称官方token或报价。
