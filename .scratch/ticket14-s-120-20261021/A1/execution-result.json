@@ -1,0 +1,66 @@
+{
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A1",
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "terminal": "failed_model",
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "recommendation_count": null,
+  "responses": [
+    {
+      "status": "unsupported_output_type",
+      "protocol_diagnostic": {
+        "code": "unsupported_output_type",
+        "field": "type",
+        "item_type": "reasoning",
+        "output_index": 0,
+        "stage": "output_item"
+      },
+      "deadline_diagnostic": null,
+      "http_status": 200,
+      "native_usage": null,
+      "request_body_bytes": 602539,
+      "request_id": null,
+      "response_id": "resp_0328800ec060c682016ad7a435ae2481958aaa10f1151cec0b",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255485,
+          "output_tokens": 156,
+          "reasoning_output_tokens": 47
+        }
+      }
+    }
+  ],
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "started": true,
+  "provider_requests_sent": 1,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A1\\audit.json",
+  "publication_path": null,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "G": [],
+  "reason": "unsupported_output_type",
+  "acquired_candidate_count": 0,
+  "actual_tokens": {
+    "input_tokens": 255485,
+    "output_tokens": 156
+  },
+  "model_calls": 1,
+  "code_candidate": "6a63d56e97601c358cc0a1b87933fcaba13b1c51",
+  "guard_allowed": {
+    "credentials": 1,
+    "response_workers": 1
+  },
+  "guard_denied": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "cumulative_send_intents": 1,
+  "count_api": 0,
+  "other_api": 0,
+  "elapsed_seconds": 14.900727799977176,
+  "token_cost_metering_complete": false
+}

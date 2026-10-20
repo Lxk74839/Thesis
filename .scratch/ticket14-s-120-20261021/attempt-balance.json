@@ -1,0 +1,15 @@
+{
+  "calls_left": 11,
+  "execution_seconds": 15.034183299983852,
+  "actual_requests": 1,
+  "A2_claim": false,
+  "requested_output_cap_used": 8192.0,
+  "shared_claims": 1,
+  "A2_started": false,
+  "A2_stop_reason": "offline_closeout_window",
+  "A1_terminal": "failed_model",
+  "execution_left": 1784.9658167000161,
+  "requested_output_cap_left": 90112.0,
+  "P1_bytes": 22284185.0,
+  "A1_claim": true
+}
