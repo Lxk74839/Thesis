@@ -1,0 +1,72 @@
+{
+  "schema_version": "evaluation-resource-closeout-0.1.0",
+  "scope": "test100-independent-evaluation-offline",
+  "reviewed_candidate": "564f097faa554ba06337996a772d9aae8de68b08",
+  "time": {
+    "package_limit_seconds": 600,
+    "closeout_reserve_seconds": 120,
+    "charged_package_seconds": 239.63506829995296,
+    "charged_guard_seconds": 45.93117270007497,
+    "charged_launcher_seconds": 99.13865949987802,
+    "draft_read_conservative_upper_seconds": 30,
+    "root_native_conservative_upper_seconds": 60,
+    "initial_launcher_conservative_rounded_seconds": 4,
+    "initial_launcher_note": "eval100_002 launcher was conservatively rounded upward to 4s; do not describe it or the 30/60s precharges as measured",
+    "review_command_seconds": 4.5652361,
+    "remaining_package_seconds": 360.364931700047,
+    "inherited_offline_seconds": 550.081273500086,
+    "offline_cumulative_seconds": 789.7163418000389,
+    "offline_limit_seconds": 1800,
+    "entries": 113,
+    "failed_guard_invocations": 25,
+    "failures_refunded": false,
+    "native_closeout_included_in_precharge": true,
+    "prior_package_balance_used": false,
+    "T0_ledger_changed": false
+  },
+  "writes": {
+    "package_limit_bytes": 134217728,
+    "closeout_reserve_bytes": 33554432,
+    "charged_attempt_bytes": 50476320,
+    "charged_MiB": 48.137969970703125,
+    "native_source_document_git_temp_precharge_bytes": 16777216,
+    "accounting": "cumulative attempted guarded writes plus conservative native/Git allowance; deletions never refund",
+    "remaining_bytes": 83741408,
+    "inherited_prior_upper_bytes": 1521656722,
+    "combined_inherited_upper_bytes": 1572133042,
+    "disk_ledger_rows": 440,
+    "disk_ledger_sha256": "71ced3396ba191d4a6f04b4a81a957a63658dd7b1a8556aac739ad80688f5d07"
+  },
+  "memory": {
+    "limit_bytes": 4294967296,
+    "guard_reserve_bytes": 67108864,
+    "max_guarded_job_peak_commit_bytes": 47063040,
+    "max_guarded_peak_plus_reserve_bytes": 114171904,
+    "max_guarded_peak_plus_reserve_MiB": 108.8828125,
+    "enforcement": "Windows Job process-tree limit plus 64MiB guard reserve",
+    "coverage_note": "Peak refers to guarded project processes; native PowerShell/Git review and closeout processes were not individually peak-instrumented. It is not an all-process measured peak."
+  },
+  "environment": {
+    "conda_prefix": "D:\\Work\\Codex\\Project\\Thesis\\.conda\\envs\\Thesis",
+    "TEMP_TMP": "D:\\Work\\Codex\\Project\\Thesis\\.tmp",
+    "dependencies_added": 0
+  },
+  "boundaries": {
+    "real_recommendations": 0,
+    "real_evaluations": 0,
+    "real_statistics": 0,
+    "provider_generate": 0,
+    "provider_count": 0,
+    "provider_other": 0,
+    "model": null,
+    "channel": null,
+    "price": null,
+    "formal_experiment_complete": false
+  },
+  "ledger_snapshot": {
+    "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+    "bytes": 767278,
+    "sha256": "4b49b8ede46c80f9b18c2f237d3674b28f45cba1fa7eedc7477e722af6635207",
+    "last_label": "eval100_059_clean_standards_rereview"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "schema_version": "public-evaluation-evidence-index-0.1.0",
+  "BASE": "73914774e2fedd53071c7240c50b28b85be86194",
+  "candidate": "564f097faa554ba06337996a772d9aae8de68b08",
+  "fixture_description": "2 fictitious PUBLIC users, 4 fictitious candidates, 18 labels and 100 handwritten public tasks, not 100 real users",
+  "examples": [
+    {
+      "label": "complete",
+      "fixture_only": true,
+      "plan_id": "PUBLIC-HANDWRITTEN-v1",
+      "manifest_status": "public_fixture_complete",
+      "summary_status": "complete",
+      "counts": {
+        "executed_failed": 18,
+        "missing_records": 0,
+        "not_started": 0,
+        "pipeline_errors": 0,
+        "planned_tasks": 100,
+        "reference_NA": 0,
+        "unresolved": 0
+      },
+      "files": [
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/fixture.json",
+          "bytes": 522,
+          "sha256": "495c7d4eaa7c8e954ba7774b85562cf19de576ba3ad3a8690e8a3b41398bd9e3"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/plan.json",
+          "bytes": 56998,
+          "sha256": "bc4fce63435f3cc5cb0b87a8364b64f41d53f92da98e9a8d721ff61aa391c8d8"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/observations.json",
+          "bytes": 469605,
+          "sha256": "8b29b92e0386e99b5a9a13aa805fe8510e74951399a7f9031a5b8b65fd22319f"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output/manifest.json",
+          "bytes": 1318,
+          "sha256": "7bda6d4485ba94bc1b6ce19afeb28d9afb4f2a3aa0ef1a1155f129c7baaac222"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output/task-scores.jsonl",
+          "bytes": 170668,
+          "sha256": "c7b48f260ca43f34b4823fd2c19a25eae230db7591a1d180bcd2ac6837974515"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output/user-pairs.jsonl",
+          "bytes": 523,
+          "sha256": "fa8de70b8bb869168919e8372c6c62a787e49468140893cd188a6ffe3b7c10a8"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output/scene-summary.jsonl",
+          "bytes": 69008,
+          "sha256": "2b865ad78557b43e90564b852f0398ca96f6eaf7539e70ea439dbf25506c01b2"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-2f5xdbd6/output/summary.json",
+          "bytes": 2553,
+          "sha256": "fc6baccedd358ff13079cc42119b02427ef05a2dd44a0801dd08e40700b85e39"
+        }
+      ]
+    },
+    {
+      "label": "incomplete_missing_execution",
+      "fixture_only": true,
+      "plan_id": "PUBLIC-HANDWRITTEN-v1",
+      "manifest_status": "public_fixture_incomplete",
+      "summary_status": "incomplete",
+      "counts": {
+        "executed_failed": 18,
+        "missing_records": 0,
+        "not_started": 0,
+        "pipeline_errors": 1,
+        "planned_tasks": 100,
+        "reference_NA": 0,
+        "unresolved": 0
+      },
+      "files": [
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/fixture.json",
+          "bytes": 522,
+          "sha256": "9903fc3f8c1ff47de07ad0cba7219eeceea3672767e15b9edc0a562ff65a90b2"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/plan.json",
+          "bytes": 56998,
+          "sha256": "bc4fce63435f3cc5cb0b87a8364b64f41d53f92da98e9a8d721ff61aa391c8d8"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/observations.json",
+          "bytes": 498256,
+          "sha256": "b8101e6ffd7d042238f0cd9ba565a7ed3bb7ef5ed05bb3ee874c7191612790bd"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/output/manifest.json",
+          "bytes": 1320,
+          "sha256": "f54adbb111eaea6127af9e37db8f4f2e99cb286e694b7f2b5b7be71d99882fe1"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/output/task-scores.jsonl",
+          "bytes": 169622,
+          "sha256": "bf345a0a6829b73c660d0ddcd82b41fc91c71763d66c8d25871ec55b3506e624"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/output/user-pairs.jsonl",
+          "bytes": 526,
+          "sha256": "44173ba5f8a20d0cbf9c9e1c055957bc25fff80177ff920131fada1b0d1ba8a7"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/output/scene-summary.jsonl",
+          "bytes": 69062,
+          "sha256": "4f9dcbc997cc9cf526284b3621eb5fddf28098000241f6822b7d0215ad5008e4"
+        },
+        {
+          "path": ".tmp/experiment-evaluation/public-cli-7f6a2pbk/output/summary.json",
+          "bytes": 3047,
+          "sha256": "4932402e8d547fddf0fb151e03af0dd679f002abefe5bc4e942e4f2fe74e05a8"
+        }
+      ]
+    }
+  ],
+  "independent_hand_expected": {
+    "C1": 0.25,
+    "C2": 0.25,
+    "C3": 0.18453512321427126,
+    "C4": 0.18453512321427126
+  },
+  "verification": "all retained component, input, manifest and evaluator byte/hash bindings checked using native read-only hashing; no fixture rerun",
+  "test_output": "data/recommendation-runtime-audit/20261018-batch/eval100_056_repaired_public_delivery.txt",
+  "new_behavior_tests": 25,
+  "outer_tests": 26,
+  "legacy_assertions": 2,
+  "resource_closeout": ".scratch/test100-evaluation-20261020/resource-closeout.json",
+  "source_verification": ".scratch/test100-evaluation-20261020/verification-final.json",
+  "real_recommendations": 0,
+  "real_evaluations": 0,
+  "real_statistics": 0,
+  "provider_API_calls": 0,
+  "model": null,
+  "channel": null,
+  "price": null
+}

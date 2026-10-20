@@ -1,0 +1,36 @@
+{
+  "candidate": "564f097faa554ba06337996a772d9aae8de68b08",
+  "protected_count": 18,
+  "protected_changed": [],
+  "original_offline_prefix_bytes": 563604,
+  "original_offline_prefix_sha256": "dbede74e8c6d12dd6a6ce9b4dbe013c8425b6c86de851c77b2054dc3b16ca626",
+  "original_offline_prefix_unchanged": true,
+  "T0_ledger_unchanged": true,
+  "reviewed_source": [
+    {
+      "path": "experiment_evaluation.py",
+      "raw_git_blob": "b2e0afd6cfefac3210b17c5456c0c9ce98c8a40f",
+      "candidate_git_blob": "b2e0afd6cfefac3210b17c5456c0c9ce98c8a40f",
+      "equal": true,
+      "sha256": "182f0bc319deb94baaad8278dd48e67887975652876a66d2bec5cbf23a4bf314"
+    },
+    {
+      "path": "tests/test_experiment_evaluation.py",
+      "raw_git_blob": "a7b682f9e8352ec5be63a64813a48378b2695f84",
+      "candidate_git_blob": "a7b682f9e8352ec5be63a64813a48378b2695f84",
+      "equal": true,
+      "sha256": "0223f64d46961835175e8c80f7cf1fa37c458a54aa056665b4914b21c89f1029"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/run_check.py",
+      "raw_git_blob": "926f360255db8f07e01584566f8780423f49c7dd",
+      "candidate_git_blob": "926f360255db8f07e01584566f8780423f49c7dd",
+      "equal": true,
+      "sha256": "a20312e3c5904cc4cf2d6d7f9dcf770f7521ef157b1a247cf1bfbe63a759ce31"
+    }
+  ],
+  "real_recommendations": 0,
+  "real_evaluations": 0,
+  "real_statistics": 0,
+  "provider_API_calls": 0
+}
