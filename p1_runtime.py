@@ -85,11 +85,13 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
             or getattr(storage_guard, 'root', None) != OUTPUT):
         missing.append('controlled_storage_guard')
     if engineering:
+        from p1_engineering import http_window_ms
         if not missing:
             try:
                 if (not 1 <= limits['model_calls'] <= 12 or limits['request_output_tokens'] > 98304
                     or reserve['model_calls'] < 1 or reserve['request_output_tokens'] < 1500
-                    or reserve['elapsed_ms'] < 10000 or limits['elapsed_ms'] > 350000
+                    or reserve['elapsed_ms'] < (145000 if http_window_ms(cfg['model_binding']) == 120000 else 10000)
+                    or limits['elapsed_ms'] > (1780000 if http_window_ms(cfg['model_binding']) == 120000 else 350000)
                     or limits['retries'] != 0 or any(reserve[k] > limits[k] for k in reserve)):
                     missing.append('S_engineering_limits')
             except (KeyError, TypeError):
@@ -158,6 +160,7 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
     from joint_access import JointSession
     from model_adapter import ModelAdapter
     from provider_fourrouter import make_sender
+    from p1_engineering import http_window_ms
     from recommendation_runner import RecommendationRun
     binding = copy.deepcopy(assembly['binding'])
     binding.update(schema_version='rsm-run-0.4.0', execution_kind='fourrouter_responses', fixture=None,
@@ -179,7 +182,8 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
     evidence = EvidenceSession(evidence_binding, LocalEvidenceSource(assembly['snapshot_ref']),
         limits=cfg['limits'][method], final_reserve=cfg['final_reserve'][method], root_budget=budget, joint=joint)
     model = None if method == 'R' else ModelAdapter(make_sender(clock=budget.clock,
-        max_request_bytes=cfg['model_binding']['max_request_bytes'], storage_guard=storage_guard),
+        max_request_bytes=cfg['model_binding']['max_request_bytes'], storage_guard=storage_guard,
+        http_timeout_seconds=http_window_ms(cfg['model_binding']) / 1000 if engineering else 30),
         capability_binding=cfg['model_binding'] | {'execution_authorized': True}, counter=counter, root_budget=budget)
     return RecommendationRun(binding, evidence=evidence, model=model, root_budget=budget, output_root=output)
 

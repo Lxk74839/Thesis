@@ -430,6 +430,9 @@ class RecommendationRun:
             input_upper = None if engineering else len(encoded({'messages': messages, 'tools': tools}))
             backoff = (1000, 2000)[min(self.budget.usage['retries'], 1)] if retry_of else 0
             elapsed_upper = 45000 + backoff
+            if engineering:
+                from p1_engineering import http_window_ms
+                elapsed_upper = http_window_ms(self.model.binding) + 15000
             if self.batched:
                 remaining = self.budget.limits['elapsed_ms'] - math.ceil(self.budget.clock() - self.budget.started)
                 if kind != 'final_submit':
@@ -524,8 +527,8 @@ class RecommendationRun:
                 request = {**native, 'input_token_upper_bound': input_upper,
                     'deadline_ms': int(started + elapsed_upper), 'reservation_id': reservation['reservation_id']}
                 if engineering:
-                    from p1_engineering import reservation_deadline
-                    request['deadline_ms'] = int(min(started + 30000,
+                    from p1_engineering import reservation_deadline, http_window_ms
+                    request['deadline_ms'] = int(min(started + http_window_ms(self.model.binding),
                         reservation_deadline(self.budget, reservation['reservation_id'])))
             if self.on_demand:
                 request.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])

@@ -263,14 +263,16 @@ def normalize(envelope, request, *, pricing, engineering=False):
         'returned_model': body['model']}
 
 
-def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None):
+def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None, http_timeout_seconds=30):
     from pathlib import Path
     from fourrouter_probe import LOCAL_CREDENTIAL, _safe_identifier, send_response, _request_bytes
     path = Path(credential_path) if credential_path is not None else LOCAL_CREDENTIAL
+    if http_timeout_seconds not in (30, 120):
+        raise ValueError('invalid_HTTP_window')
     http_sender = send_response if http_sender is None else http_sender
     def sender(wire_utf8, *, deadline_ms):
         request = json.loads(wire_utf8)
-        timeout = min(30, (deadline_ms - clock()) / 1000)
+        timeout = min(http_timeout_seconds, (deadline_ms - clock()) / 1000)
         if timeout <= 0:
             raise TimeoutError('before_send_deadline')
         if request.get('model') != MODEL or len(wire_utf8.encode('utf-8')) > max_request_bytes:
@@ -296,6 +298,11 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
         if storage_guard is not None:
             storage_guard.sender_active = True
         try:
+            if storage_guard is not None and hasattr(storage_guard, 'claim_S_request'):
+                storage_guard.claim_S_request(request)
+            timeout = min(http_timeout_seconds, (deadline_ms - clock()) / 1000)
+            if timeout <= 0:
+                raise TimeoutError('before_send_deadline')
             reply = http_sender(ENDPOINT, request, key, timeout, max_request_bytes=max_request_bytes)
         finally:
             if storage_guard is not None:

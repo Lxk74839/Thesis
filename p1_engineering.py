@@ -5,9 +5,14 @@ from evidence_access import RootBudget
 
 AUTHORIZATION = 'S-ENGINEERING-ONCE-20261020'
 RETRY_AUTHORIZATION = 'S-DEADLINE-RETRY-20261020'
-AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION)
+LONG_AUTHORIZATIONS = ('S-COMPLETE-ONCE-20261021-A1', 'S-COMPLETE-ONCE-20261021-A2')
+AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION) + LONG_AUTHORIZATIONS
 TASK = 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'
 UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
+
+
+def http_window_ms(binding):
+    return 120000 if binding.get('engineering_authorization', binding.get('authorization_id')) in LONG_AUTHORIZATIONS else 30000
 
 
 def authorized(binding):
@@ -42,9 +47,9 @@ class SEngineeringBudget(RootBudget):
         if binding.get('method') != 'S' or not (public or real):
             raise ValueError('S_engineering_scope')
         if (not 1 <= limits['model_calls'] <= 12 or not 1500 <= limits['request_output_tokens'] <= 98304
-                or limits['retries'] != 0 or limits['elapsed_ms'] > 350000
+                or limits['retries'] != 0 or limits['elapsed_ms'] > (1780000 if http_window_ms(binding) == 120000 else 350000)
                 or final_reserve['model_calls'] < 1 or final_reserve['request_output_tokens'] < 1500
-                or final_reserve['elapsed_ms'] < 10000):
+                or final_reserve['elapsed_ms'] < (145000 if http_window_ms(binding) == 120000 else 10000)):
             raise ValueError('S_engineering_limits')
         self.metering = []
         super().__init__(binding, limits, final_reserve, **kwargs)
