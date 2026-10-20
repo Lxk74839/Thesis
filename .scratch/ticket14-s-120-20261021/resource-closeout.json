@@ -43,5 +43,7 @@
   "A2_started": false,
   "calls_used": 1,
   "S_passed": false,
-  "offline_limit": 3480
+  "offline_limit": 3480,
+  "local_resource_acceptance": false,
+  "local_conservative_overage_seconds": 11.059829200035892
 }
