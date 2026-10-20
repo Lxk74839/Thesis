@@ -8,6 +8,7 @@ from pathlib import Path
 from evidence_access import PROJECT
 from experiment_runner import _task_plan, assemble_task
 from provider_fourrouter import contract_missing
+from p1_storage import P1StorageGuard
 
 PILOT_ID = '6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1'
 PLAN_ID = '9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088'
@@ -50,6 +51,8 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
         missing.append('exact_4router_binding')
     if cfg.get('execution_authorized') is not True or not cfg.get('authorization_id'):
         missing.append('execution_authorization')
+    if TASK_KEYS[method] not in cfg.get('authorized_task_keys', []):
+        missing.append('execution_task_authorization')
     for name in ('limits', 'final_reserve'):
         if not _valid_budget(cfg.get(name, {}).get(method)):
             missing.append(name)
@@ -62,7 +65,7 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
             missing.append('R_must_have_zero_model_budget')
     if cfg.get('storage_limit_bytes') is None:
         missing.append('storage_limit_bytes')
-    if (storage_guard is None or getattr(storage_guard, 'limit_bytes', None) != cfg.get('storage_limit_bytes')
+    if (type(storage_guard) is not P1StorageGuard or getattr(storage_guard, 'limit_bytes', None) != cfg.get('storage_limit_bytes')
             or getattr(storage_guard, 'root', None) != OUTPUT):
         missing.append('controlled_storage_guard')
     if method != 'R':
@@ -117,6 +120,10 @@ def execute_p1(config_path, method, *, counter=None, storage_guard=None):
     if output.exists():
         return prepared | {'terminal': 'not_started', 'missing': ['existing_execution_no_retry']}
     with storage_guard:
+        output.mkdir(parents=True, exist_ok=False)
+        with (output / 'attempt.json').open('x', encoding='utf-8') as stream:
+            stream.write(json.dumps({'task_key': TASK_KEYS[method], 'run_id': run_id,
+                'pilot_id': PILOT_ID, 'authorization_id': cfg['authorization_id']}) + '\n')
         assembly = assemble_task(PILOT, TASK_KEYS[method], execution_record={'run_id': run_id})
         runtime = build_runtime(assembly, cfg, method, counter=counter)
         observed = runtime.run()

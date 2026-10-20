@@ -829,6 +829,7 @@ class RecommendationRun:
     def run(self):
         if self.result is not None:
             return copy.deepcopy(self.result)
+        release_scope = 'development_pilot' if self.fourrouter and self.binding['fixture'] is None else 'public_fixture_only'
         committed = False
         stage = 'work'
         audit_path = self.output_root / 'audit.json'
@@ -892,7 +893,7 @@ class RecommendationRun:
             if self.binding['method'] == 'M' and self.binding['arm'] == 'quality':
                 self.state['anchor_consistency'] = 'passed'
                 self.state['components'] = self._components()
-            publication = {'run_id': self.binding['run_id'], 'release_scope': 'public_fixture_only',
+            publication = {'run_id': self.binding['run_id'], 'release_scope': release_scope,
                 'terminal': self.state['terminal'], 'draft': draft, 'draft_sha256': digest(encoded(draft)),
                 'G': self.state['G'], 'cursor': self.state['cursor'], 'budget': self.budget.audit_view(),
                 'A_sha256': digest(encoded(self.evidence.audit_view()['acquired'])),
@@ -931,7 +932,7 @@ class RecommendationRun:
             except OSError:
                 audit_path = None
         self.result = {**copy.deepcopy(self.state), 'budget': self.budget.audit_view(),
-            'release_scope': 'public_fixture_only', 'provider_requests_sent': 0,
+            'release_scope': release_scope, 'provider_requests_sent': 0,
             'publication_path': str(self.output_root / 'publication.json') if self.state['terminal'] in ('released', 'valid_empty') else None,
             'audit_path': str(audit_path) if audit_path else None}
         return copy.deepcopy(self.result)

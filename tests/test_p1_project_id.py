@@ -30,6 +30,7 @@ def setUpModule():
 def public_config():
     cfg = json.loads(p1.DEFAULT_CONFIG.read_text(encoding='utf-8'))
     cfg.update(execution_authorized=True, authorization_id='PUBLIC-PROJECT-ID-FIX', storage_limit_bytes=1024**2)
+    cfg['authorized_task_keys'] = list(p1.TASK_KEYS.values())
     cfg['model_binding'].update(project_id='PUBLIC-PROJECT-ID-FIX',
         pricing={'input_microusd_per_million': 1, 'output_microusd_per_million': 1,
                  'cached_microusd_per_million': 1}, api_budget_microusd=2000,
@@ -50,7 +51,7 @@ class P1ProjectIdAdmission(unittest.TestCase):
                 patch('fourrouter_probe.send_response', side_effect=AssertionError('HTTP_forbidden')) as send:
             counter = Mock()
             counter.count.side_effect = AssertionError('count_forbidden')
-            guard = Mock(limit_bytes=1024**2, root=p1.OUTPUT)
+            guard = p1.P1StorageGuard(p1.OUTPUT, 1024**2)
             path = Path(tmp) / 'PUBLIC-config.json'
             for method in ('R', 'S', 'M'):
                 cfg = public_config()
@@ -87,7 +88,7 @@ class P1ProjectIdAdmission(unittest.TestCase):
             path = Path(tmp) / 'PUBLIC-config.json'
             path.write_text(json.dumps(cfg), encoding='utf-8')
             counter = Mock()
-            guard = Mock(limit_bytes=1024**2, root=p1.OUTPUT)
+            guard = p1.P1StorageGuard(p1.OUTPUT, 1024**2)
             for method in ('R', 'S', 'M'):
                 result = p1.prepare_p1(path, method, counter=counter, storage_guard=guard)
                 self.assertEqual(result['terminal'], 'ready')
