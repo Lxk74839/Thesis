@@ -1,5 +1,6 @@
 """Frozen reference-only test100 plan and bounded public-fixture dispatch."""
 import hashlib
+import copy
 import json
 import os
 from pathlib import Path
@@ -198,9 +199,25 @@ def build_plan(source_refs, seed, output_root):
     return plan
 
 
-def run_task(plan, task_key, *, runtime=None, output_root=None):
+def run_task(plan, task_key, *, runtime=None, output_root=None, execution_record=None):
     """Dispatch only public handwritten runtimes; real test100 remains preparation-only."""
     directory = _path(plan)
+    assembly = None
+    if execution_record is not None or (directory / 'manifest.json').exists():
+        assembly = assemble_task(plan, task_key, execution_record=execution_record)
+        if assembly['status'] != 'assembled':
+            return {k: assembly[k] for k in ('task_key', 'plan_id', 'terminal', 'missing', 'started', 'provider_requests_sent')}
+        if runtime is None:
+            return {'task_key': task_key, 'terminal': 'configuration_required', 'started': False,
+                    'missing': ['public_runtime'], 'provider_requests_sent': 0}
+        if any(runtime.binding.get(k) != v for k, v in assembly['binding'].items()):
+            raise ValueError('assembled_runtime_binding_mismatch')
+        if (runtime.budget.limits != execution_record.get('limits')
+                or runtime.budget.final_reserve != execution_record.get('final_reserve')):
+            raise ValueError('assembled_runtime_budget_mismatch')
+        if (runtime.initial_messages != assembly['initial_messages']
+                or runtime.evidence.source.snapshot_ref != assembly['snapshot_ref']):
+            raise ValueError('assembled_runtime_source_mismatch')
     manifest = json.loads((directory / 'plan.json').read_bytes())
     if (manifest['schema_version'] != SCOPE or manifest['plan_id'] != digest(encoded(
             {k: v for k, v in manifest.items() if k != 'plan_id'}))):
@@ -242,9 +259,16 @@ def run_task(plan, task_key, *, runtime=None, output_root=None):
     _write(intent, [{'task_key': task_key, 'plan_id': manifest['plan_id']}])
     observed = runtime.run()
     result = {'task_key': task_key, 'plan_id': manifest['plan_id'], 'run_id': runtime.binding['run_id'],
-        'terminal': observed['terminal'], 'reason': observed['reason'], 'delivered': observed['delivered'],
+        'started': True, 'terminal': observed['terminal'], 'reason': observed['reason'], 'delivered': observed['delivered'],
         'usage': observed['budget']['usage'], 'provider_requests_sent': 0,
         'audit_path': observed['audit_path'], 'publication_path': observed['publication_path']}
+    if 'acquired_ref' in observed:
+        result['acquired_ref'] = observed['acquired_ref']
+    for name, path in (('audit_ref', observed['audit_path']), ('publication_ref', observed['publication_path']),
+                       ('budget_ref', output / 'budget.jsonl')):
+        if path is not None:
+            raw = _path(path).read_bytes()
+            result[name] = {'path': _path(path).relative_to(PROJECT).as_posix(), 'bytes': len(raw), 'sha256': digest(raw)}
     _write(checkpoint, [result])
     return result
 
@@ -254,6 +278,160 @@ def _json_lines(path, expected):
     if digest(raw) != expected['sha256'] or len(raw) != expected['bytes']:
         raise ValueError('plan_component_mismatch')
     return raw.splitlines()
+
+
+def _task_plan(plan):
+    directory = _path(plan)
+    manifest = json.loads((directory / ('manifest.json' if (directory / 'manifest.json').exists() else 'plan.json')).read_bytes())
+    identity = 'pilot_id' if 'pilot_id' in manifest else 'plan_id'
+    if manifest[identity] != digest(encoded({k: v for k, v in manifest.items() if k != identity})):
+        raise ValueError('invalid_plan')
+    names = {'tasks.jsonl', 'user-scenarios.jsonl', 'scenes.jsonl', 'root-references.jsonl', 'sample-users.jsonl'}
+    if set(manifest['components']) != names:
+        raise ValueError('invalid_assembly_components')
+    rows = {name: [json.loads(raw) for raw in _json_lines(_path(directory / name), manifest['components'][name])]
+            for name in names}
+    return directory, manifest, rows
+
+
+def _source_row(ref):
+    with _path(ref['path']).open('rb') as stream:
+        stream.seek(ref.get('offset', 0))
+        raw = stream.read(ref['bytes'])
+    if len(raw) != ref['bytes'] or digest(raw) != ref['sha256']:
+        raise ValueError('source_binding_mismatch')
+    return json.loads(raw)
+
+
+def _accepted_assembly_sources(manifest, refs, view_ref, scene, relation, task):
+    sources = manifest['sources']
+    if sources != accepted_sources() or any(_path(ref['path']) != _path(sources[name]['path']) for ref, name in (
+            (refs['root_ref'], 'roots'), (refs['candidate_ref'], 'candidates'), (view_ref, 'view_bindings'))):
+        raise ValueError('unapproved_real_sources')
+    parent_ref = {'path': str(AUDIT / 'plan/plan.json'), 'bytes': 3910,
+                  'sha256': 'ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316'}
+    parent = _json(parent_ref)
+    frozen = [json.loads(raw) for raw in _json_lines(AUDIT / 'plan/scenes.jsonl', parent['components']['scenes.jsonl'])]
+    if scene not in frozen:
+        raise ValueError('unapproved_scene_source')
+    if manifest['source_scope'] == 'development_pilot':
+        supplied = manifest['parent_plan_ref']
+        if (_path(supplied['path']) != _path(parent_ref['path']) or supplied['sha256'] != parent_ref['sha256']
+                or supplied['bytes'] != parent_ref['bytes'] or manifest['parent_plan_id'] != parent['plan_id']):
+            raise ValueError('parent_plan_binding_mismatch')
+        proof_path = _path(manifest['membership_ref']['path'])
+        if proof_path.name != 'membership.json' or not any(proof_path.is_relative_to(root) for root in (
+                PUBLIC, PROJECT / 'data/recommendation-runtime-audit/ticket14-development')):
+            raise ValueError('development_membership_mismatch')
+        proof = _json(manifest['membership_ref'])
+        member_ref = proof['membership_source_ref']
+        if (proof['split'] != 'dev' or proof['root_task_id'] != relation['root_task_id']
+                or proof['cohort_sha256'] != sources['cohort']['sha256']
+                or _path(member_ref['path']) != _path(sources['cohort']['path'])):
+            raise ValueError('development_membership_mismatch')
+        member = _source_row(member_ref)
+        users = [json.loads(raw)['root_task_id'] for raw in _json_lines(AUDIT / 'plan/sample-users.jsonl',
+                                                                 parent['components']['sample-users.jsonl'])]
+        if (member['split'] != 'dev' or member['task_id'] != relation['root_task_id']
+                or relation['root_task_id'] in users):
+            raise ValueError('development_membership_mismatch')
+    elif manifest['source_scope'] != 'accepted_test_pool' or manifest['plan_id'] != parent['plan_id']:
+        raise ValueError('unapproved_assembly_scope')
+    if (task['task_key'] != digest(encoded([manifest['schema_version'], relation['root_task_id'], scene['view_id'], task['method'], 1]))
+            or relation['binding_id'] != digest(encoded([manifest['schema_version'], relation['root_task_id'], scene['view_id']]))):
+        raise ValueError('task_identity_mismatch')
+
+
+def assemble_task(plan, task_key, *, execution_record=None):
+    """Read one bound safe input. Stage A never grants real execution capability."""
+    from joint_access import JointSession
+    directory, manifest, rows = _task_plan(plan)
+    def one(name, field, value):
+        found = [row for row in rows[name] if row[field] == value]
+        if len(found) != 1:
+            raise ValueError('unknown_or_duplicate_' + field)
+        return found[0]
+    task = one('tasks.jsonl', 'task_key', task_key)
+    relation = one('user-scenarios.jsonl', 'binding_id', task['binding_id'])
+    scene = one('scenes.jsonl', 'view_id', relation['view_id'])
+    refs = one('root-references.jsonl', 'root_task_id', relation['root_task_id'])
+    if manifest['model_binding'] != UNBOUND or manifest['execution_authorized'] is not False:
+        raise ValueError('stage_A_model_binding_must_be_null')
+    public = manifest['source_scope'] == 'public_fixture'
+    if public and (not directory.is_relative_to(PUBLIC) or not relation['root_task_id'].startswith('PUBLIC-')):
+        raise ValueError('fixture_source_scope_mismatch')
+    sources = manifest['sources']
+    view_ref = relation.get('existing_binding_ref') or relation.get('request_template_ref')
+    if view_ref is None:
+        normal_scene = next(row for row in rows['scenes.jsonl'] if row['label'] == 'V00')
+        normal = next(row for row in rows['user-scenarios.jsonl'] if row['root_task_id'] == relation['root_task_id']
+                      and row['view_id'] == normal_scene['view_id'])
+        view_ref = normal['existing_binding_ref']
+    used_refs = [refs['root_ref'], refs['candidate_ref'], view_ref,
+                 sources['catalog'], sources['candidate_map'], scene['snapshot']]
+    if public and any(not _path(ref['path']).is_relative_to(PUBLIC) for ref in used_refs):
+        raise ValueError('fixture_source_scope_mismatch')
+    if not public:
+        _accepted_assembly_sources(manifest, refs, view_ref, scene, relation, task)
+    root, candidates = _source_row(refs['root_ref']), _source_row(refs['candidate_ref'])
+    view = _source_row(view_ref)
+    if 'existing_binding_ref' not in relation:
+        view = view | {k: scene[k] for k in ('label', 'view_id', 'snapshot', 'snapshot_id', 'arm')}
+    catalog = [json.loads(line) for line in _json_lines(_path(sources['catalog']['path']), sources['catalog'])]
+    mapping = [json.loads(line) for line in _json_lines(_path(sources['candidate_map']['path']), sources['candidate_map'])]
+    snapshot = _json(scene['snapshot'])
+    if view['principal_id'] != 'SIM-VERIFIER' or view['arm'] != scene['arm']:
+        raise ValueError('permission_binding_mismatch')
+    c, scores, batches = candidates['C'], candidates['b'], candidates['batches']
+    hashes = {'C_sha256': digest(encoded(c)), 'H_sha256': digest(encoded(root['history'])),
+              'base_scores_sha256': digest(encoded(list(zip(c, scores))))}
+    if (task['method'] not in ('R', 'S', 'M') or task['repeat'] != 1 or task['uses_model'] != (task['method'] != 'R')
+            or len(c) != len(set(c)) or not len(c) == len(scores) == len(batches) == len(candidates['background_statistics'])
+            or any(row['root_task_id'] != relation['root_task_id'] for row in (root, candidates, view))
+            or view['view_id'] != scene['view_id'] or view['snapshot'] != scene['snapshot']
+            or view['snapshot_id'] != snapshot['snapshot_id'] or snapshot['snapshot_id'] != scene['snapshot_id']
+            or any(row[k] != v for row in (root, refs, view) for k, v in hashes.items())
+            or set(c) - {p['parent_asin'] for p in catalog}
+            or any(next((m.get('sim_batch_id') for m in mapping if m['parent_asin'] == p), None) != b for p, b in zip(c, batches))):
+        raise ValueError('assembly_binding_mismatch')
+    safe_fields = {'schema_version', 'root_task_id', 'history', 'seen_parent_asins', 'history_cutoff_exclusive_ms',
+        'catalog_version', 'score_version', 'C_sha256', 'H_sha256', 'base_scores_sha256', 'candidate_count',
+        'metadata_time_basis', 'text_policy_version'}
+    if set(root) - safe_fields:
+        raise ValueError('unsafe_root_fields')
+    initial = JointSession(root, candidates, catalog, view, 'session:' + task_key).dispatch('model_request', {})['request']['messages']
+    payload = json.loads(initial[0]['content'])
+    payload['H'] = payload.pop('history')
+    payload.pop('input_fingerprint')
+    payload['verify_at_ms'] = view['verify_at_ms']
+    payload['input_fingerprint'] = digest(encoded(payload))
+    initial[0]['content'] = encoded(payload).decode()
+    record = execution_record or {}
+    binding = {'schema_version': 'rsm-run-0.3.0', 'execution_kind': 'on_demand_public' if public else 'unbound_stage_A',
+        'fixture': 'public_runtime_adapter' if public else None, 'plan_source_scope': manifest['source_scope'],
+        'execution_budget': None, 'execution_authorized': False, 'run_id': record.get('run_id'),
+        'root_task_id': relation['root_task_id'], 'method': task['method'], 'repeat_id': task['repeat'],
+        'task_key': task_key, 'view_id': scene['view_id'], 'material_version': view['material_version'],
+        'request_profile_id': view['request_profile_id'],
+        'arm': scene['arm'], 'C': c, 'base_scores': scores, 'batches': batches,
+        'C_sha256': hashes['C_sha256'], 'H_sha256': hashes['H_sha256'], 'base_score_sha256': hashes['base_scores_sha256'],
+        'K': view['K'], 'principal_id': view['principal_id'], 'snapshot_id': scene['snapshot_id'],
+        'verify_at_ms': view['verify_at_ms'], 'necessary_clauses': [v['clause_id'] if isinstance(v, dict) else v
+            for v in view['request']['necessary_clauses']], 'prefix_limit': record.get('prefix_limit'),
+        'fusion': record.get('fusion'), 'safe_initial_messages': initial,
+        'assembled_input_sha256': digest(encoded(initial)), 'source_snapshot_ref': scene['snapshot']}
+    result = {'task_key': task_key, 'plan_id': manifest.get('plan_id', manifest.get('pilot_id')),
+        'source_scope': manifest['source_scope'], 'task': task, 'scene': scene, 'view': view,
+        'binding': binding, 'initial_messages': initial, 'root': root, 'candidates': candidates, 'catalog': catalog,
+        'snapshot_ref': scene['snapshot'], 'model_binding': copy.deepcopy(manifest['model_binding']),
+        'provider_requests_sent': 0, 'started': False}
+    if not public or record.get('fixture') is not True:
+        return result | {'status': 'configuration_required', 'terminal': 'configuration_required',
+            'missing': [k for k, v in manifest['model_binding'].items() if v is None] + ['stage_B_not_implemented']}
+    missing = [k for k in ('run_id', 'limits', 'final_reserve') if not record.get(k)]
+    if missing:
+        return result | {'status': 'configuration_required', 'terminal': 'configuration_required', 'missing': missing}
+    return result | {'status': 'assembled'}
 
 
 if __name__ == '__main__':

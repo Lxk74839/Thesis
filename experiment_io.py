@@ -1,0 +1,181 @@
+"""Read-only artifact/reference association. Stage A accepts PUBLIC evidence only."""
+import copy
+import json
+
+from evidence_access import PROJECT, digest, encoded
+from experiment_runner import _path, _task_plan, assemble_task
+from experiment_evaluation import BINDING, ORIGINAL, SCENES
+
+
+def _public_path(path):
+    path = _path(path)
+    if not any(path.is_relative_to(PROJECT / root) for root in (
+            '.tmp/recommendation-runtime', '.tmp/experiment-evaluation')):
+        raise ValueError('stage_A_real_evaluation_forbidden')
+    return path
+
+
+def _read(ref):
+    raw = _public_path(ref['path']).read_bytes()
+    if len(raw) != ref['bytes'] or digest(raw) != ref['sha256']:
+        raise ValueError('artifact_binding_mismatch')
+    return raw
+
+
+def _rows(ref):
+    return [json.loads(raw) for raw in _read(ref).splitlines()]
+
+
+def _execution(task, ref, plan_id):
+    """Project actual artifacts without ever accepting an independent reference."""
+    result = json.loads(_read(ref))
+    if result['task_key'] != task['task_key'] or result['plan_id'] != plan_id:
+        raise ValueError('execution_binding_mismatch')
+    binding = {k: task[k] for k in BINDING}
+    if _public_path(ref['path']).name == 'task.intent.json' and set(result) == {'task_key', 'plan_id'}:
+        return {'task_key': task['task_key'], 'binding': binding, 'started': True,
+                'terminal': 'unresolved_attempt', 'usage': None}
+    if result['terminal'] in ('not_started', 'configuration_required'):
+        if result.get('started') is not False:
+            raise ValueError('invalid_execution_state')
+        return {'task_key': task['task_key'], 'binding': binding, 'started': False, 'terminal': result['terminal']}
+    if result['terminal'] in ('running', 'unresolved_attempt'):
+        return {'task_key': task['task_key'], 'binding': binding, 'started': True,
+                'terminal': result['terminal'], 'usage': result.get('usage')}
+    directory = _public_path(ref['path']).parent
+    audit_path = _public_path(result['audit_path'])
+    if audit_path.parent != directory:
+        raise ValueError('audit_scope_mismatch')
+    if _public_path(result['audit_ref']['path']) != audit_path:
+        raise ValueError('audit_scope_mismatch')
+    audit = json.loads(_read(result['audit_ref']))
+    actual = audit['binding']
+    expected = binding | {'base_scores': task['base_scores']}
+    if (audit['run_id'] != result['run_id'] or audit['terminal'] != result['terminal']
+            or actual.get('task_key') != task['task_key']
+            or any(actual.get('base_score_sha256' if k == 'base_scores_sha256' else k) != v for k, v in expected.items())):
+        raise ValueError('audit_binding_mismatch')
+    acquired = json.loads(_read(result['acquired_ref']))
+    if (audit.get('acquired_ref') != result['acquired_ref']
+            or any(acquired['binding'][k] != task[k] for k in ('root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms'))
+            or acquired['candidate_binding'] != {'C': task['C'], 'base_scores': task['base_scores']}):
+        raise ValueError('actual_A_binding_mismatch')
+    success = result['terminal'] in ('released', 'valid_empty')
+    publication_verified = False
+    if _public_path(result['budget_ref']['path']) != directory / 'budget.jsonl':
+        raise ValueError('budget_scope_mismatch')
+    journal = [json.loads(raw) for raw in _read(result['budget_ref']).splitlines()]
+    settled = {r['reservation_id']: r for r in journal if r.get('status') == 'settled'}
+    final_ids = [r['reservation_id'] for r in journal if r.get('operation') == 'final']
+    gate = bool(final_ids) and all(settled.get(i, {}).get('observation', {}).get('status') == 'ok' for i in final_ids)
+    if success:
+        publication_path = _public_path(result['publication_path'])
+        if _public_path(result['publication_ref']['path']) != publication_path:
+            raise ValueError('publication_binding_mismatch')
+        raw = _read(result['publication_ref'])
+        publication = json.loads(raw)
+        publication_verified = (publication_path.parent == directory and digest(raw) == audit['publication_record_sha256']
+            and publication['run_id'] == result['run_id'] and publication['terminal'] == result['terminal']
+            and publication['G'] == audit['G'] and publication['A_sha256'] == digest(encoded(acquired))
+            and [r['parent_asin'] for r in publication['draft']['items']] == result['delivered'] == audit['delivered'])
+        if not publication_verified:
+            raise ValueError('publication_binding_mismatch')
+    usages = [m['response_summary']['usage'] for m in audit['messages']]
+    usage = {'basis': 'synthetic_fixture_units'}
+    for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
+        values = [u.get(key) for u in usages]
+        usage[key] = sum(values) if all(v is not None for v in values) else None
+    states = {p: a['evidence_state'] for p, a in audit['assessments'].items()}
+    execution = {'task_key': task['task_key'], 'binding': binding, 'started': True,
+        'terminal': result['terminal'], 'delivered': result['delivered'], 'G': audit['G'],
+        'cursor': audit['cursor'], 'stop_reason': audit['stop_reason'], 'assessments': states,
+        'complete_C': audit['cursor'] == len(task['C']) and set(states) == set(task['C']),
+        'gate_passed': gate, 'publication_verified': publication_verified, 'acquired': acquired,
+        'components': audit['components'], 'usage': usage}
+    if task['scene'].startswith('Q'):
+        task['fusion'] = copy.deepcopy(actual['fusion'])
+    return execution
+
+
+def load_evaluation_inputs(plan, *, execution_index, reference_sources):
+    """Return fixed evaluation slots and observations; perform no scoring or execution."""
+    _public_path(plan)
+    _, manifest, rows = _task_plan(plan)
+    if manifest['source_scope'] != 'public_fixture' or reference_sources['scope'] != 'public_fixture':
+        raise ValueError('stage_A_real_evaluation_forbidden')
+    if set(r['label'] for r in rows['scenes.jsonl']) != set(SCENES):
+        raise ValueError('evaluation_requires_18_scene_slots')
+    plan_id = manifest.get('plan_id', manifest.get('pilot_id'))
+    tasks, observations, applicability = [], [], {}
+    roots = [u['root_task_id'] for u in rows['sample-users.jsonl']]
+    if len(roots) != len(set(roots)):
+        raise ValueError('duplicate_evaluation_user')
+    scheduled = {}
+    for row in rows['tasks.jsonl']:
+        relation = next(b for b in rows['user-scenarios.jsonl'] if b['binding_id'] == row['binding_id'])
+        key = (relation['root_task_id'], relation['view_id'], row['method'])
+        if key in scheduled:
+            raise ValueError('duplicate_scheduled_task')
+        scheduled[key] = row
+    if set(execution_index) - {t['task_key'] for t in scheduled.values()}:
+        raise ValueError('unknown_execution_key')
+    preferences = _rows(reference_sources['preference'])
+    states = _rows(reference_sources['joint_states'])
+    additional = _rows(reference_sources['scenario_states'])
+    for root in roots:
+        first = next(t for (u, _, _), t in scheduled.items() if u == root)
+        assembly = assemble_task(plan, first['task_key'])
+        binding = assembly['binding']
+        pref = [p for p in preferences if p['root'] == root]
+        if len(pref) != 1 or pref[0]['target_parent'] not in binding['C']:
+            raise ValueError('preference_reference_mismatch')
+        applicability[root] = {}
+        for scene in rows['scenes.jsonl']:
+            relation = next(b for b in rows['user-scenarios.jsonl'] if b['root_task_id'] == root and b['view_id'] == scene['view_id'])
+            view = json.loads(_read(relation['existing_binding_ref']))
+            if (view['root_task_id'] != root or view['snapshot_id'] != scene['snapshot_id']
+                    or view['snapshot'] != scene['snapshot'] or any(view[k] != assembly['root'][k]
+                        for k in ('C_sha256', 'H_sha256', 'base_scores_sha256'))):
+                raise ValueError('evaluation_view_binding_mismatch')
+            use_joint = scene['label'] in (*ORIGINAL, 'Q1', 'Q2')
+            matching = [r for r in (states if use_joint else additional) if
+                r.get('view' if use_joint else 'view_id') == scene['view_id'] and
+                r.get('profile' if use_joint else 'request_profile_id') == view['request_profile_id']]
+            independent = {}
+            for row in matching:
+                parent = row['parent' if use_joint else 'parent_asin']
+                if parent not in binding['C']:
+                    continue
+                if (parent in independent or row['snapshot' if use_joint else 'snapshot_id'] != scene['snapshot_id']
+                        or row['batch' if use_joint else 'sim_batch_id'] != binding['batches'][binding['C'].index(parent)]
+                        or use_joint and row['material_version'] != view['material_version']
+                        or row['candidate_state'] not in ('Supported', 'Refuted', 'Pending', 'Conflict')
+                        or row['eligible'] != (row['candidate_state'] == 'Supported')):
+                    raise ValueError('independent_reference_binding_mismatch')
+                independent[parent] = row['candidate_state']
+            if set(independent) != set(binding['C']):
+                raise ValueError('missing_independent_reference')
+            applicability[root][scene['label']] = independent[pref[0]['target_parent']] == 'Supported'
+            for method in (('M',) if scene['label'].startswith('Q') else ('R', 'S', 'M')):
+                scheduled_task = scheduled.get((root, scene['view_id'], method))
+                key = scheduled_task['task_key'] if scheduled_task else digest(encoded([
+                    manifest['schema_version'], root, scene['view_id'], method, 1]))
+                task = {'task_key': key, 'root_task_id': root, 'view_id': scene['view_id'], 'scene': scene['label'],
+                    'method': method, 'repeat': 1, 'material_version': view['material_version'],
+                    'snapshot_id': scene['snapshot_id'], 'request_profile_id': view['request_profile_id'],
+                    'principal_id': view['principal_id'], 'verify_at_ms': view['verify_at_ms'],
+                    'C': binding['C'], 'batches': binding['batches'], 'H_sha256': binding['H_sha256'],
+                    'base_scores_sha256': binding['base_score_sha256'], 'base_scores': binding['base_scores'],
+                    'fixed_S': reference_sources['fixed_S']}
+                reference = {'binding': {k: task[k] for k in BINDING}, 'target': pref[0]['target_parent'],
+                    'states': independent, 'source_ref': reference_sources['preference'] | {
+                        'components': [reference_sources['preference'], reference_sources['joint_states' if use_joint else 'scenario_states']]}}
+                execution = (_execution(task, execution_index[key], plan_id) if key in execution_index else None) if scheduled_task else {
+                    'task_key': key, 'binding': reference['binding'], 'started': False, 'terminal': 'not_started'}
+                tasks.append(task)
+                observations.append({'task': task, 'execution': execution, 'reference': reference})
+    evaluation_plan = {'source_scope': 'public_fixture', 'plan_id': plan_id, 'users': roots,
+        'scenes': list(SCENES), 'tasks': tasks, 'applicability': applicability,
+        'cohorts': {'U8': [u for u in roots if all(applicability[u][s] for s in ORIGINAL)],
+                    'UQ': [u for u in roots if all(applicability[u][s] for s in ('Q1', 'Q2'))]}}
+    return evaluation_plan, observations

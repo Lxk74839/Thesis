@@ -27,17 +27,20 @@ ON_DEMAND = ROOT / '.scratch/ticket12-budget-20261018/on-demand-package-20261019
 ON_DEMAND_SHA = '2c785971e00379bd51fbc15a3be0b14cc346f14b5dfb65ab7bd847aad92eaee3'
 EVALUATION = ROOT / '.scratch/test100-evaluation-20261020/package.json'
 EVALUATION_SHA = '2045d544823affdc935e963f6f39ce731b81cd5906e1e281ffcd6e7a1280fa67'
+LIVE_A = ROOT / '.scratch/ticket14-live-integration-20261020/package.json'
+LIVE_A_SHA = '3db845e82beb5cff97ae52252c4fb5dbf9a3ea6a8850f8e8688682548f6bf86b'
 
 
 def on_demand_package(evaluation=False):
-    raw = (EVALUATION if evaluation else ON_DEMAND).read_bytes()
-    if hashlib.sha256(raw).hexdigest() != (EVALUATION_SHA if evaluation else ON_DEMAND_SHA):
+    live = bool(os.environ.get('THESIS_LIVE_A_PACKAGE'))
+    raw = (LIVE_A if live else EVALUATION if evaluation else ON_DEMAND).read_bytes()
+    if hashlib.sha256(raw).hexdigest() != (LIVE_A_SHA if live else EVALUATION_SHA if evaluation else ON_DEMAND_SHA):
         raise SystemExit('on_demand_package_changed')
     package = json.loads(raw)
-    if (package['schema_version'] != ('test100-evaluation-package-0.1.0' if evaluation else 'test100-offline-package-0.1.0')
+    if (package['schema_version'] != ('ticket14-A-offline-package-0.1.0' if live else 'test100-evaluation-package-0.1.0' if evaluation else 'test100-offline-package-0.1.0')
             or package['approved'] is not True or package['api_limits'] != {'generate': 0, 'count': 0, 'other': 0}):
         raise SystemExit('invalid_on_demand_package')
-    for name in ('human_confirmation', 'draft'):
+    for name in ('human_confirmation', 'draft', 'spec') if live else ('human_confirmation', 'draft'):
         ref = package[name]
         if hashlib.sha256((ROOT / ref['path']).read_bytes()).hexdigest() != ref['sha256']:
             raise SystemExit('on_demand_confirmation_changed')
@@ -120,7 +123,8 @@ def storage_child(arguments):
     global DISK
     pilot = bool(os.environ.get('THESIS_RECOVERY_PILOT_PACKAGE'))
     evaluation = bool(os.environ.get('THESIS_EVALUATION_PACKAGE'))
-    demand = evaluation or bool(os.environ.get('THESIS_ON_DEMAND_PACKAGE'))
+    live = bool(os.environ.get('THESIS_LIVE_A_PACKAGE'))
+    demand = live or evaluation or bool(os.environ.get('THESIS_ON_DEMAND_PACKAGE'))
     package = on_demand_package(evaluation) if demand else pilot_package() if pilot else storage_package()
     if pilot or demand:
         DISK = ROOT / package['disk_ledger']
@@ -189,6 +193,10 @@ def storage_child(arguments):
             return original(file, mode, *args, **kwargs)
         path = Path(file).absolute()
         writing = any(c in mode for c in 'wax+')
+        if live and not writing and path.is_relative_to(ROOT / 'data'):
+            if (path.relative_to(ROOT).as_posix() not in package['read_sources']
+                    and not any(path.is_relative_to(root) for root in roots)):
+                raise OSError('live_A_real_evaluation_or_unapproved_read_forbidden')
         if evaluation and not writing and path.is_relative_to(ROOT / 'data'):
             raise OSError('evaluation_real_data_read_forbidden')
         if demand and not writing and (path.is_relative_to(ROOT / 'data/ticket12-t0') or path.name == 'id-key.bin'):
@@ -296,7 +304,7 @@ def main():
         if len(arguments) < 4 or arguments[1] not in ('offline', 't0'):
             raise SystemExit('invalid_resource_domain')
         domain, arguments = arguments[1], arguments[2:]
-    if domain == 't0' and arguments[0].startswith(('ondemand_', 'eval100_')):
+    if domain == 't0' and arguments[0].startswith(('ondemand_', 'eval100_', 'liveA_')):
         raise SystemExit('on_demand_T0_not_authorized')
     if domain == 't0':
         AUDIT = ROOT / 'data/recommendation-runtime-audit/ticket12-t0'
@@ -311,7 +319,10 @@ def main():
         raise SystemExit('invalid_check_label')
     limit, package, pilot, stage = LIMIT, None, label.startswith('recovery_pilot_'), None
     evaluation = label.startswith('eval100_')
-    demand = evaluation or label.startswith('ondemand_')
+    live = label.startswith('liveA_')
+    demand = live or evaluation or label.startswith('ondemand_')
+    if live:
+        os.environ['THESIS_LIVE_A_PACKAGE'] = str(LIVE_A)
     allowance = LIMIT - used
     if demand:
         if domain != 'offline':
@@ -374,6 +385,11 @@ def main():
                     if (ROOT / p).exists())
     if evaluation:
         source_paths += tuple(p for p in ('experiment_evaluation.py', 'tests/test_experiment_evaluation.py') if (ROOT / p).exists())
+    if live:
+        source_paths += tuple(p for p in ('experiment_io.py', 'tests/test_live_integration.py', 'experiment_evaluation.py',
+            '.scratch/ticket14-live-integration-20261020/freeze_pilot.py',
+            '.scratch/ticket14-live-integration-20261020/direct_regressions.py',
+            '.scratch/ticket14-live-integration-20261020/record_public.py') if (ROOT / p).exists())
     source_sha256 = {p: source_digest(p) for p in source_paths}
     output = AUDIT / (label + '.txt')
     with inflight.open('x', encoding='utf-8', newline='\n') as stream:
@@ -403,7 +419,7 @@ def main():
                    THESIS_RESOURCE_DOMAIN=domain, THESIS_RESOURCE_LEDGER=str(ledger),
                    THESIS_RESOURCE_DEADLINE_UNIX=str(time.time() + allowance - (time.perf_counter() - START)))
         if package:
-            env['THESIS_EVALUATION_PACKAGE' if evaluation else 'THESIS_ON_DEMAND_PACKAGE' if demand else 'THESIS_RECOVERY_PILOT_PACKAGE' if pilot else 'THESIS_STORAGE_PACKAGE'] = str(EVALUATION if evaluation else ON_DEMAND if demand else PILOT_CONTROL if pilot else CONTROL)
+            env['THESIS_LIVE_A_PACKAGE' if live else 'THESIS_EVALUATION_PACKAGE' if evaluation else 'THESIS_ON_DEMAND_PACKAGE' if demand else 'THESIS_RECOVERY_PILOT_PACKAGE' if pilot else 'THESIS_STORAGE_PACKAGE'] = str(LIVE_A if live else EVALUATION if evaluation else ON_DEMAND if demand else PILOT_CONTROL if pilot else CONTROL)
             if pilot:
                 env['THESIS_RECOVERY_STAGE'] = stage or 'PUBLIC'
         with output.open('xb') as stream:
@@ -473,8 +489,8 @@ if __name__ == '__main__':
         raise SystemExit(main())
     except BaseException as exc:
         if (not SETTLED and sys.argv[1:2] != ['--storage-child']
-                and any(arg.startswith(('recovery_pilot_', 'ondemand_', 'eval100_')) for arg in sys.argv[1:])):
-            label = next(arg for arg in sys.argv[1:] if arg.startswith(('recovery_pilot_', 'ondemand_', 'eval100_')))
+                and any(arg.startswith(('recovery_pilot_', 'ondemand_', 'eval100_', 'liveA_')) for arg in sys.argv[1:])):
+            label = next(arg for arg in sys.argv[1:] if arg.startswith(('recovery_pilot_', 'ondemand_', 'eval100_', 'liveA_')))
             ledger = AUDIT / 'resource-ledger.jsonl'
             if str(exc) != 'runtime_resource_usage_unresolved_no_new_work':
                 used = sum(json.loads(raw)['seconds'] for raw in ledger.read_text().splitlines())

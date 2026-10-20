@@ -1,0 +1,77 @@
+{
+  "protected_files": 22,
+  "real_statistics": 0,
+  "pilot_files": [
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\manifest.json",
+      "bytes": 4139,
+      "sha256": "bbd56be7fc0fff5615ed12fd20106bdabf0a4e95fcc9814cb5309fe96a1c11d7"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\membership.json",
+      "bytes": 552,
+      "sha256": "acf266b0be04e545b05238ce6b17eb049d6cd3bc83ff3eafb1b72ebf3a6b8423"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\root-references.jsonl",
+      "bytes": 761,
+      "sha256": "146e57250455d512140f9e176638e9241d0606b0a8b4c61c5f2adb3ab58b56a1"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\sample-users.jsonl",
+      "bytes": 98,
+      "sha256": "f88eb1098716516adda6fb53b62ff594d294d8943558f253fdec644ad10015ba"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\scenes.jsonl",
+      "bytes": 8070,
+      "sha256": "b61a9253ee20f69d081d457fc17c40f2afb8ff6cf8afedb08e798263c705f582"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\tasks.jsonl",
+      "bytes": 1617,
+      "sha256": "079b82c266193f56248fb493e2e3080f6502b92a50088d4b2c302a5c2c34257f"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\pilot\\user-scenarios.jsonl",
+      "bytes": 8442,
+      "sha256": "f5afce76a30ec7d81cd219d07027a75d28610e999661bb169886858a652a36b4"
+    }
+  ],
+  "credential_reads": 0,
+  "provider_count": 0,
+  "provider_other": 0,
+  "provider_generate": 0,
+  "real_evaluations": 0,
+  "offline_prefix_unchanged": true,
+  "real_recommendations": 0,
+  "status": "passed_protection_and_public_delivery_only",
+  "sources": [
+    {
+      "path": "experiment_runner.py",
+      "bytes": 26567,
+      "sha256": "e8545d01c9389cd3a365a64ede7888d7b1bdddde8b1214dfb10a8761cb69070e"
+    },
+    {
+      "path": "recommendation_runner.py",
+      "bytes": 66304,
+      "sha256": "440012a58f0fac5c601dee6651f741bbe0fdff8c166ad8275d69e1d368f05055"
+    },
+    {
+      "path": "experiment_io.py",
+      "bytes": 11674,
+      "sha256": "942ec8d3d08168fe77d57147fd2338b39ef1dda9caf8c306179830f73397985c"
+    },
+    {
+      "path": "tests/test_live_integration.py",
+      "bytes": 30283,
+      "sha256": "883276c12d5f0ca86f1c24457252c6f1071db1e16903997e32c0cee7a8b73e96"
+    },
+    {
+      "path": ".scratch/ticket12-budget-20261018/diagnostics/run_check.py",
+      "bytes": 28954,
+      "sha256": "9d3ca376df638d0c6e66c831cd08f0e1950cd799fc74f4f78eeb39e7fe620c25"
+    }
+  ],
+  "changed": []
+}

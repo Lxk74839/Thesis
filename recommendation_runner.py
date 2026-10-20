@@ -146,6 +146,8 @@ class RecommendationRun:
         self.profile_batch_start = 0
         self.initial_messages = copy.deepcopy(evidence.joint.dispatch('model_request', {})['request']['messages']
             if evidence.joint is not None else binding.get('safe_initial_messages', []))
+        if binding.get('assembled_input_sha256'):
+            self.initial_messages = copy.deepcopy(binding['safe_initial_messages'])
         for message in self.initial_messages:
             payload = json.loads(message['content'])
             payload['verify_at_ms'] = binding['verify_at_ms']
@@ -169,8 +171,12 @@ class RecommendationRun:
             payload = json.loads(message['content'])
             valid = (valid and payload['root_task_id'] == b['root_task_id']
                 and payload['H_sha256'] == b['H_sha256'] == digest(encoded(payload['H']))
-                and payload['request']['necessary_clauses'] == b['necessary_clauses'])
+                and [clause['clause_id'] if isinstance(clause, dict) else clause
+                     for clause in payload['request']['necessary_clauses']] == b['necessary_clauses'])
         source = Path(self.evidence.source.snapshot_ref['path']).resolve()
+        if b.get('assembled_input_sha256'):
+            valid = (valid and self.state['input_projection_sha256'] == b['assembled_input_sha256']
+                and b['source_snapshot_ref'] == self.evidence.source.snapshot_ref)
         if self.on_demand:
             valid = (valid and b.get('plan_source_scope') == 'public_fixture'
                 and b['root_task_id'].startswith('PUBLIC-')
@@ -901,6 +907,8 @@ class RecommendationRun:
         return copy.deepcopy(self.result)
 
     def _write_audit(self, path):
+        if self.on_demand and 'acquired_ref' not in self.state:
+            self.state['acquired_ref'] = self._trace_ref('acquired', self.evidence.audit_view()['acquired'])
         view = self.audit_view()
         if self.on_demand:
             view['messages'] = [{k: copy.deepcopy(v) for k, v in message.items()
