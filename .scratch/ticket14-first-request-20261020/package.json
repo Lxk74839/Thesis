@@ -1,0 +1,13 @@
+{
+  "inherited_ledger_sha256": "428dd09b71b8b2ea3467e7a7045107b48cb37fbe82c9478133c8d2fa5b23a3e2",
+  "inherited_ledger_bytes": 1430745,
+  "native_upper_bytes": 4194304,
+  "prior_package_seconds_left": 56.770404099999496,
+  "native_upper_seconds": 10,
+  "T0_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "offline_seconds": 2163.2423974001376,
+  "prior_write_upper_bytes": 19726871,
+  "package_write_limit_bytes": 67108864,
+  "base": "d282bf867424045e9913d8a95ba291a82d161104",
+  "offline_limit_seconds": 2280
+}
