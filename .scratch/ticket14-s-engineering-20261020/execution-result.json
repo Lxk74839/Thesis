@@ -1,0 +1,48 @@
+{
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "run_id": "P1-D1-V00-S-S-ENGINEERING-ONCE-20261020",
+  "terminal": "failed_model",
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "recommendation_count": null,
+  "responses": [
+    {
+      "status": "not_started"
+    }
+  ],
+  "sample_recommendations": [],
+  "actual_tokens": {
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "metering_reason": "count_waived_rates_unknown_native_usage_optional",
+  "started": true,
+  "provider_requests_sent": 0,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-ENGINEERING-ONCE-20261020\\audit.json",
+  "publication_path": null,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "qualified_count": 0,
+  "reason": "not_started",
+  "request_output_cap_sum": 8192,
+  "model_calls": 0,
+  "code_candidate": "00c68e74d465d033ab3800256eb549b6710f6d9b",
+  "elapsed_seconds": 1.0734190999646671,
+  "guarded_shared_write_upper_bytes": 10630482,
+  "guard_allowed": {
+    "credentials": 0,
+    "response_workers": 0
+  },
+  "guard_denied": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "count_api": 0,
+  "other_api": 0,
+  "independent_evaluation_read": 0,
+  "execution_attempts": 1,
+  "engineering_passed": false,
+  "token_cost_metering_complete": false
+}

@@ -1,0 +1,17 @@
+{
+  "source": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-ENGINEERING-ONCE-20261020/audit.json",
+  "terminal": "failed_model",
+  "adapter_status": "not_started",
+  "missing": ["S_engineering_reservation_or_deadline"],
+  "request_sent": false,
+  "retryable": false,
+  "http_status": null,
+  "returned_model": null,
+  "provider_request_id": null,
+  "native_usage": null,
+  "usage_diagnostic": {"state": "unknown", "reason": "transport_not_entered_no_HTTP_response"},
+  "provider_requests_sent": 0,
+  "independent_engineering_attempts": 1,
+  "retry_performed": false,
+  "automatic_followup_fix": false
+}
