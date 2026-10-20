@@ -17,8 +17,8 @@ spec = importlib.util.spec_from_file_location('existing_job_guard', ROOT / '.scr
 existing = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(existing)
 ledger = PACKAGE / 'execution-resources.jsonl'
-if ledger.exists() or (PACKAGE / 'execution-claim.json').exists():
-    raise SystemExit('S_execution_domain_already_consumed')
+from run_once import ensure_first_execution, RUN_ID, p1
+ensure_first_execution(PACKAGE, p1.OUTPUT / RUN_ID / 'attempt.json')
 offline = json.loads((ROOT / 'data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl').read_text().splitlines()[-1])['cumulative_seconds']
 kernel = ctypes.WinDLL('kernel32', use_last_error=True)
 kernel.CreateJobObjectW.restype = wintypes.HANDLE

@@ -1,0 +1,19 @@
+{
+  "closeout_reserve_bytes": 4194304,
+  "offline_limit_seconds": 1980,
+  "S_execution_limit_seconds": 360,
+  "write_limit_bytes": 67108864,
+  "historical_ledger_sha256": "37317256594dec5f57ac5c92cbcee0eae87ca9f6c85689bd8c74133f2f62aeb9",
+  "closeout_reserve_seconds": 15,
+  "package_limit_seconds": 120,
+  "old_not_started_sha256": "253848f3bcccbbd663752460166e69bc27ac143721b6a22cb96587fed3198b75",
+  "historical_1800_excess_retained": true,
+  "native_upper_write_bytes": 16777216,
+  "native_upper_seconds": 20,
+  "inherited_offline_seconds": 1838.542203800137,
+  "historical_ledger_bytes": 1357233,
+  "test_admission_write_bytes": 1048576,
+  "test_admission_seconds": 5,
+  "base": "896d3b8",
+  "scope": "ticket14-S-execution-receipt-fix"
+}

@@ -1,7 +1,5 @@
 """Consume the human's one S grant; launched only after fixed-candidate review."""
 import sys
-if sys.stdin.buffer.readline() != b'GO\n':
-    raise SystemExit(2)
 import time
 START = time.monotonic()
 import json
@@ -17,12 +15,20 @@ PACKAGE = Path(__file__).resolve().parent
 RUN_ID = 'P1-D1-V00-S-' + AUTHORIZATION
 
 
+def ensure_first_execution(package, attempt_path):
+    package = Path(package)
+    if (any((package / name).exists() for name in (
+            'execution-claim.json', 'execution-result.json', 'execution-resources.jsonl'))
+            or Path(attempt_path).exists()):
+        raise FileExistsError('S_execution_already_consumed')
+    return package / 'execution-result.json'
+
+
 def main():
     candidate = sys.argv[1]
     if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate):
         raise SystemExit('fixed_candidate_required')
-    if (PACKAGE / 'result.json').exists():
-        raise SystemExit('S_receipt_exists_no_retry')
+    receipt = ensure_first_execution(PACKAGE, p1.OUTPUT / RUN_ID / 'attempt.json')
     with (PACKAGE / 'execution-claim.json').open('x', encoding='utf-8') as stream:
         json.dump({'authorization_id': AUTHORIZATION, 'task_key': p1.TASK_KEYS['S'],
             'run_id': RUN_ID, 'candidate': candidate, 'execution_attempts': 1}, stream)
@@ -62,11 +68,13 @@ def main():
         guard_denied=guard.attempts, count_api=0, other_api=0, independent_evaluation_read=0,
         execution_attempts=1, engineering_passed=result['terminal'] in ('released', 'valid_empty'),
         token_cost_metering_complete=False)
-    with (PACKAGE / 'result.json').open('x', encoding='utf-8') as stream:
+    with receipt.open('x', encoding='utf-8') as stream:
         json.dump(result, stream, ensure_ascii=False, indent=2)
     print(json.dumps(result, ensure_ascii=False))
     return 0 if result['engineering_passed'] else 2
 
 
 if __name__ == '__main__':
+    if sys.stdin.buffer.readline() != b'GO\n':
+        raise SystemExit(2)
     raise SystemExit(main())
