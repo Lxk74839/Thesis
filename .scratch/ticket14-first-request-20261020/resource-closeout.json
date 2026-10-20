@@ -1,0 +1,52 @@
+{
+  "new_actual_attempt": false,
+  "T0_ledger_unchanged": true,
+  "inherited_ledger_prefix_unchanged": true,
+  "historical_excess_retained": true,
+  "historical_S_execution_seconds": 28.152021199985814,
+  "shared_P1_existing_bytes": 15819084.0,
+  "offline_left": 12.249683999862029,
+  "spec": "BLOCKED_P1_P2",
+  "original_local_package_seconds": 227.7375145000006,
+  "old_evidence": [
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-result.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-claim.json",
+      "unchanged": true
+    },
+    {
+      "path": ".scratch/ticket14-s-deadline-20261020/execution-resources.jsonl",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/audit.json",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-S-S-DEADLINE-RETRY-20261020/budget.jsonl",
+      "unchanged": true
+    }
+  ],
+  "local_resource_acceptance": false,
+  "local_excess_seconds": 47.737514500000614,
+  "offline_limit": 2280,
+  "combined_historical_seconds": 2295.902337200124,
+  "new_execution_claim": false,
+  "code_candidate": "be3552fa5a4dbfffea8fbd1165a4880bb162b8e0",
+  "actual_key_reads": 0,
+  "write_limit_bytes": 67108864,
+  "standards": "PASS",
+  "shared_P1_limit_bytes": 67108864,
+  "API": {
+    "count": 0,
+    "generate": 0,
+    "other": 0
+  },
+  "original_local_limit": 180,
+  "diagnostic_authorization_consumed": false,
+  "offline_seconds": 2267.750316000138,
+  "charged_write_upper_bytes": 23924353.0
+}
