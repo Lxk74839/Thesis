@@ -329,11 +329,13 @@ def _accepted_assembly_sources(manifest, refs, view_ref, scene, relation, task):
                 or proof['cohort_sha256'] != sources['cohort']['sha256']
                 or _path(member_ref['path']) != _path(sources['cohort']['path'])):
             raise ValueError('development_membership_mismatch')
-        frozen_R = (manifest.get('pilot_id') == '6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1'
-            and task['task_key'] == '7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874'
-            and task['method'] == 'R' and proof.get('formal_overlap') == 0
+        frozen_D1 = (manifest.get('pilot_id') == '6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1'
+            and (task['method'], task['task_key']) in (
+                ('R', '7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874'),
+                ('S', 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'))
+            and proof.get('formal_overlap') == 0
             and proof.get('target_or_states_projected') is False)
-        member = ({'split': proof['split'], 'task_id': proof['root_task_id']} if frozen_R else _source_row(member_ref))
+        member = ({'split': proof['split'], 'task_id': proof['root_task_id']} if frozen_D1 else _source_row(member_ref))
         users = [json.loads(raw)['root_task_id'] for raw in _json_lines(AUDIT / 'plan/sample-users.jsonl',
                                                                  parent['components']['sample-users.jsonl'])]
         if (member['split'] != 'dev' or member['task_id'] != relation['root_task_id']

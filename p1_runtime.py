@@ -27,6 +27,13 @@ def _valid_budget(table):
             and all(type(v) is int and v >= 0 for v in table.values()))
 
 
+def _engineering_config(cfg, method):
+    from p1_engineering import AUTHORIZATION, authorized
+    return (method == 'S' and authorized(cfg['model_binding'])
+        and cfg.get('authorization_id') == AUTHORIZATION and cfg.get('execution_authorized') is True
+        and cfg.get('authorized_task_keys') == [TASK_KEYS['S']])
+
+
 def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     cfg = json.loads(Path(config_path).read_text(encoding='utf-8'))
     _, manifest, rows = _task_plan(PILOT)
@@ -40,6 +47,9 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     if relation['root_task_id'] != D1 or scene['label'] != 'V00' or task['method'] != method:
         raise ValueError('P1_scope_mismatch')
     missing = []
+    engineering = _engineering_config(cfg, method)
+    if cfg['model_binding'].get('engineering_authorization') and not engineering:
+        missing.append('S_engineering_authorization')
     project_id = cfg['model_binding'].get('project_id')
     if not isinstance(project_id, str) or not project_id.strip():
         missing.append('project_id')
@@ -54,7 +64,11 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     if TASK_KEYS[method] not in cfg.get('authorized_task_keys', []):
         missing.append('execution_task_authorization')
     for name in ('limits', 'final_reserve'):
-        if not _valid_budget(cfg.get(name, {}).get(method)):
+        from p1_engineering import SEngineeringBudget
+        table = cfg.get(name, {}).get(method)
+        valid = (isinstance(table, dict) and set(table) == set(SEngineeringBudget.resources)
+            and all(type(v) is int and v >= 0 for v in table.values())) if engineering else _valid_budget(table)
+        if not valid:
             missing.append(name)
     limits, reserve = cfg['limits'][method], cfg['final_reserve'][method]
     if _valid_budget(limits) and _valid_budget(reserve):
@@ -68,7 +82,18 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     if (type(storage_guard) is not P1StorageGuard or getattr(storage_guard, 'limit_bytes', None) != cfg.get('storage_limit_bytes')
             or getattr(storage_guard, 'root', None) != OUTPUT):
         missing.append('controlled_storage_guard')
-    if method != 'R':
+    if engineering:
+        if not missing:
+            try:
+                if (not 1 <= limits['model_calls'] <= 12 or limits['request_output_tokens'] > 98304
+                    or reserve['model_calls'] < 1 or reserve['request_output_tokens'] < 1500
+                    or reserve['elapsed_ms'] < 10000 or limits['elapsed_ms'] > 350000
+                    or limits['retries'] != 0 or any(reserve[k] > limits[k] for k in reserve)):
+                    missing.append('S_engineering_limits')
+            except (KeyError, TypeError):
+                missing.append('S_engineering_limits')
+        missing.extend(contract_missing(cfg['model_binding'], counter))
+    elif method != 'R':
         missing.extend(contract_missing(cfg['model_binding'] | {
             'execution_authorized': cfg.get('execution_authorized')}, counter))
         model_limits = [cfg['limits'][m] for m in ('S', 'M')]
@@ -83,15 +108,19 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
 
 
 def frozen_snapshot_error(binding, snapshot_ref):
-    """Admit only the accepted D1/V00/R snapshot; never authorize a directory."""
+    """Admit frozen R or this independently authorized S; never a directory."""
     try:
         _, manifest, rows = _task_plan(PILOT)
+        from p1_engineering import AUTHORIZATION
+        method = binding.get('method')
+        allowed = method == 'R' or (method == 'S' and binding.get('authorization_id') == AUTHORIZATION
+            and binding.get('run_id') == 'P1-D1-V00-S-' + AUTHORIZATION)
         if (manifest['pilot_id'] != PILOT_ID or manifest['parent_plan_id'] != PLAN_ID
                 or binding.get('pilot_id') != PILOT_ID or binding.get('root_task_id') != D1
-                or binding.get('task_key') != TASK_KEYS['R'] or binding.get('method') != 'R'
+                or not allowed or binding.get('task_key') != TASK_KEYS.get(method)
                 or binding.get('plan_source_scope') != 'development_pilot' or binding.get('fixture') is not None):
             return 'frozen_task_identity'
-        task = next(t for t in rows['tasks.jsonl'] if t['task_key'] == TASK_KEYS['R'])
+        task = next(t for t in rows['tasks.jsonl'] if t['task_key'] == TASK_KEYS[method])
         relation = next(r for r in rows['user-scenarios.jsonl'] if r['binding_id'] == task['binding_id'])
         scene = next(s for s in rows['scenes.jsonl'] if s['view_id'] == relation['view_id'])
         root = next(r for r in rows['root-references.jsonl'] if r['root_task_id'] == D1)
@@ -122,7 +151,7 @@ def frozen_snapshot_error(binding, snapshot_ref):
     return None
 
 
-def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT):
+def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage_guard=None):
     from evidence_access import RootBudget, EvidenceSession, LocalEvidenceSource
     from joint_access import JointSession
     from model_adapter import ModelAdapter
@@ -132,6 +161,11 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT):
     binding.update(schema_version='rsm-run-0.4.0', execution_kind='fourrouter_responses', fixture=None,
         execution_authorized=True, execution_budget=cfg['limits'][method], pilot_id=PILOT_ID,
         orchestration='batch32-0.1.0', project_id=cfg['model_binding']['project_id'])
+    engineering = _engineering_config(cfg, method)
+    if engineering:
+        from p1_engineering import SEngineeringBudget
+        RootBudget = SEngineeringBudget
+        binding['authorization_id'] = cfg['authorization_id']
     output = Path(output_root) / binding['run_id']
     budget = RootBudget(binding, cfg['limits'][method], cfg['final_reserve'][method],
         clock=lambda: time.monotonic() * 1000, journal_path=output / 'budget.jsonl')
@@ -143,7 +177,7 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT):
     evidence = EvidenceSession(evidence_binding, LocalEvidenceSource(assembly['snapshot_ref']),
         limits=cfg['limits'][method], final_reserve=cfg['final_reserve'][method], root_budget=budget, joint=joint)
     model = None if method == 'R' else ModelAdapter(make_sender(clock=budget.clock,
-        max_request_bytes=cfg['model_binding']['max_request_bytes']),
+        max_request_bytes=cfg['model_binding']['max_request_bytes'], storage_guard=storage_guard),
         capability_binding=cfg['model_binding'] | {'execution_authorized': True}, counter=counter, root_budget=budget)
     return RecommendationRun(binding, evidence=evidence, model=model, root_budget=budget, output_root=output)
 
@@ -160,12 +194,14 @@ def execute_p1(config_path, method, *, counter=None, storage_guard=None):
     if output.exists():
         return prepared | {'terminal': 'not_started', 'missing': ['existing_execution_no_retry']}
     with storage_guard:
+        if _engineering_config(cfg, method):
+            storage_guard.authorize_S(cfg['authorization_id'])
         output.mkdir(parents=True, exist_ok=False)
         with (output / 'attempt.json').open('x', encoding='utf-8') as stream:
             stream.write(json.dumps({'task_key': TASK_KEYS[method], 'run_id': run_id,
                 'pilot_id': PILOT_ID, 'authorization_id': cfg['authorization_id']}) + '\n')
         assembly = assemble_task(PILOT, TASK_KEYS[method], execution_record={'run_id': run_id})
-        runtime = build_runtime(assembly, cfg, method, counter=counter)
+        runtime = build_runtime(assembly, cfg, method, counter=counter, storage_guard=storage_guard)
         observed = runtime.run()
     counts = [m['response'].get('provider_requests_sent') for m in runtime.state['messages']]
     return {'task_key': TASK_KEYS[method], 'started': True, 'terminal': observed['terminal'],

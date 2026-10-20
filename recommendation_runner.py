@@ -233,7 +233,8 @@ class RecommendationRun:
             if self.native_fixture or self.fourrouter:
                 valid = (valid and self.batched and self.model.binding.get('project_id') == b.get('project_id')
                     and self.model.binding.get('execution_kind') == ('fourrouter_responses' if self.fourrouter else 'openai_native_fixture')
-                    and self.model.root_budget is self.budget and self.model.counter is not None)
+                    and self.model.root_budget is self.budget and (self.model.counter is not None
+                        or self._S_engineering()))
                 if self.fourrouter and b.get('fixture') is None:
                     valid = (valid and self.model.binding.get('provenance') == '4router'
                              and self.model.binding.get('execution_authorized') is True)
@@ -242,6 +243,10 @@ class RecommendationRun:
                     and self.model.binding.get('model_id') is None and self.model.counter is not None)
         if not valid:
             raise RunStop('failed_protocol', source_error or 'runtime_preflight_failed')
+
+    def _S_engineering(self):
+        from p1_engineering import SEngineeringBudget, authorized
+        return type(self.budget) is SEngineeringBudget and self.model is not None and authorized(self.model.binding)
 
     def _check_tool(self, result):
         if result['status'] == 'ok':
@@ -421,7 +426,8 @@ class RecommendationRun:
         while True:
             number = len(self.state['messages'])
             message_id = self.binding['run_id'] + ':message:' + str(number)
-            input_upper = len(encoded({'messages': messages, 'tools': tools}))
+            engineering = self._S_engineering()
+            input_upper = None if engineering else len(encoded({'messages': messages, 'tools': tools}))
             backoff = (1000, 2000)[min(self.budget.usage['retries'], 1)] if retry_of else 0
             elapsed_upper = 45000 + backoff
             if self.batched:
@@ -457,9 +463,10 @@ class RecommendationRun:
                 else:
                     from provider_openai import MODEL, cost_microusd, role_output_schema
                 available = self.budget.audit_view()
-                output_left = available['limits']['output_tokens'] - available['usage']['output_tokens'] - available['held']['output_tokens']
+                output_resource = 'request_output_tokens' if engineering else 'output_tokens'
+                output_left = available['limits'][output_resource] - available['usage'][output_resource] - available['held'][output_resource]
                 if kind != 'final_submit':
-                    output_left -= available['final_reserve']['output_tokens']
+                    output_left -= available['final_reserve'][output_resource]
                 output_cap = min(1500 if kind == 'final_submit' else 8192, output_left)
                 if self.fourrouter:
                     output_cap = min(output_cap, self.model.binding['max_output_tokens'])
@@ -471,31 +478,35 @@ class RecommendationRun:
                     'reply_to': self.state['messages'][-1]['role_message_id'] if self.state['messages'] else None,
                     'model_id': MODEL, 'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind,
                     'output_schema': role_output_schema(role, kind, messages), 'max_output_tokens': output_cap,
-                    'input_token_upper_bound': 0, 'deadline_ms': int(self.budget.clock() + elapsed_upper), 'reservation_id': 'unreserved'}
+                    'input_token_upper_bound': None if engineering else 0, 'deadline_ms': int(self.budget.clock() + elapsed_upper), 'reservation_id': 'unreserved'}
                 prepared = self.model.prepare(native)
                 if prepared['status'] != 'prepared':
                     raise RunStop('failed_protocol', 'native_prepare_failed')
                 if self.fourrouter and prepared.get('missing'):
                     raise RunStop('not_started', ','.join(prepared['missing']))
-                count = self.model.counter.count(prepared, authorization=None)
-                self.state['preparations'].append({'prepared': prepared, 'count': count})
-                if count['status'] != 'counted' or count['basis'] != (
-                        'verified_full_input' if self.fourrouter and self.model.binding.get('provenance') != 'fixture' else 'fixture'):
-                    raise RunStop('incomplete_count', count['status'])
-                input_upper = count['input_tokens']
-                cost_upper = (cost_microusd(input_upper, output_cap, pricing=self.model.binding['pricing'])
-                              if self.fourrouter else cost_microusd(input_upper, output_cap))
-                native.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
+                if engineering:
+                    self.state['preparations'].append({'prepared': prepared, 'count': None, 'count_reason': 'single_S_authorization_waiver'})
+                else:
+                    count = self.model.counter.count(prepared, authorization=None)
+                    self.state['preparations'].append({'prepared': prepared, 'count': count})
+                    if count['status'] != 'counted' or count['basis'] != (
+                            'verified_full_input' if self.fourrouter and self.model.binding.get('provenance') != 'fixture' else 'fixture'):
+                        raise RunStop('incomplete_count', count['status'])
+                    input_upper = count['input_tokens']
+                    cost_upper = (cost_microusd(input_upper, output_cap, pricing=self.model.binding['pricing'])
+                                  if self.fourrouter else cost_microusd(input_upper, output_cap))
+                native.update(prepared_id=prepared['prepared_id'], count_receipt_id=None if engineering else count['receipt_id'])
             intent = {'kind': 'model', 'role': role, 'request_id': message_id,
                       'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind}
             if self.on_demand:
                 intent = {'kind': 'model', 'role': role, 'request_id': message_id, 'output_kind': kind,
                           'prepared_id': prepared['prepared_id'], 'count_receipt_id': count['receipt_id']}
             if native is not None:
-                intent.update(prepared_id=prepared['prepared_id'], wire_sha256=prepared['wire_sha256'], count_receipt_id=count['receipt_id'])
+                intent.update(prepared_id=prepared['prepared_id'], wire_sha256=prepared['wire_sha256'], count_receipt_id=None if engineering else count['receipt_id'])
             reservation = self.budget.reserve(intent,
-                {'model_calls': 1, 'input_tokens': input_upper, 'output_tokens': output_cap,
-                 'cost_microusd': cost_upper, 'elapsed_ms': elapsed_upper},
+                ({'model_calls': 1, 'request_output_tokens': output_cap, 'elapsed_ms': elapsed_upper} if engineering else
+                 {'model_calls': 1, 'input_tokens': input_upper, 'output_tokens': output_cap,
+                  'cost_microusd': cost_upper, 'elapsed_ms': elapsed_upper}),
                 phase='final' if kind == 'final_submit' else 'work', retry_of=retry_of)
             self._check_tool(reservation if reservation['status'] != 'reserved' else {'status': 'ok'})
             started = self.budget.clock()

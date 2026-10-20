@@ -1,0 +1,22 @@
+{
+  "scope": "ticket14-D1-V00-S-engineering-once",
+  "label_prefix": "seng_",
+  "base": "2d93692e983dd182b19a0cef3a39604f66908a1d",
+  "inherited_offline_seconds": 1581.976921000137,
+  "offline_limit_seconds": 1800,
+  "package_limit_seconds": 180,
+  "closeout_reserve_seconds": 25,
+  "write_limit_bytes": 134217728,
+  "closeout_reserve_bytes": 8388608,
+  "native_upper_seconds": 60,
+  "native_upper_write_bytes": 33554432,
+  "test_admission_seconds": 15,
+  "test_admission_write_bytes": 8388608,
+  "execution_limit_seconds": 360,
+  "memory_limit_bytes": 4294967296,
+  "P1_shared_output_limit_bytes": 67108864,
+  "historical_offline_ledger_bytes": 1315045,
+  "historical_offline_ledger_sha256": "4bffc08c45c76f30ffffa48a6500cc0f69dddd30bff5c371853073ebbb43c4ed",
+  "t0_ledger_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "historical_write_excess_not_refunded": true
+}

@@ -161,6 +161,9 @@ class ModelAdapter:
             missing = contract_missing(self.binding, self.counter)
             if missing:
                 return not_started(missing)
+            from p1_engineering import authorized, invoke
+            if authorized(self.binding):
+                return invoke(self, request)
             return self._invoke_native(request)
         if (self.binding.get('execution_kind') == 't0_development_catalog'
                 or isinstance(request, dict) and (request.get('schema_version') == 'rsm-model-prepare-0.1.0'

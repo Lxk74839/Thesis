@@ -14,6 +14,11 @@ RATE_KEYS = ('input_microusd_per_million', 'output_microusd_per_million', 'cache
 
 def contract_missing(binding, counter):
     missing = []
+    from p1_engineering import authorized
+    if authorized(binding):
+        if binding.get('max_request_bytes') != 2 * 1024**2 or binding.get('max_output_tokens') != 8192:
+            missing.append('S_engineering_request_limits')
+        return missing
     if (binding.get('model_id'), binding.get('channel'), binding.get('base_url')) != (
             MODEL, CHANNEL, 'https://4router.net/v1'):
         missing.append('exact_4router_binding')
@@ -55,6 +60,11 @@ def prepare(request, binding):
     if binding.get('provenance') == 'fixture' and not request['run_id'].startswith('PUBLIC-'):
         raise ValueError('fixture_scope_mismatch')
     logical = {k: copy.deepcopy(v) for k, v in request.items() if k != 'output_schema'}
+    from p1_engineering import authorized
+    if authorized(binding):
+        for k in ('input_token_upper_bound', 'deadline_ms', 'reservation_id'):
+            logical.pop(k, None)
+        logical['schema_version'] = 'rsm-model-prepare-0.1.0'
     if logical['schema_version'] == 'rsm-model-prepare-0.1.0':
         validate_request(logical, prepare_only=True)
     else:
@@ -133,11 +143,13 @@ def normalized_usage(envelope, *, pricing):
 
 
 def response_diagnostic(envelope):
+    from fourrouter_probe import _native_usage
     body = envelope.get('body')
     body = body if isinstance(body, dict) else {}
     return {'http_status': envelope.get('http_status'), 'returned_model': body.get('model'),
         'response_id': body.get('id'), 'request_id': envelope.get('request_id'),
-        'usage_diagnostic': usage_diagnostic(body)}
+        'usage_diagnostic': usage_diagnostic(body), 'native_usage': _native_usage(body.get('usage')),
+        'request_body_bytes': envelope.get('request_body_bytes')}
 
 
 def terminal_error(envelope):
@@ -151,7 +163,7 @@ def terminal_error(envelope):
     return 'format_error', 'format'
 
 
-def normalize(envelope, request, *, pricing):
+def normalize(envelope, request, *, pricing, engineering=False):
     from model_adapter import validate_call
     body = envelope['body']
     if envelope['http_status'] != 200 or body['model'] != MODEL or body['status'] != 'completed':
@@ -172,19 +184,25 @@ def normalize(envelope, request, *, pricing):
         content = json.loads(''.join(texts))
         if not matches(content, request['output_schema']):
             raise ValueError('invalid_role_output')
-    usage = normalized_usage(envelope, pricing=pricing)
-    if usage['cost_microusd'] is None:
+    if engineering:
+        diagnostic = usage_diagnostic(body)
+        if diagnostic['state'] == 'parser_rejected':
+            raise ValueError('invalid_native_usage')
+        usage = (diagnostic['usage'] or dict.fromkeys(('input_tokens', 'output_tokens', 'cached_input_tokens', 'reasoning_output_tokens'))) | {'cost_microusd': None}
+    else:
+        usage = normalized_usage(envelope, pricing=pricing)
+    if not engineering and usage['cost_microusd'] is None:
         raise ValueError('unknown_cost')
     return {'status': 'ok', 'request_id': request['request_id'], 'attempted': True,
         'message': {'role': 'assistant', 'content': content, 'tool_requests': calls}, 'usage': usage,
-        'raw_response': response_diagnostic(envelope), 'usage_known': True, 'error': None,
+        'raw_response': response_diagnostic(envelope), 'usage_known': not engineering, 'error': None,
         'provider_request_id': envelope.get('request_id'), 'provider_response_id': body.get('id'),
         'returned_model': body['model']}
 
 
-def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None):
+def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None):
     from pathlib import Path
-    from fourrouter_probe import LOCAL_CREDENTIAL, _safe_identifier, send_response
+    from fourrouter_probe import LOCAL_CREDENTIAL, _safe_identifier, send_response, _request_bytes
     path = Path(credential_path) if credential_path is not None else LOCAL_CREDENTIAL
     http_sender = send_response if http_sender is None else http_sender
     def sender(wire_utf8, *, deadline_ms):
@@ -195,15 +213,32 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
         if request.get('model') != MODEL or len(wire_utf8.encode('utf-8')) > max_request_bytes:
             raise OSError('4router_wire_or_size_mismatch')
         try:
-            data = json.loads(path.read_text(encoding='utf-8-sig'))
+            body_bytes = len(_request_bytes(request, max_request_bytes))
+        except ValueError:
+            raise OSError('actual_POST_body_limit') from None
+        try:
+            if storage_guard is not None:
+                storage_guard.credential_read = path.absolute()
+            try:
+                data = json.loads(path.read_text(encoding='utf-8-sig'))
+            finally:
+                if storage_guard is not None:
+                    storage_guard.credential_read = None
             key = data['api_key']
             if (set(data) != {'api_key'} or not isinstance(key, str) or not key
                     or any(c.isspace() or not 33 <= ord(c) <= 126 for c in key)):
                 raise ValueError('invalid_credential')
         except (OSError, ValueError, TypeError, KeyError):
             raise OSError('credential_unavailable') from None
-        reply = http_sender(ENDPOINT, request, key, timeout, max_request_bytes=max_request_bytes)
+        if storage_guard is not None:
+            storage_guard.sender_active = True
+        try:
+            reply = http_sender(ENDPOINT, request, key, timeout, max_request_bytes=max_request_bytes)
+        finally:
+            if storage_guard is not None:
+                storage_guard.sender_active = False
         reply['request_id'] = _safe_identifier(reply.get('request_id'), key)
+        reply['request_body_bytes'] = body_bytes
         if isinstance(reply.get('body'), dict):
             for name in ('id', 'model'):
                 reply['body'][name] = _safe_identifier(reply['body'].get(name), key)

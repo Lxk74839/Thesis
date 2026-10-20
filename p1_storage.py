@@ -14,6 +14,15 @@ class P1StorageGuard:
         self.charged_bytes = 0
         self.active = self.used = self._opening = False
         self.attempts = {'network': 0, 'credentials': 0, 'evaluation': 0}
+        self.S_authorized = self.sender_active = False
+        self.credential_read = None
+        self.allowed = {'credentials': 0, 'response_workers': 0}
+
+    def authorize_S(self, authorization_id):
+        from p1_engineering import AUTHORIZATION
+        if not self.active or authorization_id != AUTHORIZATION:
+            raise OSError('S_sender_not_authorized')
+        self.S_authorized = True
 
     def _path(self, value):
         path = Path(value).absolute()
@@ -27,12 +36,23 @@ class P1StorageGuard:
         if not self.active:
             return
         if event.startswith(('socket.', 'http.client.', 'subprocess.')):
+            expected = [sys.executable, '-B', str(Path(__file__).resolve().with_name('fourrouter_probe.py')), '_http_once']
+            if (event == 'subprocess.Popen' and self.S_authorized and self.sender_active
+                    and args[0] == sys.executable and args[1] == expected):
+                self.allowed['response_workers'] += 1
+                return
             self.attempts['network'] += 1
             raise OSError('R_network_forbidden')
         if event == 'open' and isinstance(args[0], (str, bytes, os.PathLike)):
             path = Path(os.fsdecode(args[0])).absolute()
             parts = {p.lower() for p in path.parts}
             if '.secrets' in parts or path.name == 'id-key.bin':
+                expected = Path(__file__).resolve().parent / '.secrets/4router.json'
+                if (self.S_authorized and self.credential_read == path == expected
+                        and not any(p.exists() and (p.is_symlink() or p.is_junction()) for p in (path, *path.parents))
+                        and not args[2] & (os.O_WRONLY | os.O_RDWR)):
+                    self.allowed['credentials'] += 1
+                    return
                 self.attempts['credentials'] += 1
                 raise OSError('R_credentials_forbidden')
             if parts & {'private', 'evaluation', 'gold'}:
@@ -81,6 +101,8 @@ class P1StorageGuard:
                     self.write(value)
 
         def opened(file, mode='r', *args, **kwargs):
+            if type(file) is int and self.S_authorized and self.sender_active:
+                return self._original[0](file, mode, *args, **kwargs)
             writing = any(c in mode for c in 'wax+')
             if writing:
                 self._path(file)
