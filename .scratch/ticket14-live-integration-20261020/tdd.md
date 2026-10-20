@@ -32,3 +32,5 @@ PUBLIC原件来自手写事实与独立字面量状态、目标和手算期望�
 首轮固定候选 fc70fae 的 Standards 无阻塞；Spec 发现3项范围内P2，保留原报告。补充4个公共行为切片：044共享JSONL逐行视图／新增场景模板RED→045 GREEN；046计数漂移未知总量及已知尝试小计RED→047 GREEN；048必需request/response原件删除RED→049 GREEN；050成功终态缺final/commit/seal结算RED→051定向拒绝通过但正常与漂移回归失败→052 GREEN。051失败记录保留：journal含init元记录，错误摘要合法省略request_id；校验以实际request原件及回执ID关联，不能误拒绝合法失败。全部来源仅PUBLIC夹具，未运行真实账户。新增总数24项，其中16组实际RED→GREEN、8项首次即通过。以053全集结果及最终候选双轴报告为最终依据。
 
 053新增全集24项通过。054归档重跑触发原脚本xb防覆盖拒绝，未覆盖首轮公开分数／汇总；保留失败记录，后续仅改用-final新文件名归档最终PUBLIC结果，不运行新推荐。
+
+899d5e3第二轮：前三项Spec问题已确认修复，Standards仅1项非阻塞重复逻辑判断，按最小修改原则保留。Spec追加实际A／assessment／G／闭合证明关联缺口：058三种矛盾PUBLIC产物（assessment、G、completion）RED→059 GREEN，并定向验证正常及未知usage失败。转换仅核现有封存证明，不重取证或重新运行生产核验；闭合检查沿用advance_allowed、enumeration_complete、attempts_settled，不能把正常Pending等同未闭合。060同时加入合法拒绝原文后Pending闭合的首次验证；最终新增共26项，17组实际RED→GREEN、9项首次已满足。旧26项直接回归对应代码未再改动，不重复上游验收。

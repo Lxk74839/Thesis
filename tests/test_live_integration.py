@@ -512,6 +512,56 @@ class LiveIntegration(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'settlement_binding_mismatch'):
                     load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': task_ref}, reference_sources=references)
 
+    def test_evaluation_rejects_conflicting_actual_assessment_G_and_completion(self):
+        from experiment_io import load_evaluation_inputs
+        from experiment_runner import run_task
+        references = self.evaluation_sources()
+        _, run = self.make_assembled()
+        result = run_task(self.plan, 'PUBLIC-TASK', runtime=run, output_root=run.output_root, execution_record=self.record)
+        original_A = json.loads((PROJECT / result['acquired_ref']['path']).read_bytes())
+        original_audit = json.loads(Path(result['audit_path']).read_bytes())
+        original_publication = json.loads(Path(result['publication_path']).read_bytes())
+        for defect in ('assessment', 'G', 'completion'):
+            with self.subTest(contradiction=defect):
+                acquired, audit, publication = copy.deepcopy((original_A, original_audit, original_publication))
+                if defect == 'assessment':
+                    audit['assessments']['PUBLIC-A']['evidence_state'] = 'Pending'
+                elif defect == 'G':
+                    audit['G'] = publication['G'] = []
+                else:
+                    acquired['assessments']['PUBLIC-A']['advance_allowed'] = False
+                    acquired['assessments']['PUBLIC-A']['completion']['enumeration_complete'] = False
+                    audit['assessments'] = copy.deepcopy(acquired['assessments'])
+                    audit['evidence']['acquired']['assessments'] = copy.deepcopy(acquired['assessments'])
+                acquired_ref = store(PROJECT / result['acquired_ref']['path'], acquired)
+                audit['acquired_ref'] = acquired_ref
+                publication['A_sha256'] = sha(acquired)
+                publication_ref = store(Path(result['publication_path']), publication)
+                audit['publication_record_sha256'] = publication_ref['sha256']
+                altered = result | {'acquired_ref': acquired_ref, 'publication_ref': publication_ref,
+                                    'audit_ref': store(Path(result['audit_path']), audit)}
+                with self.assertRaisesRegex(ValueError, 'actual_assessment_binding_mismatch'):
+                    load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': store(run.output_root / 'task.json', altered)},
+                                           reference_sources=references)
+
+    def test_closed_pending_assessment_can_still_prove_complete_C(self):
+        from experiment_io import load_evaluation_inputs
+        from experiment_runner import run_task
+        self.fixture.facts.policy['read_denials'] = [{'principal_id': 'SIM-VERIFIER', 'target_kind': 'material',
+            'target_id': 'D-inspection_report', 'version': 1}]
+        self.fixture.seal()
+        self.scene.update(snapshot_id=self.fixture.facts.snapshot['snapshot_id'], snapshot=self.fixture.facts.snapshot_ref)
+        self.write_plan()
+        references = self.evaluation_sources()
+        _, run = self.make_assembled()
+        result = run_task(self.plan, 'PUBLIC-TASK', runtime=run, output_root=run.output_root, execution_record=self.record)
+        self.assertEqual(result['terminal'], 'valid_empty')
+        _, observations = load_evaluation_inputs(self.plan, execution_index={'PUBLIC-TASK': file_ref(run.output_root / 'task.json')},
+                                                reference_sources=references)
+        execution = next(o for o in observations if o['task']['task_key'] == 'PUBLIC-TASK')['execution']
+        self.assertEqual((execution['assessments'], execution['G'], execution['complete_C']),
+                         ({'PUBLIC-A': 'Pending'}, [], True))
+
     def test_added_scene_uses_exact_snapshot_and_original_request_template(self):
         from experiment_runner import assemble_task
         template = json.loads((self.plan / 'user-scenarios.jsonl').read_bytes())['existing_binding_ref']

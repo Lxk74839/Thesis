@@ -63,10 +63,26 @@ def _execution(task, ref, plan_id):
         raise ValueError('audit_binding_mismatch')
     acquired = json.loads(_read(result['acquired_ref']))
     if (audit.get('acquired_ref') != result['acquired_ref']
+            or acquired['binding']['run_id'] != result['run_id']
             or any(acquired['binding'][k] != task[k] for k in ('root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms'))
             or acquired['candidate_binding'] != {'C': task['C'], 'base_scores': task['base_scores']}):
         raise ValueError('actual_A_binding_mismatch')
     success = result['terminal'] in ('released', 'valid_empty')
+    proofs, assessments = acquired.get('assessments', {}), audit['assessments']
+    queue = sorted(task['C'], key=lambda p: (-task['base_scores'][task['C'].index(p)], p.encode()))
+    closed = {p for p, a in assessments.items() if a['assessment_status'] == 'assessed'
+        and a['advance_allowed'] is True and a['completion']['enumeration_complete'] is True
+        and a['completion']['attempts_settled'] is True}
+    if (set(assessments) - set(task['C']) or any(proofs.get(p) != a for p, a in assessments.items())
+            or audit['evidence']['acquired'].get('assessments', {}) != proofs
+            or success and set(proofs) != set(assessments)
+            or audit['queue'] != queue or type(audit['cursor']) is not int or not 0 <= audit['cursor'] <= len(queue)
+            or not set(queue[:audit['cursor']]) <= closed
+            or audit['G'] != [p for p in queue if p in closed and assessments[p]['eligible'] is True]):
+        raise ValueError('actual_assessment_binding_mismatch')
+    complete_C = audit['cursor'] == len(queue) and closed == set(task['C'])
+    if result['terminal'] == 'valid_empty' and not complete_C:
+        raise ValueError('actual_assessment_binding_mismatch')
     publication_verified = False
     if _public_path(result['budget_ref']['path']) != directory / 'budget.jsonl':
         raise ValueError('budget_scope_mismatch')
@@ -128,11 +144,11 @@ def _execution(task, ref, plan_id):
         values = [u.get(key) for u in usages]
         usage['known_subtotal'][key] = sum(v for v in values if v is not None)
         usage[key] = sum(values) if all(v is not None for v in values) else None
-    states = {p: a['evidence_state'] for p, a in audit['assessments'].items()}
+    states = {p: a['evidence_state'] or 'Unassessed' for p, a in assessments.items()}
     execution = {'task_key': task['task_key'], 'binding': binding, 'started': True,
         'terminal': result['terminal'], 'delivered': result['delivered'], 'G': audit['G'],
         'cursor': audit['cursor'], 'stop_reason': audit['stop_reason'], 'assessments': states,
-        'complete_C': audit['cursor'] == len(task['C']) and set(states) == set(task['C']),
+        'complete_C': complete_C,
         'gate_passed': gate, 'publication_verified': publication_verified, 'acquired': acquired,
         'components': audit['components'], 'usage': usage}
     if task['scene'].startswith('Q'):

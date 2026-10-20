@@ -13,8 +13,8 @@ scores = [score_task(**o) for o in observations]
 summary = summarize(plan, scores)
 assert summary['status'] == 'incomplete' and summary['counts']['not_started'] == 49
 assert summary['comparisons']['C1']['estimate'] is None
-for name, raw in (('public-task-scores-final.jsonl', b''.join(encoded(s) + b'\n' for s in scores)),
-                  ('public-summary-final.json', encoded(summary) + b'\n')):
+for name, raw in (('public-task-scores-final-v2.jsonl', b''.join(encoded(s) + b'\n' for s in scores)),
+                  ('public-summary-final-v2.json', encoded(summary) + b'\n')):
     with (directory / name).open('xb') as stream:
         stream.write(raw)
     print(json.dumps({'path': name, 'bytes': len(raw), 'sha256': digest(raw), 'scope': 'public_fixture_only'}))
