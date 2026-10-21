@@ -330,9 +330,9 @@ def _accepted_assembly_sources(manifest, refs, view_ref, scene, relation, task):
                 or _path(member_ref['path']) != _path(sources['cohort']['path'])):
             raise ValueError('development_membership_mismatch')
         frozen_D1 = (manifest.get('pilot_id') == '6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1'
-            and (task['method'], task['task_key']) in (
-                ('R', '7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874'),
-                ('S', 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'))
+            and manifest['components']['tasks.jsonl']['sha256'] ==
+                '079b82c266193f56248fb493e2e3080f6502b92a50088d4b2c302a5c2c34257f'
+            and proof['root_task_id'] == '015b0ca5bdc7b75fd7714222a065ff02e02b6eda723c60b7396ab7a2e8b0b88e'
             and proof.get('formal_overlap') == 0
             and proof.get('target_or_states_projected') is False)
         member = ({'split': proof['split'], 'task_id': proof['root_task_id']} if frozen_D1 else _source_row(member_ref))

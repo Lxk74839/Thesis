@@ -12,6 +12,15 @@ AUTHORIZATION = 'T14-DEVELOPMENT-CLOSEOUT-20261021'
 PACKAGE = PROJECT / '.scratch/ticket14-closeout-20261021'
 OUTPUT = PROJECT / 'data/recommendation-runtime-audit/ticket14-development/p1'
 CONTROL = OUTPUT / AUTHORIZATION
+METADATA_RESERVE = 2 * 1024**2
+
+
+def storage_headroom(root, limit=1024**3, reserve=METADATA_RESERVE):
+    """Reserve bounded parent stdout/control/error files outside the child's write wrappers."""
+    used = sum(p.stat().st_size for p in Path(root).rglob('*') if p.is_file())
+    if used + reserve > limit:
+        raise OSError('development_control_storage_balance')
+    return limit - reserve
 
 
 def model_binding():
@@ -119,11 +128,12 @@ def preflight_task(label, method):
     """Full frozen assembly and production preflight, without a real execution claim."""
     import tempfile
     from p1_runtime import build_runtime
+    from p1_storage import P1StorageGuard
     run_id = 'T14-D1-' + label + '-' + method + '-nonexecuting'
-    prepared = prepare_task(label, method, run_id)
     parent = PROJECT / '.tmp/recommendation-runtime'
     parent.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(dir=parent) as tmp:
+    with tempfile.TemporaryDirectory(dir=parent) as tmp, P1StorageGuard(tmp, 1024**3, development=True):
+        prepared = prepare_task(label, method, run_id)
         runtime = build_runtime(prepared['assembly'], prepared['configuration'], method,
             counter=None, output_root=Path(tmp))
         runtime._preflight()
@@ -147,19 +157,20 @@ def execute_task(command, run_id):
     from p1_storage import P1StorageGuard
     from evidence_access import digest
     _, label, method = command.split('-')
-    prepared = prepare_task(label, method, run_id)
     target = OUTPUT / run_id
     if target.exists():
         raise FileExistsError('development_attempt_already_exists')
-    cfg = prepared['configuration']
     path = CONTROL / 'requests.jsonl'
     rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
     calls = min(24, 160 - len(rows))
     if calls < 2:
         raise OSError('development_generation_balance')
-    cfg['limits'][method], cfg['final_reserve'][method] = budget_tables(calls)
-    guard = P1StorageGuard(OUTPUT, 1024**3, run_root=target, run_limit_bytes=128 * 1024**2, development=True)
+    guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
+        run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True)
     with guard:
+        prepared = prepare_task(label, method, run_id)
+        cfg = prepared['configuration']
+        cfg['limits'][method], cfg['final_reserve'][method] = budget_tables(calls)
         guard.authorize_development(AUTHORIZATION)
         guard.claim_S_request = lambda body: claim_request(CONTROL / 'requests.jsonl', body, run_id)
         target.mkdir(exist_ok=False)
@@ -263,7 +274,8 @@ def diagnose(mode, run_id):
     logical, binding = diagnostic_request(mode, run_id)
     target = OUTPUT / run_id
     limits, reserve = budget_tables()
-    guard = P1StorageGuard(OUTPUT, 1024**3, run_root=target, run_limit_bytes=128 * 1024**2, development=True)
+    guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
+        run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True)
     with guard:
         guard.authorize_development(AUTHORIZATION)
         CONTROL.mkdir(exist_ok=True)
@@ -306,10 +318,12 @@ def run_guarded(command, run_id):
     if command.startswith('run-'):
         ready = json.loads((PACKAGE / 'ready.json').read_bytes())
         sources = ['development_pilot.py', 'p1_engineering.py', 'p1_runtime.py', 'p1_storage.py',
-            'provider_fourrouter.py', 'recommendation_runner.py', str(PACKAGE.relative_to(PROJECT) / 'config.json')]
+            'provider_fourrouter.py', 'recommendation_runner.py', 'experiment_runner.py',
+            str(PACKAGE.relative_to(PROJECT) / 'config.json')]
         if (any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec'))
                 or subprocess.run(['git', 'diff', '--quiet', ready['candidate'], '--', *sources], cwd=PROJECT).returncode):
             raise ValueError('development_candidate_not_reviewed')
+    storage_headroom(OUTPUT)
     CONTROL.mkdir(exist_ok=True)
     lock = CONTROL / 'active.lock'
     with lock.open('x') as stream:
@@ -385,7 +399,7 @@ def main(argv=None):
             # Exception prose can contain provider/credential text. Never persist it.
             import traceback
             frames = [{'file': Path(f.filename).name, 'line': f.lineno, 'function': f.name}
-                for f in traceback.extract_tb(exc.__traceback__)]
+                for f in traceback.extract_tb(exc.__traceback__)[-12:]]
             (CONTROL / run_id / 'worker-error.json').write_text(json.dumps({'error_type': type(exc).__name__,
                 'stage': 'entry', 'frames': frames, 'usage': None, 'metering_status': 'unknown'}))
             return 2

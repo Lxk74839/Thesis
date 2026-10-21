@@ -4,9 +4,35 @@ from pathlib import Path
 import tempfile
 import unittest
 import copy
+import io
+import os
+from unittest.mock import patch
 
 
 class SharedCalls(unittest.TestCase):
+    def test_entry_preserves_control_space_and_never_starts_worker_when_root_is_full(self):
+        import development_pilot as entry
+        from unittest.mock import Mock
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            existing = root / 'PUBLIC-existing'
+            existing.write_bytes(b'PUBLIC')
+            original = Path.stat
+            def stat(path, *args, **kwargs):
+                result = original(path, *args, **kwargs)
+                if path == existing:
+                    values = list(result)
+                    values[6] = 1024**3 - 512
+                    return os.stat_result(values)
+                return result
+            worker = Mock(side_effect=AssertionError('PUBLIC_worker_must_not_start'))
+            with patch.object(entry, 'OUTPUT', root), patch.object(entry, 'CONTROL', root / 'control'), \
+                    patch.object(Path, 'stat', stat), patch('subprocess.Popen', worker):
+                with self.assertRaises(OSError):
+                    entry.run_guarded('diag-short_tools', 'PUBLIC-headroom')
+            self.assertEqual(worker.call_count, 0)
+            self.assertFalse((root / 'control').exists())
+
     def test_initial_diagnostics_have_six_call_subcap_and_bad_model_is_not_sent(self):
         from development_pilot import claim_request
         with tempfile.TemporaryDirectory() as tmp:
@@ -57,12 +83,20 @@ class SharedCalls(unittest.TestCase):
 class ProductionFlow(unittest.TestCase):
     def test_frozen_seven_tasks_prepare_without_key_count_or_attempt_and_reject_R(self):
         from development_pilot import prepare_task, preflight_task
-        for label, method in [('V00', 'S')] + [(s, 'M') for s in ('V00', 'V01', 'V05', 'V06', 'Q1', 'Q2')]:
-            prepared = prepare_task(label, method, 'T14-D1-' + label + '-' + method + '-PUBLIC-preflight')
-            self.assertEqual(prepared['terminal'], 'ready')
-            self.assertEqual(len(prepared['assembly']['binding']['C']), 1493)
-            self.assertFalse(prepared['started'])
-            self.assertEqual(preflight_task(label, method)['terminal'], 'ready')
+        original, forbidden = io.open, []
+        def opened(file, *args, **kwargs):
+            if not isinstance(file, int) and {'private', '.secrets', 'evaluation', 'gold'} & set(Path(file).parts):
+                forbidden.append(True)
+                raise OSError('PUBLIC_test_private_read_forbidden')
+            return original(file, *args, **kwargs)
+        with patch('io.open', opened):
+            for label, method in [('V00', 'S')] + [(s, 'M') for s in ('V00', 'V01', 'V05', 'V06', 'Q1', 'Q2')]:
+                prepared = prepare_task(label, method, 'T14-D1-' + label + '-' + method + '-PUBLIC-preflight')
+                self.assertEqual(prepared['terminal'], 'ready')
+                self.assertEqual(len(prepared['assembly']['binding']['C']), 1493)
+                self.assertFalse(prepared['started'])
+                self.assertEqual(preflight_task(label, method)['terminal'], 'ready')
+        self.assertEqual(forbidden, [])
         with self.assertRaises(ValueError):
             prepare_task('V00', 'R', 'PUBLIC-not-authorized')
         with self.assertRaises(ValueError):
