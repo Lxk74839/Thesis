@@ -94,6 +94,47 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_verification_schema_limits_ids_to_actual_draft_and_evidence_receipts(self):
+        from provider_openai import role_output_schema, matches
+        context = {'stage': 'verification', 'necessary_clauses': ['c1', 'c2'],
+            'draft': {'draft_id': 'PUBLIC-d', 'items': [{'parent_asin': 'PUBLIC-A', 'reasons': [{'claim_id': 'c1'}]}]},
+            'verification_receipts': ['PUBLIC-read']}
+        schema = role_output_schema('单智能体', 'verification', [{'role': 'user', 'content': {'runtime': context}}])
+        issue = {'issue_id': 'PUBLIC-i', 'draft_id': 'PUBLIC-d', 'candidate_id': 'PUBLIC-A', 'claim_id': 'c1',
+            'pointer': '/items/0/reasons/0', 'code': 'PUBLIC-issue', 'blocking': True,
+            'allowed_actions': ['revise_and_resubmit'], 'verifier': 'model', 'source_receipts': ['PUBLIC-read']}
+        valid = {'kind': 'verification', 'data': {'issues': [issue]}}
+        self.assertTrue(matches(valid, schema))
+        for key, value in (('source_receipts', ['PUBLIC-invented']), ('draft_id', 'PUBLIC-old'),
+                ('candidate_id', 'PUBLIC-other'), ('pointer', '/items/99')):
+            wrong = copy.deepcopy(valid)
+            wrong['data']['issues'][0][key] = value
+            self.assertFalse(matches(wrong, schema))
+
+    def test_draft_wire_contract_rejects_invented_kinds_and_resolves_only_bound_citations(self):
+        from provider_openai import role_output_schema, matches
+        from recommendation_runner import resolve_draft_references
+        citation = {'evidence_ref': 'PUBLIC-e', 'receipt_id': 'PUBLIC-r', 'target_id': 'PUBLIC-t', 'version': 1, 'pointer': '/'}
+        context = {'stage': 'draft', 'necessary_clauses': ['c1', 'c2'], 'bound_draft_contract': True,
+            'ordered': ['PUBLIC-A'], 'candidate_batches': {'PUBLIC-A': 'PUBLIC-b'},
+            'base_preferences': {}, 'citation_catalog': {'s0': {'candidate_id': 'PUBLIC-A', 'citation': citation}}}
+        schema = role_output_schema('单智能体', 'draft', [{'role': 'user', 'content': {'runtime': context}}])
+        draft = {'draft_id': 'PUBLIC-d', 'parent_draft_id': None, 'items': [{'parent_asin': 'PUBLIC-A',
+            'sim_batch_id': 'PUBLIC-b', 'reasons': [{'claim_id': 'c1', 'kind': 'inspection_supported',
+                'value': True, 'unit': None, 'text': '检验必要条件有完整有效支持（SIM）。', 'citations': ['s0']}]}]}
+        self.assertTrue(matches({'kind': 'draft', 'data': draft}, schema))
+        wrong = copy.deepcopy(draft)
+        wrong['items'][0]['reasons'][0]['kind'] = 'inspection'
+        self.assertFalse(matches({'kind': 'draft', 'data': wrong}, schema))
+        resolved = resolve_draft_references(draft, context['citation_catalog'])
+        self.assertEqual(resolved['items'][0]['reasons'][0]['citations'], [citation])
+        self.assertEqual(draft['items'][0]['reasons'][0]['citations'], ['s0'])
+        for bad in (['not-acquired'], [citation]):
+            wrong = copy.deepcopy(draft)
+            wrong['items'][0]['reasons'][0]['citations'] = bad
+            with self.assertRaises(ValueError):
+                resolve_draft_references(wrong, context['citation_catalog'])
+
     def test_product_profile_requires_exact_receipt_and_complete_acquired_references(self):
         from provider_openai import role_output_schema, matches
         cite = lambda ref: {'evidence_ref': ref, 'receipt_id': 'PUBLIC-read', 'target_id': ref,
@@ -205,6 +246,16 @@ class ProductionFlow(unittest.TestCase):
                         if i.get('type') == 'message':
                             i['content'] = ''.join(p['text'] for p in i['content'])
                     result = http(json.dumps(business), deadline_ms=deadline_ms)
+                    if frame and frame.get('bound_draft_contract'):
+                        # PUBLIC synthetic model follows the compact production wire contract.
+                        output = result['body']['output'][0]['content'][0]
+                        reply = json.loads(output['text'])
+                        for item in reply['data']['items']:
+                            for reason in item['reasons']:
+                                reason['citations'] = [next(key for key, row in frame['citation_catalog'].items()
+                                    if row['candidate_id'] == item['parent_asin'] and row['citation'] == c)
+                                    for c in reason['citations']]
+                        output['text'] = json.dumps(reply, ensure_ascii=False)
                     result['body'].pop('usage')
                     result['body']['output'].insert(0, reasoning())
                     return result
@@ -230,6 +281,9 @@ class ProductionFlow(unittest.TestCase):
                 self.assertTrue('acquired_ref' in audit)
                 self.assertTrue('request_ref' in audit['messages'][0])
                 self.assertNotIn('request', audit['messages'][0])
+                self.assertTrue(audit['draft_reference_bindings'])
+                self.assertNotEqual(audit['draft_reference_bindings'][0]['raw_draft_sha256'],
+                    audit['draft_reference_bindings'][0]['derived_draft_sha256'])
                 count = len(http.wires)
                 run.run()
                 self.assertEqual(len(http.wires), count)

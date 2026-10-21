@@ -127,12 +127,56 @@ def role_output_schema(role, kind, messages):
                                 'text': text, 'citations': array_schema(citation)})
         data = object_schema({'draft_id': text, 'parent_draft_id': nullable,
             'items': array_schema(object_schema({'parent_asin': text, 'sim_batch_id': text, 'reasons': array_schema(reason)}))})
+        if context.get('bound_draft_contract'):
+            items = []
+            for parent in context['ordered']:
+                refs = [key for key, row in context['citation_catalog'].items()
+                    if row['candidate_id'] == parent and row.get('source_kind') not in ('base_preference', 'retail_stock')]
+                reasons = []
+                for claim, name, sentence in (('c1', 'inspection_supported', '检验必要条件有完整有效支持（SIM）。'),
+                        ('c2', 'on_sale_supported', '核验时点的在售必要条件有完整有效支持（SIM）。')):
+                    reasons.append(object_schema({'claim_id': text | {'enum': [claim]}, 'kind': text | {'enum': [name]},
+                        'value': {'type': 'boolean', 'enum': [True]}, 'unit': {'type': 'null'},
+                        'text': text | {'enum': [sentence]}, 'citations': array_schema(text | {'enum': refs})}))
+                for name in ('base_preference', 'retail_stock'):
+                    available = [key for key, row in context['citation_catalog'].items()
+                        if row['candidate_id'] == parent and row.get('source_kind') == name]
+                    if not available or name == 'retail_stock' and not context.get('quality_arm'):
+                        continue
+                    value = (context['base_preferences'][parent]['value'] if name == 'base_preference' else
+                        next(f['data']['facts']['stock_units'] for f in context['facts'][parent]
+                            if f['data'].get('kind') == 'retail_status'))
+                    sentence = ('偏好基础分为%.12f。' % value if name == 'base_preference' else '可售库存为%d单位（SIM）。' % value)
+                    reasons.append(object_schema({'claim_id': text | {'enum': [name]}, 'kind': text | {'enum': [name]},
+                        'value': shape(value) | {'enum': [value]}, 'unit': shape(None if name == 'base_preference' else 'units') |
+                            {'enum': [None if name == 'base_preference' else 'units']},
+                        'text': text | {'enum': [sentence]}, 'citations': array_schema(text | {'enum': available})}))
+                items.append(object_schema({'parent_asin': text | {'enum': [parent]},
+                    'sim_batch_id': text | {'enum': [context['candidate_batches'][parent]]},
+                    'reasons': array_schema({'anyOf': reasons})}))
+            data['properties']['items'] = array_schema({'anyOf': items} if items else object_schema({}))
+            data['properties']['items'].update(minItems=len(items), maxItems=len(items))
     elif kind == 'verification':
         data = object_schema({'issues': array_schema(object_schema({'issue_id': text, 'draft_id': text,
             'candidate_id': nullable, 'claim_id': nullable, 'pointer': text, 'code': text, 'blocking': {'type': 'boolean'},
             'allowed_actions': {'type': 'array', 'items': {'type': 'string', 'enum': ['revise_and_resubmit']},
                 'minItems': 1, 'maxItems': 1},
             'verifier': {'type': 'string', 'enum': ['model']}, 'source_receipts': strings}))})
+        if 'verification_receipts' in context:
+            issue = data['properties']['issues']['items']
+            issue['properties']['draft_id'] = text | {'enum': [context['draft']['draft_id']]}
+            receipts = context['verification_receipts']
+            issue['properties']['source_receipts'] = array_schema(text | {'enum': receipts}) if receipts else strings | {'maxItems': 0}
+            def paths(value, base):
+                result = [base or '/']
+                children = value.items() if isinstance(value, dict) else enumerate(value) if isinstance(value, list) else []
+                for key, child in children:
+                    result.extend(paths(child, base + '/' + str(key).replace('~', '~0').replace('/', '~1')))
+                return result
+            issue['properties']['candidate_id'] = nullable | {'enum': [None, *[i['parent_asin'] for i in context['draft']['items']]]}
+            issue['properties']['claim_id'] = nullable | {'enum': [None, *sorted({r['claim_id'] for i in context['draft']['items']
+                for r in i['reasons']})]}
+            issue['properties']['pointer'] = text | {'enum': paths(context['draft'], '')}
     else:
         data = object_schema({'draft_id': text})
     return object_schema({'kind': {'type': 'string', 'enum': [kind]}, 'data': data})

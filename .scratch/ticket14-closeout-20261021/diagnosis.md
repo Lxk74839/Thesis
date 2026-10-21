@@ -32,3 +32,8 @@
 dc214d3两轴PASS后执行T14-D1-V00-S-1792572853477。4次生成、45.9297621秒，取证请求HTTP200且合法acquire_batch，取得/核验1项后以batch_plan_exhausted终止，无publication。实际模型计划将max_list_pages与max_read_batches均置1；旧提示未明确本轮批处理分配上限。保留此失败，不改判，不原样重发。
 
 composer0.5.0将两项资源计划明确为32并写入工具Schema枚举；它们是上限，仍按原取证完成/停止规则执行，不要求凑满。新增生产解析回归以虚构最小参数复现1/1计划未受Schema约束的问题，RED→GREEN；validate_call在存在完整工具Schema时复用closed_schema/matches执行校验，只有历史消息结构检查所用的name-only表继续执行原结构规则。没有修改推荐排序、工具实现或已冻结条款。17项新/直接受影响的解析、完整PUBLIC S/M及原生续接测试通过，6.793秒。下一run必须使用受审新候选；不增加PUBLIC调用。
+
+## S业务输出合同接线（保留失败）
+run T14-D1-V00-S-1792578102598：8次生成，A=10/G=10，画像已通过，failed_protocol/invalid_model_issue，无publication。离线从已封存响应核对：草稿kind使用inspection/retail_status/score等旧Schema允许而发布规则不接受的别名；5个问题单source_receipts均不在实际取证回执表，3个pointer与候选位置错配。此次不改写原回答。
+composer0.7.0将草稿wire引用改为短ID，目录只来自实际取得A及安全基础分，原响应与派生完整citation草稿分别留存raw/derived/catalog/A摘要；旧domain publication与最终门禁逐字保留。Schema/提示采用既有发布kind/text合同，核验Schema限制实际draft/候选/pointer/取证回执，位置配对仍由原运行器校验。完整PUBLIC合成S/M回归及原生reasoning续接通过。未复制真实审计作fixture。
+新增引用解析接口先RED（缺实现）再GREEN；核验字段约束回归发现共享Schema对象污染并RED→GREEN修复。受影响28项通过，再验证13项通过。

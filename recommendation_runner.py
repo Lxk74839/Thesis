@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.6.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.7.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -70,6 +70,25 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         relevant = set(context['G']) | {context['current']}
         context['base_preferences'] = {p: v for p, v in context['base_preferences'].items() if p in relevant}
         context['bound_profile_contract'] = 'acquired-product-bindings-0.1.0'
+        if kind == 'draft':
+            catalog = {}
+            for parent in context['ordered']:
+                for fact in facts.get(parent, []):
+                    key = 's' + str(len(catalog))
+                    catalog[key] = {'candidate_id': parent, 'source_kind': fact['data'].get('kind',
+                        fact['data'].get('schema_version')), 'citation': copy.deepcopy(fact['citation'])}
+                    if fact['data'].get('kind') == 'retail_status' and 'stock_units' in fact['data']['facts']:
+                        catalog['s' + str(len(catalog))] = {'candidate_id': parent, 'source_kind': 'retail_stock',
+                            'citation': fact['citation'] | {'pointer': '/facts/stock_units'}}
+                base = context['base_preferences'][parent]
+                catalog['s' + str(len(catalog))] = {'candidate_id': parent, 'source_kind': 'base_preference',
+                    'citation': copy.deepcopy(base['citation'])}
+            context.update(bound_draft_contract='acquired-draft-references-0.1.0', citation_catalog=catalog)
+        if kind == 'verification':
+            context['verification_receipts'] = state.get('verification_receipts', [])
+            context['verification_locations'] = [{'candidate_id': item['parent_asin'], 'pointer': '/items/' + str(index),
+                'claims': {reason['claim_id']: '/items/%d/reasons/%d' % (index, j)
+                    for j, reason in enumerate(item['reasons'])}} for index, item in enumerate(context['draft']['items'])]
     effective = '单智能体' if binding['method'] == 'S' else role
     context['output_contract'] = {'kind': kind, 'instruction':
         'Machine ID fields must contain only exact IDs, never IDs with explanations. '
@@ -110,10 +129,30 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 ' Use the allocated acquisition_resource_plan for acquire_batch: '
                 'max_list_pages=32 and max_read_batches=32. These are ceilings, not required extra work. '
                 'Do not lower them to 1; enumeration/verification still controls completion and stopping.')
+    elif kind == 'draft' and development(binding):
+        context['output_contract']['instruction'] += (
+            ' Return items in runtime.ordered order with exact candidate_batches IDs. '
+            'Each item requires c1/inspection_supported/true/null/text='
+            '检验必要条件有完整有效支持（SIM）。 and c2/on_sale_supported/true/null/text='
+            '核验时点的在售必要条件有完整有效支持（SIM）。. '
+            'Reason citations are short IDs selected only from citation_catalog for that candidate; '
+            'the host resolves them to original citations without changing your response. '
+            'For inspection cite the actual inspection_sample, inspection_report and their batch/event dependencies; '
+            'for on_sale cite retail_status and its batch/event dependencies. Cite every required dependency. '
+            'Optional base_preference has that exact claim_id/kind, original base value, null unit and text '
+            '偏好基础分为<value formatted with exactly 12 decimal places>。; use its base_preference catalog ID. '
+            'Optional retail_stock is only for quality arm, uses its actual nonnegative integer value, '
+            'unit=units and text=可售库存为<value>单位（SIM）。 plus the retail_stock catalog ID. '
+            'Never use inspection, retail_status, score or preference as kind/claim aliases.')
     elif kind == 'verification':
         context['output_contract']['instruction'] += (
             ' Each reported issue uses verifier=model and allowed_actions=["revise_and_resubmit"]. '
             'Copy draft IDs, pointers and source receipt IDs only from the actual runtime evidence.')
+        if development(binding):
+            context['output_contract']['instruction'] += (
+                ' source_receipts must come only from verification_receipts, never safe-input or invented IDs. '
+                'Use the actual zero-based draft item and reason positions for pointers; candidate_id and '
+                'claim_id must refer to that same position. Report actual issues only; return [] if none.')
     messages = copy.deepcopy(history) if history is not None else [
         {'role': 'system', 'content': {'protocol': protocol, 'source_disclosure': 'SIM',
             'execution_kind': binding['execution_kind']}}, *copy.deepcopy(initial_messages)]
@@ -207,6 +246,23 @@ def _draft_shape(draft):
         and isinstance(draft['draft_id'], str) and bool(draft['draft_id'])
         and (draft['parent_draft_id'] is None or isinstance(draft['parent_draft_id'], str))
         and isinstance(draft['items'], list))
+
+
+def resolve_draft_references(draft, catalog):
+    """Expand selected acquired references; retain the original model payload separately."""
+    result = copy.deepcopy(draft)
+    try:
+        for item in result['items']:
+            for reason in item['reasons']:
+                refs = reason['citations']
+                if (not isinstance(refs, list) or any(not isinstance(r, str) or r not in catalog
+                        or catalog[r]['candidate_id'] != item['parent_asin'] for r in refs)
+                        or len(refs) != len(set(refs))):
+                    raise ValueError('unbound_draft_reference')
+                reason['citations'] = [copy.deepcopy(catalog[r]['citation']) for r in refs]
+    except (KeyError, TypeError):
+        raise ValueError('unbound_draft_reference') from None
+    return result
 
 
 class RunStop(Exception):
@@ -459,7 +515,8 @@ class RecommendationRun:
         quality = ({r['parent_asin']: {k: r[k] for k in ('z', 'm', 'q', 'stock_state')}
                     for r in self._rank('full')['candidates']} if self.binding['arm'] == 'quality' and self.state['assessments'] else {})
         return compose_role_request(binding=self.binding,
-            state={**self.state, 'profile_batch_start': self.profile_batch_start},
+            state={**self.state, 'profile_batch_start': self.profile_batch_start,
+                'verification_receipts': [r['receipt_id'] for r in self.evidence.receipts] if kind == 'verification' else []},
             acquired=self.evidence.audit_view()['acquired'], initial_messages=self.initial_messages,
             quality=quality, ordered=self._order(), role=role, kind=kind, stage=stage,
             output_cap=1500 if kind == 'final_submit' else 8192,
@@ -468,6 +525,22 @@ class RecommendationRun:
 
     def _context(self, stage):
         return self._composed('需求解析', 'analysis', stage)['messages'][-1]['content']['runtime']
+
+    def _derive_draft(self, proposal):
+        from development_pilot import authorized
+        if not authorized(self.binding):
+            return proposal
+        context = self._composed('推荐管理', 'draft', 'draft')['messages'][-1]['content']['runtime']
+        try:
+            result = resolve_draft_references(proposal, context['citation_catalog'])
+        except ValueError:
+            raise RunStop('failed_protocol', 'unbound_draft_reference') from None
+        self.state.setdefault('draft_reference_bindings', []).append({
+            'contract': context['bound_draft_contract'], 'role_message_id': self.state['messages'][-1]['role_message_id'],
+            'raw_draft_sha256': digest(encoded(proposal)), 'derived_draft_sha256': digest(encoded(result)),
+            'catalog_sha256': digest(encoded(context['citation_catalog'])),
+            'A_sha256': digest(encoded(self.evidence.audit_view()['acquired']))})
+        return result
 
     def _base_preference(self, parent):
         return {'value': self.binding['base_scores'][self.binding['C'].index(parent)], 'citation': {
@@ -923,7 +996,7 @@ class RecommendationRun:
     def _revise(self):
         old = self.state['drafts'][-1]
         self.state['feedback_round'] = 1
-        new = self._role('推荐管理', 'draft', 'revision')
+        new = self._derive_draft(self._role('推荐管理', 'draft', 'revision'))
         if not _draft_shape(new) or not _draft_shape(old):
             raise RunStop('failed_protocol', 'invalid_revision_payload')
         if new['parent_draft_id'] != old['draft_id'] or new['draft_id'] == old['draft_id']:
@@ -1024,7 +1097,7 @@ class RecommendationRun:
                     self.state['current_candidate'] = self.evidence.binding['parent_asin']
             self.state['stop_reason'] = self.state['stop_reason'] or ('complete_C' if goal == len(self.queue) else
                 'quality_prefix' if self.binding['arm'] == 'quality' else 'candidate_prefix')
-            proposal = self._rule_draft() if self.binding['method'] == 'R' else self._role('推荐管理', 'draft', 'draft')
+            proposal = self._rule_draft() if self.binding['method'] == 'R' else self._derive_draft(self._role('推荐管理', 'draft', 'draft'))
             draft = self._program('submit_draft', lambda: proposal)
             self.state['drafts'].append(draft)
             if not _draft_shape(draft) or draft['parent_draft_id'] is not None:
