@@ -197,6 +197,14 @@ class ProductionFlow(unittest.TestCase):
         missing = copy.deepcopy(valid)
         missing['data']['observations'][0]['attributes'].pop()
         self.assertFalse(matches(missing, schema))
+        context['quality'] = {'PUBLIC-A': {'m': 1.0, 'z': True}}
+        schema = role_output_schema('单智能体', 'analysis', [{'role': 'user', 'content': {'runtime': context}}])
+        valid['data']['observations'][0]['quality'] = {'m': 1, 'z': True}
+        self.assertTrue(matches(valid, schema))
+        for wrong_type in (True, '1'):
+            bad = copy.deepcopy(valid)
+            bad['data']['observations'][0]['quality']['m'] = wrong_type
+            self.assertFalse(matches(bad, schema))
 
     def test_acquire_resource_plan_is_validated_by_the_production_parser(self):
         from tests.test_fourrouter_production_protocol import logical_request
@@ -268,13 +276,15 @@ class ProductionFlow(unittest.TestCase):
         from tests.test_fourrouter_production_protocol import reasoning
         from model_adapter import ModelAdapter
         from p1_engineering import SEngineeringBudget
-        for method, arm, count in (('S', 'necessary', 2), ('M', 'necessary', 2), ('M', 'quality', 5)):
+        for method, arm, count in (('S', 'necessary', 2), ('M', 'necessary', 2),
+                ('M', 'quality', 5), ('M', 'quality', 2)):
             with self.subTest(method=method, arm=arm), tempfile.TemporaryDirectory(
                     dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
                 parents = ['PUBLIC-' + chr(65 + i) for i in range(count)]
                 fixture = RuntimeFixture(Path(tmp))
                 fixture.quality(parents) if arm == 'quality' else fixture.candidates(parents)
                 http = RouterHTTPFixture()
+                numeric_forms = []
                 def transport(text, *, deadline_ms):
                     wire = json.loads(text)
                     if wire['text']['format']['name'] == 'rsm_acquire':
@@ -294,6 +304,18 @@ class ProductionFlow(unittest.TestCase):
                         if i.get('type') == 'message':
                             i['content'] = ''.join(p['text'] for p in i['content'])
                     result = http(json.dumps(business), deadline_ms=deadline_ms)
+                    if frame and arm == 'quality' and frame['stage'] == '农产品画像':
+                        # PUBLIC synthetic JSON number spelling, not the saved Q1 response.
+                        output = result['body']['output'][0]['content'][0]
+                        reply = json.loads(output['text'])
+                        for observation in reply['data']['observations']:
+                            for key, value in observation['quality'].items():
+                                if type(value) is float and value.is_integer():
+                                    observation['quality'][key] = int(value)
+                                    numeric_forms.append(key)
+                        if count == 2:
+                            reply['data']['observations'][0]['quality']['m'] += 0.125
+                        output['text'] = json.dumps(reply, ensure_ascii=False)
                     if frame and frame.get('bound_draft_contract'):
                         # PUBLIC synthetic model follows the compact production wire contract.
                         output = result['body']['output'][0]['content'][0]
@@ -330,6 +352,11 @@ class ProductionFlow(unittest.TestCase):
                     journal_path=run.output_root / 'budget.jsonl')
                 run.budget = run.evidence.root_budget = model.root_budget = budget
                 result = run.run()
+                if arm == 'quality' and count == 2:
+                    self.assertEqual(result['terminal'], 'failed_protocol')
+                    self.assertEqual(result['reason'], 'invalid_profile')
+                    self.assertFalse((run.output_root / 'publication.json').exists())
+                    continue
                 self.assertEqual(result['terminal'], 'released', result.get('reason'))
                 if arm != 'quality':
                     self.assertIsNone(result['budget']['usage']['input_tokens'])
@@ -345,6 +372,7 @@ class ProductionFlow(unittest.TestCase):
                 self.assertEqual(set(audit['profiled_candidates']), set(parents))
                 self.assertEqual(len(audit['profiled_candidates']), count)
                 if arm == 'quality':
+                    self.assertTrue(numeric_forms)
                     profiles = [json.loads(Path(m['request_ref']['path']).read_bytes()) for m in audit['messages']
                         if m['role'] == '农产品画像']
                     self.assertEqual(len(profiles), 2)

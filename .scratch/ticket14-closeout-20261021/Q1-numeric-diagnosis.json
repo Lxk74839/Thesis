@@ -1,0 +1,29 @@
+{
+  "schema_version": "ticket14-local-diagnosis-0.1.0",
+  "run_id": "T14-D1-Q1-M-1792587162199",
+  "terminal": "failed_protocol",
+  "source": "sealed actual response; no new request",
+  "request_ref": {
+    "bytes": 709673,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792587162199/trace/request-b31e9f5f4e83b1bfef87a8cb535b44f2a2d8eda2248db6f3b61972ec452a84d4.json",
+    "sha256": "b31e9f5f4e83b1bfef87a8cb535b44f2a2d8eda2248db6f3b61972ec452a84d4"
+  },
+  "response_ref": {
+    "bytes": 7342,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792587162199/trace/response-6860d7d3eb4b67869435d2532fd9723ee878fbc18ff82eab7939a99591cf3850.json",
+    "sha256": "6860d7d3eb4b67869435d2532fd9723ee878fbc18ff82eab7939a99591cf3850"
+  },
+  "stage": "\u519c\u4ea7\u54c1\u753b\u50cf",
+  "observation_index": 0,
+  "field": "quality/m",
+  "expected_type": "float",
+  "actual_type": "int",
+  "numeric_value_equal": true,
+  "encoded_equal": false,
+  "remaining_three_observations_encoded_quality_equal": true,
+  "all_receipt_and_attribute_references_valid": true,
+  "reproduction": "PUBLIC synthetic fixture, not original response replay",
+  "RED": "ProductionFlow.test_new_scoped_grant_uses_complete_S_and_M_without_counting: M/quality failed_protocol invalid_profile",
+  "GREEN": "same flow released for equivalent number spellings; changed m rejected; Boolean/string rejected by production Schema",
+  "production_change": "quality value equality after strict typed role schema; no rounding, epsilon, replacement or reference data"
+}

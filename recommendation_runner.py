@@ -636,7 +636,9 @@ class RecommendationRun:
                 assessment_value = context['assessment_receipts'][current] if batch_profile else assessment
                 if (set(item) != {'candidate_id', assessment_key, 'quality', 'attributes', 'unknown'}
                         or item['candidate_id'] != current or encoded(item[assessment_key]) != encoded(assessment_value)
-                        or encoded(item['quality']) != encoded(quality)
+                        # JSON Schema numbers allow both 1 and 1.0. The production
+                        # schema already rejects booleans/strings in numeric fields.
+                        or item['quality'] != quality
                         or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
                     raise ValueError('unbound_product_profile')
                 resolved = resolve_attribute_references(context['facts'].get(current, []), item['attributes'])
