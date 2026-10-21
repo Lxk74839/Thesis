@@ -293,9 +293,9 @@ class ProductionFlow(unittest.TestCase):
         from tests.test_fourrouter_production_protocol import reasoning
         from model_adapter import ModelAdapter
         from p1_engineering import SEngineeringBudget
-        for method, arm, count in (('S', 'necessary', 2), ('M', 'necessary', 2),
-                ('M', 'quality', 5), ('M', 'quality', 2)):
-            with self.subTest(method=method, arm=arm), tempfile.TemporaryDirectory(
+        for method, arm, count, corruption in (('S', 'necessary', 2, None), ('M', 'necessary', 2, None),
+                ('M', 'quality', 5, None), ('M', 'quality', 2, 'quality'), ('M', 'quality', 2, 'stock')):
+            with self.subTest(method=method, arm=arm, corruption=corruption), tempfile.TemporaryDirectory(
                     dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
                 parents = ['PUBLIC-' + chr(65 + i) for i in range(count)]
                 fixture = RuntimeFixture(Path(tmp))
@@ -330,13 +330,23 @@ class ProductionFlow(unittest.TestCase):
                                 if type(value) is float and value.is_integer():
                                     observation['quality'][key] = int(value)
                                     numeric_forms.append(key)
-                        if count == 2:
+                        if corruption == 'quality':
                             reply['data']['observations'][0]['quality']['m'] += 0.125
                         output['text'] = json.dumps(reply, ensure_ascii=False)
                     if frame and frame.get('bound_draft_contract'):
                         # PUBLIC synthetic model follows the compact production wire contract.
                         output = result['body']['output'][0]['content'][0]
                         reply = json.loads(output['text'])
+                        if arm == 'quality':
+                            for item in reply['data']['items']:
+                                stock = next(f['data']['facts']['stock_units'] for f in frame['facts'][item['parent_asin']]
+                                    if f['data'].get('kind') == 'retail_status')
+                                fact = next(f for f in frame['facts'][item['parent_asin']] if f['data'].get('kind') == 'retail_status')
+                                if corruption == 'stock':
+                                    stock += 1
+                                item['reasons'].append({'claim_id': 'retail_stock', 'kind': 'retail_stock',
+                                    'value': stock, 'unit': 'units', 'text': '可售库存为%d单位（SIM）。' % stock,
+                                    'citations': [fact['citation'] | {'pointer': '/facts/stock_units'}]})
                         for item in reply['data']['items']:
                             for reason in item['reasons']:
                                 bundle = next((key for key, row in frame['citation_catalog'].items()
@@ -346,6 +356,12 @@ class ProductionFlow(unittest.TestCase):
                                     if row['candidate_id'] == item['parent_asin'] and row.get('citation') == c) for c in reason['citations']]
                         reply['data'].update(frame['draft_identifiers'])
                         output['text'] = json.dumps(reply, ensure_ascii=False)
+                    if frame and arm == 'quality' and frame['stage'] == 'verification':
+                        for parent, stock in frame['retail_stock_sources'].items():
+                            fact = next(f for f in frame['facts'][parent] if f['data'].get('kind') == 'retail_status')
+                            self.assertEqual(stock, [{'stock_units': fact['data']['facts']['stock_units'],
+                                'citation': fact['citation'] | {'pointer': '/facts/stock_units'}}])
+                        self.assertIn('dimensionless', frame['output_contract']['instruction'])
                     if arm != 'quality':
                         result['body'].pop('usage')
                     result['body']['output'].insert(0, reasoning())
@@ -369,7 +385,7 @@ class ProductionFlow(unittest.TestCase):
                     journal_path=run.output_root / 'budget.jsonl')
                 run.budget = run.evidence.root_budget = model.root_budget = budget
                 result = run.run()
-                if arm == 'quality' and count == 2:
+                if corruption:
                     self.assertEqual(result['terminal'], 'failed_model')
                     self.assertEqual(result['reason'], 'role_schema_mismatch')
                     self.assertFalse((run.output_root / 'publication.json').exists())

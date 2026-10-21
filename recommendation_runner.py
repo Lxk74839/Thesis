@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.11.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.12.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -102,6 +102,13 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 'parent_draft_id': context['draft']['draft_id'] if context['draft'] else None}
         if kind == 'verification':
             context['verification_receipts'] = state.get('verification_receipts', [])
+            if binding['arm'] == 'quality':
+                context['retail_stock_sources'] = {item['parent_asin']: [
+                    {'stock_units': fact['data']['facts']['stock_units'],
+                     'citation': fact['citation'] | {'pointer': '/facts/stock_units'}}
+                    for fact in facts.get(item['parent_asin'], [])
+                    if fact['data'].get('kind') == 'retail_status' and 'stock_units' in fact['data']['facts']]
+                    for item in context['draft']['items']}
             context['verification_locations'] = [{'candidate_id': item['parent_asin'], 'pointer': '/items/' + str(index),
                 'claims': {reason['claim_id']: '/items/%d/reasons/%d' % (index, j)
                     for j, reason in enumerate(item['reasons'])}} for index, item in enumerate(context['draft']['items'])]
@@ -111,6 +118,14 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'For analysis.necessary_clauses and dispatch.claim_ids, return runtime.necessary_clauses '
         'with exactly the same order and content; do not translate, expand, omit, duplicate or reorder IDs. '
         'Use only actually acquired evidence for observations and citations.'}
+    if kind == 'verification' and development(binding) and binding['arm'] == 'quality':
+        context['output_contract']['instruction'] += (
+            ' Verify retail_stock against raw stock_units at the exact cited source in retail_stock_sources, '
+            'which is a projection of acquired originals, not an expected verdict. '
+            'Quality m and q are dimensionless scoring inputs, not stock counts. '
+            'Report retail_stock_mismatch only for a concrete inequality with that cited original; '
+            'do not infer it from score differences. Continue to report incorrect values, citations, units '
+            'or other evidence problems with the actual supporting receipt; never assume the draft is valid.')
     if kind == 'analysis' and stage == '用户画像':
         context['output_contract']['instruction'] += (
             ' Each observation contains only pointer (an exact /H or /H/... reference into frozen history) '

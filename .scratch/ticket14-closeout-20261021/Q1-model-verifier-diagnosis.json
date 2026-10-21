@@ -1,0 +1,38 @@
+{
+  "run_id": "T14-D1-Q1-M-1792588790640",
+  "terminal": "blocked_evidence",
+  "reason": "final_gate_blocked",
+  "model_calls": 18,
+  "acquired": 32,
+  "verified": 32,
+  "profiled": 32,
+  "G": 32,
+  "publication": null,
+  "concrete_evidence": {
+    "model_reported_retail_stock_mismatch_twice": true,
+    "same_selected_source_receipt": true,
+    "only_one_retail_source_for_candidate": true,
+    "raw_reason_value_equals_original": true,
+    "reason_value_is_int": true,
+    "unit_and_text_exact": true,
+    "program_reported_no_stock_mismatch": true,
+    "stock_is_positive_and_not_clipped": true
+  },
+  "unknown": "model internal reason for mismatch; no expected/observed values were returned by the issue schema",
+  "not_claimed": "clipping, zero stock, old source version or channel parsing caused the verdict",
+  "repair": "composer0.12 adds compact citation/value projection from actual acquired stock originals and precise raw-count comparison instruction; model can still reject and original host gate is unchanged",
+  "not_an_acceptance": "PUBLIC fixture validates projection and release/invalid-value guards, not actual-model verdict",
+  "response_refs": [
+    {
+      "bytes": 2443,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792588790640/trace/response-f246c83647a7a7898ea97a53ed97474a30359309d90f71ff4088bec9d5af507a.json",
+      "sha256": "f246c83647a7a7898ea97a53ed97474a30359309d90f71ff4088bec9d5af507a"
+    },
+    {
+      "bytes": 2957,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792588790640/trace/response-9a5ff88e413ec41cfea7cbc88727b9f4db9f196251eece2a8a8243a9af51b66b.json",
+      "sha256": "9a5ff88e413ec41cfea7cbc88727b9f4db9f196251eece2a8a8243a9af51b66b"
+    }
+  ],
+  "validation": "PUBLIC full production flow RED missing actual stock projection -> GREEN; correct raw stock passes; altered raw stock rejected at role_schema; no new API yet"
+}
