@@ -9,3 +9,4 @@
 {"write_upper_bytes":20430821.0,"excluded_execution_seconds":0.0,"label":"A7_directed_after","global_left":392.4066924994677,"write_bytes_left":113786907.0,"offline_seconds":10107.593307500532,"local_left":254.34809290000703}
 {"write_bytes_left":113786907.0,"global_left":350.4066924994677,"write_upper_bytes":20430821.0,"label":"HTTP_bound_before","excluded_execution_seconds":0.0,"local_left":212.34809290000703,"offline_seconds":10149.593307500532}
 {"write_bytes_left":113783923.0,"global_left":348.1127229994727,"write_upper_bytes":20433805.0,"label":"HTTP_bound_after","excluded_execution_seconds":0.0,"local_left":210.05412340001203,"offline_seconds":10151.887277000527}
+{"local_left":111.05412340001203,"write_bytes_left":113783923.0,"excluded_execution_seconds":0.0,"global_left":249.11272299947268,"offline_seconds":10250.887277000527,"label":"before_A7","write_upper_bytes":20433805.0}
