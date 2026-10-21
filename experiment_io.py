@@ -100,9 +100,11 @@ def _execution(task, ref, plan_id, *, read_artifact=None, resolve_artifact=None,
             and settled[r['reservation_id']]['observation']['status'] == 'ok'
             and not settled[r['reservation_id']]['observation'].get('late') for r in closing))
     if success:
+        from recommendation_runner import audit_reference_projection
+        audit_receipts = audit_reference_projection(journal[1:-1]) if audit.get('acquired_ref') else journal[1:-1]
         if (not gate or journal[0].get('kind') != 'init' or journal[0]['binding'] != actual
                 or audit['budget']['binding'] != actual
-                or audit['budget']['receipts'] != journal[1:-1]
+                or audit['budget']['receipts'] != audit_receipts
                 or journal[-1] != settled[closing[-1]['reservation_id']]):
             raise ValueError('settlement_binding_mismatch')
         publication_path = path(result['publication_path'])
@@ -150,7 +152,8 @@ def _execution(task, ref, plan_id, *, read_artifact=None, resolve_artifact=None,
             raise ValueError('trace_binding_mismatch')
     native = actual.get('execution_kind') == 'fourrouter_responses' and not legacy
     usages = native_usages if native else [settled[i]['usage'] for i in attempts]
-    usage = {'basis': 'provider_native' if native else 'no_model' if legacy else 'synthetic_fixture_units',
+    usage = {'basis': ('provider_native_fixture' if actual.get('fixture') is not None else 'provider_native')
+        if native else 'no_model' if legacy else 'synthetic_fixture_units',
         'known_subtotal': {}, 'unknown_counts': {}}
     for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
         values = [u.get(key) for u in usages]

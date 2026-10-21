@@ -217,6 +217,15 @@ def pointer_value(value, pointer):
     return value
 
 
+def audit_reference_projection(value):
+    """Existing hash-only audit representation; originals stay in the sealed actual A."""
+    if isinstance(value, dict):
+        return {k: audit_reference_projection(v) for k, v in value.items() if k != 'raw_utf8'} | (
+            {'raw_sha256': digest(value['raw_utf8'].encode()), 'raw_bytes': len(value['raw_utf8'].encode())}
+            if isinstance(value.get('raw_utf8'), str) else {'raw_utf8': None} if 'raw_utf8' in value else {})
+    return [audit_reference_projection(item) for item in value] if isinstance(value, list) else value
+
+
 def resolve_history_references(history, H_sha256, observations):
     """Resolve a versioned reference contract, without rewriting model messages."""
     if digest(encoded(history)) != H_sha256 or not isinstance(observations, list) or not observations:
@@ -729,9 +738,9 @@ class RecommendationRun:
                 native.update(prepared_id=prepared['prepared_id'], count_receipt_id=None if engineering else count['receipt_id'])
             intent = {'kind': 'model', 'role': role, 'request_id': message_id,
                       'messages': copy.deepcopy(messages), 'tools': copy.deepcopy(tools), 'output_kind': kind}
-            if self.on_demand:
+            if self.trace_artifacts:
                 intent = {'kind': 'model', 'role': role, 'request_id': message_id, 'output_kind': kind,
-                          'prepared_id': prepared['prepared_id'], 'count_receipt_id': count['receipt_id']}
+                          'prepared_id': prepared['prepared_id'], 'count_receipt_id': count['receipt_id'] if count else None}
             if native is not None:
                 intent.update(prepared_id=prepared['prepared_id'], wire_sha256=prepared['wire_sha256'], count_receipt_id=None if engineering else count['receipt_id'])
             reservation = self.budget.reserve(intent,
@@ -1216,14 +1225,7 @@ class RecommendationRun:
                 if k not in ('request', 'response')} | {'response_summary': {k: copy.deepcopy(v)
                     for k, v in message['response'].items() if k not in ('raw_response', 'message')}}
                 for message in self.state['messages']]
-            def references(value):
-                if isinstance(value, dict):
-                    return {k: references(v) for k, v in value.items() if k != 'raw_utf8'} | (
-                        {'raw_sha256': digest(value['raw_utf8'].encode()), 'raw_bytes': len(value['raw_utf8'].encode())}
-                        if isinstance(value.get('raw_utf8'), str) else
-                        {'raw_utf8': None} if 'raw_utf8' in value else {})
-                return [references(item) for item in value] if isinstance(value, list) else value
-            view = references(view)
+            view = audit_reference_projection(view)
         with path.open('xb') as stream:
             stream.write(encoded(view) + b'\n')
             stream.flush()

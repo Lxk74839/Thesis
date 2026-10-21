@@ -307,7 +307,8 @@ class ProductionFlow(unittest.TestCase):
                                     if row['candidate_id'] == item['parent_asin'] and row.get('citation') == c) for c in reason['citations']]
                         reply['data'].update(frame['draft_identifiers'])
                         output['text'] = json.dumps(reply, ensure_ascii=False)
-                    result['body'].pop('usage')
+                    if arm != 'quality':
+                        result['body'].pop('usage')
                     result['body']['output'].insert(0, reasoning())
                     return result
                 model = ModelAdapter(transport, capability_binding=FIXTURE_BINDING | {
@@ -317,17 +318,21 @@ class ProductionFlow(unittest.TestCase):
                     'execution_kind': 'fourrouter_responses', 'project_id': 'PUBLIC-P1',
                     'authorization_id': AUTHORIZATION, 'development_authorization': AUTHORIZATION,
                     'plan_source_scope': 'public_fixture', 'orchestration': 'batch32-0.1.0',
+                    'task_key': 'PUBLIC-' + method + '-' + arm, 'view_id': 'PUBLIC-view',
+                    'material_version': 'PUBLIC-material', 'request_profile_id': 'PUBLIC-request',
                     'profile_chunk_size': 4 if arm == 'quality' else None})
                 limits = dict.fromkeys(SEngineeringBudget.resources, 100000)
                 limits.update(model_calls=24, request_output_tokens=189916, elapsed_ms=1780000, retries=0)
                 reserve = dict.fromkeys(SEngineeringBudget.resources, 0)
                 reserve.update(model_calls=1, request_output_tokens=1500, elapsed_ms=145000)
+                (run.output_root / 'budget.jsonl').unlink()  # Unused PUBLIC fixture initialization only.
                 budget = SEngineeringBudget(run.binding, limits, reserve, clock=lambda: fixture.now[0],
-                    journal_path=Path(tmp) / 'PUBLIC-budget.jsonl')
+                    journal_path=run.output_root / 'budget.jsonl')
                 run.budget = run.evidence.root_budget = model.root_budget = budget
                 result = run.run()
                 self.assertEqual(result['terminal'], 'released', result.get('reason'))
-                self.assertIsNone(result['budget']['usage']['input_tokens'])
+                if arm != 'quality':
+                    self.assertIsNone(result['budget']['usage']['input_tokens'])
                 self.assertIsNone(result['budget']['usage']['cost_microusd'])
                 self.assertTrue((run.output_root / 'dispatch-checkpoint.json').exists())
                 audit = json.loads(Path(result['audit_path']).read_bytes())
@@ -344,6 +349,27 @@ class ProductionFlow(unittest.TestCase):
                         if m['role'] == '农产品画像']
                     self.assertEqual(len(profiles), 2)
                     self.assertEqual(set(audit['components']), {'full', 'no_quality', 'mean_quality'})
+                from experiment_io import _execution
+                from experiment_runner import _path
+                from experiment_evaluation import BINDING
+                from development_evaluation import reference, read
+                record = {k: result[k] for k in ('run_id', 'terminal', 'acquired_ref', 'audit_path', 'publication_path', 'delivered')}
+                record.update(task_key=run.binding['task_key'], plan_id='PUBLIC-plan',
+                    audit_ref=reference(Path(result['audit_path'])), publication_ref=reference(Path(result['publication_path'])),
+                    budget_ref=reference(budget.journal_path))
+                target = run.output_root / 'PUBLIC-result.json'
+                target.write_text(json.dumps(record))
+                task = {k: run.binding['base_score_sha256' if k == 'base_scores_sha256' else k] for k in BINDING}
+                task.update(task_key=run.binding['task_key'], base_scores=run.binding['base_scores'], method=method,
+                    scene='Q1' if arm == 'quality' else 'V00')
+                execution = _execution(task, reference(target), 'PUBLIC-plan', read_artifact=read, resolve_artifact=_path)
+                self.assertTrue(execution['publication_verified'])
+                self.assertIsNone(execution['usage']['cost_microusd'])
+                if arm == 'quality':
+                    self.assertEqual(execution['usage']['input_tokens'], len(audit['messages']) * 100)
+                    self.assertEqual(execution['usage']['basis'], 'provider_native_fixture')
+                else:
+                    self.assertIsNone(execution['usage']['input_tokens'])
                 count = len(http.wires)
                 run.run()
                 self.assertEqual(len(http.wires), count)

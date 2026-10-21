@@ -1,0 +1,28 @@
+{
+  "terminal": "released",
+  "gate_passed": true,
+  "publication_verified": true,
+  "cursor": 10,
+  "stop_reason": "first_10_qualified",
+  "usage": {
+    "basis": "provider_native",
+    "known_subtotal": {
+      "input_tokens": 1457825,
+      "output_tokens": 7622,
+      "cost_microusd": 0
+    },
+    "unknown_counts": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cost_microusd": 9
+    },
+    "input_tokens": 1457825,
+    "output_tokens": 7622,
+    "cost_microusd": null
+  },
+  "scope": "actual_S_artifact_association_only",
+  "independent_reference_read": false,
+  "acquired_count": 10,
+  "G_count": 10,
+  "delivered_count": 10
+}

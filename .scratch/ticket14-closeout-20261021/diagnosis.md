@@ -46,3 +46,5 @@ run T14-D1-V00-S-1792584535014：10次生成，A10/G10，原程序草稿问题0�
 run T14-D1-V00-S-1792585222115：5次生成，dispatch通过；模型选择candidate_page后自行done，无真实batch，A/G/核验均0，failed_protocol/missing_batch_acquisition。新mapper0.4.0只对本轮acquire合同固定首请求tool_choice=acquire_batch，实际batch回执返回后tool_choice=none；正常化同时拒绝不遵守选择的响应。保留四工具定义及原批处理/发布规则，参数与既有dispatch固定机器字段对齐，完成字段仅绑定实际工具结果。PUBLIC S/M生产贯通tool_choice对照RED→GREEN。
 Q准备：同一前缀32及全C不变，仅分4项一组完成全部商品画像；PUBLIC5项边界从单组5项RED→4+1两组GREEN，最终画像集合与实际核验集合相等、同锚点三组件均通过。普通S/M不分块。为本轮离线写入、测试、Git及归档预留保守512MiB（非实测），仍从新增2GiB内扣除，旧账不冲销。
 定向组合29项有28项通过、1项因前一模块永久审计钩子禁止PUBLIC评价目录创建而失败；评价模块单独4项全部通过，未更改生产守护来绕过。其余25项实际通过沿用。
+
+S T14-D1-V00-S-1792585830710真实released，9次，A10/G10/推荐10。只读IO初次严格拒绝settlement_binding_mismatch：旧native预算operation含工具原文，而audit按既有规则转哈希。完整PUBLIC S/M/Q产物关联复现RED后，共用原audit_reference_projection做哈希等价核对（不忽略字段）；native后续intent仅存request/prepared/wire等身份并链接单份trace，消除重复预算正文，不变更请求或推荐业务。5项直接回归GREEN。原真实S只读复验gate/publication均true，1457825输入、7622输出Token、cost=null、9项费用未知；不改写或重跑S。
