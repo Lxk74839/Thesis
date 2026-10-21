@@ -6,7 +6,8 @@ from evidence_access import RootBudget
 AUTHORIZATION = 'S-ENGINEERING-ONCE-20261020'
 RETRY_AUTHORIZATION = 'S-DEADLINE-RETRY-20261020'
 LONG_AUTHORIZATIONS = ('S-COMPLETE-ONCE-20261021-A1', 'S-COMPLETE-ONCE-20261021-A2',
-    'S-COMPLETE-ONCE-20261021-A3', 'S-COMPLETE-ONCE-20261021-A4', 'S-COMPLETE-ONCE-20261021-A5')
+    'S-COMPLETE-ONCE-20261021-A3', 'S-COMPLETE-ONCE-20261021-A4', 'S-COMPLETE-ONCE-20261021-A5',
+    'S-COMPLETE-ONCE-20261021-A6')
 AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION) + LONG_AUTHORIZATIONS
 TASK = 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'
 UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
@@ -55,6 +56,9 @@ class SEngineeringBudget(RootBudget):
         if binding.get('authorization_id') == LONG_AUTHORIZATIONS[4] and (
                 limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1689869):
             raise ValueError('A5_engineering_limits')
+        if binding.get('authorization_id') == LONG_AUTHORIZATIONS[5] and (
+                limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1643819):
+            raise ValueError('A6_engineering_limits')
         self.metering = []
         super().__init__(binding, limits, final_reserve, **kwargs)
 
@@ -142,7 +146,11 @@ def invoke(adapter, request):
         result['deadline_diagnostic'] = {'stage': 'deadline', 'code': 'response_late'}
         result['late'] = True
     fixture = adapter.binding.get('provenance') == 'fixture'
-    diagnostic = provider.response_diagnostic(raw, failure=bool(result.get('error'))) if isinstance(raw, dict) else {
+    checkpoint = (adapter.binding.get('engineering_authorization') == LONG_AUTHORIZATIONS[5]
+        and request['output_kind'] == 'dispatch' and not getattr(adapter, 'a6_dispatch_observed', False))
+    if checkpoint:
+        adapter.a6_dispatch_observed = True
+    diagnostic = provider.response_diagnostic(raw, failure=bool(result.get('error')) or checkpoint) if isinstance(raw, dict) else {
         'http_status': None, 'returned_model': None, 'response_id': None, 'request_id': None,
         'usage_diagnostic': {'state': 'unknown', 'usage': None}}
     result.update(provenance='fixture' if fixture else '4router', usage_basis=(
@@ -155,3 +163,28 @@ def invoke(adapter, request):
     if result.get('error'):
         result['error']['retryable'] = False
     return result
+
+
+def record_dispatch_checkpoint(state, output_root, *, passed, reason):
+    """A6's first dispatch evidence, after the original runtime contract check."""
+    import os
+    from evidence_access import encoded, digest
+    message = state['messages'][-1] if state['messages'] and state['messages'][-1]['request']['output_kind'] == 'dispatch' else {}
+    response = message.get('response', {})
+    capture = (response.get('raw_response') or {}).get('business_output')
+    passed = passed and response.get('status') == 'ok' and capture is not None and capture.get('replayable') is True
+    record = {'schema_version': 'A6-dispatch-checkpoint-0.1.0', 'run_id': state['run_id'],
+        'role_message_id': message.get('role_message_id'), 'passed': passed,
+        'parsed': response.get('status') == 'ok', 'dispatch_contract_passed': passed,
+        'reason': reason if reason else None if passed else 'dispatch_checkpoint_unreplayable',
+        'protocol_diagnostic': response.get('protocol_diagnostic'), 'business_output': capture}
+    raw = encoded(record) + b'\n'
+    if len(raw) > 100 * 1024:
+        raise ValueError('dispatch_checkpoint_size_limit')
+    path = output_root / 'dispatch-checkpoint.json'
+    with path.open('xb') as stream:
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
+    return {k: record[k] for k in ('passed', 'parsed', 'dispatch_contract_passed', 'reason')} | {
+        'path': str(path), 'sha256': digest(raw), 'bytes': len(raw)}

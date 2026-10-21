@@ -24,7 +24,7 @@ ensure_first_execution = old.ensure_first_execution
 
 def main():
     candidate, attempt = sys.argv[1:]
-    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4', 'A5'):
+    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4', 'A5', 'A6'):
         raise ValueError('fixed_candidate_attempt_required')
     control = PACKAGE / attempt
     grant = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -36,7 +36,7 @@ def main():
     with p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes']):
         SHARED.mkdir(exist_ok=True)
     guard = p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes'],
-        **({'run_root': p1.OUTPUT / run_id, 'run_limit_bytes': cfg['run_storage_limit_bytes']} if attempt == 'A5' else {}))
+        **({'run_root': p1.OUTPUT / run_id, 'run_limit_bytes': cfg['run_storage_limit_bytes']} if attempt in ('A5', 'A6') else {}))
     guard.claim_S_request = lambda body: claim_request(SHARED / 'requests.jsonl', body, run_id)
     result = {'run_id': run_id, 'task_key': p1.TASK_KEYS['S'], 'terminal': None,
         'candidate_count': None, 'verified_count': None, 'recommendation_count': None, 'responses': [],
@@ -51,7 +51,8 @@ def main():
             acquired = audit.get('evidence', {}).get('acquired', {})
             result.update(candidate_count=len(audit['binding']['C']), C_sha256=audit['binding']['C_sha256'],
                 verified_count=sum(a['advance_allowed'] for a in audit['assessments'].values()),
-                G=audit['G'], reason=audit.get('reason'), acquired_candidate_count=len(acquired.get('candidates', {})),
+                G=audit['G'], reason=audit.get('reason'), dispatch_checkpoint=audit.get('dispatch_checkpoint'),
+                acquired_candidate_count=len(acquired.get('candidates', {})),
                 user_profile_fact_count=sum(len(g['facts']) for g in audit.get('profile_facts', {}).get('user', [])),
                 product_profile_fact_count=sum(len(g['facts']) for g in audit.get('profile_facts', {}).get('products', [])),
                 profiled_candidate_count=len(audit.get('profiled_candidates', [])),

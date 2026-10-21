@@ -1,0 +1,16 @@
+{
+  "bootstrap_upper_seconds": 0.0,
+  "inherited_ledger_bytes": 1685402,
+  "package_seconds": 900,
+  "frequency": 10000000.0,
+  "inherited_ledger_sha256": "ee5ec809030d87e6272b57da4b23e7e55c841a28c1e7973919cab385394d10f2",
+  "memory_limit_bytes": 4294967296,
+  "write_limit_bytes": 134217728,
+  "base": "8a6926656b1e8608c5a896784ea515c2f6e18dae",
+  "T0_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "native_write_upper_bytes": 16777216,
+  "inherited_offline_seconds": 8673.492304600533,
+  "offline_limit_seconds": 9600,
+  "start_tick": 4432059319206,
+  "reserve_seconds": 180
+}

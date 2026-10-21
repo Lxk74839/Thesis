@@ -678,8 +678,21 @@ class RecommendationRun:
                     self._check_tool(result)
                 history.append({'role': 'tool', 'tool_call_id': call['call_id'], 'content': result})
 
+    def _dispatch_checkpoint(self, passed, reason=None):
+        if self.binding.get('authorization_id') != 'S-COMPLETE-ONCE-20261021-A6' or 'dispatch_checkpoint' in self.state:
+            return
+        from p1_engineering import record_dispatch_checkpoint
+        self.state['dispatch_checkpoint'] = record_dispatch_checkpoint(self.state, self.output_root,
+            passed=passed, reason=reason)
+        if passed and not self.state['dispatch_checkpoint']['passed']:
+            raise RunStop('failed_protocol', 'dispatch_checkpoint_unreplayable')
+
     def _model_acquire(self):
-        manager = self._role('推荐管理', 'dispatch', 'dispatch')
+        try:
+            manager = self._role('推荐管理', 'dispatch', 'dispatch')
+        except RunStop as exc:
+            self._dispatch_checkpoint(False, exc.reason)
+            raise
         target = '单智能体' if self.binding['method'] == 'S' else '生命周期追溯'
         batch_dispatch = self.batched and bool(self.queue)
         if (set(manager) != {'candidate', 'to', 'claim_ids'} | ({'candidate_limit'} if batch_dispatch else set())
@@ -687,7 +700,9 @@ class RecommendationRun:
                 or manager['to'] != target
                 or manager['candidate'] != (self.queue[self.state['cursor']] if self.queue else None)
                 or manager['claim_ids'] != self.binding['necessary_clauses']):
+            self._dispatch_checkpoint(False, 'invalid_dispatch')
             raise RunStop('failed_protocol', 'invalid_dispatch')
+        self._dispatch_checkpoint(True)
         self.state['dispatches'].append({'from': '单智能体' if self.binding['method'] == 'S' else '推荐管理',
             'role_message_id': self.state['messages'][-1]['role_message_id'], **copy.deepcopy(manager)})
         self._complete('推荐管理')
