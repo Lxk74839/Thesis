@@ -1,0 +1,176 @@
+{
+  "schema_version": "A7-execution-summary-0.1.0",
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7",
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "candidate": "1df9e597fe71a5903b4bf62506b543ec11ad7f64",
+  "started": true,
+  "terminal": "failed_model",
+  "reason": "http_status_not_200",
+  "candidate_count": 1493,
+  "dispatch_checkpoint": {
+    "bytes": 805,
+    "dispatch_contract_passed": true,
+    "parsed": true,
+    "passed": true,
+    "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\dispatch-checkpoint.json",
+    "reason": null,
+    "sha256": "1d37045701843fad000c5cb5f81c400e75b3ab32b7f28d2a80aaf4593a985bc3"
+  },
+  "acquired_candidate_count": 0,
+  "verified_count": 0,
+  "G": [],
+  "recommendation_count": null,
+  "publication_path": null,
+  "user_profile_fact_count": 2,
+  "product_profile_fact_count": 0,
+  "tool_usage": {
+    "logical_tools": 0,
+    "physical_tools": 0
+  },
+  "provider_requests_sent": 4,
+  "count_api": 0,
+  "other_api": 0,
+  "known_usage_subtotal": {
+    "reasoning_output_tokens_subset": 625,
+    "input_tokens": 767703,
+    "output_tokens": 780
+  },
+  "all_request_tokens": {
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "metering_status": "unknown/incomplete",
+  "cost": null,
+  "rounds": [
+    {
+      "round": 1,
+      "phase": "analysis",
+      "status": "ok",
+      "http_status": 200,
+      "request_body_bytes": 603214,
+      "returned_model": "gpt-6-luna",
+      "request_id": null,
+      "response_id": "resp_0622ea5fdf6fb958016ad86fe313348197890365fe03001fd3",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 255488,
+          "input_tokens": 255633,
+          "output_tokens": 131,
+          "reasoning_output_tokens": 95
+        }
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 22609.67089998303,
+        "ended_at_utc_ms": 1792569315871,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569293261,
+        "transport_kind": "http_response"
+      },
+      "protocol_diagnostic": null
+    },
+    {
+      "round": 2,
+      "phase": "user_profile",
+      "status": "ok",
+      "http_status": 200,
+      "request_body_bytes": 603881,
+      "returned_model": "gpt-6-luna",
+      "request_id": null,
+      "response_id": "resp_04ddc3b33497bb78016ad86fef842481958115e341fd73297b",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255774,
+          "output_tokens": 583,
+          "reasoning_output_tokens": 516
+        }
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 14381.338500010315,
+        "ended_at_utc_ms": 1792569331193,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569316811,
+        "transport_kind": "http_response"
+      },
+      "protocol_diagnostic": null
+    },
+    {
+      "round": 3,
+      "phase": "dispatch",
+      "status": "ok",
+      "http_status": 200,
+      "request_body_bytes": 605430,
+      "returned_model": "gpt-6-luna",
+      "request_id": null,
+      "response_id": "resp_00093316d6e4ba7a016ad86ffdb5bc81948210844738971f78",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 256296,
+          "output_tokens": 66,
+          "reasoning_output_tokens": 14
+        }
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 10171.972699987236,
+        "ended_at_utc_ms": 1792569342547,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569332375,
+        "transport_kind": "http_response"
+      },
+      "protocol_diagnostic": null
+    },
+    {
+      "round": 4,
+      "phase": "acquire",
+      "status": "http_status_not_200",
+      "http_status": 408,
+      "request_body_bytes": 607239,
+      "returned_model": null,
+      "request_id": null,
+      "response_id": null,
+      "usage_diagnostic": {
+        "state": "field_absent",
+        "usage": null
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 12605.154099990614,
+        "ended_at_utc_ms": 1792569356514,
+        "error": {
+          "body_bytes_read": 165,
+          "body_format": "json",
+          "body_length_exact": true,
+          "body_truncated": false,
+          "code": null,
+          "message": "stream error: stream disconnected before completion: stream closed before ***.completed",
+          "omission_reason": null,
+          "snippet": null,
+          "text_truncated": false,
+          "type": "invalid_request_error"
+        },
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569343909,
+        "transport_kind": "http_response"
+      },
+      "protocol_diagnostic": {
+        "code": "http_status_not_200",
+        "field": "http_status",
+        "stage": "response_status"
+      }
+    }
+  ],
+  "failure_conclusion": "Actual HTTP 408 received after 12.6051541 seconds; provider error type invalid_request_error reports stream disconnected before completion. Upstream root cause unknown; not classified as local timeout. Fourth response has no output, returned model, request/response ID or usage.",
+  "no_retry": true,
+  "A7_consumed": true,
+  "further_attempt_authorized": false
+}

@@ -1,0 +1,6 @@
+{"global_left":708.4401809994597,"label":"startup","write_bytes_left":117440512.0,"excluded_execution_seconds":0.0,"local_left":542.0,"offline_seconds":10391.55981900054,"write_upper_bytes":16777216.0}
+{"global_left":706.4401809994597,"label":"before_A7","write_bytes_left":117440512.0,"excluded_execution_seconds":0.0,"local_left":540.0,"offline_seconds":10393.55981900054,"write_upper_bytes":16777216.0}
+{"global_left":704.4401809994597,"label":"after_A7","write_bytes_left":100914419.0,"excluded_execution_seconds":66.5879689999856,"local_left":538.0,"offline_seconds":10395.55981900054,"write_upper_bytes":33303309.0}
+{"local_left":445.0,"global_left":611.4401809994597,"write_upper_bytes":33303309.0,"write_bytes_left":100914419.0,"label":"archive_start","excluded_execution_seconds":66.5879689999856,"offline_seconds":10488.55981900054}
+{"global_left":466.4401809994597,"label":"before_archive_files","write_upper_bytes":33303309.0,"local_left":300.0,"offline_seconds":10633.55981900054,"write_bytes_left":100914419.0,"excluded_execution_seconds":66.5879689999856}
+{"offline_seconds":10720.55981900054,"write_bytes_left":100914419.0,"write_upper_bytes":33303309.0,"global_left":379.4401809994597,"label":"final_archive","local_left":213.0,"excluded_execution_seconds":66.5879689999856}

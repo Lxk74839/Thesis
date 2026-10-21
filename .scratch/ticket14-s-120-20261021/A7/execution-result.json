@@ -1,0 +1,538 @@
+{
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7",
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "terminal": "failed_model",
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "recommendation_count": null,
+  "responses": [
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_diagnostic": {
+        "elapsed_ms": 22609.67089998303,
+        "ended_at_utc_ms": 1792569315871,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569293261,
+        "transport_kind": "http_response"
+      },
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 2872,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 603214,
+      "request_id": null,
+      "response_id": "resp_0622ea5fdf6fb958016ad86fe313348197890365fe03001fd3",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 255488,
+          "input_tokens": 255633,
+          "output_tokens": 131,
+          "reasoning_output_tokens": 95
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_diagnostic": {
+        "elapsed_ms": 14381.338500010315,
+        "ended_at_utc_ms": 1792569331193,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569316811,
+        "transport_kind": "http_response"
+      },
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 6008,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 603881,
+      "request_id": null,
+      "response_id": "resp_04ddc3b33497bb78016ad86fef842481958115e341fd73297b",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255774,
+          "output_tokens": 583,
+          "reasoning_output_tokens": 516
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "business_output": {
+        "items": [
+          {
+            "item": {
+              "content": [
+                {
+                  "text": "{\"data\":{\"candidate\":\"B0B5L9Y7HQ\",\"candidate_limit\":32,\"claim_ids\":[\"c1\",\"c2\"],\"to\":\"单智能体\"},\"kind\":\"dispatch\"}",
+                  "type": "output_text"
+                }
+              ],
+              "id": "msg_00093316d6e4ba7a016ad86fffd38c8194bd6a9872c9a1fa7f",
+              "phase": "final_answer",
+              "role": "assistant",
+              "status": "completed",
+              "type": "message"
+            },
+            "output_index": 1,
+            "text_sha256": "818addf6cea22e5c42d2c25628642f6fb89d51b360e361fbf8d948c2b4bd8e14"
+          }
+        ],
+        "replayable": true,
+        "schema_version": "4router-business-output-0.1.0"
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 10171.972699987236,
+        "ended_at_utc_ms": 1792569342547,
+        "error": null,
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569332375,
+        "transport_kind": "http_response"
+      },
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 1720,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 605430,
+      "request_id": null,
+      "response_id": "resp_00093316d6e4ba7a016ad86ffdb5bc81948210844738971f78",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 256296,
+          "output_tokens": 66,
+          "reasoning_output_tokens": 14
+        }
+      }
+    },
+    {
+      "status": "http_status_not_200",
+      "protocol_diagnostic": {
+        "code": "http_status_not_200",
+        "field": "http_status",
+        "stage": "response_status"
+      },
+      "deadline_diagnostic": null,
+      "business_output": {
+        "items": [],
+        "omission_reason": "unsupported_output",
+        "replayable": false,
+        "schema_version": "4router-business-output-0.1.0"
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 12605.154099990614,
+        "ended_at_utc_ms": 1792569356514,
+        "error": {
+          "body_bytes_read": 165,
+          "body_format": "json",
+          "body_length_exact": true,
+          "body_truncated": false,
+          "code": null,
+          "message": "stream error: stream disconnected before completion: stream closed before ***.completed",
+          "omission_reason": null,
+          "snippet": null,
+          "text_truncated": false,
+          "type": "invalid_request_error"
+        },
+        "omission_reason": null,
+        "send_state": "response_received",
+        "started_at_utc_ms": 1792569343909,
+        "transport_kind": "http_response"
+      },
+      "http_status": 408,
+      "native_usage": null,
+      "output_structure": null,
+      "request_body_bytes": 607239,
+      "request_id": null,
+      "response_id": null,
+      "returned_model": null,
+      "usage_diagnostic": {
+        "state": "field_absent",
+        "usage": null
+      }
+    }
+  ],
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "started": true,
+  "provider_requests_sent": 4,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\audit.json",
+  "publication_path": null,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "G": [],
+  "reason": "http_status_not_200",
+  "dispatch_checkpoint": {
+    "bytes": 805,
+    "dispatch_contract_passed": true,
+    "parsed": true,
+    "passed": true,
+    "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\dispatch-checkpoint.json",
+    "reason": null,
+    "sha256": "1d37045701843fad000c5cb5f81c400e75b3ab32b7f28d2a80aaf4593a985bc3"
+  },
+  "acquired_candidate_count": 0,
+  "user_profile_fact_count": 2,
+  "product_profile_fact_count": 0,
+  "profiled_candidate_count": 0,
+  "acquisition_batch_count": 0,
+  "tool_usage": {
+    "logical_tools": 0,
+    "physical_tools": 0
+  },
+  "actual_tokens": {
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "model_calls": 4,
+  "reasoning_observed_rounds": [
+    0,
+    1,
+    2
+  ],
+  "reasoning_parsed_rounds": [
+    0,
+    1,
+    2
+  ],
+  "protocol_followup_rounds": [],
+  "code_candidate": "1df9e597fe71a5903b4bf62506b543ec11ad7f64",
+  "guard_allowed": {
+    "credentials": 4,
+    "response_workers": 4
+  },
+  "guard_denied": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "cumulative_send_intents": 16,
+  "count_api": 0,
+  "other_api": 0,
+  "elapsed_seconds": 66.43249100004323,
+  "token_cost_metering_complete": false,
+  "storage_charged_bytes": 83373160,
+  "run_storage_charged_bytes": 18732170
+}

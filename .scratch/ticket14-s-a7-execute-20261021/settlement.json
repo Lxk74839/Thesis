@@ -1,0 +1,96 @@
+{
+  "schema_version": "A7-execution-settlement-0.1.0",
+  "package": ".scratch/ticket14-s-a7-execute-20261021",
+  "code_candidate": "1df9e597fe71a5903b4bf62506b543ec11ad7f64",
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A7",
+  "inherited_tests_and_same_candidate_reviews": "PASS (not rerun; no executable source changes)",
+  "historical_ledger_prefix_unchanged": true,
+  "T0_unchanged": true,
+  "prior_A6_artifacts_unchanged": true,
+  "historical_overspends_preserved": true,
+  "A7_calls": 4,
+  "A7_output_parameters": 32768,
+  "shared_calls": 16,
+  "shared_call_cap": 24,
+  "shared_calls_remaining": 8,
+  "shared_output_parameters": 131072,
+  "shared_output_cap": 189916,
+  "shared_output_parameters_remaining": 58844,
+  "A7_execution_seconds": 66.5879689999856,
+  "S_shared_execution_seconds": 273.94399349991,
+  "S_shared_execution_seconds_remaining": 1526.05600650009,
+  "all_independent_historical_execution_seconds_including_A7": 357.4859623998026,
+  "job_peak_commit_bytes": 114237440,
+  "job_write_transfer_bytes": 16526093,
+  "package_write_upper_bytes": 33303309,
+  "package_write_upper_accounting": "A7 Job transfer counter plus 16MiB conservative native shell/Git/archive allowance; allowance is not measured volume",
+  "memory_limit_bytes": 4294967296,
+  "P1_disk_bytes": 78706418,
+  "P1_limit_bytes": 134217728,
+  "A7_disk_bytes": 14065784,
+  "A7_limit_bytes": 67108864,
+  "P1_guard_charged_bytes": 83373160,
+  "A7_guard_charged_bytes": 18732170,
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "artifacts": [
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7\\execution-claim.json",
+      "bytes": 161,
+      "sha256": "40fc382a25665d23c57352dc90ae729ef39298c0b083d51bbdfbda189d92f2ca"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7\\execution-result.json",
+      "bytes": 15102,
+      "sha256": "70a5da23fde7c5929bebf84786add0ad3a0b45dca23558ac5ca0b52b45445a94"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7\\execution-resources.jsonl",
+      "bytes": 491,
+      "sha256": "bcee0bbcec9c8f5830286ad83c30b2dfa1074370f038d607769b4f66abf8f6aa"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7\\execution.stdout",
+      "bytes": 139,
+      "sha256": "22f8100e8fa8aa973bb3fe0fe3441e3c2ed30733f45274cdae7666e6dc807b47"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7\\s.config.json",
+      "bytes": 2425,
+      "sha256": "d1cf3db5661130322f5c9116f6face813dbbb45b78600af78f8dcbe43fbfbc00"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A7-ready.json",
+      "bytes": 448,
+      "sha256": "df05307813147dd5ab75ed27726164322baf6c68188cebaf8e969c9b89dd12cf"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\audit.json",
+      "bytes": 9398573,
+      "sha256": "a848303e5084be5b20bd201dd6fc49f8dcda3f67d9673e93d928101969d7a95a"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\dispatch-checkpoint.json",
+      "bytes": 805,
+      "sha256": "1d37045701843fad000c5cb5f81c400e75b3ab32b7f28d2a80aaf4593a985bc3"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\budget.jsonl",
+      "bytes": 4666140,
+      "sha256": "d83b07bbc1954750d1f831b7fddd8b91af928e9424a321dcc6ef7f3d1d691b26"
+    },
+    {
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A7\\attempt.json",
+      "bytes": 266,
+      "sha256": "863a1023290d0f972398a5c01d775ed798e46c493e14556d079bac33b6dd9c1c"
+    }
+  ],
+  "offline_package_charged_seconds": 432.0,
+  "offline_package_limit_seconds": 600,
+  "offline_cumulative_charged_seconds": 10765.55981900054,
+  "offline_cumulative_limit_seconds": 11100,
+  "offline_cumulative_remaining_seconds": 334.4401809994597,
+  "final_archive_conservative_upper_seconds": 45.0,
+  "execution_excluded_from_offline_seconds": 66.5879689999856,
+  "package_memory_evidence": "A7 Windows Job peak commit measured; native archive commands bounded small reads, no separate native peak measurement"
+}

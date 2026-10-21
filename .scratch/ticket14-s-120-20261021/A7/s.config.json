@@ -1,0 +1,81 @@
+{
+  "schema_version": "ticket14-P1-execution-draft-0.1.0",
+  "pilot_id": "6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1",
+  "parent_plan_id": "9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088",
+  "task_keys": {
+    "R": "7f9dfd3a6204d33a3c90e3ef0de8cd52bd46bc56ba23e328c479aacb683f0874",
+    "S": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+    "M": "4fc09c3d2c7a0ad10bf5af864479975fc62c3d12c7b4f8b8f476094651a9694e"
+  },
+  "execution_authorized": true,
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A7",
+  "model_binding": {
+    "execution_kind": "fourrouter_responses",
+    "model_id": "gpt-6-luna",
+    "channel": "4Router",
+    "base_url": "https://4router.net/v1",
+    "project_id": "Thesis-task14-P1",
+    "provenance": "4router",
+    "pricing": null,
+    "api_budget_microusd": null,
+    "context_token_limit": null,
+    "max_output_tokens": 8192,
+    "max_request_bytes": 2097152,
+    "usage_policy": "engineering_unknown_allowed",
+    "engineering_authorization": "S-COMPLETE-ONCE-20261021-A7",
+    "execution_authorized": true
+  },
+  "limits": {
+    "R": {
+      "model_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "logical_tools": 100000,
+      "physical_tools": 100000,
+      "candidates": 1494,
+      "retries": 0,
+      "elapsed_ms": 120000,
+      "cost_microusd": 0
+    },
+    "S": {
+      "request_output_tokens": 91612,
+      "elapsed_ms": 1572643,
+      "retries": 0,
+      "model_calls": 12,
+      "candidates": 1494,
+      "logical_tools": 100000,
+      "physical_tools": 100000
+    },
+    "M": null
+  },
+  "final_reserve": {
+    "R": {
+      "model_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "logical_tools": 64,
+      "physical_tools": 0,
+      "candidates": 0,
+      "retries": 0,
+      "elapsed_ms": 10000,
+      "cost_microusd": 0
+    },
+    "S": {
+      "request_output_tokens": 1500,
+      "elapsed_ms": 145000,
+      "retries": 0,
+      "model_calls": 1,
+      "candidates": 0,
+      "logical_tools": 64,
+      "physical_tools": 0
+    },
+    "M": null
+  },
+  "storage_limit_bytes": 134217728,
+  "full_input_count": null,
+  "historical_usage_diagnostic": "unknown",
+  "authorized_task_keys": [
+    "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4"
+  ],
+  "run_storage_limit_bytes": 67108864
+}
