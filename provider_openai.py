@@ -60,14 +60,20 @@ def array_schema(items):
     return {'type': 'array', 'items': items}
 
 
-def shape(value):
+def shape(value, *, fixed=False):
     if isinstance(value, dict):
-        return object_schema({k: shape(v) for k, v in value.items()})
+        return object_schema({k: shape(v, fixed=fixed) for k, v in value.items()})
     if isinstance(value, list):
-        options = list({canonical(shape(v)): shape(v) for v in value}.values())
-        return array_schema(options[0] if len(options) == 1 else {'anyOf': options} if options else {'type': ['string', 'number', 'boolean', 'null']})
-    return {'type': 'null' if value is None else 'boolean' if type(value) is bool else
+        options = list({canonical(shape(v, fixed=fixed)): shape(v, fixed=fixed) for v in value}.values())
+        result = array_schema(options[0] if len(options) == 1 else {'anyOf': options} if options else {'type': ['string', 'number', 'boolean', 'null']})
+        if fixed:
+            result.update(minItems=len(value), maxItems=len(value))
+        return result
+    result = {'type': 'null' if value is None else 'boolean' if type(value) is bool else
             'number' if type(value) in (int, float) else 'string'}
+    if fixed:
+        result['enum'] = [value]
+    return result
 
 
 def role_output_schema(role, kind, messages):
@@ -107,7 +113,7 @@ def role_output_schema(role, kind, messages):
                     attributes.update(minItems=len(references), maxItems=len(references))
                     options.append(object_schema({'candidate_id': {'type': 'string', 'enum': [parent]},
                         'assessment_receipt_id': {'type': 'string', 'enum': [context['assessment_receipts'][parent]]},
-                        'quality': shape(context['quality'].get(parent)), 'attributes': attributes, 'unknown': strings}))
+                        'quality': shape(context['quality'].get(parent), fixed=True), 'attributes': attributes, 'unknown': strings}))
                 observation = {'anyOf': options}
         data = object_schema({'necessary_clauses': clause_ids, 'observations': array_schema(observation)})
         if context.get('bound_profile_contract') and context['stage'] == '农产品画像' and context.get('profile_candidates'):

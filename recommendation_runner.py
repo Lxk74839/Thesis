@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.10.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.11.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -71,7 +71,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         context['candidate_base_scores'] = dict(zip(binding['C'], binding['base_scores']))
         relevant = set(context['G']) | {context['current']}
         context['base_preferences'] = {p: v for p, v in context['base_preferences'].items() if p in relevant}
-        context['bound_profile_contract'] = 'acquired-product-bindings-0.1.0'
+        context['bound_profile_contract'] = 'acquired-product-bindings-0.2.0'
         if kind == 'draft':
             catalog = {}
             for parent in context['ordered']:
@@ -128,6 +128,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 'Include every acquired inspection_report conclusion and retail_status status/stock_units '
                 'once each, with the original citation and /facts/<attribute> pointer. Do not omit any '
                 'available attribute or invent IDs. Copy that candidate\'s quality exactly, or null when absent; '
+                'quality contains host-computed fixed fields constrained by the Schema; do not recompute or round them. '
                 'unknown contains only claims whose evidence_state is not Supported, followed by '
                 'retail_stock if quality exists and its z is false.')
     elif kind == 'dispatch':

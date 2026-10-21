@@ -1,0 +1,35 @@
+{
+  "run_id": "T14-D1-Q1-M-1792588139764",
+  "terminal": "failed_protocol",
+  "reason": "invalid_profile",
+  "model_calls": 10,
+  "acquired": 32,
+  "verified": 32,
+  "profiled_completed": 16,
+  "publication": null,
+  "request_ref": {
+    "bytes": 741211,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792588139764/trace/request-372c794488be4b338522cac5e34defe9a244a6f01b809f5e8e0c73bef5f9438e.json",
+    "sha256": "372c794488be4b338522cac5e34defe9a244a6f01b809f5e8e0c73bef5f9438e"
+  },
+  "response_ref": {
+    "bytes": 7347,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792588139764/trace/response-46b7080cebbcf15ffb6d68f9104781047df580c4c419a613478c98a9f6cf5353.json",
+    "sha256": "46b7080cebbcf15ffb6d68f9104781047df580c4c419a613478c98a9f6cf5353"
+  },
+  "observation_index": 1,
+  "differing_fields": [
+    "m",
+    "q"
+  ],
+  "quality_expected_sha256": "ddb68d938e4cdc87edb3a20f742344cf67beae9c9637fdf2b449161575bf8f01",
+  "quality_actual_sha256": "ee17460a11d12641b05d28328eea74f6339bb4ac8c7fd98b9ec0373ca1ca8d92",
+  "type_and_remaining_bindings_valid": true,
+  "source": "sealed actual response, not synthetic replay",
+  "repair": "development bound profile Schema constrains scalar fixed values recursively with enums and array lengths; host exact-value and type checks unchanged",
+  "versions": {
+    "composer": "rsm-role-composer-0.11.0",
+    "bound_profile_contract": "acquired-product-bindings-0.2.0"
+  },
+  "tests": "synthetic PUBLIC field mutation RED accepted schema -> GREEN rejected; full production S/M/Q succeeds with exact values; bad numeric rejects at role_schema_mismatch; legacy Boolean alias still invalid_profile"
+}

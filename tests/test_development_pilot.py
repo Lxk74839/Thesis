@@ -209,13 +209,18 @@ class ProductionFlow(unittest.TestCase):
         missing = copy.deepcopy(valid)
         missing['data']['observations'][0]['attributes'].pop()
         self.assertFalse(matches(missing, schema))
-        context['quality'] = {'PUBLIC-A': {'m': 1.0, 'z': True}}
+        context['quality'] = {'PUBLIC-A': {'m': 1.0, 'q': 0.6, 'z': True,
+            'C': {'numerator': 1, 'denominator': 1}}}
         schema = role_output_schema('单智能体', 'analysis', [{'role': 'user', 'content': {'runtime': context}}])
-        valid['data']['observations'][0]['quality'] = {'m': 1, 'z': True}
+        valid['data']['observations'][0]['quality'] = copy.deepcopy(context['quality']['PUBLIC-A']) | {'m': 1}
         self.assertTrue(matches(valid, schema))
         for wrong_type in (True, '1'):
             bad = copy.deepcopy(valid)
             bad['data']['observations'][0]['quality']['m'] = wrong_type
+            self.assertFalse(matches(bad, schema))
+        for field in ('m', 'q', 'C'):
+            bad = copy.deepcopy(valid)
+            bad['data']['observations'][0]['quality'][field] = {'numerator': 0, 'denominator': 1} if field == 'C' else 0.875
             self.assertFalse(matches(bad, schema))
 
     def test_acquire_resource_plan_is_validated_by_the_production_parser(self):
@@ -365,8 +370,8 @@ class ProductionFlow(unittest.TestCase):
                 run.budget = run.evidence.root_budget = model.root_budget = budget
                 result = run.run()
                 if arm == 'quality' and count == 2:
-                    self.assertEqual(result['terminal'], 'failed_protocol')
-                    self.assertEqual(result['reason'], 'invalid_profile')
+                    self.assertEqual(result['terminal'], 'failed_model')
+                    self.assertEqual(result['reason'], 'role_schema_mismatch')
                     self.assertFalse((run.output_root / 'publication.json').exists())
                     continue
                 self.assertEqual(result['terminal'], 'released', result.get('reason'))
