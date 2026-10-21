@@ -1,0 +1,10 @@
+{
+  "standards": "PASS",
+  "review": ".scratch/ticket14-s-a4-20261021/review.md",
+  "D1_preflight": "PASS",
+  "test_label": "sA4_frozen_directed",
+  "PUBLIC_complete_S": "PASS",
+  "spec": "PASS",
+  "candidate": "2e93b526fa264fe1d41bb15dc9298a86eb0151d9",
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A4"
+}

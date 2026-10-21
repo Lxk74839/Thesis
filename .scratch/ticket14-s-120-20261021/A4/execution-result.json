@@ -1,0 +1,297 @@
+{
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A4",
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "terminal": "failed_protocol",
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "recommendation_count": null,
+  "responses": [
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 2828,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 603030,
+      "request_id": null,
+      "response_id": "resp_0b54aa3209f39c3e016ad821625a4081909977add1656b6dc7",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255568,
+          "output_tokens": 128,
+          "reasoning_output_tokens": 92
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 2188,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 604043,
+      "request_id": null,
+      "response_id": "resp_087985e28ac9aca5016ad82177d2f481958631c665405d9c35",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255756,
+          "output_tokens": 154,
+          "reasoning_output_tokens": 54
+        }
+      }
+    }
+  ],
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "started": true,
+  "provider_requests_sent": 2,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A4\\audit.json",
+  "publication_path": null,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "G": [],
+  "reason": "invalid_profile",
+  "acquired_candidate_count": 0,
+  "actual_tokens": {
+    "input_tokens": 511324,
+    "output_tokens": 282
+  },
+  "model_calls": 2,
+  "reasoning_observed_rounds": [
+    0,
+    1
+  ],
+  "reasoning_parsed_rounds": [
+    0,
+    1
+  ],
+  "protocol_followup_rounds": [],
+  "code_candidate": "2e93b526fa264fe1d41bb15dc9298a86eb0151d9",
+  "guard_allowed": {
+    "credentials": 2,
+    "response_workers": 2
+  },
+  "guard_denied": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "cumulative_send_intents": 5,
+  "count_api": 0,
+  "other_api": 0,
+  "elapsed_seconds": 43.60706079995725,
+  "token_cost_metering_complete": false
+}

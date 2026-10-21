@@ -1,0 +1,11 @@
+{
+  "stage": "user_profile",
+  "original_code": "invalid_profile",
+  "source": "recommendation_runner.py:389-395",
+  "fields_exact": true,
+  "pointer_in_H": true,
+  "preference_status_valid": true,
+  "pointer_resolves": true,
+  "value_equals_frozen_history": false,
+  "source_audit_unchanged": true
+}

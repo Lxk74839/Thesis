@@ -1,0 +1,11 @@
+{
+  "start_tick": 4254786271458,
+  "reserve_seconds": 60,
+  "inherited_offline_seconds": 5756.082780000367,
+  "status": "closed",
+  "execution_excluded_seconds": 48.350710699975025,
+  "native_write_upper_bytes": 4194304,
+  "offline_limit_seconds": 6000,
+  "segment_limit_seconds": 210,
+  "frequency": 10000000
+}
