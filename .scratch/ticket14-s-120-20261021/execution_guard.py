@@ -1,4 +1,4 @@
-"""Two S attempts share 1800 seconds including termination and closeout."""
+"""Explicit S attempts share 1800 seconds including termination and closeout."""
 import time
 START = time.perf_counter()
 import ctypes
@@ -21,7 +21,7 @@ from run_once import ensure_first_execution, p1, SHARED
 from p1_engineering import LONG_AUTHORIZATIONS
 from control import requests, execution_used
 attempt = sys.argv[2]
-if attempt not in ('A1', 'A2'):
+if attempt not in ('A1', 'A2', 'A3'):
     raise SystemExit('invalid_attempt')
 CONTROL = PACKAGE / attempt
 RUN_ID = 'P1-D1-V00-S-' + LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -34,8 +34,15 @@ if attempt == 'A2':
             or (last.get('protocol_diagnostic') or {}).get('stage') not in ('output_item', 'tool_call', 'json_decode', 'role_schema')
             or ready.get('candidate') != sys.argv[1] or ready.get('standards') != 'PASS' or ready.get('spec') != 'PASS'):
         raise SystemExit('second_attempt_not_eligible')
+if attempt == 'A3':
+    ready = json.loads((PACKAGE / 'A3-ready.json').read_bytes())
+    if (ready.get('candidate') != sys.argv[1] or ready.get('authorization_id') != LONG_AUTHORIZATIONS[2]
+            or any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec', 'PUBLIC_complete_S', 'D1_preflight'))):
+        raise SystemExit('A3_not_ready')
 used = execution_used(PACKAGE)
 remaining = 1800 - used
+if attempt == 'A3':
+    remaining = min(remaining, 1769.082)
 rows = requests(SHARED / 'requests.jsonl')
 if remaining < 165 or len(rows) > 10 or sum(r['output_cap'] for r in rows) > 98304 - 9692:
     raise SystemExit('cumulative_S_balance_insufficient')
@@ -45,6 +52,9 @@ cfg['authorization_id'] = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
 cfg['model_binding']['engineering_authorization'] = cfg['authorization_id']
 cfg['limits']['S'].update(model_calls=12-len(rows), request_output_tokens=98304-sum(r['output_cap'] for r in rows),
     elapsed_ms=min(1780000, int((remaining-20)*1000)))
+if attempt == 'A3':
+    cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 10)
+    cfg['limits']['S']['request_output_tokens'] = min(cfg['limits']['S']['request_output_tokens'], 81920)
 cfg['final_reserve']['S']['elapsed_ms'] = 145000
 with (CONTROL / 's.config.json').open('x', encoding='utf-8') as stream:
     json.dump(cfg, stream, indent=2)

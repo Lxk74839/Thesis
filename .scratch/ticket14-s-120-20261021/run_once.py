@@ -24,7 +24,7 @@ ensure_first_execution = old.ensure_first_execution
 
 def main():
     candidate, attempt = sys.argv[1:]
-    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2'):
+    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3'):
         raise ValueError('fixed_candidate_attempt_required')
     control = PACKAGE / attempt
     grant = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -60,6 +60,15 @@ def main():
             publication = json.loads(Path(result['publication_path']).read_bytes())
             result['recommendation_count'] = len(publication['draft']['items'])
             result['sample_recommendations'] = [i['parent_asin'] for i in publication['draft']['items'][:3]]
+        if result.get('audit_path'):
+            reasoning_rounds = [index for index, message in enumerate(audit['messages'])
+                if any(item.get('type') == 'reasoning' for item in
+                    (message['response'].get('raw_response') or {}).get('output_structure') or [])]
+            result['reasoning_observed_rounds'] = reasoning_rounds
+            result['reasoning_parsed_rounds'] = [index for index in reasoning_rounds
+                if audit['messages'][index]['response']['status'] == 'ok']
+            result['protocol_followup_rounds'] = [index for index, message in enumerate(audit['messages'])
+                if any('protocol_ref' in item for item in message['request']['messages'])]
     except Exception:
         result.update(terminal='failed_or_unknown', reason='entry_error_no_retry')
     finally:
