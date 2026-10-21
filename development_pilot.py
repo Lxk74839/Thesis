@@ -318,7 +318,7 @@ def run_guarded(command, run_id):
     if command.startswith('run-'):
         ready = json.loads((PACKAGE / 'ready.json').read_bytes())
         sources = ['development_pilot.py', 'p1_engineering.py', 'p1_runtime.py', 'p1_storage.py', 'model_adapter.py',
-            'provider_fourrouter.py', 'recommendation_runner.py', 'experiment_runner.py',
+            'provider_fourrouter.py', 'provider_openai.py', 'recommendation_runner.py', 'experiment_runner.py',
             str(PACKAGE.relative_to(PROJECT) / 'config.json')]
         if (any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec'))
                 or subprocess.run(['git', 'diff', '--quiet', ready['candidate'], '--', *sources], cwd=PROJECT).returncode):

@@ -10,6 +10,19 @@ from unittest.mock import patch
 
 
 class SharedCalls(unittest.TestCase):
+    def test_runtime_cannot_read_independent_reference_paths(self):
+        from p1_storage import P1StorageGuard
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for directory in ('joint-reference', 'sim-reference'):
+                target = root / directory / 'PUBLIC.json'
+                target.parent.mkdir()
+                target.write_text('{"scope":"PUBLIC fixture"}')
+            with P1StorageGuard(root / 'output', 1024**3, development=True):
+                for directory in ('joint-reference', 'sim-reference'):
+                    with self.assertRaises(OSError):
+                        (root / directory / 'PUBLIC.json').read_bytes()
+
     def test_entry_preserves_control_space_and_never_starts_worker_when_root_is_full(self):
         import development_pilot as entry
         from unittest.mock import Mock
@@ -81,6 +94,30 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_product_profile_requires_exact_receipt_and_complete_acquired_references(self):
+        from provider_openai import role_output_schema, matches
+        cite = lambda ref: {'evidence_ref': ref, 'receipt_id': 'PUBLIC-read', 'target_id': ref,
+            'version': 1, 'pointer': '/'}
+        facts = [{'data': {'kind': 'inspection_report', 'facts': {'conclusion': 'PASS'}}, 'citation': cite('PUBLIC-report')},
+            {'data': {'kind': 'retail_status', 'facts': {'status': 'on_sale', 'stock_units': 8}}, 'citation': cite('PUBLIC-stock')}]
+        context = {'stage': '农产品画像', 'necessary_clauses': ['c1', 'c2'], 'current': 'PUBLIC-A',
+            'profile_candidates': ['PUBLIC-A'], 'assessment_receipts': {'PUBLIC-A': 'PUBLIC-assess'},
+            'quality': {}, 'assessments': {'PUBLIC-A': {'claims': {'c1': {'evidence_state': 'Supported'},
+                'c2': {'evidence_state': 'Supported'}}}}, 'facts': {'PUBLIC-A': facts}, 'bound_profile_contract': True}
+        schema = role_output_schema('单智能体', 'analysis', [{'role': 'user', 'content': {'runtime': context}}])
+        attributes = [{'attribute': k, 'citation': f['citation'] | {'pointer': '/facts/' + k}}
+            for f in facts for k in f['data']['facts']]
+        valid = {'kind': 'analysis', 'data': {'necessary_clauses': ['c1', 'c2'], 'observations': [{
+            'candidate_id': 'PUBLIC-A', 'assessment_receipt_id': 'PUBLIC-assess', 'quality': None,
+            'attributes': attributes, 'unknown': []}]}}
+        self.assertTrue(matches(valid, schema))
+        bad = copy.deepcopy(valid)
+        bad['data']['observations'][0]['assessment_receipt_id'] = 'PUBLIC-wrong'
+        self.assertFalse(matches(bad, schema))
+        missing = copy.deepcopy(valid)
+        missing['data']['observations'][0]['attributes'].pop()
+        self.assertFalse(matches(missing, schema))
+
     def test_acquire_resource_plan_is_validated_by_the_production_parser(self):
         from tests.test_fourrouter_production_protocol import logical_request
         from evidence_access import EvidenceSession

@@ -91,7 +91,28 @@ def role_output_schema(role, kind, messages):
             observation = object_schema({'candidate_id': nullable, key: assessment, 'quality': {'anyOf': quality},
                 'attributes': array_schema(object_schema({'attribute': text, 'citation': citation})),
                 'unknown': strings})
+            if context.get('bound_profile_contract') and context.get('profile_candidates'):
+                options = []
+                for parent in context['profile_candidates']:
+                    references = []
+                    for fact in context['facts'].get(parent, []):
+                        for attribute, source in (('conclusion', 'inspection_report'),
+                                ('status', 'retail_status'), ('stock_units', 'retail_status')):
+                            if fact['data'].get('kind') != source or attribute not in fact['data']['facts']:
+                                continue
+                            bound = fact['citation'] | {'pointer': '/facts/' + attribute}
+                            references.append(object_schema({'attribute': {'type': 'string', 'enum': [attribute]},
+                                'citation': object_schema({k: shape(v) | {'enum': [v]} for k, v in bound.items()})}))
+                    attributes = array_schema({'anyOf': references} if references else object_schema({}))
+                    attributes.update(minItems=len(references), maxItems=len(references))
+                    options.append(object_schema({'candidate_id': {'type': 'string', 'enum': [parent]},
+                        'assessment_receipt_id': {'type': 'string', 'enum': [context['assessment_receipts'][parent]]},
+                        'quality': shape(context['quality'].get(parent)), 'attributes': attributes, 'unknown': strings}))
+                observation = {'anyOf': options}
         data = object_schema({'necessary_clauses': clause_ids, 'observations': array_schema(observation)})
+        if context.get('bound_profile_contract') and context['stage'] == '农产品画像' and context.get('profile_candidates'):
+            data['properties']['observations'].update(minItems=len(context['profile_candidates']),
+                maxItems=len(context['profile_candidates']))
     elif kind == 'dispatch':
         data = object_schema({'candidate': {'type': ['string', 'null'], 'enum': [context['current']]},
             'to': {'type': 'string', 'enum': ['单智能体' if context['method'] == 'S' else '生命周期追溯']},

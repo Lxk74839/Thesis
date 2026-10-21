@@ -74,7 +74,7 @@ class P1StorageGuard:
                     return
                 self.attempts['credentials'] += 1
                 raise OSError('R_credentials_forbidden')
-            if parts & {'private', 'evaluation', 'gold'}:
+            if parts & {'private', 'evaluation', 'gold', 'joint-reference', 'sim-reference'}:
                 self.attempts['evaluation'] += 1
                 raise OSError('R_evaluation_forbidden')
             if args[2] & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND):
