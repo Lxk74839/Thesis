@@ -1,0 +1,20 @@
+{
+  "publication": null,
+  "PUBLIC_permit_consumed": false,
+  "A4_generate": 0,
+  "other_api": 0,
+  "A4_attempt_exists": false,
+  "A4_permit_consumed": false,
+  "A": null,
+  "code_candidate": "2e93b526fa264fe1d41bb15dc9298a86eb0151d9",
+  "terminal": "not_started",
+  "A4_claim_exists": false,
+  "G": null,
+  "PUBLIC_claim_exists": false,
+  "native_usage": null,
+  "reason": "remaining_budget_requires_stop",
+  "cost": null,
+  "PUBLIC_generate": 0,
+  "count_api": 0,
+  "started": false
+}

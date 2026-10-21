@@ -13,3 +13,5 @@
 {"global_left":493.3416624996835,"local_left":269.3052269000327,"write_upper_bytes":20859422.0,"label":"freeze_gate","excluded_execution_seconds":0.0,"offline_seconds":5506.6583375003165,"write_bytes_left":113358306.0}
 {"local_left":226.30522690003272,"label":"frozen_directed_before","offline_seconds":5549.6583375003165,"write_upper_bytes":20859422.0,"excluded_execution_seconds":0.0,"global_left":450.3416624996835,"write_bytes_left":113358306.0}
 {"local_left":223.88078439998208,"label":"frozen_directed_after","offline_seconds":5552.082780000367,"write_upper_bytes":22975344.0,"excluded_execution_seconds":0.0,"global_left":447.91721999963283,"write_bytes_left":111242384.0}
+{"local_left":114.88078439998208,"offline_seconds":5661.082780000367,"write_bytes_left":111242384.0,"write_upper_bytes":22975344.0,"global_left":338.91721999963283,"label":"before_PUBLIC","excluded_execution_seconds":0.0}
+{"global_left":263.91721999963283,"offline_seconds":5736.082780000367,"excluded_execution_seconds":0.0,"local_left":39.880784399982076,"label":"final_closeout","write_upper_bytes":22975344.0,"write_bytes_left":111242384.0}
