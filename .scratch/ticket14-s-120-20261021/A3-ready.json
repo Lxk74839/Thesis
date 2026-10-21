@@ -1,0 +1,10 @@
+{
+  "candidate": "2513b421ab643689f09882d0317570c78c6eaba4",
+  "spec": "PASS",
+  "standards": "PASS",
+  "D1_preflight": "PASS",
+  "test_label": "sA3_directed_final",
+  "PUBLIC_complete_S": "PASS",
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A3",
+  "review": ".scratch/ticket14-s-a3-20261021/review.md"
+}

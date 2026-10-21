@@ -1,0 +1,24 @@
+{
+  "stage": "runner_analysis",
+  "code": "changed_request",
+  "source": "recommendation_runner.py:358",
+  "data_fields_exact": true,
+  "necessary_clauses_equal": false,
+  "observations_is_array": true,
+  "expected_clauses_type": "list",
+  "returned_clauses_type": "list",
+  "expected_clauses_length": 2,
+  "returned_clauses_length": 2,
+  "observations_length": 1,
+  "acquired_counts": {
+    "binding": 9,
+    "candidate_binding": 2,
+    "candidates": 0,
+    "context": 0
+  },
+  "settlement_count": 12,
+  "budget_usage_exact": false,
+  "engineering_limits_settled": true,
+  "count_or_other_requests_added": false,
+  "S_passed": false
+}
