@@ -87,6 +87,9 @@ class ProductionProtocol(unittest.TestCase):
         final = provider.normalize(public_response(), following, pricing=None, engineering=True,
             continuations=adapter.protocol_context)
         self.assertEqual(final['message']['content']['data']['draft_id'], 'PUBLIC')
+        missing = copy.deepcopy(following)
+        missing['messages'][-2].pop('protocol_ref')
+        self.assertNotEqual(adapter.prepare(missing)['status'], 'prepared')
         changed = copy.deepcopy(following)
         changed['messages'][-2]['tool_requests'][0]['arguments'] = {'cursor': 'PUBLIC-altered'}
         self.assertNotEqual(adapter.prepare(changed)['status'], 'prepared')

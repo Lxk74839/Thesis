@@ -139,8 +139,12 @@ def prepare(request, binding, *, continuations=None):
         logical['schema_version'] = 'rsm-model-request-0.2.0'
         validate_request(logical)
     protocol_items = {}
+    native_session = any(stored['owner'] == [request['run_id'], request['session_id']]
+        for stored in (continuations or {}).values())
     for index, message in enumerate(request['messages']):
         if 'protocol_ref' not in message:
+            if native_session and message.get('role') == 'assistant':
+                raise ProtocolError('continuation', 'missing_protocol_reference', field='protocol_ref', message_index=index)
             continue
         stored = (continuations or {}).get(message['protocol_ref'])
         business = {k: v for k, v in message.items() if k != 'protocol_ref'}
