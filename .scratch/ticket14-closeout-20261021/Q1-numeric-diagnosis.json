@@ -25,5 +25,6 @@
   "reproduction": "PUBLIC synthetic fixture, not original response replay",
   "RED": "ProductionFlow.test_new_scoped_grant_uses_complete_S_and_M_without_counting: M/quality failed_protocol invalid_profile",
   "GREEN": "same flow released for equivalent number spellings; changed m rejected; Boolean/string rejected by production Schema",
-  "production_change": "quality value equality after strict typed role schema; no rounding, epsilon, replacement or reference data"
+  "production_change": "quality shape/type check using existing validator, then exact numeric value equality; no rounding, epsilon, replacement or reference data",
+  "legacy_regression": "PUBLIC scripted adapter Boolean/numeric alias RED released -> GREEN invalid_profile; 3 direct tests pass"
 }

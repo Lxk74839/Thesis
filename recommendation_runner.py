@@ -628,6 +628,7 @@ class RecommendationRun:
             parents = context['profile_candidates'] if batch_profile else [context['current']]
             if len(observations) != len(parents):
                 raise ValueError('missing_candidate_profile')
+            from provider_openai import matches, shape
             for current, item in zip(parents, observations):
                 assessment, quality = context['assessments'].get(current), context['quality'].get(current)
                 unknown = (['empty_C'] if current is None else [c for c, v in assessment['claims'].items()
@@ -636,8 +637,9 @@ class RecommendationRun:
                 assessment_value = context['assessment_receipts'][current] if batch_profile else assessment
                 if (set(item) != {'candidate_id', assessment_key, 'quality', 'attributes', 'unknown'}
                         or item['candidate_id'] != current or encoded(item[assessment_key]) != encoded(assessment_value)
-                        # JSON Schema numbers allow both 1 and 1.0. The production
-                        # schema already rejects booleans/strings in numeric fields.
+                        # JSON numbers permit 1 and 1.0, while legacy PUBLIC
+                        # adapters also need the same Boolean/string type checks.
+                        or not matches(item['quality'], shape(quality))
                         or item['quality'] != quality
                         or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
                     raise ValueError('unbound_product_profile')

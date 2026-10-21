@@ -94,6 +94,18 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_legacy_public_quality_rejects_numeric_boolean_alias(self):
+        from tests.runtime_fixtures import RuntimeFixture, ScriptedTransport
+        with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
+            fixture = RuntimeFixture(Path(tmp)).quality(['PUBLIC-A'])
+            def mutate(request, raw, context):
+                if request['output_kind'] == 'analysis' and context['stage'] == '农产品画像':
+                    observation = raw['message']['content']['data']['observations'][0]
+                    observation['quality'] = copy.deepcopy(observation['quality']) | {'z': True}
+            result = fixture.make('M', model=ScriptedTransport(mutate=mutate).adapter(),
+                arm='quality', prefix=1).run()
+            self.assertEqual((result['terminal'], result['reason']), ('failed_protocol', 'invalid_profile'))
+
     def test_required_batch_roundtrip_rejects_premature_completion(self):
         from provider_fourrouter import normalize, ProtocolError
         from tests.test_fourrouter_production_protocol import logical_request

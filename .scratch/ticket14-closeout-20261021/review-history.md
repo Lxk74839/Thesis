@@ -13,3 +13,5 @@ BASE b4d5cb2，首次候选cf512ca661d91b252034544e2d10d24755a875ee。
 两项已定向修复、记录真实验证，再固定候选复核；本记录不代表PASS。
 
 候选47f85a4双轴各发现同一P2：评价派生标签目录不含精确evaluation路径组件，后续运行侧守护可读。真实评价尚未执行，未生成标签投影。PUBLIC实际路径回归先RED，再将全部评价产物移入OUTPUT/evaluation/<run>。后续复核关闭前不执行评价。
+
+5f641a503dc292090d16bddd3628b5ca41bb4393: Standards PASS / Spec FAIL P2. Value equality could accept Boolean/numeric aliases in legacy PUBLIC adapters lacking full role Schema. No actual send under this candidate. Added local existing shape/matches check and production-run legacy regression; changed raw synthetic response is deep-copied to avoid mutating expected context. Genuine Boolean-alias RED released -> GREEN invalid_profile; equivalent-number production flow still releases.
