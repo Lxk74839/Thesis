@@ -7,6 +7,7 @@ import base64
 
 MODEL = 'gpt-5.4-mini-2026-03-17'
 MAPPER = 'openai-responses-mapper-0.1.0'
+PROFILE_SCHEMA_VERSION = 'rsm-profile-references-0.1.0'
 
 
 def send_count(body, *, deadline_ms, credential, clock, connection_factory=None):
@@ -81,20 +82,14 @@ def role_output_schema(role, kind, messages):
     if kind == 'analysis':
         observation = object_schema({})
         if context['stage'] == '用户画像':
-            nodes = []
-            def history_values(value):
-                nodes.append(shape(value))
-                for item in value.values() if isinstance(value, dict) else value if isinstance(value, list) else []:
-                    history_values(item)
-            history_values(context['history'])
-            observation = object_schema({'pointer': text, 'value': {'anyOf': list({canonical(n): n for n in nodes}.values())},
-                                         'preference_status': {'type': 'string', 'enum': ['unknown', 'history_fact']}})
+            observation = object_schema({'pointer': text,
+                'preference_status': {'type': 'string', 'enum': ['unknown', 'history_fact']}})
         elif context['stage'] == '农产品画像':
             quality = list({canonical(shape(q)): shape(q) for q in context['quality'].values()}.values()) or [{'type': 'null'}]
             key = 'assessment_receipt_id' if context.get('profile_candidates') else 'assessment'
             assessment = text if key == 'assessment_receipt_id' else shape(context['assessments'].get(context['current']))
             observation = object_schema({'candidate_id': nullable, key: assessment, 'quality': {'anyOf': quality},
-                'attributes': array_schema(object_schema({'attribute': text, 'value': scalar, 'unit': nullable, 'citation': citation})),
+                'attributes': array_schema(object_schema({'attribute': text, 'citation': citation})),
                 'unknown': strings})
         data = object_schema({'necessary_clauses': clause_ids, 'observations': array_schema(observation)})
     elif kind == 'dispatch':

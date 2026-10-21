@@ -3,20 +3,21 @@ import copy
 import json
 import math
 import os
+import re
 from pathlib import Path
 
 from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.2.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.3.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
                          role, kind, stage, output_cap, request_id, protocol, history=None):
     """Pure shared projection and message/schema composition; grants no execution capability."""
     from evidence_access import EvidenceSession
-    from provider_openai import MODEL, role_output_schema
+    from provider_openai import MODEL, PROFILE_SCHEMA_VERSION, role_output_schema
     batched = binding.get('orchestration') == 'batch32-0.1.0'
     queue = state['queue']
     def originals(pack):
@@ -32,6 +33,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'current': queue[state['cursor']] if state['cursor'] < len(queue) and state['stop_reason'] is None else None,
         'necessary_clauses': binding['necessary_clauses'], 'facts': facts,
         'history': json.loads(initial_messages[0]['content'])['H'] if initial_messages else [],
+        'H_sha256': binding.get('H_sha256'), 'profile_contract': PROFILE_SCHEMA_VERSION,
         'assessments': {p: {k: a[k] for k in ('assessment_status', 'evidence_state', 'eligible',
             'advance_allowed', 'completion', 'claims')} for p, a in state['assessments'].items()}, 'quality': quality,
         'ordered': ordered[:binding['K']], 'G': state['G'][:],
@@ -41,6 +43,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             'receipt_id': 'input:' + state['input_projection_sha256'], 'target_id': p,
             'version': 1, 'pointer': '/base_score'}} for p, b in zip(binding['C'], binding['base_scores'])},
         'draft': state['drafts'][-1] if state['drafts'] else None, 'issues': state['visible_issues'],
+        'profile_facts': copy.deepcopy(state.get('profile_facts', {'user': [], 'products': []})),
         'forwards': [{'role': m['role'], 'role_message_id': m['role_message_id'],
             'content': m['response']['message']['content']} for m in state['messages']
             if m['response']['status'] == 'ok' and m['response']['message']['content'] is not None]}
@@ -65,7 +68,17 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'For analysis.necessary_clauses and dispatch.claim_ids, return runtime.necessary_clauses '
         'with exactly the same order and content; do not translate, expand, omit, duplicate or reorder IDs. '
         'Use only actually acquired evidence for observations and citations.'}
-    if kind == 'dispatch':
+    if kind == 'analysis' and stage == '用户画像':
+        context['output_contract']['instruction'] += (
+            ' Each observation contains only pointer (an exact /H or /H/... reference into frozen history) '
+            'and preference_status (unknown or history_fact). Never return value or rewrite historical text. '
+            'The host resolves the fact from frozen H; unknown preference must remain unknown.')
+    elif kind == 'analysis' and stage == '农产品画像':
+        context['output_contract']['instruction'] += (
+            ' Each attributes item contains only attribute and its exact existing citation '
+            '(evidence_ref, receipt_id, target_id, version, pointer). Never return value or unit; '
+            'the host reads these from acquired originals. Keep the existing assessment/quality/unknown fields.')
+    elif kind == 'dispatch':
         context['output_contract']['fixed'] = {'candidate': context['current'],
             'to': effective if binding['method'] == 'S' else '生命周期追溯',
             'claim_ids': binding['necessary_clauses'],
@@ -106,6 +119,61 @@ def pointer_value(value, pointer):
     return value
 
 
+def resolve_history_references(history, H_sha256, observations):
+    """Resolve a versioned reference contract, without rewriting model messages."""
+    if digest(encoded(history)) != H_sha256 or not isinstance(observations, list) or not observations:
+        raise ValueError('frozen_history_reference')
+    facts = []
+    for item in observations:
+        if (not isinstance(item, dict) or set(item) != {'pointer', 'preference_status'}
+                or not isinstance(item['pointer'], str)
+                or not (item['pointer'] == '/H' or item['pointer'].startswith('/H/'))
+                or item['preference_status'] not in ('unknown', 'history_fact')):
+            raise ValueError('invalid_history_reference')
+        try:
+            value = {'H': history}
+            for part in item['pointer'][1:].split('/'):
+                if (not part or re.search(r'~(?![01])', part)
+                        or isinstance(value, list) and (not part.isdecimal() or str(int(part)) != part)):
+                    raise ValueError('invalid_history_pointer')
+                value = pointer_value(value, '/' + part)
+        except (ValueError, KeyError, TypeError, IndexError):
+            raise ValueError('invalid_history_pointer') from None
+        facts.append({'H_sha256': H_sha256, **copy.deepcopy(item), 'value': copy.deepcopy(value),
+            'fact_sha256': digest(encoded(value))})
+    return facts
+
+
+def resolve_attribute_references(facts, attributes):
+    """Bind product fact references to acquired originals and their existing receipts."""
+    keys = {'conclusion': 'inspection_report', 'status': 'retail_status', 'stock_units': 'retail_status'}
+    expected = {(f['citation']['evidence_ref'], key) for f in facts for key, kind in keys.items()
+        if f['data'].get('kind') == kind and key in f['data']['facts']}
+    seen, resolved = set(), []
+    try:
+        if not isinstance(attributes, list):
+            raise ValueError('invalid_attribute_references')
+        for item in attributes:
+            if not isinstance(item, dict) or set(item) != {'attribute', 'citation'}:
+                raise ValueError('legacy_or_invalid_attribute')
+            key, citation = item['attribute'], item['citation']
+            fact = next(f for f in facts if f['citation']['evidence_ref'] == citation['evidence_ref'])
+            pair = (citation['evidence_ref'], key)
+            if (pair not in expected or pair in seen
+                    or encoded(citation) != encoded({**fact['citation'], 'pointer': '/facts/' + key})):
+                raise ValueError('invalid_attribute_binding')
+            value = pointer_value(fact['data'], citation['pointer'])
+            resolved.append({'attribute': key, 'citation': copy.deepcopy(citation), 'value': copy.deepcopy(value),
+                'unit': fact['data']['facts'].get('unit') if key == 'stock_units' else None,
+                'fact_sha256': digest(encoded(value)), 'original_json_sha256': digest(encoded(fact['data']))})
+            seen.add(pair)
+        if seen != expected:
+            raise ValueError('missing_attributes')
+    except (KeyError, TypeError, IndexError, StopIteration):
+        raise ValueError('invalid_attribute_reference') from None
+    return resolved
+
+
 def _draft_shape(draft):
     return (isinstance(draft, dict) and set(draft) == {'draft_id', 'parent_draft_id', 'items'}
         and isinstance(draft['draft_id'], str) and bool(draft['draft_id'])
@@ -120,7 +188,7 @@ class RunStop(Exception):
 
 
 class RecommendationRun:
-    version = 'rsm-runner-0.1.0'
+    version = 'rsm-runner-0.2.0'
 
     def __init__(self, binding, *, evidence, model, root_budget, output_root):
         self.binding = copy.deepcopy(binding)
@@ -163,7 +231,10 @@ class RecommendationRun:
                 adapter='rsm-model-adapter-on-demand-fixture-0.1.0')
         if self.fourrouter:
             self.state['versions'].update(baseline='1d688a3ddee04f634773ad62204a69f45fd55f19',
-                runner='rsm-runner-4router-0.1.0', adapter='rsm-model-adapter-4router-0.1.0', prompt=COMPOSER_VERSION)
+                runner='rsm-runner-4router-0.2.0', adapter='rsm-model-adapter-4router-0.1.0', prompt=COMPOSER_VERSION)
+        from provider_openai import PROFILE_SCHEMA_VERSION
+        self.state['versions']['profile_schema'] = PROFILE_SCHEMA_VERSION
+        self.state['profile_facts'] = {'user': [], 'products': []}
         self.histories = {}
         self.call_ids = set()
         self.profile_batch_start = 0
@@ -387,12 +458,9 @@ class RecommendationRun:
             if not observations:
                 raise ValueError('missing_profile')
             if role == '用户画像':
-                for item in observations:
-                    if (set(item) != {'pointer', 'value', 'preference_status'} or not isinstance(item['pointer'], str)
-                            or not (item['pointer'] == '/H' or item['pointer'].startswith('/H/'))
-                            or item['preference_status'] not in ('unknown', 'history_fact')
-                            or encoded(pointer_value({'H': context['history']}, item['pointer'])) != encoded(item['value'])):
-                        raise ValueError('unbound_history')
+                facts = resolve_history_references(context['history'], self.binding['H_sha256'], observations)
+                self.state['profile_facts']['user'].append({'role_message_id':
+                    self.state['messages'][-1]['role_message_id'], 'facts': facts})
                 self._complete(role)
                 return
             batch_profile = self.batched and bool(self.queue)
@@ -410,24 +478,9 @@ class RecommendationRun:
                         or encoded(item['quality']) != encoded(quality)
                         or item['unknown'] != unknown or not isinstance(item['attributes'], list)):
                     raise ValueError('unbound_product_profile')
-                facts = context['facts'].get(current, [])
-                attributes = {'conclusion': 'inspection_report', 'status': 'retail_status', 'stock_units': 'retail_status'}
-                expected = {(f['citation']['evidence_ref'], key) for f in facts for key, kind in attributes.items()
-                            if f['data'].get('kind') == kind and key in f['data']['facts']}
-                seen = set()
-                for attribute in item['attributes']:
-                    if set(attribute) != {'attribute', 'value', 'unit', 'citation'}:
-                        raise ValueError('invalid_attribute')
-                    key, citation = attribute['attribute'], attribute['citation']
-                    fact = next(f for f in facts if f['citation']['evidence_ref'] == citation['evidence_ref'])
-                    pair = (citation['evidence_ref'], key)
-                    if (pair not in expected or pair in seen or encoded(citation) != encoded({**fact['citation'], 'pointer': '/facts/' + key})
-                            or encoded(attribute['value']) != encoded(fact['data']['facts'][key])
-                            or attribute['unit'] != (fact['data']['facts'].get('unit') if key == 'stock_units' else None)):
-                        raise ValueError('invalid_attribute_binding')
-                    seen.add(pair)
-                if seen != expected:
-                    raise ValueError('missing_attributes')
+                resolved = resolve_attribute_references(context['facts'].get(current, []), item['attributes'])
+                self.state['profile_facts']['products'].append({'candidate_id': current,
+                    'role_message_id': self.state['messages'][-1]['role_message_id'], 'facts': resolved})
             if batch_profile:
                 self.state['profiled_candidates'].extend(parents)
             self._complete(role)

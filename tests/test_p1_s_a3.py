@@ -44,6 +44,7 @@ class A3S(unittest.TestCase):
         parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=parent) as tmp:
             fixture = RuntimeFixture(Path(tmp)).candidates(['PUBLIC-A', 'PUBLIC-B'])
+            fixture.history = [{'review_text': 'PUBLIC synthetic long grain history. ' * 60}]
             fixture.now[0] = 10000
             http, wires = RouterHTTPFixture(), []
             def transport(text, *, deadline_ms):
@@ -86,6 +87,13 @@ class A3S(unittest.TestCase):
             self.assertIsNone(result['budget']['usage']['input_tokens'])
             self.assertIsNone(result['budget']['usage']['cost_microusd'])
             self.assertFalse(result['budget']['usage_exact'])
+            user_fact = result['profile_facts']['user'][0]['facts'][0]
+            self.assertEqual(user_fact['value'], fixture.history[0]['review_text'])
+            self.assertEqual(user_fact['H_sha256'], result['binding']['H_sha256'])
+            self.assertEqual(user_fact['preference_status'], 'unknown')
+            self.assertTrue(result['profile_facts']['products'])
+            self.assertTrue(all('fact_sha256' in fact for group in result['profile_facts']['products'] for fact in group['facts']))
+            self.assertNotIn('value', result['messages'][1]['response']['message']['content']['data']['observations'][0])
             archived = json.dumps(result)
             self.assertNotIn('PUBLIC-OPAQUE-A3', archived)
             self.assertNotIn('PUBLIC synthetic private reasoning', archived)

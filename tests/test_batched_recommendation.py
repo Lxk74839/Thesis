@@ -57,8 +57,7 @@ class BatchTransport(ScriptedTransport):
                     for key in (('conclusion',) if row.get('kind') == 'inspection_report' else
                                 ('status', 'stock_units') if row.get('kind') == 'retail_status' else ()):
                         if key in row['facts']:
-                            attributes.append({'attribute': key, 'value': row['facts'][key],
-                                'unit': row['facts'].get('unit') if key == 'stock_units' else None,
+                            attributes.append({'attribute': key,
                                 'citation': {**fact['citation'], 'pointer': '/facts/' + key}})
                 observations.append({'candidate_id': parent,
                     'assessment_receipt_id': context['assessment_receipts'][parent], 'quality': quality,

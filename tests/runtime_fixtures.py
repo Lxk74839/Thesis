@@ -27,8 +27,7 @@ class ScriptedTransport:
             if context['stage'] == '用户画像':
                 history = context['history']
                 pointer = '/H/0/review_text' if history and isinstance(history[0], dict) and 'review_text' in history[0] else '/H'
-                value = history[0]['review_text'] if pointer.endswith('review_text') else history
-                data['observations'] = [{'pointer': pointer, 'value': copy.deepcopy(value), 'preference_status': 'unknown'}]
+                data['observations'] = [{'pointer': pointer, 'preference_status': 'unknown'}]
             elif context['stage'] == '农产品画像':
                 parent = context['current']
                 assessment, quality = context['assessments'].get(parent), context['quality'].get(parent)
@@ -38,8 +37,7 @@ class ScriptedTransport:
                     for key in (('conclusion',) if row.get('kind') == 'inspection_report' else
                                 ('status', 'stock_units') if row.get('kind') == 'retail_status' else ()):
                         if key in row['facts']:
-                            attributes.append({'attribute': key, 'value': row['facts'][key],
-                                'unit': row['facts'].get('unit') if key == 'stock_units' else None,
+                            attributes.append({'attribute': key,
                                 'citation': {**fact['citation'], 'pointer': '/facts/' + key}})
                 unknown = (['empty_C'] if parent is None else [c for c, v in assessment['claims'].items()
                     if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else []))
