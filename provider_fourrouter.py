@@ -278,7 +278,8 @@ def failure_business_output(envelope):
                 continue
         # Headers are never copied. Visible credential-like echoes are omitted, not rewritten.
         encoded = canonical(saved)
-        if any(marker in encoded.lower() for marker in ('authorization', 'bearer ', 'api_key')):
+        if any(marker in encoded.lower() or marker in text.lower()
+                for marker in ('authorization', 'bearer ', 'api_key')):
             return {'schema_version': capture['schema_version'], 'items': [], 'replayable': False,
                 'omission_reason': 'credential_echo'}
         capture['items'].append({'output_index': index, 'item': saved,
@@ -483,6 +484,8 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
                 values = [v for k, v in item.items() if k != 'content']
                 parts = item.get('content')
                 values += [p.get('text') for p in parts if isinstance(p, dict)] if isinstance(parts, list) else []
+                values.append(''.join(p['text'] for p in parts if isinstance(p, dict)
+                    and isinstance(p.get('text'), str))) if isinstance(parts, list) else None
                 if any(isinstance(v, str) and key in v for v in values):
                     reply['_business_capture_forbidden'] = True
         return reply

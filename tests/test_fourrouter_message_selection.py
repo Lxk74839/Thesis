@@ -197,6 +197,28 @@ class MessageSelection(unittest.TestCase):
             self.assertNotIn('PUBLIC-FICTIONAL-KEY', json.dumps(capture))
             self.assertEqual(calls, [provider.ENDPOINT])  # injected transport only, zero real HTTP
 
+    def test_split_authentication_echo_is_omitted_as_a_whole(self):
+        with tempfile.TemporaryDirectory(dir=Path.cwd() / '.tmp') as tmp:
+            credential = Path(tmp) / 'PUBLIC-synthetic-key.json'
+            credential.write_text('{"api_key":"PUBLIC-FICTIONAL-KEY"}', encoding='utf-8')
+            def transport(endpoint, body, key, timeout, **kwargs):
+                response = public_response()
+                item = message('PUBLIC broken ' + key[:8], 'final_answer')
+                item['content'].append({'type': 'output_text', 'text': key[8:]})
+                response['body']['output'] = [item]
+                return response
+            sender = provider.make_sender(clock=lambda: 0, max_request_bytes=2 * 1024**2,
+                credential_path=credential, http_sender=transport)
+            capture = provider.failure_business_output(sender(
+                '{"model":"gpt-6-luna","input":["PUBLIC"]}', deadline_ms=30000))
+            self.assertFalse(capture['replayable'])
+            self.assertEqual(capture['items'], [])
+        response = public_response()
+        item = message('Authori', 'final_answer')
+        item['content'].append({'type': 'output_text', 'text': 'zation: PUBLIC-secret'})
+        response['body']['output'] = [item]
+        self.assertEqual(provider.failure_business_output(response)['items'], [])
+
 
 if __name__ == '__main__':
     unittest.main()

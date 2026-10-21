@@ -19,3 +19,5 @@ call_status_red：已completed响应内的incomplete function_call原可执行�
 final_directed：25项PASS（当时12新增+6生产协议+6既有诊断+1完整S PUBLIC流程）。完整S合成9次、经生产reasoning/工具续接/画像引用/发布，费用及缺失usage保持未知。随后strict_and_echo：15项PASS（最终13新增+2直接影响的原sender/严格usage拒绝回归），新增的唯一认证回显例使用临时PUBLIC虚构Key及注入transport，无真实HTTP。两组并集28项，后组仅新增测试，生产代码未变；无需重跑未受影响上游、R、worker或冻结装配。
 
 包内各测试前后budget.ps1均已检查；详细时刻/Job写入/内存在原追加资源账，摘要resource-checks.jsonl。未新增真实claim或调用，A1—A5证据与余额只读。
+
+初审发现同message分块认证回显可绕过逐段检测，f2564e8不能交付。split_echo_red已复现；对原段和合并文本同时检测后split_echo_green（14新增+原sender回归）15项PASS。首次审查阻塞保留，最终以新候选双轴复核为准。
