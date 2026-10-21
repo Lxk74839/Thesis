@@ -299,7 +299,8 @@ def response_diagnostic(envelope, *, failure=False):
         'usage_diagnostic': usage_diagnostic(envelope.get('body')), 'native_usage': _native_usage(body.get('usage')),
         'output_structure': [output_structure(item, n) for n, item in enumerate(body.get('output', []))]
             if isinstance(body.get('output'), list) else None,
-        'request_body_bytes': envelope.get('request_body_bytes')}
+        'request_body_bytes': envelope.get('request_body_bytes'),
+        'http_diagnostic': copy.deepcopy(envelope.get('http_diagnostic'))}
     if failure:
         result['business_output'] = failure_business_output(envelope)
     return result

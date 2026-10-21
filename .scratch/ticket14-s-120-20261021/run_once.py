@@ -24,7 +24,7 @@ ensure_first_execution = old.ensure_first_execution
 
 def main():
     candidate, attempt = sys.argv[1:]
-    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4', 'A5', 'A6'):
+    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7'):
         raise ValueError('fixed_candidate_attempt_required')
     control = PACKAGE / attempt
     grant = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -36,7 +36,7 @@ def main():
     with p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes']):
         SHARED.mkdir(exist_ok=True)
     guard = p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes'],
-        **({'run_root': p1.OUTPUT / run_id, 'run_limit_bytes': cfg['run_storage_limit_bytes']} if attempt in ('A5', 'A6') else {}))
+        **({'run_root': p1.OUTPUT / run_id, 'run_limit_bytes': cfg['run_storage_limit_bytes']} if attempt in ('A5', 'A6', 'A7') else {}))
     guard.claim_S_request = lambda body: claim_request(SHARED / 'requests.jsonl', body, run_id)
     result = {'run_id': run_id, 'task_key': p1.TASK_KEYS['S'], 'terminal': None,
         'candidate_count': None, 'verified_count': None, 'recommendation_count': None, 'responses': [],
@@ -94,3 +94,4 @@ if __name__ == '__main__':
     if sys.stdin.buffer.readline() != b'GO\n':
         raise SystemExit(2)
     raise SystemExit(main())
+

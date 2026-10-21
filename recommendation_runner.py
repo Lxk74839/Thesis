@@ -679,7 +679,7 @@ class RecommendationRun:
                 history.append({'role': 'tool', 'tool_call_id': call['call_id'], 'content': result})
 
     def _dispatch_checkpoint(self, passed, reason=None):
-        if self.binding.get('authorization_id') != 'S-COMPLETE-ONCE-20261021-A6' or 'dispatch_checkpoint' in self.state:
+        if self.binding.get('authorization_id') not in ('S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7') or 'dispatch_checkpoint' in self.state:
             return
         from p1_engineering import record_dispatch_checkpoint
         self.state['dispatch_checkpoint'] = record_dispatch_checkpoint(self.state, self.output_root,
@@ -1096,3 +1096,4 @@ class RecommendationRun:
     def _empty_gate(self, draft):
         if not draft['items'] and self.state['cursor'] != len(self.queue):
             raise RunStop('blocked_evidence', 'empty_unproven')
+

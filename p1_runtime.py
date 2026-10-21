@@ -84,7 +84,7 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
     if (type(storage_guard) is not P1StorageGuard or getattr(storage_guard, 'limit_bytes', None) != cfg.get('storage_limit_bytes')
             or getattr(storage_guard, 'root', None) != OUTPUT):
         missing.append('controlled_storage_guard')
-    if cfg.get('authorization_id') in ('S-COMPLETE-ONCE-20261021-A5', 'S-COMPLETE-ONCE-20261021-A6'):
+    if cfg.get('authorization_id') in ('S-COMPLETE-ONCE-20261021-A5', 'S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7'):
         attempt = cfg['authorization_id'][-2:]
         if (cfg.get('storage_limit_bytes') != 128 * 1024**2
                 or cfg.get('run_storage_limit_bytes') != 64 * 1024**2
@@ -94,7 +94,7 @@ def prepare_p1(config_path, method, *, counter=None, storage_guard=None):
         if (not isinstance(limits, dict) or type(limits.get('request_output_tokens')) is not int
                 or type(limits.get('elapsed_ms')) is not int
                 or limits['request_output_tokens'] > 91612
-                or limits['elapsed_ms'] > (1643819 if attempt == 'A6' else 1689869)):
+                or limits['elapsed_ms'] > (1572643 if attempt == 'A7' else 1643819 if attempt == 'A6' else 1689869)):
             missing.append(attempt + '_engineering_limits')
     if engineering:
         from p1_engineering import http_window_ms
@@ -249,3 +249,4 @@ def main(argv=None):
 
 if __name__ == '__main__':
     raise SystemExit(main())
+

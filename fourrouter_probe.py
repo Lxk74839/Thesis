@@ -129,46 +129,109 @@ def _request_bytes(request, max_request_bytes=8192):
     return raw
 
 
+def _http_error_capture(raw, body, key, *, truncated):
+    """Only bounded error fields, never headers, requests or reasoning objects."""
+    error = body.get('error') if isinstance(body, dict) else None
+    selected = {k: error.get(k) for k in ('code', 'type', 'message')} if isinstance(error, dict) else {}
+    text = raw.decode('utf-8', errors='replace')
+    combined = ''.join(v for v in selected.values() if isinstance(v, str)) + text
+    forbidden = key in combined or any(v in combined.lower() for v in (
+        'authorization', 'bearer ', 'api_key', 'encrypted_content', 'reasoning_text', 'summary_text'))
+    diagnostic = {'body_bytes_read': len(raw), 'body_length_exact': not truncated,
+        'body_truncated': truncated, 'body_format': 'json' if body is not None else
+        'non_json_binary' if b'\x00' in raw or '\ufffd' in text else 'non_json_text' if raw else 'absent',
+        'code': None, 'type': None, 'message': None, 'snippet': None,
+        'text_truncated': False, 'omission_reason': None}
+    if forbidden:
+        diagnostic['omission_reason'] = 'credential_or_reasoning_filtered'
+        return diagnostic
+    diagnostic.update(code=_safe_identifier(selected.get('code'), key),
+        type=_safe_identifier(selected.get('type'), key))
+    if isinstance(selected.get('message'), str):
+        diagnostic.update(message=selected['message'][:512], text_truncated=len(selected['message']) > 512)
+    elif diagnostic['body_format'] == 'non_json_text':
+        diagnostic.update(snippet=text[:256], text_truncated=len(text) > 256)
+    else:
+        diagnostic['omission_reason'] = 'error_message_missing' if raw else 'error_body_missing'
+    if len(json.dumps(diagnostic).encode('utf-8')) > 4096:
+        diagnostic.update(message=None, snippet=None, omission_reason='diagnostic_size_limit')
+    return diagnostic
+
+
 def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run, max_request_bytes=8192):
     """One process, one POST; run() kills the worker on timeout, with no replay."""
+    started, monotonic = time.time_ns() // 1000000, time.perf_counter()
     unknown = {'http_status': None, 'body': None, 'request_id': None}
+    kind = 'unknown_send'
     try:
         _request_bytes(request, max_request_bytes)
         child = process_run([sys.executable, '-B', str(Path(__file__).resolve()), '_http_once'],
             input=json.dumps({'endpoint': endpoint, 'request': request, 'api_key': api_key,
                               'timeout': timeout, 'max_request_bytes': max_request_bytes}).encode('utf-8'),
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=timeout, check=False)
-        if child.returncode != 0:
-            return unknown
-        result = json.loads(child.stdout)
-        return result if isinstance(result, dict) else unknown
-    except (OSError, ValueError, subprocess.TimeoutExpired):
-        return unknown
+        if child.returncode == 0:
+            result = json.loads(child.stdout)
+            if isinstance(result, dict):
+                return result
+    except subprocess.TimeoutExpired:
+        kind = 'local_timeout'
+    except OSError:
+        kind = 'connection_error'
+    except ValueError:
+        pass
+    return unknown | {'http_diagnostic': {'started_at_utc_ms': started,
+        'ended_at_utc_ms': time.time_ns() // 1000000, 'elapsed_ms': (time.perf_counter() - monotonic) * 1000,
+        'transport_kind': kind, 'send_state': 'unknown', 'error': None,
+        'omission_reason': 'worker_failed_or_unavailable'}}
 
 
 def http_response(endpoint, request, api_key, timeout, *, connection_factory=http.client.HTTPSConnection,
                   max_request_bytes=8192):
     """Single HTTPS request; HTTP redirects are returned, never followed."""
+    started, monotonic = time.time_ns() // 1000000, time.perf_counter()
     result = {'http_status': None, 'body': None, 'request_id': None}
+    diagnostic = {'transport_kind': 'unknown_send', 'send_state': 'not_sent', 'error': None,
+        'omission_reason': None}
     if endpoint != 'https://4router.net/v1/responses':
         return result
     try:
         raw_body = _request_bytes(request, max_request_bytes)
     except ValueError:
         return result
-    connection = connection_factory('4router.net', timeout=timeout)
+    connection = None
     try:
+        connection = connection_factory('4router.net', timeout=timeout)
+        diagnostic['send_state'] = 'unknown'
         connection.request('POST', '/v1/responses', body=raw_body,
             headers={'Authorization': 'Bearer ' + api_key, 'Content-Type': 'application/json'})
         response = connection.getresponse()
-        result.update(http_status=response.status, request_id=response.getheader('x-request-id'))
+        result.update(http_status=response.status, request_id=_safe_identifier(response.getheader('x-request-id'), api_key))
+        diagnostic.update(transport_kind='http_response', send_state='response_received')
         raw = response.read(65537)
+        body = None
         if len(raw) <= 65536:
-            result['body'] = json.loads(raw)
-    except (OSError, ValueError, http.client.HTTPException):
-        pass
+            try:
+                result['body'] = body = json.loads(raw)
+            except (ValueError, UnicodeError):
+                pass
+        if response.status != 200:
+            diagnostic['error'] = _http_error_capture(raw, body, api_key, truncated=len(raw) > 65536)
+        elif len(raw) > 65536:
+            diagnostic['omission_reason'] = 'response_body_limit'
+    except TimeoutError:
+        if result['http_status'] is None:
+            diagnostic['transport_kind'] = 'local_timeout'
+        diagnostic['omission_reason'] = 'response_body_timeout' if result['http_status'] else 'local_timeout'
+    except (OSError, http.client.HTTPException):
+        if result['http_status'] is None:
+            diagnostic['transport_kind'] = 'connection_error'
+        diagnostic['omission_reason'] = 'connection_error'
     finally:
-        connection.close()
+        if connection is not None:
+            connection.close()
+    diagnostic.update(started_at_utc_ms=started, ended_at_utc_ms=time.time_ns() // 1000000,
+        elapsed_ms=(time.perf_counter() - monotonic) * 1000)
+    result['http_diagnostic'] = diagnostic
     return result
 
 

@@ -7,7 +7,7 @@ AUTHORIZATION = 'S-ENGINEERING-ONCE-20261020'
 RETRY_AUTHORIZATION = 'S-DEADLINE-RETRY-20261020'
 LONG_AUTHORIZATIONS = ('S-COMPLETE-ONCE-20261021-A1', 'S-COMPLETE-ONCE-20261021-A2',
     'S-COMPLETE-ONCE-20261021-A3', 'S-COMPLETE-ONCE-20261021-A4', 'S-COMPLETE-ONCE-20261021-A5',
-    'S-COMPLETE-ONCE-20261021-A6')
+    'S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7')
 AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION) + LONG_AUTHORIZATIONS
 TASK = 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'
 UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
@@ -56,9 +56,12 @@ class SEngineeringBudget(RootBudget):
         if binding.get('authorization_id') == LONG_AUTHORIZATIONS[4] and (
                 limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1689869):
             raise ValueError('A5_engineering_limits')
-        if binding.get('authorization_id') == LONG_AUTHORIZATIONS[5] and (
+        if binding.get('authorization_id') in LONG_AUTHORIZATIONS[5:] and (
                 limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1643819):
             raise ValueError('A6_engineering_limits')
+        if binding.get('authorization_id') == LONG_AUTHORIZATIONS[6] and (
+                limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1572643):
+            raise ValueError('A7_engineering_limits')
         self.metering = []
         super().__init__(binding, limits, final_reserve, **kwargs)
 
@@ -146,7 +149,7 @@ def invoke(adapter, request):
         result['deadline_diagnostic'] = {'stage': 'deadline', 'code': 'response_late'}
         result['late'] = True
     fixture = adapter.binding.get('provenance') == 'fixture'
-    checkpoint = (adapter.binding.get('engineering_authorization') == LONG_AUTHORIZATIONS[5]
+    checkpoint = (adapter.binding.get('engineering_authorization') in LONG_AUTHORIZATIONS[5:]
         and request['output_kind'] == 'dispatch' and not getattr(adapter, 'a6_dispatch_observed', False))
     if checkpoint:
         adapter.a6_dispatch_observed = True
@@ -188,3 +191,4 @@ def record_dispatch_checkpoint(state, output_root, *, passed, reason):
         os.fsync(stream.fileno())
     return {k: record[k] for k in ('passed', 'parsed', 'dispatch_contract_passed', 'reason')} | {
         'path': str(path), 'sha256': digest(raw), 'bytes': len(raw)}
+
