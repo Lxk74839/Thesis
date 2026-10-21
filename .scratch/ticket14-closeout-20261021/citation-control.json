@@ -1,0 +1,12 @@
+{
+  "diagnostic_only": true,
+  "real_model_reply": false,
+  "original_audit_sha256": "16b00678431042148dc31fdc40dd5425a41fbfd13c9dbd879c47feb446d18383",
+  "original_draft_sha256": "4b99588a45b110be4b01b04685644d79a17e5c6ea379f5b7394a362f374edc7e",
+  "counterfactual_draft_sha256": "bba95431d8d213087ba67f11a7249bb1b3705771e87b24e3fb40650aa3e908bf",
+  "original_program_issue_count": 20,
+  "bound_complete_actual_citation_issue_count": 0,
+  "codes": {},
+  "no_publication": true,
+  "API": 0
+}

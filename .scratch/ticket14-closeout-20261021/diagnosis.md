@@ -37,3 +37,6 @@ composer0.5.0将两项资源计划明确为32并写入工具Schema枚举；它�
 run T14-D1-V00-S-1792578102598：8次生成，A=10/G=10，画像已通过，failed_protocol/invalid_model_issue，无publication。离线从已封存响应核对：草稿kind使用inspection/retail_status/score等旧Schema允许而发布规则不接受的别名；5个问题单source_receipts均不在实际取证回执表，3个pointer与候选位置错配。此次不改写原回答。
 composer0.7.0将草稿wire引用改为短ID，目录只来自实际取得A及安全基础分，原响应与派生完整citation草稿分别留存raw/derived/catalog/A摘要；旧domain publication与最终门禁逐字保留。Schema/提示采用既有发布kind/text合同，核验Schema限制实际draft/候选/pointer/取证回执，位置配对仍由原运行器校验。完整PUBLIC合成S/M回归及原生reasoning续接通过。未复制真实审计作fixture。
 新增引用解析接口先RED（缺实现）再GREEN；核验字段约束回归发现共享Schema对象污染并RED→GREEN修复。受影响28项通过，再验证13项通过。
+
+run T14-D1-V00-S-1792583847292：9次生成，A10/G10，画像及模型核验通过；程序报20条citation_does_not_support_claim，随后修订复用draft_id，failed_protocol/invalid_revision_binding。原响应与失败不改判。
+实际已取得依赖共15个引用；模型仅选4/3个局部引用，闭包不完整。citation-control.json是明确标注非真实模型回答的内存反事实控制：用同一实际A的完整已接受闭包检查原发布规则，20条问题→0；API0，无publication。采用一次显式选择的verified_claim_bundle（member_ids均实际已取得引用），不补证、不从参考补引用；原始短ID选择与展开草稿分存。修订ID绑定本消息唯一ID及旧parent。PUBLIC引用束解析RED→GREEN、完整S/M及定向21项通过。

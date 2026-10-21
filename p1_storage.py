@@ -8,7 +8,8 @@ import sys
 
 
 class P1StorageGuard:
-    def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None, development=False):
+    def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None, development=False,
+                 evaluation_sources=()):
         self.development = development
         if type(limit_bytes) is not int or not 0 < limit_bytes <= (1024**3 if development else 128 * 1024**2):
             raise ValueError('invalid_storage_limit')
@@ -26,16 +27,19 @@ class P1StorageGuard:
         self.S_authorized = self.sender_active = False
         self.credential_read = None
         self.allowed = {'credentials': 0, 'response_workers': 0}
+        self.evaluation_sources = frozenset(Path(p).absolute() for p in evaluation_sources)
+        if self.evaluation_sources and (not development or self.run_root is None):
+            raise ValueError('evaluation_scope_required')
 
     def authorize_S(self, authorization_id):
         from p1_engineering import AUTHORIZATIONS
-        if not self.active or authorization_id not in AUTHORIZATIONS:
+        if not self.active or self.evaluation_sources or authorization_id not in AUTHORIZATIONS:
             raise OSError('S_sender_not_authorized')
         self.S_authorized = True
 
     def authorize_development(self, authorization_id):
         from development_pilot import AUTHORIZATION
-        if not self.active or not self.development or authorization_id != AUTHORIZATION:
+        if not self.active or self.evaluation_sources or not self.development or authorization_id != AUTHORIZATION:
             raise OSError('development_sender_not_authorized')
         self.S_authorized = True
 
@@ -75,8 +79,11 @@ class P1StorageGuard:
                 self.attempts['credentials'] += 1
                 raise OSError('R_credentials_forbidden')
             if parts & {'private', 'evaluation', 'gold', 'joint-reference', 'sim-reference'}:
-                self.attempts['evaluation'] += 1
-                raise OSError('R_evaluation_forbidden')
+                writing = args[2] & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND)
+                if not (self.evaluation_sources and (path.is_relative_to(self.run_root)
+                        or not writing and path in self.evaluation_sources)):
+                    self.attempts['evaluation'] += 1
+                    raise OSError('R_evaluation_forbidden')
             if args[2] & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND):
                 if not self._opening:
                     raise OSError('unguarded_write')

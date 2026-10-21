@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.7.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.8.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -83,7 +83,21 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 base = context['base_preferences'][parent]
                 catalog['s' + str(len(catalog))] = {'candidate_id': parent, 'source_kind': 'base_preference',
                     'citation': copy.deepcopy(base['citation'])}
+                accepted = acquired['assessments'][parent]['accepted']
+                members = []
+                for citation in accepted:
+                    bound = {k: citation[k] for k in ('evidence_ref', 'receipt_id', 'target_id', 'version', 'pointer')}
+                    key = next((key for key, row in catalog.items() if row['candidate_id'] == parent
+                        and row.get('citation') == bound), None)
+                    if key is None:
+                        key = 's' + str(len(catalog))
+                        catalog[key] = {'candidate_id': parent, 'source_kind': 'accepted', 'citation': bound}
+                    members.append(key)
+                catalog['b' + str(len(catalog))] = {'candidate_id': parent, 'source_kind': 'verified_claim_bundle',
+                    'member_ids': members, 'assessment_receipt_id': context['assessment_receipts'][parent]}
             context.update(bound_draft_contract='acquired-draft-references-0.1.0', citation_catalog=catalog)
+            context['draft_identifiers'] = {'draft_id': request_id + ':draft',
+                'parent_draft_id': context['draft']['draft_id'] if context['draft'] else None}
         if kind == 'verification':
             context['verification_receipts'] = state.get('verification_receipts', [])
             context['verification_locations'] = [{'candidate_id': item['parent_asin'], 'pointer': '/items/' + str(index),
@@ -137,8 +151,10 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             '核验时点的在售必要条件有完整有效支持（SIM）。. '
             'Reason citations are short IDs selected only from citation_catalog for that candidate; '
             'the host resolves them to original citations without changing your response. '
-            'For inspection cite the actual inspection_sample, inspection_report and their batch/event dependencies; '
-            'for on_sale cite retail_status and its batch/event dependencies. Cite every required dependency. '
+            'For each necessary reason select exactly the verified_claim_bundle ID for that candidate. '
+            'Its explicit member_ids contain the full already accepted lifecycle dependency closure; '
+            'partial material/event selections cannot support these claims. No new evidence is added. '
+            'Copy draft_identifiers exactly, including a new draft_id and the previous parent_draft_id on revision. '
             'Optional base_preference has that exact claim_id/kind, original base value, null unit and text '
             '偏好基础分为<value formatted with exactly 12 decimal places>。; use its base_preference catalog ID. '
             'Optional retail_stock is only for quality arm, uses its actual nonnegative integer value, '
@@ -259,7 +275,11 @@ def resolve_draft_references(draft, catalog):
                         or catalog[r]['candidate_id'] != item['parent_asin'] for r in refs)
                         or len(refs) != len(set(refs))):
                     raise ValueError('unbound_draft_reference')
-                reason['citations'] = [copy.deepcopy(catalog[r]['citation']) for r in refs]
+                members = [member for r in refs for member in catalog[r].get('member_ids', [r])]
+                if (len(members) != len(set(members)) or any(member not in catalog or 'citation' not in catalog[member]
+                        or catalog[member]['candidate_id'] != item['parent_asin'] for member in members)):
+                    raise ValueError('unbound_draft_reference')
+                reason['citations'] = [copy.deepcopy(catalog[r]['citation']) for r in members]
     except (KeyError, TypeError):
         raise ValueError('unbound_draft_reference') from None
     return result

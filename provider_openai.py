@@ -131,13 +131,14 @@ def role_output_schema(role, kind, messages):
             items = []
             for parent in context['ordered']:
                 refs = [key for key, row in context['citation_catalog'].items()
-                    if row['candidate_id'] == parent and row.get('source_kind') not in ('base_preference', 'retail_stock')]
+                    if row['candidate_id'] == parent and row.get('source_kind') == 'verified_claim_bundle']
                 reasons = []
                 for claim, name, sentence in (('c1', 'inspection_supported', '检验必要条件有完整有效支持（SIM）。'),
                         ('c2', 'on_sale_supported', '核验时点的在售必要条件有完整有效支持（SIM）。')):
                     reasons.append(object_schema({'claim_id': text | {'enum': [claim]}, 'kind': text | {'enum': [name]},
                         'value': {'type': 'boolean', 'enum': [True]}, 'unit': {'type': 'null'},
-                        'text': text | {'enum': [sentence]}, 'citations': array_schema(text | {'enum': refs})}))
+                        'text': text | {'enum': [sentence]},
+                        'citations': array_schema(text | {'enum': refs}) | {'minItems': 1, 'maxItems': 1}}))
                 for name in ('base_preference', 'retail_stock'):
                     available = [key for key, row in context['citation_catalog'].items()
                         if row['candidate_id'] == parent and row.get('source_kind') == name]
@@ -156,6 +157,9 @@ def role_output_schema(role, kind, messages):
                     'reasons': array_schema({'anyOf': reasons})}))
             data['properties']['items'] = array_schema({'anyOf': items} if items else object_schema({}))
             data['properties']['items'].update(minItems=len(items), maxItems=len(items))
+            if 'draft_identifiers' in context:
+                for key, value in context['draft_identifiers'].items():
+                    data['properties'][key] = shape(value) | {'enum': [value]}
     elif kind == 'verification':
         data = object_schema({'issues': array_schema(object_schema({'issue_id': text, 'draft_id': text,
             'candidate_id': nullable, 'claim_id': nullable, 'pointer': text, 'code': text, 'blocking': {'type': 'boolean'},

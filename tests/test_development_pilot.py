@@ -94,6 +94,22 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_verified_bundle_references_expand_only_the_explicitly_selected_actual_members(self):
+        from recommendation_runner import resolve_draft_references
+        one = {'evidence_ref': 'PUBLIC-1', 'receipt_id': 'PUBLIC-read', 'target_id': 'PUBLIC-t', 'version': 1, 'pointer': '/'}
+        two = one | {'evidence_ref': 'PUBLIC-2'}
+        catalog = {'s0': {'candidate_id': 'PUBLIC-A', 'citation': one},
+            's1': {'candidate_id': 'PUBLIC-A', 'citation': two},
+            'b0': {'candidate_id': 'PUBLIC-A', 'member_ids': ['s0', 's1']}}
+        draft = {'items': [{'parent_asin': 'PUBLIC-A', 'reasons': [{'citations': ['b0']}]}]}
+        self.assertEqual(resolve_draft_references(draft, catalog)['items'][0]['reasons'][0]['citations'], [one, two])
+        self.assertEqual(draft['items'][0]['reasons'][0]['citations'], ['b0'])
+        for member in ('PUBLIC-missing', 'b0'):
+            bad = copy.deepcopy(catalog)
+            bad['b0']['member_ids'] = [member]
+            with self.assertRaises(ValueError):
+                resolve_draft_references(draft, bad)
+
     def test_verification_schema_limits_ids_to_actual_draft_and_evidence_receipts(self):
         from provider_openai import role_output_schema, matches
         context = {'stage': 'verification', 'necessary_clauses': ['c1', 'c2'],
@@ -117,23 +133,30 @@ class ProductionFlow(unittest.TestCase):
         citation = {'evidence_ref': 'PUBLIC-e', 'receipt_id': 'PUBLIC-r', 'target_id': 'PUBLIC-t', 'version': 1, 'pointer': '/'}
         context = {'stage': 'draft', 'necessary_clauses': ['c1', 'c2'], 'bound_draft_contract': True,
             'ordered': ['PUBLIC-A'], 'candidate_batches': {'PUBLIC-A': 'PUBLIC-b'},
-            'base_preferences': {}, 'citation_catalog': {'s0': {'candidate_id': 'PUBLIC-A', 'citation': citation}}}
+            'base_preferences': {}, 'citation_catalog': {'s0': {'candidate_id': 'PUBLIC-A', 'citation': citation},
+                'b0': {'candidate_id': 'PUBLIC-A', 'source_kind': 'verified_claim_bundle', 'member_ids': ['s0']}}}
         schema = role_output_schema('单智能体', 'draft', [{'role': 'user', 'content': {'runtime': context}}])
         draft = {'draft_id': 'PUBLIC-d', 'parent_draft_id': None, 'items': [{'parent_asin': 'PUBLIC-A',
             'sim_batch_id': 'PUBLIC-b', 'reasons': [{'claim_id': 'c1', 'kind': 'inspection_supported',
-                'value': True, 'unit': None, 'text': '检验必要条件有完整有效支持（SIM）。', 'citations': ['s0']}]}]}
+                'value': True, 'unit': None, 'text': '检验必要条件有完整有效支持（SIM）。', 'citations': ['b0']}]}]}
         self.assertTrue(matches({'kind': 'draft', 'data': draft}, schema))
         wrong = copy.deepcopy(draft)
         wrong['items'][0]['reasons'][0]['kind'] = 'inspection'
         self.assertFalse(matches({'kind': 'draft', 'data': wrong}, schema))
         resolved = resolve_draft_references(draft, context['citation_catalog'])
         self.assertEqual(resolved['items'][0]['reasons'][0]['citations'], [citation])
-        self.assertEqual(draft['items'][0]['reasons'][0]['citations'], ['s0'])
+        self.assertEqual(draft['items'][0]['reasons'][0]['citations'], ['b0'])
         for bad in (['not-acquired'], [citation]):
             wrong = copy.deepcopy(draft)
             wrong['items'][0]['reasons'][0]['citations'] = bad
             with self.assertRaises(ValueError):
                 resolve_draft_references(wrong, context['citation_catalog'])
+        context['draft_identifiers'] = {'draft_id': 'PUBLIC-new', 'parent_draft_id': 'PUBLIC-d'}
+        revision_schema = role_output_schema('单智能体', 'draft', [{'role': 'user', 'content': {'runtime': context}}])
+        self.assertFalse(matches({'kind': 'draft', 'data': draft}, revision_schema))
+        revision = copy.deepcopy(draft)
+        revision.update(context['draft_identifiers'])
+        self.assertTrue(matches({'kind': 'draft', 'data': revision}, revision_schema))
 
     def test_product_profile_requires_exact_receipt_and_complete_acquired_references(self):
         from provider_openai import role_output_schema, matches
@@ -252,9 +275,12 @@ class ProductionFlow(unittest.TestCase):
                         reply = json.loads(output['text'])
                         for item in reply['data']['items']:
                             for reason in item['reasons']:
-                                reason['citations'] = [next(key for key, row in frame['citation_catalog'].items()
-                                    if row['candidate_id'] == item['parent_asin'] and row['citation'] == c)
-                                    for c in reason['citations']]
+                                bundle = next((key for key, row in frame['citation_catalog'].items()
+                                    if row['candidate_id'] == item['parent_asin'] and 'member_ids' in row), None
+                                    ) if reason['kind'] in ('inspection_supported', 'on_sale_supported') else None
+                                reason['citations'] = [bundle] if bundle else [next(key for key, row in frame['citation_catalog'].items()
+                                    if row['candidate_id'] == item['parent_asin'] and row.get('citation') == c) for c in reason['citations']]
+                        reply['data'].update(frame['draft_identifiers'])
                         output['text'] = json.dumps(reply, ensure_ascii=False)
                     result['body'].pop('usage')
                     result['body']['output'].insert(0, reasoning())

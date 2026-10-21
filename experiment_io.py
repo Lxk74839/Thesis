@@ -32,13 +32,14 @@ def _rows(ref):
     return [json.loads(raw) for raw in _read(ref).splitlines()]
 
 
-def _execution(task, ref, plan_id):
+def _execution(task, ref, plan_id, *, read_artifact=None, resolve_artifact=None, legacy_R=False):
     """Project actual artifacts without ever accepting an independent reference."""
-    result = json.loads(_read(ref))
+    read, path = read_artifact or _read, resolve_artifact or _public_path
+    result = json.loads(read(ref))
     if result['task_key'] != task['task_key'] or result['plan_id'] != plan_id:
         raise ValueError('execution_binding_mismatch')
     binding = {k: task[k] for k in BINDING}
-    if _public_path(ref['path']).name == 'task.intent.json' and set(result) == {'task_key', 'plan_id'}:
+    if path(ref['path']).name == 'task.intent.json' and set(result) == {'task_key', 'plan_id'}:
         return {'task_key': task['task_key'], 'binding': binding, 'started': True,
                 'terminal': 'unresolved_attempt', 'usage': None}
     if result['terminal'] in ('not_started', 'configuration_required'):
@@ -48,21 +49,24 @@ def _execution(task, ref, plan_id):
     if result['terminal'] in ('running', 'unresolved_attempt'):
         return {'task_key': task['task_key'], 'binding': binding, 'started': True,
                 'terminal': result['terminal'], 'usage': result.get('usage')}
-    directory = _public_path(ref['path']).parent
-    audit_path = _public_path(result['audit_path'])
+    directory = path(ref['path']).parent
+    audit_path = path(result['audit_path'])
+    legacy = (legacy_R and task['method'] == 'R' and result.get('legacy_R_source') == result['audit_ref'])
+    if legacy:
+        directory = audit_path.parent
     if audit_path.parent != directory:
         raise ValueError('audit_scope_mismatch')
-    if _public_path(result['audit_ref']['path']) != audit_path:
+    if path(result['audit_ref']['path']) != audit_path:
         raise ValueError('audit_scope_mismatch')
-    audit = json.loads(_read(result['audit_ref']))
+    audit = json.loads(read(result['audit_ref']))
     actual = audit['binding']
     expected = binding | {'base_scores': task['base_scores']}
     if (audit['run_id'] != result['run_id'] or audit['terminal'] != result['terminal']
             or actual.get('task_key') != task['task_key']
             or any(actual.get('base_score_sha256' if k == 'base_scores_sha256' else k) != v for k, v in expected.items())):
         raise ValueError('audit_binding_mismatch')
-    acquired = json.loads(_read(result['acquired_ref']))
-    if (audit.get('acquired_ref') != result['acquired_ref']
+    acquired = json.loads(read(result['acquired_ref']))
+    if ((acquired != audit['evidence']['acquired'] if legacy else audit.get('acquired_ref') != result['acquired_ref'])
             or acquired['binding']['run_id'] != result['run_id']
             or any(acquired['binding'][k] != task[k] for k in ('root_task_id', 'snapshot_id', 'principal_id', 'verify_at_ms'))
             or acquired['candidate_binding'] != {'C': task['C'], 'base_scores': task['base_scores']}):
@@ -84,9 +88,9 @@ def _execution(task, ref, plan_id):
     if result['terminal'] == 'valid_empty' and not complete_C:
         raise ValueError('actual_assessment_binding_mismatch')
     publication_verified = False
-    if _public_path(result['budget_ref']['path']) != directory / 'budget.jsonl':
+    if path(result['budget_ref']['path']) != directory / 'budget.jsonl':
         raise ValueError('budget_scope_mismatch')
-    journal = [json.loads(raw) for raw in _read(result['budget_ref']).splitlines()]
+    journal = [json.loads(raw) for raw in read(result['budget_ref']).splitlines()]
     settled = {r['reservation_id']: r for r in journal if r.get('status') in ('settled', 'unresolved')}
     closing = [r for r in journal if r.get('status') == 'reserved'
                and r.get('operation') in ('final', 'commit', 'seal_audit')]
@@ -101,10 +105,10 @@ def _execution(task, ref, plan_id):
                 or audit['budget']['receipts'] != journal[1:-1]
                 or journal[-1] != settled[closing[-1]['reservation_id']]):
             raise ValueError('settlement_binding_mismatch')
-        publication_path = _public_path(result['publication_path'])
-        if _public_path(result['publication_ref']['path']) != publication_path:
+        publication_path = path(result['publication_path'])
+        if path(result['publication_ref']['path']) != publication_path:
             raise ValueError('publication_binding_mismatch')
-        raw = _read(result['publication_ref'])
+        raw = read(result['publication_ref'])
         publication = json.loads(raw)
         publication_verified = (publication_path.parent == directory and digest(raw) == audit['publication_record_sha256']
             and publication['run_id'] == result['run_id'] and publication['terminal'] == result['terminal']
@@ -117,20 +121,26 @@ def _execution(task, ref, plan_id):
         if not publication_verified:
             raise ValueError('publication_binding_mismatch')
     attempts = [m['root_reservation_id'] for m in audit['messages']]
+    if legacy and (attempts or audit['budget']['usage']['model_calls'] != 0):
+        raise ValueError('legacy_R_model_usage')
     model_reservations = {r['reservation_id']: r for r in journal if r.get('status') == 'reserved'
                           and isinstance(r.get('operation'), dict) and r['operation'].get('kind') == 'model'}
     if (len(attempts) != len(set(attempts)) or set(attempts) != set(model_reservations)
             or any(i not in settled for i in attempts)):
         raise ValueError('budget_attempt_binding_mismatch')
+    native_usages = []
     for message in audit['messages']:
         reservation = model_reservations[message['root_reservation_id']]
         observation = settled[message['root_reservation_id']]['observation']
         for key in ('request_ref', 'response_ref'):
             if (message[key] != observation[key]
-                    or _public_path(message[key]['path']).parent != directory / 'trace'):
+                    or path(message[key]['path']).parent != directory / 'trace'):
                 raise ValueError('trace_binding_mismatch')
-        request = json.loads(_read(message['request_ref']))
-        _read(message['response_ref'])
+        request = json.loads(read(message['request_ref']))
+        response = json.loads(read(message['response_ref']))
+        if message['response_summary'].get('usage') != response.get('usage'):
+            raise ValueError('trace_usage_mismatch')
+        native_usages.append(response.get('usage') or {})
         if (request['run_id'] != result['run_id'] or request['reservation_id'] != message['root_reservation_id']
                 or request['request_id'] != message['role_message_id']
                 or message['response_summary'].get('request_id', message['role_message_id']) != message['role_message_id']
@@ -138,12 +148,15 @@ def _execution(task, ref, plan_id):
                 or any(request[k] != reservation['operation'][k] for k in (
                     'request_id', 'role', 'output_kind', 'prepared_id', 'count_receipt_id'))):
             raise ValueError('trace_binding_mismatch')
-    usages = [settled[i]['usage'] for i in attempts]
-    usage = {'basis': 'synthetic_fixture_units', 'known_subtotal': {}}
+    native = actual.get('execution_kind') == 'fourrouter_responses' and not legacy
+    usages = native_usages if native else [settled[i]['usage'] for i in attempts]
+    usage = {'basis': 'provider_native' if native else 'no_model' if legacy else 'synthetic_fixture_units',
+        'known_subtotal': {}, 'unknown_counts': {}}
     for key in ('input_tokens', 'output_tokens', 'cost_microusd'):
         values = [u.get(key) for u in usages]
         usage['known_subtotal'][key] = sum(v for v in values if v is not None)
         usage[key] = sum(values) if all(v is not None for v in values) else None
+        usage['unknown_counts'][key] = sum(v is None for v in values)
     states = {p: a['evidence_state'] or 'Unassessed' for p, a in assessments.items()}
     execution = {'task_key': task['task_key'], 'binding': binding, 'started': True,
         'terminal': result['terminal'], 'delivered': result['delivered'], 'G': audit['G'],
@@ -156,11 +169,21 @@ def _execution(task, ref, plan_id):
     return execution
 
 
-def load_evaluation_inputs(plan, *, execution_index, reference_sources):
+def load_evaluation_inputs(plan, *, execution_index, reference_sources, read_artifact=None, resolve_artifact=None,
+                           development=False):
     """Return fixed evaluation slots and observations; perform no scoring or execution."""
-    _public_path(plan)
+    read, path = read_artifact or _read, resolve_artifact or _public_path
+    path(plan)
     _, manifest, rows = _task_plan(plan)
-    if manifest['source_scope'] != 'public_fixture' or reference_sources['scope'] != 'public_fixture':
+    if development:
+        from p1_runtime import PILOT, PILOT_ID, PLAN_ID, D1
+        if (path(plan) != PILOT or manifest.get('pilot_id') != PILOT_ID
+                or manifest.get('parent_plan_id') != PLAN_ID or len(rows['tasks.jsonl']) != 8
+                or [u['root_task_id'] for u in rows['sample-users.jsonl']] != [D1]
+                or reference_sources['scope'] != 'accepted_development_evaluation'
+                or read_artifact is None or resolve_artifact is None):
+            raise ValueError('development_evaluation_binding')
+    elif manifest['source_scope'] != 'public_fixture' or reference_sources['scope'] != 'public_fixture':
         raise ValueError('stage_A_real_evaluation_forbidden')
     if set(r['label'] for r in rows['scenes.jsonl']) != set(SCENES):
         raise ValueError('evaluation_requires_18_scene_slots')
@@ -178,9 +201,9 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources):
         scheduled[key] = row
     if set(execution_index) - {t['task_key'] for t in scheduled.values()}:
         raise ValueError('unknown_execution_key')
-    preferences = _rows(reference_sources['preference'])
-    states = _rows(reference_sources['joint_states'])
-    additional = _rows(reference_sources['scenario_states'])
+    preferences = [json.loads(row) for row in read(reference_sources['preference']).splitlines()]
+    states = [json.loads(row) for row in read(reference_sources['joint_states']).splitlines()]
+    additional = [json.loads(row) for row in read(reference_sources['scenario_states']).splitlines()]
     for root in roots:
         first = next(t for (u, _, _), t in scheduled.items() if u == root)
         assembly = assemble_task(plan, first['task_key'])
@@ -197,7 +220,7 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources):
                 normal = next(b for b in rows['user-scenarios.jsonl'] if b['root_task_id'] == root
                               and b['view_id'] == normal_scene['view_id'])
                 view_ref = normal['existing_binding_ref']
-            view = json.loads(_read(view_ref))
+            view = json.loads(read(view_ref))
             if 'existing_binding_ref' not in relation:
                 view = view | {k: scene[k] for k in ('label', 'view_id', 'snapshot', 'snapshot_id', 'arm')}
             if (view['root_task_id'] != root or view['snapshot_id'] != scene['snapshot_id']
@@ -237,11 +260,12 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources):
                 reference = {'binding': {k: task[k] for k in BINDING}, 'target': pref[0]['target_parent'],
                     'states': independent, 'source_ref': reference_sources['preference'] | {
                         'components': [reference_sources['preference'], reference_sources['joint_states' if use_joint else 'scenario_states']]}}
-                execution = (_execution(task, execution_index[key], plan_id) if key in execution_index else None) if scheduled_task else {
+                execution = (_execution(task, execution_index[key], plan_id, read_artifact=read,
+                    resolve_artifact=path, legacy_R=development) if key in execution_index else None) if scheduled_task else {
                     'task_key': key, 'binding': reference['binding'], 'started': False, 'terminal': 'not_started'}
                 tasks.append(task)
                 observations.append({'task': task, 'execution': execution, 'reference': reference})
-    evaluation_plan = {'source_scope': 'public_fixture', 'plan_id': plan_id, 'users': roots,
+    evaluation_plan = {'source_scope': 'frozen_development' if development else 'public_fixture', 'plan_id': plan_id, 'users': roots,
         'scenes': list(SCENES), 'tasks': tasks, 'applicability': applicability,
         'cohorts': {'U8': [u for u in roots if all(applicability[u][s] for s in ORIGINAL)],
                     'UQ': [u for u in roots if all(applicability[u][s] for s in ('Q1', 'Q2'))]}}
