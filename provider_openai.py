@@ -74,6 +74,8 @@ def role_output_schema(role, kind, messages):
                    if m['role'] == 'user' and isinstance(m['content'], dict) and 'runtime' in m['content'])
     text, nullable, scalar = {'type': 'string'}, {'type': ['string', 'null']}, {'type': ['string', 'number', 'boolean', 'null']}
     strings = array_schema(text)
+    clause_ids = {'type': 'array', 'items': {'type': 'string', 'enum': context['necessary_clauses']},
+        'minItems': len(context['necessary_clauses']), 'maxItems': len(context['necessary_clauses'])}
     citation = object_schema({'evidence_ref': text, 'receipt_id': text, 'target_id': text,
                               'version': {'type': 'integer'}, 'pointer': text})
     if kind == 'analysis':
@@ -94,12 +96,15 @@ def role_output_schema(role, kind, messages):
             observation = object_schema({'candidate_id': nullable, key: assessment, 'quality': {'anyOf': quality},
                 'attributes': array_schema(object_schema({'attribute': text, 'value': scalar, 'unit': nullable, 'citation': citation})),
                 'unknown': strings})
-        data = object_schema({'necessary_clauses': strings, 'observations': array_schema(observation)})
+        data = object_schema({'necessary_clauses': clause_ids, 'observations': array_schema(observation)})
     elif kind == 'dispatch':
-        data = object_schema({'candidate': nullable, 'to': text, 'claim_ids': strings,
-                              **({'candidate_limit': {'type': 'integer'}} if context['current'] is not None else {})})
+        data = object_schema({'candidate': {'type': ['string', 'null'], 'enum': [context['current']]},
+            'to': {'type': 'string', 'enum': ['单智能体' if context['method'] == 'S' else '生命周期追溯']},
+            'claim_ids': copy.deepcopy(clause_ids),
+            **({'candidate_limit': {'type': 'integer', 'enum': [context.get('batch_limit', 32)]}}
+                if context['current'] is not None else {})})
     elif kind == 'acquire':
-        data = object_schema({'done': {'type': 'boolean'}, **({'plan_sha256': text, 'processed': strings}
+        data = object_schema({'done': {'type': 'boolean', 'enum': [True]}, **({'plan_sha256': text, 'processed': strings}
                              if context['current'] is not None else {})})
     elif kind == 'draft':
         reason = object_schema({'claim_id': text, 'kind': text, 'value': scalar, 'unit': nullable,
@@ -109,7 +114,9 @@ def role_output_schema(role, kind, messages):
     elif kind == 'verification':
         data = object_schema({'issues': array_schema(object_schema({'issue_id': text, 'draft_id': text,
             'candidate_id': nullable, 'claim_id': nullable, 'pointer': text, 'code': text, 'blocking': {'type': 'boolean'},
-            'allowed_actions': strings, 'verifier': text, 'source_receipts': strings}))})
+            'allowed_actions': {'type': 'array', 'items': {'type': 'string', 'enum': ['revise_and_resubmit']},
+                'minItems': 1, 'maxItems': 1},
+            'verifier': {'type': 'string', 'enum': ['model']}, 'source_receipts': strings}))})
     else:
         data = object_schema({'draft_id': text})
     return object_schema({'kind': {'type': 'string', 'enum': [kind]}, 'data': data})

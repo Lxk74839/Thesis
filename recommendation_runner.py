@@ -9,7 +9,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.1.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.2.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -60,6 +60,24 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 'role_message_id': message['role_message_id'], 'content': message['response']['message']['content']}
         context['forwards'] = list(latest.values())
     effective = '单智能体' if binding['method'] == 'S' else role
+    context['output_contract'] = {'kind': kind, 'instruction':
+        'Machine ID fields must contain only exact IDs, never IDs with explanations. '
+        'For analysis.necessary_clauses and dispatch.claim_ids, return runtime.necessary_clauses '
+        'with exactly the same order and content; do not translate, expand, omit, duplicate or reorder IDs. '
+        'Use only actually acquired evidence for observations and citations.'}
+    if kind == 'dispatch':
+        context['output_contract']['fixed'] = {'candidate': context['current'],
+            'to': effective if binding['method'] == 'S' else '生命周期追溯',
+            'claim_ids': binding['necessary_clauses'],
+            **({'candidate_limit': 32} if context['current'] is not None else {})}
+    elif kind == 'acquire':
+        context['output_contract']['instruction'] += (
+            ' Complete with done=true only after the required tool work. Copy plan_sha256 and processed '
+            'exactly from actual tool results, preserving processed order; never invent receipts.')
+    elif kind == 'verification':
+        context['output_contract']['instruction'] += (
+            ' Each reported issue uses verifier=model and allowed_actions=["revise_and_resubmit"]. '
+            'Copy draft IDs, pointers and source receipt IDs only from the actual runtime evidence.')
     messages = copy.deepcopy(history) if history is not None else [
         {'role': 'system', 'content': {'protocol': protocol, 'source_disclosure': 'SIM',
             'execution_kind': binding['execution_kind']}}, *copy.deepcopy(initial_messages)]

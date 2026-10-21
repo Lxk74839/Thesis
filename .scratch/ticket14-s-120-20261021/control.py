@@ -20,6 +20,6 @@ def claim_request(path, body, run_id):
 
 
 def execution_used(package):
-    return sum(json.loads(line)['seconds'] for attempt in ('A1', 'A2', 'A3')
+    return sum(json.loads(line)['seconds'] for attempt in ('A1', 'A2', 'A3', 'A4')
         for line in ((Path(package) / attempt / 'execution-resources.jsonl').read_text().splitlines()
                      if (Path(package) / attempt / 'execution-resources.jsonl').exists() else []))

@@ -24,7 +24,7 @@ ensure_first_execution = old.ensure_first_execution
 
 def main():
     candidate, attempt = sys.argv[1:]
-    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3'):
+    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4'):
         raise ValueError('fixed_candidate_attempt_required')
     control = PACKAGE / attempt
     grant = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]

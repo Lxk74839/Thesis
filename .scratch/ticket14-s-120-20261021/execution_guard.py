@@ -21,7 +21,7 @@ from run_once import ensure_first_execution, p1, SHARED
 from p1_engineering import LONG_AUTHORIZATIONS
 from control import requests, execution_used
 attempt = sys.argv[2]
-if attempt not in ('A1', 'A2', 'A3'):
+if attempt not in ('A1', 'A2', 'A3', 'A4'):
     raise SystemExit('invalid_attempt')
 CONTROL = PACKAGE / attempt
 RUN_ID = 'P1-D1-V00-S-' + LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -41,6 +41,14 @@ if attempt == 'A3':
         raise SystemExit('A3_not_ready')
 used = execution_used(PACKAGE)
 remaining = 1800 - used
+if attempt == 'A4':
+    ready = json.loads((PACKAGE / 'A4-ready.json').read_bytes())
+    public = json.loads((ROOT / '.scratch/ticket14-s-a4-20261021/PUBLIC/execution-result.json').read_bytes())
+    if (ready.get('candidate') != sys.argv[1] or ready.get('authorization_id') != LONG_AUTHORIZATIONS[3]
+            or any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec', 'PUBLIC_complete_S', 'D1_preflight'))
+            or public.get('status') != 'passed' or public.get('candidate') != sys.argv[1]):
+        raise SystemExit('A4_not_ready')
+    remaining = min(remaining, 1753.612)
 if attempt == 'A3':
     remaining = min(remaining, 1769.082)
 rows = requests(SHARED / 'requests.jsonl')
@@ -55,6 +63,9 @@ cfg['limits']['S'].update(model_calls=12-len(rows), request_output_tokens=98304-
 if attempt == 'A3':
     cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 10)
     cfg['limits']['S']['request_output_tokens'] = min(cfg['limits']['S']['request_output_tokens'], 81920)
+if attempt == 'A4':
+    cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 9)
+    cfg['limits']['S']['request_output_tokens'] = min(cfg['limits']['S']['request_output_tokens'], 73728)
 cfg['final_reserve']['S']['elapsed_ms'] = 145000
 with (CONTROL / 's.config.json').open('x', encoding='utf-8') as stream:
     json.dump(cfg, stream, indent=2)
