@@ -122,6 +122,13 @@ def role_output_schema(role, kind, messages):
     elif kind == 'acquire':
         data = object_schema({'done': {'type': 'boolean', 'enum': [True]}, **({'plan_sha256': text, 'processed': strings}
                              if context['current'] is not None else {})})
+        if context.get('acquisition_contract') and context['current'] is not None:
+            result = next((m['content'] for m in reversed(messages) if m['role'] == 'tool'
+                and isinstance(m['content'], dict) and 'processed' in m['content'] and 'plan_sha256' in m['content']), None)
+            if result is not None:
+                data['properties']['plan_sha256'] = text | {'enum': [result['plan_sha256']]}
+                data['properties']['processed'] = array_schema(text | {'enum': result['processed']}) | {
+                    'minItems': len(result['processed']), 'maxItems': len(result['processed'])}
     elif kind == 'draft':
         reason = object_schema({'claim_id': text, 'kind': text, 'value': scalar, 'unit': nullable,
                                 'text': text, 'citations': array_schema(citation)})
@@ -183,6 +190,8 @@ def role_output_schema(role, kind, messages):
             issue['properties']['pointer'] = text | {'enum': paths(context['draft'], '')}
     else:
         data = object_schema({'draft_id': text})
+        if context.get('bound_profile_contract') and context.get('draft'):
+            data['properties']['draft_id'] = text | {'enum': [context['draft']['draft_id']]}
     return object_schema({'kind': {'type': 'string', 'enum': [kind]}, 'data': data})
 
 

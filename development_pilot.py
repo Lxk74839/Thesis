@@ -109,7 +109,11 @@ def prepare_task(label, method, run_id):
         from quality_fusion import RULES
         from evidence_access import digest, encoded
         b = assembly['binding']
-        b['prefix_limit'] = json.loads((PACKAGE / 'config.json').read_bytes())['quality_prefix_limit']
+        resources = json.loads((PACKAGE / 'config.json').read_bytes())
+        b['prefix_limit'] = resources['quality_prefix_limit']
+        b['profile_chunk_size'] = resources['quality_profile_chunk_size']
+        if type(b['profile_chunk_size']) is not int or not 1 <= b['profile_chunk_size'] <= 4:
+            raise ValueError('development_profile_chunk_limit')
         b['fusion'] = {'schema_version': 'fusion-binding-0.1.0', 'task_id': b['root_task_id'],
             **{k: copy.deepcopy(b[k]) for k in ('C', 'C_sha256', 'H_sha256', 'base_scores',
                 'base_score_sha256', 'snapshot_id', 'verify_at_ms', 'principal_id', 'K')},

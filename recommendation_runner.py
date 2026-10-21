@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.8.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.10.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -62,6 +62,8 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             latest[(request['output_kind'], frame['stage'])] = {'role': message['role'], 'stage': frame['stage'],
                 'role_message_id': message['role_message_id'], 'content': message['response']['message']['content']}
         context['forwards'] = list(latest.values())
+        if 'profile_request_candidates' in state:
+            context['profile_candidates'] = state['profile_request_candidates'][:]
     from development_pilot import authorized as development
     if development(binding):
         # All candidate scores and batch associations remain visible. Repeat the long
@@ -138,11 +140,16 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             ' Complete with done=true only after the required tool work. Copy plan_sha256 and processed '
             'exactly from actual tool results, preserving processed order; never invent receipts.')
         if development(binding):
+            context['acquisition_contract'] = 'required-batch-roundtrip-0.1.0'
             context['acquisition_resource_plan'] = {'max_list_pages': 32, 'max_read_batches': 32}
             context['output_contract']['instruction'] += (
                 ' Use the allocated acquisition_resource_plan for acquire_batch: '
                 'max_list_pages=32 and max_read_batches=32. These are ceilings, not required extra work. '
-                'Do not lower them to 1; enumeration/verification still controls completion and stopping.')
+                'Do not lower them to 1; enumeration/verification still controls completion and stopping. '
+                'This stage requires exactly one acquire_batch call for the dispatched start_candidate, '
+                'candidate_limit, claim_ids and stop_policy. Do not substitute candidate_page/list/read or '
+                'declare completion without that actual batch result. After it returns, copy its plan_sha256 '
+                'and processed IDs exactly into done=true; do not call further tools in this dispatch.')
     elif kind == 'draft' and development(binding):
         context['output_contract']['instruction'] += (
             ' Return items in runtime.ordered order with exact candidate_batches IDs. '
@@ -169,6 +176,8 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
                 ' source_receipts must come only from verification_receipts, never safe-input or invented IDs. '
                 'Use the actual zero-based draft item and reason positions for pointers; candidate_id and '
                 'claim_id must refer to that same position. Report actual issues only; return [] if none.')
+    elif kind == 'final_submit' and development(binding):
+        context['output_contract']['instruction'] += ' Return only the exact current runtime.draft.draft_id in data.draft_id.'
     messages = copy.deepcopy(history) if history is not None else [
         {'role': 'system', 'content': {'protocol': protocol, 'source_disclosure': 'SIM',
             'execution_kind': binding['execution_kind']}}, *copy.deepcopy(initial_messages)]
@@ -182,6 +191,12 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             if tool['name'] == 'acquire_batch':
                 for name in ('max_list_pages', 'max_read_batches'):
                     tool['input_schema']['properties'][name]['enum'] = [32]
+                properties = tool['input_schema']['properties']
+                properties['start_candidate']['enum'] = [context['current']]
+                properties['candidate_limit']['enum'] = [context['batch_limit']]
+                properties['claim_ids'].update(minItems=len(context['necessary_clauses']), maxItems=len(context['necessary_clauses']))
+                properties['claim_ids']['items']['enum'] = context['necessary_clauses'][:]
+                properties['stop_policy']['enum'] = ['fixed_prefix' if context['quality_arm'] else 'first_10_qualified']
     return {'schema_version': 'rsm-model-prepare-0.1.0', 'execution_kind': binding['execution_kind'],
         'request_id': request_id, 'attempt_id': request_id, 'run_id': binding['run_id'],
         'session_id': binding['run_id'] + ':' + effective, 'role': effective,
@@ -569,6 +584,19 @@ class RecommendationRun:
             'version': 1, 'pointer': '/base_score'}}
 
     def _analysis(self, role):
+        from development_pilot import authorized
+        chunk = self.binding.get('profile_chunk_size')
+        if (authorized(self.binding) and role == '农产品画像' and self.batched and self.binding['arm'] == 'quality'
+                and chunk and 'profile_request_candidates' not in self.state):
+            parents = self._context(role)['profile_candidates']
+            if parents:
+                try:
+                    for offset in range(0, len(parents), chunk):
+                        self.state['profile_request_candidates'] = parents[offset:offset + chunk]
+                        self._analysis(role)
+                finally:
+                    self.state.pop('profile_request_candidates', None)
+                return
         data = self._role(role, 'analysis', role)
         if (set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']
                 or not isinstance(data['observations'], list)):

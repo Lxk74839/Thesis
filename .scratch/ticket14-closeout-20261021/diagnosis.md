@@ -42,3 +42,7 @@ run T14-D1-V00-S-1792583847292：9次生成，A10/G10，画像及模型核验通
 实际已取得依赖共15个引用；模型仅选4/3个局部引用，闭包不完整。citation-control.json是明确标注非真实模型回答的内存反事实控制：用同一实际A的完整已接受闭包检查原发布规则，20条问题→0；API0，无publication。采用一次显式选择的verified_claim_bundle（member_ids均实际已取得引用），不补证、不从参考补引用；原始短ID选择与展开草稿分存。修订ID绑定本消息唯一ID及旧parent。PUBLIC引用束解析RED→GREEN、完整S/M及定向21项通过。
 
 run T14-D1-V00-S-1792584535014：10次生成，A10/G10，原程序草稿问题0；核验HTTP200在旧65536字节接收阈值被截断（response_body_limit），失败usage未知。正文未保存，不能判断其内容或推理项。此本轮统一授权未单列响应体上限，按单run128MiB/共享1GiB/内存4GiB以内显式配置接收1MiB，旧64KiB默认不动；HTTP120秒/输出8192等不改。超过新界限继续停止，不跳过解析。大PUBLIC合成opaque封装经真实HTTP读取函数及生产normalize验证；超界具体错误码RED→GREEN。含评价目录隔离修复16项定向测试通过。
+
+run T14-D1-V00-S-1792585222115：5次生成，dispatch通过；模型选择candidate_page后自行done，无真实batch，A/G/核验均0，failed_protocol/missing_batch_acquisition。新mapper0.4.0只对本轮acquire合同固定首请求tool_choice=acquire_batch，实际batch回执返回后tool_choice=none；正常化同时拒绝不遵守选择的响应。保留四工具定义及原批处理/发布规则，参数与既有dispatch固定机器字段对齐，完成字段仅绑定实际工具结果。PUBLIC S/M生产贯通tool_choice对照RED→GREEN。
+Q准备：同一前缀32及全C不变，仅分4项一组完成全部商品画像；PUBLIC5项边界从单组5项RED→4+1两组GREEN，最终画像集合与实际核验集合相等、同锚点三组件均通过。普通S/M不分块。为本轮离线写入、测试、Git及归档预留保守512MiB（非实测），仍从新增2GiB内扣除，旧账不冲销。
+定向组合29项有28项通过、1项因前一模块永久审计钩子禁止PUBLIC评价目录创建而失败；评价模块单独4项全部通过，未更改生产守护来绕过。其余25项实际通过沿用。

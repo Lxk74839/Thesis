@@ -94,6 +94,22 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_required_batch_roundtrip_rejects_premature_completion(self):
+        from provider_fourrouter import normalize, ProtocolError
+        from tests.test_fourrouter_production_protocol import logical_request
+        from provider_openai import object_schema
+        request = logical_request()
+        request['output_kind'] = 'acquire'
+        request['messages'] = [{'role': 'user', 'content': {'runtime': {
+            'acquisition_contract': 'required-batch-roundtrip-0.1.0', 'current': 'PUBLIC-A'}}}]
+        request['output_schema'] = object_schema({'kind': {'type': 'string', 'enum': ['acquire']},
+            'data': object_schema({'done': {'type': 'boolean'}})})
+        envelope = {'http_status': 200, 'body': {'model': 'gpt-6-luna', 'status': 'completed', 'output': [
+            {'type': 'message', 'content': [{'type': 'output_text', 'text': '{"kind":"acquire","data":{"done":true}}'}]}]}}
+        with self.assertRaises(ProtocolError) as caught:
+            normalize(envelope, request, pricing=None, engineering=True)
+        self.assertEqual(caught.exception.diagnostic['code'], 'required_batch_roundtrip')
+
     def test_verified_bundle_references_expand_only_the_explicitly_selected_actual_members(self):
         from recommendation_runner import resolve_draft_references
         one = {'evidence_ref': 'PUBLIC-1', 'receipt_id': 'PUBLIC-read', 'target_id': 'PUBLIC-t', 'version': 1, 'pointer': '/'}
@@ -252,17 +268,26 @@ class ProductionFlow(unittest.TestCase):
         from tests.test_fourrouter_production_protocol import reasoning
         from model_adapter import ModelAdapter
         from p1_engineering import SEngineeringBudget
-        for method in ('S', 'M'):
-            with self.subTest(method=method), tempfile.TemporaryDirectory(
+        for method, arm, count in (('S', 'necessary', 2), ('M', 'necessary', 2), ('M', 'quality', 5)):
+            with self.subTest(method=method, arm=arm), tempfile.TemporaryDirectory(
                     dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
-                fixture = RuntimeFixture(Path(tmp)).candidates(['PUBLIC-A', 'PUBLIC-B'])
+                parents = ['PUBLIC-' + chr(65 + i) for i in range(count)]
+                fixture = RuntimeFixture(Path(tmp))
+                fixture.quality(parents) if arm == 'quality' else fixture.candidates(parents)
                 http = RouterHTTPFixture()
                 def transport(text, *, deadline_ms):
                     wire = json.loads(text)
+                    if wire['text']['format']['name'] == 'rsm_acquire':
+                        completed = any(i.get('type') == 'function_call_output' and
+                            isinstance(json.loads(i['output']).get('processed'), list) for i in wire['input'])
+                        self.assertEqual(wire['tool_choice'], 'none' if completed else
+                            {'type': 'function', 'name': 'acquire_batch'})
                     frame = json.loads(wire['input'][-1]['content'])['runtime'] if 'role' in wire['input'][-1] else None
                     if frame:
-                        self.assertEqual(set(frame['candidate_base_scores']), {'PUBLIC-A', 'PUBLIC-B'})
-                        self.assertEqual(set(frame['candidate_batches']), {'PUBLIC-A', 'PUBLIC-B'})
+                        self.assertEqual(set(frame['candidate_base_scores']), set(parents))
+                        self.assertEqual(set(frame['candidate_batches']), set(parents))
+                        if arm == 'quality' and frame['stage'] == '农产品画像':
+                            self.assertLessEqual(len(frame['profile_candidates']), 4)
                     business = copy.deepcopy(wire)
                     business['input'] = [i for i in business['input'] if i.get('type') != 'reasoning']
                     for i in business['input']:
@@ -287,11 +312,13 @@ class ProductionFlow(unittest.TestCase):
                     return result
                 model = ModelAdapter(transport, capability_binding=FIXTURE_BINDING | {
                     'development_authorization': AUTHORIZATION, 'execution_authorized': True, 'pricing': None})
-                run = fixture.make(method, model=model, binding_changes={'schema_version': 'rsm-run-0.4.0',
+                run = fixture.make(method, model=model, arm=arm, prefix=count if arm == 'quality' else None,
+                    binding_changes={'schema_version': 'rsm-run-0.4.0',
                     'execution_kind': 'fourrouter_responses', 'project_id': 'PUBLIC-P1',
                     'authorization_id': AUTHORIZATION, 'development_authorization': AUTHORIZATION,
-                    'plan_source_scope': 'public_fixture', 'orchestration': 'batch32-0.1.0'})
-                limits = dict.fromkeys(SEngineeringBudget.resources, 100)
+                    'plan_source_scope': 'public_fixture', 'orchestration': 'batch32-0.1.0',
+                    'profile_chunk_size': 4 if arm == 'quality' else None})
+                limits = dict.fromkeys(SEngineeringBudget.resources, 100000)
                 limits.update(model_calls=24, request_output_tokens=189916, elapsed_ms=1780000, retries=0)
                 reserve = dict.fromkeys(SEngineeringBudget.resources, 0)
                 reserve.update(model_calls=1, request_output_tokens=1500, elapsed_ms=145000)
@@ -310,6 +337,13 @@ class ProductionFlow(unittest.TestCase):
                 self.assertTrue(audit['draft_reference_bindings'])
                 self.assertNotEqual(audit['draft_reference_bindings'][0]['raw_draft_sha256'],
                     audit['draft_reference_bindings'][0]['derived_draft_sha256'])
+                self.assertEqual(set(audit['profiled_candidates']), set(parents))
+                self.assertEqual(len(audit['profiled_candidates']), count)
+                if arm == 'quality':
+                    profiles = [json.loads(Path(m['request_ref']['path']).read_bytes()) for m in audit['messages']
+                        if m['role'] == '农产品画像']
+                    self.assertEqual(len(profiles), 2)
+                    self.assertEqual(set(audit['components']), {'full', 'no_quality', 'mean_quality'})
                 count = len(http.wires)
                 run.run()
                 self.assertEqual(len(http.wires), count)

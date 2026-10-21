@@ -9,7 +9,7 @@ from provider_openai import canonical, matches, prepare_responses, role_output_s
 MODEL = 'gpt-6-luna'
 CHANNEL = '4Router'
 ENDPOINT = 'https://4router.net/v1/responses'
-MAPPER = '4router-responses-mapper-0.3.0'
+MAPPER = '4router-responses-mapper-0.4.0'
 RATE_KEYS = ('input_microusd_per_million', 'output_microusd_per_million', 'cached_microusd_per_million')
 REASONING_FIELDS = {'type', 'id', 'summary', 'content', 'encrypted_content', 'status'}
 
@@ -129,6 +129,19 @@ def not_started(missing):
                                             'retryable': False, 'request_sent': False}}
 
 
+def acquisition_choice(request):
+    if request['output_kind'] != 'acquire':
+        return None
+    frame = next((m['content']['runtime'] for m in reversed(request['messages'])
+        if m['role'] == 'user' and isinstance(m['content'], dict) and 'runtime' in m['content']), {})
+    if frame.get('acquisition_contract') != 'required-batch-roundtrip-0.1.0':
+        return None
+    calls = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', []) if c['name'] == 'acquire_batch'}
+    completed = any(m['role'] == 'tool' and m['tool_call_id'] in calls and isinstance(m['content'], dict)
+        and isinstance(m['content'].get('processed'), list) for m in request['messages'])
+    return 'none' if completed or frame['current'] is None else {'type': 'function', 'name': 'acquire_batch'}
+
+
 def prepare(request, binding, *, continuations=None):
     from model_adapter import REQUEST_KEYS, validate_request
     if (binding.get('model_id') != MODEL or binding.get('channel') != CHANNEL
@@ -166,6 +179,10 @@ def prepare(request, binding, *, continuations=None):
         protocol_items[index] = stored['items']
     result = prepare_responses(request, binding['project_id'], model_id=MODEL, mapper=MAPPER,
         protocol_items=protocol_items, include_reasoning=True)
+    choice = acquisition_choice(request)
+    if choice is not None:
+        result['wire_body']['tool_choice'] = choice
+        result['count_body']['tool_choice'] = copy.deepcopy(choice)
     if binding.get('wire_schema_subset') is True:
         def supported(value):
             if isinstance(value, dict):
@@ -173,6 +190,7 @@ def prepare(request, binding, *, continuations=None):
             return [supported(v) for v in value] if isinstance(value, list) else value
         result['wire_body']['tools'] = supported(result['wire_body']['tools'])
         result['count_body']['tools'] = copy.deepcopy(result['wire_body']['tools'])
+    if binding.get('wire_schema_subset') is True or choice is not None:
         result.update(wire_utf8=canonical(result['wire_body']), count_utf8=canonical(result['count_body']),
             wire_sha256=sha(result['wire_body']), count_payload_sha256=sha(result['count_body']))
         result['wire_bytes'] = len(result['wire_utf8'].encode('utf-8'))
@@ -396,6 +414,10 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
                 parts.append(part['text'])
             messages.append((index, phase, ''.join(parts)))
     business = [m for m in messages if m[1] != 'commentary']
+    choice = acquisition_choice(request)
+    if (isinstance(choice, dict) and (len(calls) != 1 or calls[0]['name'] != 'acquire_batch')
+            or choice == 'none' and calls):
+        raise ProtocolError('tool_call', 'required_batch_roundtrip', field='tool_choice')
     if calls:
         if business:
             raise ProtocolError('output_item', 'mixed_tool_and_text_output', field='output')

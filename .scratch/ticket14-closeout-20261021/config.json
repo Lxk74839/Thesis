@@ -18,7 +18,7 @@
   "shared_storage_limit_bytes": 1073741824,
   "run_storage_limit_bytes": 134217728,
   "new_write_limit_bytes": 2147483648,
-  "local_write_upper_bytes": 134217728,
+  "local_write_upper_bytes": 536870912,
   "memory_limit_bytes": 4294967296,
   "count_api": 0,
   "other_api": 0,
@@ -26,5 +26,6 @@
   "pricing": null,
   "cost": null,
   "offline_time_enforced": false,
-  "response_body_limit_bytes": 1048576
+  "response_body_limit_bytes": 1048576,
+  "quality_profile_chunk_size": 4
 }
