@@ -319,7 +319,7 @@ def run_guarded(command, run_id):
     if command.startswith('run-') or command == 'evaluate':
         ready = json.loads((PACKAGE / 'ready.json').read_bytes())
         sources = ['development_pilot.py', 'p1_engineering.py', 'p1_runtime.py', 'p1_storage.py', 'model_adapter.py',
-            'provider_fourrouter.py', 'provider_openai.py', 'recommendation_runner.py', 'experiment_runner.py',
+            'provider_fourrouter.py', 'provider_openai.py', 'fourrouter_probe.py', 'recommendation_runner.py', 'experiment_runner.py',
             'development_evaluation.py', 'experiment_io.py', 'experiment_evaluation.py',
             str(PACKAGE.relative_to(PROJECT) / 'config.json')]
         if (any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec'))
