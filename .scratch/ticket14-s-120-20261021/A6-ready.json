@@ -1,0 +1,12 @@
+{
+  "dispatch_checkpoint": "PASS",
+  "candidate": "ffd1a6e2847f2c45332eda0e60637b860a04b677",
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A6",
+  "send_chain": "PASS",
+  "standards": "PASS",
+  "review": ".scratch/ticket14-s-a6-20261021/review.md",
+  "spec": "PASS",
+  "limits_regression": "PASS",
+  "execution_write_limit_bytes": 100599072,
+  "D1_preflight": "PASS"
+}

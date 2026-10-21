@@ -1,0 +1,24 @@
+{
+  "scope": "actual_A6_checkpoint_business_projection_only",
+  "hashes_valid": true,
+  "strict_production_normalize": "PASS",
+  "matches_recorded_dispatch": true,
+  "original_output_indices": [
+    0,
+    2
+  ],
+  "actual_phases": [
+    "commentary",
+    "final_answer"
+  ],
+  "later_failure": {
+    "stage": "acquire/response_status",
+    "http_status": 408,
+    "code": "http_status_not_200",
+    "business_body_replayable": false,
+    "provider_or_gateway_cause": "unknown",
+    "usage": null
+  },
+  "API_calls": 0,
+  "full_original_response_replay": false
+}

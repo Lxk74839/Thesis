@@ -1,0 +1,560 @@
+{
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A6",
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "terminal": "failed_model",
+  "candidate_count": 1493,
+  "verified_count": 0,
+  "recommendation_count": null,
+  "responses": [
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 2424,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 603214,
+      "request_id": null,
+      "response_id": "resp_0e9e28f24b3b30bb016ad868af93288190b8136dc161141a07",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255633,
+          "output_tokens": 102,
+          "reasoning_output_tokens": 65
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 2168,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 603884,
+      "request_id": null,
+      "response_id": "resp_01234cd82feeb6de016ad868c1c9788197a5e95a93cc06a8d6",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 255775,
+          "output_tokens": 102,
+          "reasoning_output_tokens": 51
+        }
+      }
+    },
+    {
+      "status": "ok",
+      "protocol_diagnostic": null,
+      "deadline_diagnostic": null,
+      "business_output": {
+        "items": [
+          {
+            "item": {
+              "content": [
+                {
+                  "text": "{\"kind\":\"dispatch\",\"data\":{\"to\":\"单智能体\",\"candidate\":\"B0B5L9Y7HQ\",\"candidate_limit\":32,\"claim_ids\":[\"c1\",\"c2\"]}} dabar\n",
+                  "type": "output_text"
+                }
+              ],
+              "id": "msg_097a7a5aae52b7b3016ad868d2e45c81908a42a92bb55320b7",
+              "phase": "commentary",
+              "role": "assistant",
+              "status": "completed",
+              "type": "message"
+            },
+            "output_index": 0,
+            "text_sha256": "bcfa2106d838b815b3ec841d0c034f553d0eaa13179c7af9d167f21293015c55"
+          },
+          {
+            "item": {
+              "content": [
+                {
+                  "text": "{\"data\":{\"candidate\":\"B0B5L9Y7HQ\",\"candidate_limit\":32,\"claim_ids\":[\"c1\",\"c2\"],\"to\":\"单智能体\"},\"kind\":\"dispatch\"}",
+                  "type": "output_text"
+                }
+              ],
+              "id": "msg_097a7a5aae52b7b3016ad868d40f488190a93e1a8b0f01a976",
+              "phase": "final_answer",
+              "role": "assistant",
+              "status": "completed",
+              "type": "message"
+            },
+            "output_index": 2,
+            "text_sha256": "818addf6cea22e5c42d2c25628642f6fb89d51b360e361fbf8d948c2b4bd8e14"
+          }
+        ],
+        "replayable": true,
+        "schema_version": "4router-business-output-0.1.0"
+      },
+      "http_status": 200,
+      "native_usage": null,
+      "output_structure": [
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 10,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 0,
+          "type": "message",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "length": 1720,
+              "present": true,
+              "type": "string"
+            },
+            "id": {
+              "length": 53,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "present": false
+            },
+            "role": {
+              "present": false
+            },
+            "status": {
+              "present": false
+            },
+            "summary": {
+              "length": 0,
+              "present": true,
+              "type": "array"
+            },
+            "type": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 1,
+          "type": "reasoning",
+          "unknown_field_count": 0
+        },
+        {
+          "fields": {
+            "arguments": {
+              "present": false
+            },
+            "call_id": {
+              "present": false
+            },
+            "content": {
+              "length": 1,
+              "present": true,
+              "type": "array"
+            },
+            "encrypted_content": {
+              "present": false
+            },
+            "id": {
+              "length": 54,
+              "present": true,
+              "type": "string"
+            },
+            "name": {
+              "present": false
+            },
+            "phase": {
+              "length": 12,
+              "present": true,
+              "type": "string"
+            },
+            "role": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "status": {
+              "length": 9,
+              "present": true,
+              "type": "string"
+            },
+            "summary": {
+              "present": false
+            },
+            "type": {
+              "length": 7,
+              "present": true,
+              "type": "string"
+            }
+          },
+          "output_index": 2,
+          "type": "message",
+          "unknown_field_count": 0
+        }
+      ],
+      "request_body_bytes": 605114,
+      "request_id": null,
+      "response_id": "resp_097a7a5aae52b7b3016ad868d190f08190a68fb92adc178888",
+      "returned_model": "gpt-6-luna",
+      "usage_diagnostic": {
+        "state": "accepted",
+        "usage": {
+          "cached_input_tokens": 0,
+          "input_tokens": 256177,
+          "output_tokens": 116,
+          "reasoning_output_tokens": 17
+        }
+      }
+    },
+    {
+      "status": "http_status_not_200",
+      "protocol_diagnostic": {
+        "code": "http_status_not_200",
+        "field": "http_status",
+        "stage": "response_status"
+      },
+      "deadline_diagnostic": null,
+      "business_output": {
+        "items": [],
+        "omission_reason": "unsupported_output",
+        "replayable": false,
+        "schema_version": "4router-business-output-0.1.0"
+      },
+      "http_status": 408,
+      "native_usage": null,
+      "output_structure": null,
+      "request_body_bytes": 606923,
+      "request_id": null,
+      "response_id": null,
+      "returned_model": null,
+      "usage_diagnostic": {
+        "state": "field_absent",
+        "usage": null
+      }
+    }
+  ],
+  "cost": null,
+  "metering_status": "unknown/incomplete",
+  "started": true,
+  "provider_requests_sent": 4,
+  "audit_path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A6\\audit.json",
+  "publication_path": null,
+  "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+  "G": [],
+  "reason": "http_status_not_200",
+  "dispatch_checkpoint": {
+    "bytes": 1247,
+    "dispatch_contract_passed": true,
+    "parsed": true,
+    "passed": true,
+    "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A6\\dispatch-checkpoint.json",
+    "reason": null,
+    "sha256": "ac5b991f5f335e5ead73539d63504ccb55eaf8279ac985307e50e4eadfb7a68a"
+  },
+  "acquired_candidate_count": 0,
+  "user_profile_fact_count": 1,
+  "product_profile_fact_count": 0,
+  "profiled_candidate_count": 0,
+  "acquisition_batch_count": 0,
+  "tool_usage": {
+    "logical_tools": 0,
+    "physical_tools": 0
+  },
+  "actual_tokens": {
+    "input_tokens": null,
+    "output_tokens": null
+  },
+  "model_calls": 4,
+  "reasoning_observed_rounds": [
+    0,
+    1,
+    2
+  ],
+  "reasoning_parsed_rounds": [
+    0,
+    1,
+    2
+  ],
+  "protocol_followup_rounds": [],
+  "code_candidate": "ffd1a6e2847f2c45332eda0e60637b860a04b677",
+  "guard_allowed": {
+    "credentials": 4,
+    "response_workers": 4
+  },
+  "guard_denied": {
+    "network": 0,
+    "credentials": 0,
+    "evaluation": 0
+  },
+  "cumulative_send_intents": 12,
+  "count_api": 0,
+  "other_api": 0,
+  "elapsed_seconds": 71.0341237000539,
+  "token_cost_metering_complete": false,
+  "storage_charged_bytes": 69305586,
+  "run_storage_charged_bytes": 18726681
+}
