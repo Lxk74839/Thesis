@@ -315,10 +315,11 @@ def run_guarded(command, run_id):
             or not 0 < cfg['new_write_limit_bytes'] <= 2 * 1024**3
             or cfg['local_write_upper_bytes'] < 128 * 1024**2):
         raise ValueError('development_configuration_mismatch')
-    if command.startswith('run-'):
+    if command.startswith('run-') or command == 'evaluate':
         ready = json.loads((PACKAGE / 'ready.json').read_bytes())
         sources = ['development_pilot.py', 'p1_engineering.py', 'p1_runtime.py', 'p1_storage.py', 'model_adapter.py',
             'provider_fourrouter.py', 'provider_openai.py', 'recommendation_runner.py', 'experiment_runner.py',
+            'development_evaluation.py', 'experiment_io.py', 'experiment_evaluation.py',
             str(PACKAGE.relative_to(PROJECT) / 'config.json')]
         if (any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec'))
                 or subprocess.run(['git', 'diff', '--quiet', ready['candidate'], '--', *sources], cwd=PROJECT).returncode):
@@ -394,6 +395,9 @@ def main(argv=None):
             return 2
         command, run_id = args[1:]
         try:
+            if command == 'evaluate':
+                from development_evaluation import evaluate
+                return evaluate(run_id)
             return diagnose(command.removeprefix('diag-'), run_id) if command.startswith('diag-') else execute_task(command, run_id)
         except Exception as exc:
             # Exception prose can contain provider/credential text. Never persist it.
@@ -414,6 +418,8 @@ def main(argv=None):
     if command.startswith('run-'):
         _, label, method = command.split('-')
         run_id = 'T14-D1-' + label + '-' + method + '-' + stamp
+    elif command == 'evaluate':
+        run_id = 'T14-D1-EVALUATION-' + stamp
     else:
         run_id = ('T14-D1-V00-S-DIAG-' if command.startswith('diag-full') else 'PUBLIC-T14-' + command + '-') + stamp
     return run_guarded(command, run_id)
