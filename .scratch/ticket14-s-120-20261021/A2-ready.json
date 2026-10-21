@@ -1,0 +1,12 @@
+{
+  "code_unchanged": true,
+  "review_source": ".scratch/ticket14-s-120-20261021/review-protocol.md",
+  "shared_output_cap_left": 90112,
+  "standards": "PASS",
+  "shared_calls_left": 11,
+  "spec": "PASS",
+  "authorization": "existing_A2_only",
+  "candidate": "ee9d2cc35432da0604374c006258008b36f13c81",
+  "review_sha256": "ae340b1789a0700b8a53845994fa7ae6d0723608c06506b04355bf4035ff0ec4",
+  "shared_execution_seconds_left": 1784.9658167000161
+}

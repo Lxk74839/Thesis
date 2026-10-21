@@ -1,0 +1,11 @@
+{
+  "start_tick": 4201530374724,
+  "reserve_seconds": 30,
+  "T0_sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca",
+  "reviewed_candidate": "ee9d2cc35432da0604374c006258008b36f13c81",
+  "limit_seconds": 90,
+  "inherited_offline_seconds": 3373.208469900246,
+  "excluded_execution_seconds": 0,
+  "frequency": 10000000,
+  "offline_limit_seconds": 3480
+}
