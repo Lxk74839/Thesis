@@ -6,7 +6,7 @@ from evidence_access import RootBudget
 AUTHORIZATION = 'S-ENGINEERING-ONCE-20261020'
 RETRY_AUTHORIZATION = 'S-DEADLINE-RETRY-20261020'
 LONG_AUTHORIZATIONS = ('S-COMPLETE-ONCE-20261021-A1', 'S-COMPLETE-ONCE-20261021-A2',
-    'S-COMPLETE-ONCE-20261021-A3', 'S-COMPLETE-ONCE-20261021-A4')
+    'S-COMPLETE-ONCE-20261021-A3', 'S-COMPLETE-ONCE-20261021-A4', 'S-COMPLETE-ONCE-20261021-A5')
 AUTHORIZATIONS = (AUTHORIZATION, RETRY_AUTHORIZATION) + LONG_AUTHORIZATIONS
 TASK = 'a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4'
 UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
@@ -52,6 +52,9 @@ class SEngineeringBudget(RootBudget):
                 or final_reserve['model_calls'] < 1 or final_reserve['request_output_tokens'] < 1500
                 or final_reserve['elapsed_ms'] < (145000 if http_window_ms(binding) == 120000 else 10000)):
             raise ValueError('S_engineering_limits')
+        if binding.get('authorization_id') == LONG_AUTHORIZATIONS[4] and (
+                limits['request_output_tokens'] > 91612 or limits['elapsed_ms'] > 1689869):
+            raise ValueError('A5_engineering_limits')
         self.metering = []
         super().__init__(binding, limits, final_reserve, **kwargs)
 

@@ -8,10 +8,17 @@ import sys
 
 
 class P1StorageGuard:
-    def __init__(self, root, limit_bytes):
-        if type(limit_bytes) is not int or not 0 < limit_bytes <= 64 * 1024**2:
+    def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None):
+        if type(limit_bytes) is not int or not 0 < limit_bytes <= 128 * 1024**2:
             raise ValueError('invalid_storage_limit')
         self.root, self.limit_bytes = Path(root).absolute(), limit_bytes
+        self.run_root = Path(run_root).absolute() if run_root is not None else None
+        self.run_limit_bytes, self.run_charged_bytes = run_limit_bytes, 0
+        if ((self.run_root is None) != (run_limit_bytes is None)
+                or self.run_root is not None and (self.run_root == self.root
+                    or not self.run_root.is_relative_to(self.root) or type(run_limit_bytes) is not int
+                    or not 0 < run_limit_bytes <= 64 * 1024**2)):
+            raise ValueError('invalid_run_storage_limit')
         self.charged_bytes = 0
         self.active = self.used = self._opening = False
         self.attempts = {'network': 0, 'credentials': 0, 'evaluation': 0}
@@ -73,14 +80,19 @@ class P1StorageGuard:
         self.used = True
         self._path(self.root)
         self.charged_bytes = sum(p.stat().st_size for p in self.root.rglob('*') if p.is_file())
+        if self.run_root is not None:
+            self._path(self.run_root)
+            self.run_charged_bytes = sum(p.stat().st_size for p in self.run_root.rglob('*') if p.is_file())
+            if self.run_charged_bytes > self.run_limit_bytes:
+                raise OSError('run_storage_quota')
         if self.charged_bytes > self.limit_bytes:
             raise OSError('storage_quota')
         self._original = io.open, builtins.open, os.mkdir, os.rename, os.replace
         guard = self
 
         class File:
-            def __init__(self, stream):
-                self.stream = stream
+            def __init__(self, stream, path):
+                self.stream, self.path = stream, path
 
             def __enter__(self):
                 return self
@@ -98,7 +110,12 @@ class P1StorageGuard:
                 size = len(value.encode(self.stream.encoding)) * 2 if isinstance(value, str) else memoryview(value).nbytes
                 if guard.charged_bytes + size > guard.limit_bytes:
                     raise OSError('storage_quota')
+                in_run = guard.run_root is not None and self.path.is_relative_to(guard.run_root)
+                if in_run and guard.run_charged_bytes + size > guard.run_limit_bytes:
+                    raise OSError('run_storage_quota')
                 guard.charged_bytes += size
+                if in_run:
+                    guard.run_charged_bytes += size
                 return self.stream.write(value)
 
             def writelines(self, values):
@@ -116,7 +133,7 @@ class P1StorageGuard:
                 stream = self._original[0](file, mode, *args, **kwargs)
             finally:
                 self._opening = False
-            return File(stream) if writing else stream
+            return File(stream, Path(file).absolute()) if writing else stream
 
         def directory(path, *args, **kwargs):
             self._path(path)

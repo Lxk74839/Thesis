@@ -21,7 +21,7 @@ from run_once import ensure_first_execution, p1, SHARED
 from p1_engineering import LONG_AUTHORIZATIONS
 from control import requests, execution_used
 attempt = sys.argv[2]
-if attempt not in ('A1', 'A2', 'A3', 'A4'):
+if attempt not in ('A1', 'A2', 'A3', 'A4', 'A5'):
     raise SystemExit('invalid_attempt')
 CONTROL = PACKAGE / attempt
 RUN_ID = 'P1-D1-V00-S-' + LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -51,14 +51,23 @@ if attempt == 'A4':
     remaining = min(remaining, 1753.612)
 if attempt == 'A3':
     remaining = min(remaining, 1769.082)
+if attempt == 'A5':
+    ready = json.loads((PACKAGE / 'A5-ready.json').read_bytes())
+    if (ready.get('candidate') != sys.argv[1] or ready.get('authorization_id') != LONG_AUTHORIZATIONS[4]
+            or any(ready.get(axis) != 'PASS' for axis in ('standards', 'spec', 'D1_preflight', 'send_chain', 'limits_regression'))
+            or type(ready.get('execution_write_limit_bytes')) is not int
+            or ready['execution_write_limit_bytes'] < 72 * 1024**2):
+        raise SystemExit('A5_not_ready')
+    remaining = min(remaining, 1709.869625500054)
 rows = requests(SHARED / 'requests.jsonl')
-if remaining < 165 or len(rows) > 10 or sum(r['output_cap'] for r in rows) > 98304 - 9692:
+call_limit, cap_limit = (17, 132572) if attempt == 'A5' else (12, 98304)
+if remaining < 165 or len(rows) > call_limit - 2 or sum(r['output_cap'] for r in rows) > cap_limit - 9692:
     raise SystemExit('cumulative_S_balance_insufficient')
 CONTROL.mkdir(exist_ok=True)
 cfg = json.loads((ROOT / '.scratch/ticket14-s-deadline-20261020/s.config.json').read_bytes())
 cfg['authorization_id'] = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
 cfg['model_binding']['engineering_authorization'] = cfg['authorization_id']
-cfg['limits']['S'].update(model_calls=12-len(rows), request_output_tokens=98304-sum(r['output_cap'] for r in rows),
+cfg['limits']['S'].update(model_calls=call_limit-len(rows), request_output_tokens=cap_limit-sum(r['output_cap'] for r in rows),
     elapsed_ms=min(1780000, int((remaining-20)*1000)))
 if attempt == 'A3':
     cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 10)
@@ -66,7 +75,13 @@ if attempt == 'A3':
 if attempt == 'A4':
     cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 9)
     cfg['limits']['S']['request_output_tokens'] = min(cfg['limits']['S']['request_output_tokens'], 73728)
+if attempt == 'A5':
+    cfg['limits']['S']['model_calls'] = min(cfg['limits']['S']['model_calls'], 12)
+    cfg['limits']['S']['request_output_tokens'] = min(cfg['limits']['S']['request_output_tokens'], 91612)
+    cfg['storage_limit_bytes'] = 128 * 1024**2
+    cfg['run_storage_limit_bytes'] = 64 * 1024**2
 cfg['final_reserve']['S']['elapsed_ms'] = 145000
+ensure_first_execution(CONTROL, p1.OUTPUT / RUN_ID / 'attempt.json')
 with (CONTROL / 's.config.json').open('x', encoding='utf-8') as stream:
     json.dump(cfg, stream, indent=2)
 ensure_first_execution(CONTROL, p1.OUTPUT / RUN_ID / 'attempt.json')
@@ -96,7 +111,10 @@ try:
         child.stdin.write(b'GO\n')
         child.stdin.close()
         while child.poll() is None:
-            if time.perf_counter() - START >= remaining - 10 or output.tell() > 1024**2:
+            accounting = existing.Accounting()
+            kernel.QueryInformationJobObject(job, 8, ctypes.byref(accounting), ctypes.sizeof(accounting), None)
+            if (time.perf_counter() - START >= remaining - 10 or output.tell() > 1024**2
+                    or attempt == 'A5' and accounting.io.write_bytes > ready['execution_write_limit_bytes']):
                 kernel.TerminateJobObject(job, 124)
                 break
             time.sleep(.025)

@@ -24,7 +24,7 @@ ensure_first_execution = old.ensure_first_execution
 
 def main():
     candidate, attempt = sys.argv[1:]
-    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4'):
+    if len(candidate) != 40 or any(c not in '0123456789abcdef' for c in candidate) or attempt not in ('A1', 'A2', 'A3', 'A4', 'A5'):
         raise ValueError('fixed_candidate_attempt_required')
     control = PACKAGE / attempt
     grant = LONG_AUTHORIZATIONS[int(attempt[-1]) - 1]
@@ -33,9 +33,10 @@ def main():
     cfg = json.loads((control / 's.config.json').read_bytes())
     with (control / 'execution-claim.json').open('x', encoding='utf-8') as stream:
         json.dump({'authorization_id': grant, 'run_id': run_id, 'candidate': candidate}, stream)
-    with p1.P1StorageGuard(p1.OUTPUT, 64 * 1024**2):
+    with p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes']):
         SHARED.mkdir(exist_ok=True)
-    guard = p1.P1StorageGuard(p1.OUTPUT, 64 * 1024**2)
+    guard = p1.P1StorageGuard(p1.OUTPUT, cfg['storage_limit_bytes'],
+        **({'run_root': p1.OUTPUT / run_id, 'run_limit_bytes': cfg['run_storage_limit_bytes']} if attempt == 'A5' else {}))
     guard.claim_S_request = lambda body: claim_request(SHARED / 'requests.jsonl', body, run_id)
     result = {'run_id': run_id, 'task_key': p1.TASK_KEYS['S'], 'terminal': None,
         'candidate_count': None, 'verified_count': None, 'recommendation_count': None, 'responses': [],
@@ -51,6 +52,11 @@ def main():
             result.update(candidate_count=len(audit['binding']['C']), C_sha256=audit['binding']['C_sha256'],
                 verified_count=sum(a['advance_allowed'] for a in audit['assessments'].values()),
                 G=audit['G'], reason=audit.get('reason'), acquired_candidate_count=len(acquired.get('candidates', {})),
+                user_profile_fact_count=sum(len(g['facts']) for g in audit.get('profile_facts', {}).get('user', [])),
+                product_profile_fact_count=sum(len(g['facts']) for g in audit.get('profile_facts', {}).get('products', [])),
+                profiled_candidate_count=len(audit.get('profiled_candidates', [])),
+                acquisition_batch_count=len(audit.get('batches', [])),
+                tool_usage={k: audit['budget']['usage'][k] for k in ('logical_tools', 'physical_tools')},
                 actual_tokens={k: audit['budget']['usage'].get(k) for k in ('input_tokens', 'output_tokens')},
                 model_calls=audit['budget']['usage']['model_calls'],
                 responses=[{'status': m['response']['status'], 'protocol_diagnostic': m['response'].get('protocol_diagnostic'),
@@ -76,6 +82,7 @@ def main():
     result.update(code_candidate=candidate, guard_allowed=guard.allowed, guard_denied=guard.attempts,
         cumulative_send_intents=len(requests(SHARED / 'requests.jsonl')), count_api=0, other_api=0,
         elapsed_seconds=time.monotonic() - START, token_cost_metering_complete=False)
+    result.update(storage_charged_bytes=guard.charged_bytes, run_storage_charged_bytes=guard.run_charged_bytes)
     with receipt.open('x', encoding='utf-8') as stream:
         json.dump(result, stream, ensure_ascii=False, indent=2)
     print(json.dumps({'terminal': result['terminal'], 'receipt': str(receipt)}))
