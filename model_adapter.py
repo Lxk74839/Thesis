@@ -102,6 +102,12 @@ def validate_call(call, tools):
         require(set(args) == keys and (args['cursor'] is None or isinstance(args['cursor'], str)))
         if 'order' in args:
             require(args['order'] in ('parent', 'base'))
+    definition = next(t for t in tools if t['name'] == call['name'])
+    if 'input_schema' in definition:
+        from provider_openai import closed_schema, matches
+        schema = copy.deepcopy(definition['input_schema'])
+        closed_schema(schema)
+        require(matches(args, schema))
 
 
 class ModelAdapter:

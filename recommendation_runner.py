@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.4.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.5.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -94,6 +94,12 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         context['output_contract']['instruction'] += (
             ' Complete with done=true only after the required tool work. Copy plan_sha256 and processed '
             'exactly from actual tool results, preserving processed order; never invent receipts.')
+        if development(binding):
+            context['acquisition_resource_plan'] = {'max_list_pages': 32, 'max_read_batches': 32}
+            context['output_contract']['instruction'] += (
+                ' Use the allocated acquisition_resource_plan for acquire_batch: '
+                'max_list_pages=32 and max_read_batches=32. These are ceilings, not required extra work. '
+                'Do not lower them to 1; enumeration/verification still controls completion and stopping.')
     elif kind == 'verification':
         context['output_contract']['instruction'] += (
             ' Each reported issue uses verifier=model and allowed_actions=["revise_and_resubmit"]. '
@@ -106,6 +112,11 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'input_schema': {'type': 'object', 'properties': {'order': {'enum': ['parent', 'base']},
             'cursor': {'type': ['string', 'null']}}, 'required': ['order', 'cursor'], 'additionalProperties': False}}]
     tools = tools if kind == 'acquire' and queue else []
+    if development(binding):
+        for tool in tools:
+            if tool['name'] == 'acquire_batch':
+                for name in ('max_list_pages', 'max_read_batches'):
+                    tool['input_schema']['properties'][name]['enum'] = [32]
     return {'schema_version': 'rsm-model-prepare-0.1.0', 'execution_kind': binding['execution_kind'],
         'request_id': request_id, 'attempt_id': request_id, 'run_id': binding['run_id'],
         'session_id': binding['run_id'] + ':' + effective, 'role': effective,

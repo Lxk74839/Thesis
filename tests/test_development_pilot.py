@@ -81,6 +81,27 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_acquire_resource_plan_is_validated_by_the_production_parser(self):
+        from tests.test_fourrouter_production_protocol import logical_request
+        from evidence_access import EvidenceSession
+        from provider_fourrouter import normalize, ProtocolError
+        request = logical_request()
+        request['tools'] = EvidenceSession.tool_schemas(batch=True)
+        tool = request['tools'][-1]
+        for name in ('max_list_pages', 'max_read_batches'):
+            tool['input_schema']['properties'][name]['enum'] = [32]
+        args = {'schema_version': 'acquisition-batch-0.1.0', 'start_candidate': 'PUBLIC-A',
+            'candidate_limit': 32, 'claim_ids': ['c1', 'c2'], 'max_list_pages': 32,
+            'max_read_batches': 32, 'stop_policy': 'first_10_qualified'}
+        def response(value):
+            return {'http_status': 200, 'body': {'model': 'gpt-6-luna', 'status': 'completed', 'output': [
+                {'type': 'function_call', 'call_id': 'PUBLIC-plan', 'name': 'acquire_batch',
+                    'arguments': json.dumps(value)}]}}
+        with self.assertRaises(ProtocolError):
+            normalize(response(args | {'max_list_pages': 1, 'max_read_batches': 1}), request,
+                pricing=None, engineering=True)
+        self.assertEqual(normalize(response(args), request, pricing=None, engineering=True)['status'], 'ok')
+
     def test_frozen_seven_tasks_prepare_without_key_count_or_attempt_and_reject_R(self):
         from development_pilot import prepare_task, preflight_task
         original, forbidden = io.open, []
