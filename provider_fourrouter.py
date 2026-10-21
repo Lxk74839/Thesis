@@ -335,6 +335,8 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
         raise ProtocolError('response_status', 'invalid_response_envelope', field='body')
     if envelope.get('http_status') != 200:
         raise ProtocolError('response_status', 'http_status_not_200', field='http_status')
+    if envelope.get('http_diagnostic', {}).get('omission_reason') == 'response_body_limit':
+        raise ProtocolError('response_body', 'response_body_limit', field='body')
     if not isinstance(envelope.get('body'), dict):
         raise ProtocolError('response_status', 'invalid_response_body', field='body')
     body = envelope['body']
@@ -440,12 +442,15 @@ def prepared_diagnostic(prepared):
         if k not in ('wire_body', 'wire_utf8', 'count_body', 'count_utf8')}
 
 
-def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None, http_timeout_seconds=30):
+def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None,
+                http_timeout_seconds=30, max_response_bytes=65536):
     from pathlib import Path
     from fourrouter_probe import LOCAL_CREDENTIAL, _safe_identifier, send_response, _request_bytes
     path = Path(credential_path) if credential_path is not None else LOCAL_CREDENTIAL
     if http_timeout_seconds not in (30, 120):
         raise ValueError('invalid_HTTP_window')
+    if type(max_response_bytes) is not int or not 0 < max_response_bytes <= 1024**2:
+        raise ValueError('invalid_response_limit')
     http_sender = send_response if http_sender is None else http_sender
     def sender(wire_utf8, *, deadline_ms):
         request = json.loads(wire_utf8)
@@ -480,7 +485,10 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
             timeout = min(http_timeout_seconds, (deadline_ms - clock()) / 1000)
             if timeout <= 0:
                 raise TimeoutError('before_send_deadline')
-            reply = http_sender(ENDPOINT, request, key, timeout, max_request_bytes=max_request_bytes)
+            options = {'max_request_bytes': max_request_bytes}
+            if max_response_bytes != 65536:
+                options['max_response_bytes'] = max_response_bytes
+            reply = http_sender(ENDPOINT, request, key, timeout, **options)
         finally:
             if storage_guard is not None:
                 storage_guard.sender_active = False

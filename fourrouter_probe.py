@@ -158,7 +158,8 @@ def _http_error_capture(raw, body, key, *, truncated):
     return diagnostic
 
 
-def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run, max_request_bytes=8192):
+def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess.run, max_request_bytes=8192,
+                  max_response_bytes=65536):
     """One process, one POST; run() kills the worker on timeout, with no replay."""
     started, monotonic = time.time_ns() // 1000000, time.perf_counter()
     unknown = {'http_status': None, 'body': None, 'request_id': None}
@@ -167,7 +168,8 @@ def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess
         _request_bytes(request, max_request_bytes)
         child = process_run([sys.executable, '-B', str(Path(__file__).resolve()), '_http_once'],
             input=json.dumps({'endpoint': endpoint, 'request': request, 'api_key': api_key,
-                              'timeout': timeout, 'max_request_bytes': max_request_bytes}).encode('utf-8'),
+                              'timeout': timeout, 'max_request_bytes': max_request_bytes,
+                              'max_response_bytes': max_response_bytes}).encode('utf-8'),
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=timeout, check=False)
         if child.returncode == 0:
             result = json.loads(child.stdout)
@@ -186,9 +188,11 @@ def send_response(endpoint, request, api_key, timeout, *, process_run=subprocess
 
 
 def http_response(endpoint, request, api_key, timeout, *, connection_factory=http.client.HTTPSConnection,
-                  max_request_bytes=8192):
+                  max_request_bytes=8192, max_response_bytes=65536):
     """Single HTTPS request; HTTP redirects are returned, never followed."""
     started, monotonic = time.time_ns() // 1000000, time.perf_counter()
+    if type(max_response_bytes) is not int or not 0 < max_response_bytes <= 1024**2:
+        raise ValueError('invalid_response_limit')
     result = {'http_status': None, 'body': None, 'request_id': None}
     diagnostic = {'transport_kind': 'unknown_send', 'send_state': 'not_sent', 'error': None,
         'omission_reason': None}
@@ -207,16 +211,17 @@ def http_response(endpoint, request, api_key, timeout, *, connection_factory=htt
         response = connection.getresponse()
         result.update(http_status=response.status, request_id=_safe_identifier(response.getheader('x-request-id'), api_key))
         diagnostic.update(transport_kind='http_response', send_state='response_received')
-        raw = response.read(65537)
+        raw = response.read(max_response_bytes + 1)
+        diagnostic.update(response_bytes_observed=len(raw), response_limit_bytes=max_response_bytes)
         body = None
-        if len(raw) <= 65536:
+        if len(raw) <= max_response_bytes:
             try:
                 result['body'] = body = json.loads(raw)
             except (ValueError, UnicodeError):
                 pass
         if response.status != 200:
-            diagnostic['error'] = _http_error_capture(raw, body, api_key, truncated=len(raw) > 65536)
-        elif len(raw) > 65536:
+            diagnostic['error'] = _http_error_capture(raw, body, api_key, truncated=len(raw) > max_response_bytes)
+        elif len(raw) > max_response_bytes:
             diagnostic['omission_reason'] = 'response_body_limit'
     except TimeoutError:
         if result['http_status'] is None:
@@ -332,7 +337,8 @@ def main(argv=None, *, public_path=PUBLIC_CONFIG, credential_path=LOCAL_CREDENTI
         try:
             data = json.loads(sys.stdin.buffer.read(8 * 1024**2 + 1))
             result = http_response(data['endpoint'], data['request'], data['api_key'], data['timeout'],
-                                   max_request_bytes=data.get('max_request_bytes', 8192))
+                                   max_request_bytes=data.get('max_request_bytes', 8192),
+                                   max_response_bytes=data.get('max_response_bytes', 65536))
         except (OSError, ValueError, TypeError, KeyError):
             result = {'http_status': None, 'body': None, 'request_id': None}
         print(json.dumps(result))

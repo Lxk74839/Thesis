@@ -29,6 +29,7 @@ def model_binding():
         'project_id': 'Thesis-task14-development', 'provenance': '4router',
         'execution_authorized': True, 'development_authorization': AUTHORIZATION,
         'max_request_bytes': 2 * 1024**2, 'max_output_tokens': 8192,
+        'max_response_bytes': json.loads((PACKAGE / 'config.json').read_bytes())['response_body_limit_bytes'],
         'pricing': None, 'context_token_limit': None, 'api_budget_microusd': None}
 
 

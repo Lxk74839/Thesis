@@ -200,6 +200,7 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
         limits=cfg['limits'][method], final_reserve=cfg['final_reserve'][method], root_budget=budget, joint=joint)
     model = None if method == 'R' else ModelAdapter(make_sender(clock=budget.clock,
         max_request_bytes=cfg['model_binding']['max_request_bytes'], storage_guard=storage_guard,
+        max_response_bytes=cfg['model_binding'].get('max_response_bytes', 65536),
         http_timeout_seconds=http_window_ms(cfg['model_binding']) / 1000 if engineering else 30),
         capability_binding=cfg['model_binding'] | {'execution_authorized': True}, counter=counter, root_budget=budget)
     return RecommendationRun(binding, evidence=evidence, model=model, root_budget=budget, output_root=output)

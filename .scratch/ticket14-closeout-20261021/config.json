@@ -25,5 +25,6 @@
   "retry": 0,
   "pricing": null,
   "cost": null,
-  "offline_time_enforced": false
+  "offline_time_enforced": false,
+  "response_body_limit_bytes": 1048576
 }

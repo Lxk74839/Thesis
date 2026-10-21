@@ -11,7 +11,7 @@ from fourrouter_probe import http_response, send_response
 KEY = 'PUBLIC-SYNTHETIC-KEY'
 
 
-def fixture_http(raw, *, status=408, headers=None, fail=None):
+def fixture_http(raw, *, status=408, headers=None, fail=None, **limits):
     class Connection:
         def __init__(self, host, timeout):
             self.status = status
@@ -27,10 +27,30 @@ def fixture_http(raw, *, status=408, headers=None, fail=None):
         def close(self):
             pass
     return http_response('https://4router.net/v1/responses', {'model': 'gpt-6-luna'},
-        KEY, 120, connection_factory=Connection)
+        KEY, 120, connection_factory=Connection, **limits)
 
 
 class HTTPDiagnostics(unittest.TestCase):
+    def test_explicit_development_response_limit_keeps_large_valid_envelopes_bounded(self):
+        from tests.test_fourrouter_protocol_diagnostics import public_response, public_request
+        from tests.test_fourrouter_production_protocol import reasoning
+        from provider_fourrouter import normalize, ProtocolError
+        body = public_response()['body']
+        body['output'].insert(0, reasoning() | {'encrypted_content': 'PUBLIC-opaque-' + 'x' * 70000})
+        raw = json.dumps(body).encode()
+        self.assertIsNone(fixture_http(raw, status=200)['body'])
+        accepted = fixture_http(raw, status=200, max_response_bytes=1024**2)
+        self.assertEqual(accepted['body']['status'], 'completed')
+        self.assertEqual(normalize(accepted, public_request(), pricing=None, engineering=True)['status'], 'ok')
+        limited = fixture_http(raw, status=200, max_response_bytes=65536)
+        self.assertEqual(limited['http_diagnostic']['omission_reason'], 'response_body_limit')
+        self.assertEqual(limited['http_diagnostic']['response_bytes_observed'], 65537)
+        with self.assertRaises(ProtocolError) as error:
+            normalize(limited, public_request(), pricing=None, engineering=True)
+        self.assertEqual(error.exception.diagnostic['code'], 'response_body_limit')
+        with self.assertRaises(ValueError):
+            fixture_http(raw, status=200, max_response_bytes=1024**2 + 1)
+
     def test_actual_HTTP_408_preserves_bounded_error_and_timing_with_missing_ID(self):
         reply = fixture_http(b'{"error":{"code":"upstream_timeout","type":"gateway_error","message":"PUBLIC upstream timed out"}}')
         diag = reply['http_diagnostic']

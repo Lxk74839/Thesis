@@ -8,6 +8,10 @@ from experiment_runner import _path, _json, _scan, _task_plan, accepted_sources
 R_RUN = 'P1-D1-V00-R-R-FROZEN-RETRY-20261020'
 
 
+def evaluation_directory(output, run_id):
+    return output / 'evaluation' / run_id
+
+
 def reference(ref):
     path = _path(ref)
     raw = path.read_bytes()
@@ -83,12 +87,12 @@ def evaluate(run_id):
         'joint_states': components['sim-reference-index.jsonl'],
         'scenario_states': scenes['independent_reference']['reference'],
         'fixed_S': scenes['audit_private']['mutation-plan.jsonl']}
-    target = OUTPUT / run_id
+    target = evaluation_directory(OUTPUT, run_id)
     pinned_paths = [_path(r['path']) for r in original.values()]
     guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
         run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True, evaluation_sources=pinned_paths)
     with guard:
-        target.mkdir(exist_ok=False)
+        target.mkdir(parents=True, exist_ok=False)
         preference = project_rows(original['preference'], target / 'preference.jsonl',
             ('root', 'target_parent', 'group'), lambda r: r['root'] == D1)
         views = {s['view_id'] for s in rows['scenes.jsonl']}

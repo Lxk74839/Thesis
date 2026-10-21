@@ -5,6 +5,19 @@ import tempfile
 
 
 class EvaluationReadPolicy(unittest.TestCase):
+    def test_actual_evaluation_output_shape_is_denied_to_the_normal_runtime_guard(self):
+        from development_evaluation import evaluation_directory
+        from p1_storage import P1StorageGuard
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)
+            target = evaluation_directory(output, 'T14-D1-EVALUATION-PUBLIC')
+            target.mkdir(parents=True)
+            source = target / 'preference.jsonl'
+            source.write_text('{"scope":"PUBLIC fixture"}')
+            with P1StorageGuard(output, 1024**3, development=True):
+                with self.assertRaises(OSError):
+                    source.read_bytes()
+
     def test_legacy_R_sidecar_binds_original_A_and_preserves_old_bytes(self):
         from tests import test_live_integration as fixture
         from development_evaluation import legacy_R_sidecar
