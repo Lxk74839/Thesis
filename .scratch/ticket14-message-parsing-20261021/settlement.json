@@ -1,0 +1,51 @@
+{
+  "new_tests_passed": 14,
+  "standards": "PASS",
+  "real_key_reads": 0,
+  "A5_specific_text_cause": "unknown",
+  "count_API": 0,
+  "T0_unchanged": true,
+  "write_limit_bytes": 134217728,
+  "direct_regressions_passed": 15,
+  "ready_for_automatic_full_S": false,
+  "job_peak_commit_bytes": 39067648.0,
+  "real_S_passed": false,
+  "A5_evidence": [
+    {
+      "unchanged": true,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5-ready.json"
+    },
+    {
+      "unchanged": true,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-result.json"
+    },
+    {
+      "unchanged": true,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-resources.jsonl"
+    },
+    {
+      "unchanged": true,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-claim.json"
+    },
+    {
+      "unchanged": true,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A5\\audit.json"
+    }
+  ],
+  "package_seconds_upper": 904.5575551999991,
+  "other_API": 0,
+  "base": "858409ab3d856989b2602bd1d8c674926940be8a",
+  "generation_API": 0,
+  "user_wait_excluded_seconds": 10797.0,
+  "memory_limit_bytes": 4294967296,
+  "final_archive_upper_seconds": 25,
+  "unique_tests_passed": 29,
+  "offline_limit_seconds": 8700,
+  "offline_seconds_upper": 8673.492304600533,
+  "candidate": "1ba32b4551fb0a0dd5871b16d5c0b48179ff13a0",
+  "inherited_ledger_prefix_unchanged": true,
+  "package_limit_seconds": 900,
+  "historical_overspends_preserved": true,
+  "spec": "PASS",
+  "write_bytes_upper": 22110059.0
+}

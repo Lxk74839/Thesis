@@ -1,0 +1,1 @@
+{"latest_idle_end_utc":"2026-10-21T06:46:04.1417173Z","basis":"commit completion and first resume checkpoint; 30 seconds each boundary retained as charged work","seconds":10797,"real_API_execution_seconds":0,"scope":"user_wait_between_turns_not_execution","earliest_idle_start_utc":"2026-10-21T03:46:07.0000000Z"}

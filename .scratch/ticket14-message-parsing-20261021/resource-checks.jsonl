@@ -22,3 +22,5 @@
 {"write_bytes_left":112112698.0,"local_left":268.05635309999343,"offline_seconds":8400.87839630054,"global_left":299.12160369945923,"label":"split_echo_red_after","write_upper_bytes":22105030.0,"excluded_execution_seconds":0.0}
 {"offline_seconds":8413.87839630054,"label":"split_echo_green_before","write_upper_bytes":22105030.0,"global_left":286.12160369945923,"local_left":255.05635309999343,"excluded_execution_seconds":0.0,"write_bytes_left":112112698.0}
 {"offline_seconds":8416.088934000582,"label":"split_echo_green_after","write_upper_bytes":22110059.0,"global_left":283.9110659994185,"local_left":252.8458153999527,"excluded_execution_seconds":0.0,"write_bytes_left":112107669.0}
+{"write_upper_bytes":22110059.0,"offline_seconds":19273.08893400058,"label":"review_final","local_left":-10604.154184600047,"excluded_execution_seconds":0.0,"global_left":-10573.088934000582,"write_bytes_left":112107669.0}
+{"write_upper_bytes":22110059.0,"local_left":122.04547090000051,"global_left":153.1107214994663,"write_bytes_left":112107669.0,"excluded_execution_seconds":10797.0,"label":"closeout","offline_seconds":8546.889278500534}
