@@ -1,0 +1,89 @@
+{
+  "protocol_diagnostic": {
+    "code": "invalid_role_JSON",
+    "column": 112,
+    "field": "output_text",
+    "line": 1,
+    "position": 111,
+    "stage": "json_decode"
+  },
+  "execution_seconds": 46.049884899985045,
+  "P1_actual_bytes": 50578187.0,
+  "job_peak_commit_bytes": 91836416,
+  "root_guard_charged_bytes": 54111141,
+  "candidate_count": 1493,
+  "acquired_candidate_count": 0,
+  "metering_complete": false,
+  "terminal": "failed_model",
+  "S_passed": false,
+  "recommendation_count": null,
+  "publication_path": null,
+  "shared_output_parameters_remaining": 67036.0,
+  "shared_execution_seconds": 136.18025939993095,
+  "combined_all_historical_real_execution_seconds": 219.72222829982354,
+  "native_parsed_usage": {
+    "input_tokens": 767581,
+    "output_tokens": 296
+  },
+  "reasoning_output_tokens_subtotal": 110,
+  "A5_actual_bytes": 10662815.0,
+  "job_write_transfer_bytes": 12507524,
+  "started": true,
+  "old_ledger_prefix_preserved": true,
+  "requests_sent": 3,
+  "T0_unchanged": true,
+  "shared_output_parameters": 65536.0,
+  "task_key": "a4f49f4b6b418d132b326f9b028c682e8e4d429f8cd96e9eb50592d081dae5a4",
+  "shared_calls_remaining": 9,
+  "G_count": 0,
+  "candidate": "ff7bcb18bddda78e183c5decabe2328cb7d47ae6",
+  "other_api": 0,
+  "cost": null,
+  "artifact_hashes": [
+    {
+      "bytes": 349,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5-ready.json",
+      "sha256": "737f1117fd8bf72643cdb9e09283834366c25092f0367906d8601062543b9d7e"
+    },
+    {
+      "bytes": 12874,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-result.json",
+      "sha256": "56d781312ea2a4f7270c76edc36c8b5c17b87ff29c7387bb5ee48e27f6349f5e"
+    },
+    {
+      "bytes": 499,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-resources.jsonl",
+      "sha256": "e2b139176e28f30ff301741fe6cd05197fda8e47d640e1e4e26119af5b272bd5"
+    },
+    {
+      "bytes": 161,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\.scratch\\ticket14-s-120-20261021\\A5\\execution-claim.json",
+      "sha256": "ff5045fb6562f16c70a1dd76a37ef1d91ec4f705643691480931c3a737ce99a8"
+    },
+    {
+      "bytes": 7130109,
+      "path": "D:\\Work\\Codex\\Project\\Thesis\\data\\recommendation-runtime-audit\\ticket14-development\\p1\\P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A5\\audit.json",
+      "sha256": "52b5c6bee4e5825a18b17bb4b8dff11465308b75956abcd4ab156a21f7f1bf23"
+    }
+  ],
+  "run_guard_charged_bytes": 14195505,
+  "verified_count": 0,
+  "shared_execution_seconds_remaining": 1663.819740600069,
+  "retries": 0,
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A5",
+  "failed_stage": "dispatch/json_decode",
+  "shared_calls": 8,
+  "count_api": 0,
+  "base": "88b71d3fe95afd340702302e71ac27ca38b1815c",
+  "run_id": "P1-D1-V00-S-S-COMPLETE-ONCE-20261021-A5",
+  "offline_before_final_closeout_seconds": 7701.108582500628,
+  "package_elapsed_before_final_closeout_seconds": 866.0799586001085,
+  "package_write_upper_bytes": 30578693.0,
+  "offline_limit_seconds": 7800,
+  "final_closeout_upper_seconds": 20,
+  "offline_charged_upper_seconds": 7768.934749400534,
+  "package_charged_upper_seconds": 933.9061255000152,
+  "offline_remaining_seconds": 31.0652505994658,
+  "local_package_passed": false,
+  "offline_total_passed": true
+}

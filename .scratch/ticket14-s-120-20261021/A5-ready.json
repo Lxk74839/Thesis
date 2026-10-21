@@ -1,0 +1,11 @@
+{
+  "authorization_id": "S-COMPLETE-ONCE-20261021-A5",
+  "standards": "PASS",
+  "review": ".scratch/ticket14-s-a5-20261021/review.md",
+  "candidate": "ff7bcb18bddda78e183c5decabe2328cb7d47ae6",
+  "send_chain": "PASS",
+  "limits_regression": "PASS",
+  "spec": "PASS",
+  "D1_preflight": "PASS",
+  "execution_write_limit_bytes": 107757951
+}
