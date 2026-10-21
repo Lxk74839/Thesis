@@ -142,7 +142,8 @@ def prepare(request, project_id):
     return prepare_responses(request, project_id, model_id=MODEL, mapper=MAPPER, legacy_options=True)
 
 
-def prepare_responses(request, project_id, *, model_id, mapper, legacy_options=False):
+def prepare_responses(request, project_id, *, model_id, mapper, legacy_options=False,
+                      protocol_items=None, include_reasoning=False):
     request = copy.deepcopy(request)
     closed_schema(request['output_schema'])
     if request['output_schema'].get('type') != 'object':
@@ -152,10 +153,12 @@ def prepare_responses(request, project_id, *, model_id, mapper, legacy_options=F
             raise ValueError('invalid_tool_schema')
         closed_schema(tool['input_schema'])
     items = []
-    for message in request['messages']:
+    for index, message in enumerate(request['messages']):
         content = message['content']
         text = content if isinstance(content, str) else canonical(content)
-        if message['role'] == 'tool':
+        if protocol_items is not None and index in protocol_items:
+            items.extend(copy.deepcopy(protocol_items[index]))
+        elif message['role'] == 'tool':
             items.append({'type': 'function_call_output', 'call_id': message['tool_call_id'], 'output': text})
         elif message.get('tool_requests'):
             items.extend({'type': 'function_call', 'call_id': c['call_id'], 'name': c['name'],
@@ -172,6 +175,8 @@ def prepare_responses(request, project_id, *, model_id, mapper, legacy_options=F
         'max_output_tokens': request['max_output_tokens'], 'store': False, 'stream': False}
     if legacy_options:
         wire.update(truncation='disabled', service_tier='default')
+    if include_reasoning:
+        wire['include'] = ['reasoning.encrypted_content']
     count = {k: copy.deepcopy(v) for k, v in wire.items()
              if k not in ('max_output_tokens', 'service_tier', 'store', 'stream')}
     result = {'schema_version': 'openai-prepared-0.1.0', 'status': 'prepared', 'model_id': model_id,

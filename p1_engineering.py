@@ -117,7 +117,8 @@ def invoke(adapter, request):
     try:
         raw = adapter.transport(prepared['wire_utf8'], deadline_ms=request['deadline_ms'])
         observed_usage = provider.engineering_usage(raw)
-        result = provider.normalize(raw, request, pricing=None, engineering=True)
+        result = provider.normalize(raw, request, pricing=None, engineering=True,
+            continuations=adapter.protocol_context)
         if result['usage']['output_tokens'] is not None and result['usage']['output_tokens'] > cap:
             raise provider.ProtocolError('native_usage', 'output_token_cap_exceeded', field='output_tokens')
     except provider.ProtocolError as exc:

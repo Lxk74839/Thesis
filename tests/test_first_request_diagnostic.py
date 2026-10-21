@@ -76,8 +76,11 @@ class FirstRequestDiagnostic(unittest.TestCase):
             return copy.deepcopy(response)
         result = entry.diagnose(public_request(), {'wire_utf8': '{}'}, sender=sender, clock=lambda: 1000)
         self.assertEqual(len(sent), 1)
-        self.assertEqual(result['protocol_diagnostic'], {'stage': 'output_item',
-            'code': 'unsupported_output_type', 'field': 'type', 'output_index': 0, 'item_type': 'reasoning'})
+        diagnostic = result['protocol_diagnostic']
+        self.assertEqual(diagnostic['stage'], 'reasoning')
+        self.assertEqual(diagnostic['code'], 'reasoning_required_field')
+        self.assertEqual(diagnostic['field'], 'id')
+        self.assertEqual(diagnostic['output_index'], 0)
         self.assertEqual(result['usage']['input_tokens'], 100)
         self.assertIsNone(result['cost'])
         self.assertNotIn('PUBLIC-SECRET-TEXT', str(result))

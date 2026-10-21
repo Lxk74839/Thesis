@@ -8,8 +8,9 @@ from provider_openai import canonical, matches, prepare_responses, role_output_s
 MODEL = 'gpt-6-luna'
 CHANNEL = '4Router'
 ENDPOINT = 'https://4router.net/v1/responses'
-MAPPER = '4router-responses-mapper-0.1.0'
+MAPPER = '4router-responses-mapper-0.2.0'
 RATE_KEYS = ('input_microusd_per_million', 'output_microusd_per_million', 'cached_microusd_per_million')
+REASONING_FIELDS = {'type', 'id', 'summary', 'content', 'encrypted_content', 'status'}
 
 
 class ProtocolError(ValueError):
@@ -17,6 +18,54 @@ class ProtocolError(ValueError):
     def __init__(self, stage, code, **location):
         self.diagnostic = {'stage': stage, 'code': code, **location}
         super().__init__(code)
+
+
+def output_structure(item, index):
+    """Known names and shapes only: no text, ciphertext, or unknown field names."""
+    def field(value):
+        result = {'present': True, 'type': {dict: 'object', list: 'array', str: 'string', int: 'integer',
+            float: 'number', bool: 'boolean', type(None): 'null'}.get(type(value), 'unknown')}
+        if isinstance(value, (str, list, dict)):
+            result['length'] = len(value)
+        return result
+    if not isinstance(item, dict):
+        return {'output_index': index, 'type': 'unknown', 'item': field(item)}
+    known = REASONING_FIELDS | {'call_id', 'name', 'arguments', 'role', 'phase'}
+    return {'output_index': index, 'type': item.get('type') if item.get('type') in (
+        'reasoning', 'function_call', 'message', 'refusal') else 'unknown',
+        'fields': {k: field(item[k]) if k in item else {'present': False} for k in sorted(known)},
+        'unknown_field_count': len(set(item) - known)}
+
+
+def validate_reasoning(item, index):
+    def reject(code, name, **location):
+        raise ProtocolError('reasoning', code, field=name, output_index=index,
+            structure=output_structure(item, index), **location)
+    if set(item) - REASONING_FIELDS:
+        reject('reasoning_unknown_fields', 'reasoning', unexpected_field_count=len(set(item) - REASONING_FIELDS))
+    for name in ('id', 'type', 'summary'):
+        if name not in item:
+            reject('reasoning_required_field', name)
+    if not isinstance(item['id'], str) or not item['id']:
+        reject('reasoning_invalid_id', 'id')
+    if item['type'] != 'reasoning':
+        reject('reasoning_invalid_type', 'type')
+    if 'status' in item and item['status'] not in ('in_progress', 'completed', 'incomplete'):
+        reject('reasoning_invalid_status', 'status')
+    if 'encrypted_content' in item and item['encrypted_content'] is not None and not isinstance(item['encrypted_content'], str):
+        reject('reasoning_invalid_encrypted_type', 'encrypted_content')
+    for name, kind in (('summary', 'summary_text'), ('content', 'reasoning_text')):
+        if name not in item:
+            continue
+        if not isinstance(item[name], list):
+            reject('reasoning_invalid_array', name)
+        for part_index, part in enumerate(item[name]):
+            if not isinstance(part, dict) or set(part) != {'type', 'text'}:
+                reject('reasoning_invalid_part_fields', name, part_index=part_index)
+            if part['type'] != kind:
+                reject('reasoning_invalid_part_type', name, part_index=part_index)
+            if not isinstance(part['text'], str):
+                reject('reasoning_invalid_part_text', name, part_index=part_index)
 
 
 def _decode_response_JSON(text, code, **location):
@@ -68,7 +117,7 @@ def not_started(missing):
                                             'retryable': False, 'request_sent': False}}
 
 
-def prepare(request, binding):
+def prepare(request, binding, *, continuations=None):
     from model_adapter import REQUEST_KEYS, validate_request
     if (binding.get('model_id') != MODEL or binding.get('channel') != CHANNEL
             or binding.get('base_url') != 'https://4router.net/v1'
@@ -89,7 +138,18 @@ def prepare(request, binding):
             raise ValueError('invalid_native_request')
         logical['schema_version'] = 'rsm-model-request-0.2.0'
         validate_request(logical)
-    result = prepare_responses(request, binding['project_id'], model_id=MODEL, mapper=MAPPER)
+    protocol_items = {}
+    for index, message in enumerate(request['messages']):
+        if 'protocol_ref' not in message:
+            continue
+        stored = (continuations or {}).get(message['protocol_ref'])
+        business = {k: v for k, v in message.items() if k != 'protocol_ref'}
+        if (not stored or stored['owner'] != [request['run_id'], request['session_id']]
+                or stored['message'] != business):
+            raise ProtocolError('continuation', 'invalid_protocol_reference', field='protocol_ref', message_index=index)
+        protocol_items[index] = stored['items']
+    result = prepare_responses(request, binding['project_id'], model_id=MODEL, mapper=MAPPER,
+        protocol_items=protocol_items, include_reasoning=True)
     result['schema_version'] = '4router-prepared-0.1.0'
     limit = binding.get('max_request_bytes')
     if type(limit) is int and result['wire_bytes'] > limit:
@@ -172,7 +232,9 @@ def response_diagnostic(envelope):
     body = body if isinstance(body, dict) else {}
     return {'http_status': envelope.get('http_status'), 'returned_model': body.get('model'),
         'response_id': body.get('id'), 'request_id': envelope.get('request_id'),
-        'usage_diagnostic': usage_diagnostic(body), 'native_usage': _native_usage(body.get('usage')),
+        'usage_diagnostic': usage_diagnostic(envelope.get('body')), 'native_usage': _native_usage(body.get('usage')),
+        'output_structure': [output_structure(item, n) for n, item in enumerate(body.get('output', []))]
+            if isinstance(body.get('output'), list) else None,
         'request_body_bytes': envelope.get('request_body_bytes')}
 
 
@@ -187,7 +249,7 @@ def terminal_error(envelope):
     return 'format_error', 'format'
 
 
-def normalize(envelope, request, *, pricing, engineering=False):
+def normalize(envelope, request, *, pricing, engineering=False, continuations=None):
     from model_adapter import validate_call
     if not isinstance(envelope, dict):
         raise ProtocolError('response_status', 'invalid_response_envelope', field='body')
@@ -210,11 +272,9 @@ def normalize(envelope, request, *, pricing, engineering=False):
         if not isinstance(item, dict):
             raise ProtocolError('output_item', 'invalid_output_item', field='output', output_index=index)
         kind = item.get('type')
-        if kind == 'reasoning' and set(item) <= {'type', 'id', 'summary', 'status'} and item.get('summary') == []:
-            if (not isinstance(item.get('id'), str) or not item['id'].startswith('rs_')
-                    or len(item['id']) > 128 or item.get('status', 'completed') != 'completed'):
-                raise ProtocolError('output_item', 'invalid_reasoning_metadata', field='reasoning', output_index=index)
-            reasoning_items.append({'output_index': index, 'id': item['id'], 'summary_count': 0})
+        if kind == 'reasoning':
+            validate_reasoning(item, index)
+            reasoning_items.append({'output_index': index, 'id': item['id'], 'summary_count': len(item['summary'])})
             continue
         if kind not in ('function_call', 'message'):
             raise ProtocolError('output_item', 'unsupported_output_type', field='type', output_index=index,
@@ -262,12 +322,26 @@ def normalize(envelope, request, *, pricing, engineering=False):
             raise ProtocolError('native_usage', 'native_usage_unavailable', field='usage') from None
     if not engineering and usage['cost_microusd'] is None:
         raise ProtocolError('native_usage', 'native_cost_unknown', field='cost_microusd')
+    message = {'role': 'assistant', 'content': content, 'tool_requests': calls}
+    if continuations is not None:
+        ref = sha([request['run_id'], request['session_id'], body['output'], message])
+        continuations[ref] = {'owner': [request['run_id'], request['session_id']],
+            'message': copy.deepcopy(message), 'items': copy.deepcopy(body['output'])}
+        message['protocol_ref'] = ref
+    elif calls and reasoning_items:
+        raise ProtocolError('continuation', 'protocol_context_required', field='protocol_ref')
     return {'status': 'ok', 'request_id': request['request_id'], 'attempted': True,
-        'message': {'role': 'assistant', 'content': content, 'tool_requests': calls}, 'usage': usage,
+        'message': message, 'usage': usage,
         'raw_response': response_diagnostic(envelope) | ({'reasoning_items': reasoning_items} if reasoning_items else {}),
         'usage_known': not engineering, 'error': None,
         'provider_request_id': envelope.get('request_id'), 'provider_response_id': body.get('id'),
         'returned_model': body['model']}
+
+
+def prepared_diagnostic(prepared):
+    """Persist identities, never native wire/count bodies holding opaque state."""
+    return {k: copy.deepcopy(v) for k, v in prepared.items()
+        if k not in ('wire_body', 'wire_utf8', 'count_body', 'count_utf8')}
 
 
 def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None, http_timeout_seconds=30):

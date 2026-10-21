@@ -488,10 +488,15 @@ class RecommendationRun:
                 if self.fourrouter and prepared.get('missing'):
                     raise RunStop('not_started', ','.join(prepared['missing']))
                 if engineering:
-                    self.state['preparations'].append({'prepared': prepared, 'count': None, 'count_reason': 'single_S_authorization_waiver'})
+                    from provider_fourrouter import prepared_diagnostic
+                    self.state['preparations'].append({'prepared': prepared_diagnostic(prepared), 'count': None,
+                        'count_reason': 'single_S_authorization_waiver'})
                 else:
                     count = self.model.counter.count(prepared, authorization=None)
-                    self.state['preparations'].append({'prepared': prepared, 'count': count})
+                    if self.fourrouter:
+                        from provider_fourrouter import prepared_diagnostic
+                    self.state['preparations'].append({'prepared': prepared_diagnostic(prepared) if self.fourrouter else prepared,
+                        'count': count})
                     if count['status'] != 'counted' or count['basis'] != (
                             'verified_full_input' if self.fourrouter and self.model.binding.get('provenance') != 'fixture' else 'fixture'):
                         raise RunStop('incomplete_count', count['status'])

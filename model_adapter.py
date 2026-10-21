@@ -59,6 +59,9 @@ def validate_request(request, *, prepare_only=False):
         require(isinstance(message, dict) and message.get('role') in ('system', 'user', 'assistant', 'tool'))
         allowed = {'role', 'content'} | ({'tool_call_id'} if message['role'] == 'tool' else
                                       {'tool_requests'} if message['role'] == 'assistant' else set())
+        if request['execution_kind'] == 'fourrouter_responses' and message['role'] == 'assistant':
+            allowed.add('protocol_ref')
+            require('protocol_ref' not in message or isinstance(message['protocol_ref'], str))
         require({'role', 'content'} <= set(message) <= allowed)
         if message['role'] == 'tool':
             require(message.get('tool_call_id') in pending)
@@ -110,12 +113,13 @@ class ModelAdapter:
         self.prepared = {}
         self.counter, self.root_budget = counter, root_budget
         self.native_attempts = set()
+        self.protocol_context = {}  # Memory only; never part of an audit or business message.
 
     def prepare(self, request):
         try:
             if self.binding.get('execution_kind') == 'fourrouter_responses':
                 from provider_fourrouter import prepare
-                result = prepare(request, self.binding)
+                result = prepare(request, self.binding, continuations=self.protocol_context)
                 self.prepared[result['prepared_id']] = copy.deepcopy(result)
                 return copy.deepcopy(result)
             from provider_openai import MODEL, prepare
@@ -253,7 +257,8 @@ class ModelAdapter:
         if router:
             import provider_fourrouter as provider
             cost_microusd = lambda i, o: provider.upper_cost(i, o, pricing=self.binding['pricing'])
-            normalize = lambda raw, req: provider.normalize(raw, req, pricing=self.binding['pricing'])
+            normalize = lambda raw, req: provider.normalize(raw, req, pricing=self.binding['pricing'],
+                continuations=self.protocol_context)
             normalized_usage = lambda raw: provider.normalized_usage(raw, pricing=self.binding['pricing'])
             terminal_error, verify_prepared = provider.terminal_error, provider.verify_prepared
         else:
@@ -311,7 +316,7 @@ class ModelAdapter:
                 require(len({c['call_id'] for c in calls}) == len(calls) and not prior.intersection(c['call_id'] for c in calls))
                 for call in calls:
                     validate_call(call, request['tools'])
-            except (ValueError, TypeError, KeyError, AttributeError):
+            except (ValueError, TypeError, KeyError, AttributeError) as exc:
                 try:
                     usage = normalized_usage(raw)
                 except (ValueError, TypeError, KeyError, AttributeError):
@@ -322,6 +327,8 @@ class ModelAdapter:
                 if status in ('provider_binding_mismatch', 'unsupported_provider_tool') and usage is not None:
                     usage['cost_microusd'] = None
                 result = error_result(status, category, attempted=True, usage=usage, raw=copy.deepcopy(raw))
+                if router and isinstance(exc, provider.ProtocolError):
+                    result['protocol_diagnostic'] = exc.diagnostic
             usage = result['usage']
             if (usage.get('input_tokens') is not None and usage['input_tokens'] != i
                     or usage.get('output_tokens') is not None and usage['output_tokens'] > cap

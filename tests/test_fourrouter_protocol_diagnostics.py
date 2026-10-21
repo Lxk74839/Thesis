@@ -85,7 +85,7 @@ class ProtocolDiagnostics(unittest.TestCase):
                     response['body']['usage'] = None if variant == 'null' else {'input_tokens': 'PUBLIC-private'}
                 with public_invocation(response) as (model, req, budget, calls):
                     result = model.invoke(req)
-                    self.assertEqual(result['status'], 'unsupported_output_type')
+                    self.assertEqual(result['status'], 'reasoning_required_field')
                     self.assertEqual(result['usage_diagnostic']['state'], state)
                     self.assertIsNone(result['usage']['input_tokens'])
                     self.assertIsNone(result['usage']['output_tokens'])
@@ -132,8 +132,8 @@ class ProtocolDiagnostics(unittest.TestCase):
         with public_invocation(response) as (model, req, budget, calls):
             result = model.invoke(req)
             self.assertEqual(result['usage']['input_tokens'], 100)
-            self.assertEqual(result['status'], 'unsupported_output_type')
-            self.assertEqual(result['protocol_diagnostic']['stage'], 'output_item')
+            self.assertEqual(result['status'], 'reasoning_required_field')
+            self.assertEqual(result['protocol_diagnostic']['stage'], 'reasoning')
             self.assertEqual(result['usage']['input_tokens'], 100)
             self.assertEqual(result['usage']['output_tokens'], 30)
             self.assertEqual(result['usage']['reasoning_output_tokens'], 7)
