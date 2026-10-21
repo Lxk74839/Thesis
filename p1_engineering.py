@@ -14,11 +14,13 @@ UNKNOWN = ('input_tokens', 'output_tokens', 'cost_microusd')
 
 
 def http_window_ms(binding):
-    return 120000 if binding.get('engineering_authorization', binding.get('authorization_id')) in LONG_AUTHORIZATIONS else 30000
+    from development_pilot import authorized as development
+    return 120000 if development(binding) or binding.get('engineering_authorization', binding.get('authorization_id')) in LONG_AUTHORIZATIONS else 30000
 
 
 def authorized(binding):
-    return (binding.get('engineering_authorization') in AUTHORIZATIONS
+    from development_pilot import authorized as development
+    return ((binding.get('engineering_authorization') in AUTHORIZATIONS or development(binding))
         and binding.get('execution_authorized') is True
         and binding.get('execution_kind') == 'fourrouter_responses'
         and isinstance(binding.get('project_id'), str) and bool(binding['project_id'].strip())
@@ -39,6 +41,8 @@ class SEngineeringBudget(RootBudget):
     resources = tuple(k for k in RootBudget.resources if k not in UNKNOWN) + ('request_output_tokens',)
 
     def __init__(self, binding, limits, final_reserve, **kwargs):
+        from development_pilot import authorized as development, task_allowed
+        current = development(binding)
         public = (binding.get('fixture') == 'public_runtime_adapter'
             and binding['run_id'].startswith('PUBLIC-') and binding['root_task_id'].startswith('PUBLIC-'))
         real = (binding.get('task_key') == TASK and binding.get('fixture') is None
@@ -46,9 +50,12 @@ class SEngineeringBudget(RootBudget):
             and binding.get('root_task_id') == '015b0ca5bdc7b75fd7714222a065ff02e02b6eda723c60b7396ab7a2e8b0b88e'
             and binding.get('authorization_id') in AUTHORIZATIONS
             and binding['run_id'] == 'P1-D1-V00-S-' + binding['authorization_id'])
-        if binding.get('method') != 'S' or not (public or real):
+        real = real or (current and task_allowed(binding) and binding.get('fixture') is None
+            and binding.get('plan_source_scope') == 'development_pilot')
+        if (binding.get('method') not in (('S', 'M') if current else ('S',)) or not (public or real)):
             raise ValueError('S_engineering_scope')
-        if (not 1 <= limits['model_calls'] <= 12 or not 1500 <= limits['request_output_tokens'] <= 98304
+        if (not 1 <= limits['model_calls'] <= (24 if current else 12)
+                or not 1500 <= limits['request_output_tokens'] <= (189916 if current else 98304)
                 or limits['retries'] != 0 or limits['elapsed_ms'] > (1780000 if http_window_ms(binding) == 120000 else 350000)
                 or final_reserve['model_calls'] < 1 or final_reserve['request_output_tokens'] < 1500
                 or final_reserve['elapsed_ms'] < (145000 if http_window_ms(binding) == 120000 else 10000)):
@@ -93,7 +100,8 @@ def invoke(adapter, request):
         budget = adapter.root_budget
         require(type(budget) is SEngineeringBudget and authorized(adapter.binding))
         if budget.binding.get('fixture') is None:
-            require(adapter.binding['engineering_authorization'] == budget.binding['authorization_id'])
+            require(adapter.binding.get('development_authorization', adapter.binding.get('engineering_authorization'))
+                == budget.binding['authorization_id'])
         require(set(request) == REQUEST_KEYS | {'output_schema', 'prepared_id', 'count_receipt_id'})
         require(request['count_receipt_id'] is None and request['input_token_upper_bound'] is None)
         prepared = adapter.prepared[request['prepared_id']]
@@ -149,7 +157,8 @@ def invoke(adapter, request):
         result['deadline_diagnostic'] = {'stage': 'deadline', 'code': 'response_late'}
         result['late'] = True
     fixture = adapter.binding.get('provenance') == 'fixture'
-    checkpoint = (adapter.binding.get('engineering_authorization') in LONG_AUTHORIZATIONS[5:]
+    from development_pilot import authorized as development
+    checkpoint = ((development(adapter.binding) or adapter.binding.get('engineering_authorization') in LONG_AUTHORIZATIONS[5:])
         and request['output_kind'] == 'dispatch' and not getattr(adapter, 'a6_dispatch_observed', False))
     if checkpoint:
         adapter.a6_dispatch_observed = True

@@ -8,8 +8,9 @@ import sys
 
 
 class P1StorageGuard:
-    def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None):
-        if type(limit_bytes) is not int or not 0 < limit_bytes <= 128 * 1024**2:
+    def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None, development=False):
+        self.development = development
+        if type(limit_bytes) is not int or not 0 < limit_bytes <= (1024**3 if development else 128 * 1024**2):
             raise ValueError('invalid_storage_limit')
         self.root, self.limit_bytes = Path(root).absolute(), limit_bytes
         self.run_root = Path(run_root).absolute() if run_root is not None else None
@@ -17,7 +18,7 @@ class P1StorageGuard:
         if ((self.run_root is None) != (run_limit_bytes is None)
                 or self.run_root is not None and (self.run_root == self.root
                     or not self.run_root.is_relative_to(self.root) or type(run_limit_bytes) is not int
-                    or not 0 < run_limit_bytes <= 64 * 1024**2)):
+                    or not 0 < run_limit_bytes <= (128 if development else 64) * 1024**2)):
             raise ValueError('invalid_run_storage_limit')
         self.charged_bytes = 0
         self.active = self.used = self._opening = False
@@ -30,6 +31,12 @@ class P1StorageGuard:
         from p1_engineering import AUTHORIZATIONS
         if not self.active or authorization_id not in AUTHORIZATIONS:
             raise OSError('S_sender_not_authorized')
+        self.S_authorized = True
+
+    def authorize_development(self, authorization_id):
+        from development_pilot import AUTHORIZATION
+        if not self.active or not self.development or authorization_id != AUTHORIZATION:
+            raise OSError('development_sender_not_authorized')
         self.S_authorized = True
 
     def _path(self, value):

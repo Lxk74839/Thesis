@@ -9,7 +9,7 @@ from provider_openai import canonical, matches, prepare_responses, role_output_s
 MODEL = 'gpt-6-luna'
 CHANNEL = '4Router'
 ENDPOINT = 'https://4router.net/v1/responses'
-MAPPER = '4router-responses-mapper-0.2.0'
+MAPPER = '4router-responses-mapper-0.3.0'
 RATE_KEYS = ('input_microusd_per_million', 'output_microusd_per_million', 'cached_microusd_per_million')
 REASONING_FIELDS = {'type', 'id', 'summary', 'content', 'encrypted_content', 'status'}
 
@@ -166,6 +166,18 @@ def prepare(request, binding, *, continuations=None):
         protocol_items[index] = stored['items']
     result = prepare_responses(request, binding['project_id'], model_id=MODEL, mapper=MAPPER,
         protocol_items=protocol_items, include_reasoning=True)
+    if binding.get('wire_schema_subset') is True:
+        def supported(value):
+            if isinstance(value, dict):
+                return {k: supported(v) for k, v in value.items() if k != 'uniqueItems'}
+            return [supported(v) for v in value] if isinstance(value, list) else value
+        result['wire_body']['tools'] = supported(result['wire_body']['tools'])
+        result['count_body']['tools'] = copy.deepcopy(result['wire_body']['tools'])
+        result.update(wire_utf8=canonical(result['wire_body']), count_utf8=canonical(result['count_body']),
+            wire_sha256=sha(result['wire_body']), count_payload_sha256=sha(result['count_body']))
+        result['wire_bytes'] = len(result['wire_utf8'].encode('utf-8'))
+        result['prepared_id'] = sha({k: result[k] for k in ('wire_sha256', 'count_payload_sha256',
+            'mapper_version', 'tool_schema_sha256', 'role_schema_sha256', 'project_id')})
     result['schema_version'] = '4router-prepared-0.1.0'
     limit = binding.get('max_request_bytes')
     if type(limit) is int and result['wire_bytes'] > limit:

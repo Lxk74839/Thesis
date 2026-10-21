@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.3.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.4.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -62,6 +62,13 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             latest[(request['output_kind'], frame['stage'])] = {'role': message['role'], 'stage': frame['stage'],
                 'role_message_id': message['role_message_id'], 'content': message['response']['message']['content']}
         context['forwards'] = list(latest.values())
+    from development_pilot import authorized as development
+    if development(binding):
+        # All candidate scores and batch associations remain visible. Repeat the long
+        # citation envelope only for candidates that can currently need citations.
+        context['candidate_base_scores'] = dict(zip(binding['C'], binding['base_scores']))
+        relevant = set(context['G']) | {context['current']}
+        context['base_preferences'] = {p: v for p, v in context['base_preferences'].items() if p in relevant}
     effective = '单智能体' if binding['method'] == 'S' else role
     context['output_contract'] = {'kind': kind, 'instruction':
         'Machine ID fields must contain only exact IDs, never IDs with explanations. '
@@ -196,6 +203,8 @@ class RecommendationRun:
         self.native_fixture = binding.get('execution_kind') == 'openai_native_fixture'
         self.fourrouter = binding.get('execution_kind') == 'fourrouter_responses'
         self.on_demand = binding.get('execution_kind') == 'on_demand_public'
+        from development_pilot import authorized as development
+        self.trace_artifacts = self.on_demand or development(binding)
         self.evidence, self.model, self.budget = evidence, model, root_budget
         self.output_root = Path(output_root).resolve()
         if self.output_root != root_budget.journal_path.parent or evidence.root_budget is not root_budget:
@@ -256,8 +265,9 @@ class RecommendationRun:
                            and b['execution_budget'] is None and b['execution_authorized'] is False)
         if self.fourrouter and b.get('fixture') is None:
             from p1_runtime import D1, PILOT_ID, TASK_KEYS
+            from development_pilot import authorized as development, task_allowed
             execution_scope = (b['plan_source_scope'] == 'development_pilot' and b['root_task_id'] == D1
-                and b.get('pilot_id') == PILOT_ID and b.get('task_key') == TASK_KEYS.get(b['method'])
+                and b.get('pilot_id') == PILOT_ID and (task_allowed(b) if development(b) else b.get('task_key') == TASK_KEYS.get(b['method']))
                 and b['execution_authorized'] is True and b['execution_budget'] == self.budget.limits)
         valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.4.0' if self.fourrouter else 'rsm-run-0.3.0' if self.on_demand else 'rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
             and b['execution_kind'] in ('scripted_public', 'openai_native_fixture', 'on_demand_public', 'fourrouter_responses') and execution_scope
@@ -609,12 +619,13 @@ class RecommendationRun:
             if self.on_demand:
                 request.update(prepared_id=prepared['prepared_id'], count_receipt_id=count['receipt_id'])
                 request['output_schema'] = copy.deepcopy(logical['output_schema'])
+            if self.trace_artifacts:
                 request_ref = self._trace_ref('request', request)
                 self.state['preparations'].append({'prepared_id': prepared['prepared_id'],
                     'count': count, 'request_ref': request_ref})
             response = self.model.invoke(request)
-            if self.on_demand:
-                response_ref = self._trace_ref('response', response['raw_response'])
+            if self.trace_artifacts:
+                response_ref = self._trace_ref('response', response if self.fourrouter else response['raw_response'])
             late = self.budget.clock() > request['deadline_ms']
             usage = {k: response['usage'].get(k) for k in ('input_tokens', 'output_tokens', 'cost_microusd')}
             if (self.native_fixture or self.fourrouter or self.on_demand) and response['status'] == 'usage_mismatch':
@@ -623,14 +634,14 @@ class RecommendationRun:
             usage['model_calls'] = int(response['attempted'])
             observation = {'status': response['status'], 'usage': usage, 'late': late,
                 'request': copy.deepcopy(request), 'response': copy.deepcopy(response)}
-            if self.on_demand:
+            if self.trace_artifacts:
                 observation = {'status': response['status'], 'usage': usage, 'late': late,
                     'request_ref': request_ref, 'response_ref': response_ref}
             self.budget.settle(reservation['reservation_id'], observation)
             self.state['messages'].append({'role_message_id': message_id, 'role': role, 'request': request,
                 'response': copy.deepcopy(response), 'root_reservation_id': reservation['reservation_id'],
                 'provenance': response['provenance'], 'usage_basis': response['usage_basis']})
-            if self.on_demand:
+            if self.trace_artifacts:
                 self.state['messages'][-1].update(request_ref=request_ref, response_ref=response_ref)
             if self.budget.halted or late:
                 raise RunStop('incomplete_deadline' if late or self.budget.halted == 'deadline_exceeded' else 'failed_model',
@@ -679,7 +690,9 @@ class RecommendationRun:
                 history.append({'role': 'tool', 'tool_call_id': call['call_id'], 'content': result})
 
     def _dispatch_checkpoint(self, passed, reason=None):
-        if self.binding.get('authorization_id') not in ('S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7') or 'dispatch_checkpoint' in self.state:
+        from development_pilot import authorized as development
+        if (not development(self.binding) and self.binding.get('authorization_id') not in
+                ('S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7')) or 'dispatch_checkpoint' in self.state:
             return
         from p1_engineering import record_dispatch_checkpoint
         self.state['dispatch_checkpoint'] = record_dispatch_checkpoint(self.state, self.output_root,
@@ -1053,10 +1066,10 @@ class RecommendationRun:
         return copy.deepcopy(self.result)
 
     def _write_audit(self, path):
-        if self.on_demand and 'acquired_ref' not in self.state:
+        if self.trace_artifacts and 'acquired_ref' not in self.state:
             self.state['acquired_ref'] = self._trace_ref('acquired', self.evidence.audit_view()['acquired'])
         view = self.audit_view()
-        if self.on_demand:
+        if self.trace_artifacts:
             view['messages'] = [{k: copy.deepcopy(v) for k, v in message.items()
                 if k not in ('request', 'response')} | {'response_summary': {k: copy.deepcopy(v)
                     for k, v in message['response'].items() if k not in ('raw_response', 'message')}}

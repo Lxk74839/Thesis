@@ -128,19 +128,21 @@ def frozen_snapshot_error(binding, snapshot_ref):
     try:
         _, manifest, rows = _task_plan(PILOT)
         from p1_engineering import AUTHORIZATIONS
+        from development_pilot import authorized as development, task_allowed
         method = binding.get('method')
-        allowed = method == 'R' or (method == 'S' and binding.get('authorization_id') in AUTHORIZATIONS
+        current = development(binding)
+        allowed = task_allowed(binding) if current else method == 'R' or (method == 'S' and binding.get('authorization_id') in AUTHORIZATIONS
             and binding.get('run_id') == 'P1-D1-V00-S-' + binding['authorization_id'])
         if (manifest['pilot_id'] != PILOT_ID or manifest['parent_plan_id'] != PLAN_ID
                 or binding.get('pilot_id') != PILOT_ID or binding.get('root_task_id') != D1
-                or not allowed or binding.get('task_key') != TASK_KEYS.get(method)
+                or not allowed or (not current and binding.get('task_key') != TASK_KEYS.get(method))
                 or binding.get('plan_source_scope') != 'development_pilot' or binding.get('fixture') is not None):
             return 'frozen_task_identity'
-        task = next(t for t in rows['tasks.jsonl'] if t['task_key'] == TASK_KEYS[method])
+        task = next(t for t in rows['tasks.jsonl'] if t['task_key'] == (binding['task_key'] if current else TASK_KEYS[method]))
         relation = next(r for r in rows['user-scenarios.jsonl'] if r['binding_id'] == task['binding_id'])
         scene = next(s for s in rows['scenes.jsonl'] if s['view_id'] == relation['view_id'])
         root = next(r for r in rows['root-references.jsonl'] if r['root_task_id'] == D1)
-        if (relation['root_task_id'] != D1 or scene['label'] != 'V00'
+        if (relation['root_task_id'] != D1 or (not current and scene['label'] != 'V00')
                 or binding.get('view_id') != scene['view_id'] or binding.get('arm') != scene['arm']
                 or binding.get('snapshot_id') != scene['snapshot_id']):
             return 'frozen_view_binding'
@@ -178,7 +180,10 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
     binding.update(schema_version='rsm-run-0.4.0', execution_kind='fourrouter_responses', fixture=None,
         execution_authorized=True, execution_budget=cfg['limits'][method], pilot_id=PILOT_ID,
         orchestration='batch32-0.1.0', project_id=cfg['model_binding']['project_id'])
-    engineering = _engineering_config(cfg, method)
+    from development_pilot import authorized as development
+    engineering = development(cfg['model_binding']) or _engineering_config(cfg, method)
+    if development(cfg['model_binding']):
+        binding['development_authorization'] = cfg['model_binding']['development_authorization']
     if engineering:
         from p1_engineering import SEngineeringBudget
         RootBudget = SEngineeringBudget
