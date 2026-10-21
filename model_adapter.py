@@ -350,7 +350,7 @@ class ModelAdapter:
                 usage_basis='fixture' if fixture else 'provider_native',
                 provider_requests_sent=0 if fixture else 1 if 'raw' in locals() and isinstance(raw.get('http_status'), int) else None)
             if 'raw' in locals():
-                result['raw_response'] = provider.response_diagnostic(raw)
+                result['raw_response'] = provider.response_diagnostic(raw, failure=bool(result.get('error')))
             if result.get('error'):
                 result['error']['retryable'] = False
             result['usage_diagnostic'] = provider.usage_diagnostic(raw.get('body')) if 'raw' in locals() else {'state': 'unknown', 'usage': None}

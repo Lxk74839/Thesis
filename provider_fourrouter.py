@@ -1,5 +1,6 @@
 """4Router Responses mapping and guards; no count endpoint or credential discovery."""
 import copy
+import hashlib
 import json
 import math
 
@@ -69,8 +70,19 @@ def validate_reasoning(item, index):
 
 
 def _decode_response_JSON(text, code, **location):
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError('duplicate_JSON_key')
+            result[key] = value
+        return result
+
+    def reject_constant(value):
+        raise ValueError('non_JSON_constant')
+
     try:
-        return json.loads(text)
+        return json.loads(text, object_pairs_hook=unique_object, parse_constant=reject_constant)
     except json.JSONDecodeError as exc:
         raise ProtocolError('json_decode', code, position=exc.pos, line=exc.lineno,
             column=exc.colno, **location) from None
@@ -230,16 +242,66 @@ def normalized_usage(envelope, *, pricing):
     return usage | {'cost_microusd': cost}
 
 
-def response_diagnostic(envelope):
+def failure_business_output(envelope):
+    """Bounded replay evidence for visible business output only; never reasoning."""
+    body = envelope.get('body')
+    output = body.get('output') if isinstance(body, dict) else None
+    capture = {'schema_version': '4router-business-output-0.1.0', 'items': [], 'replayable': True}
+    if envelope.get('_business_capture_forbidden'):
+        return capture | {'replayable': False, 'omission_reason': 'credential_echo'}
+    if not isinstance(output, list):
+        return capture | {'replayable': False, 'omission_reason': 'unsupported_output'}
+    for index, item in enumerate(output):
+        if isinstance(item, dict) and item.get('type') == 'reasoning':
+            continue
+        if not isinstance(item, dict) or item.get('type') not in ('message', 'function_call'):
+            capture['replayable'] = False
+            continue
+        names = ('type', 'id', 'role', 'phase', 'status') if item['type'] == 'message' else (
+            'type', 'id', 'call_id', 'name', 'arguments', 'status')
+        if any(k in item and item[k] is not None and not isinstance(item[k], str) for k in names):
+            capture['replayable'] = False
+            continue
+        saved = {k: item[k] for k in names if k in item}
+        if item['type'] == 'message':
+            parts = item.get('content')
+            if not isinstance(parts, list) or any(not isinstance(p, dict) or p.get('type') != 'output_text'
+                    or not isinstance(p.get('text'), str) for p in parts):
+                capture['replayable'] = False
+                continue
+            saved['content'] = [{'type': 'output_text', 'text': p['text']} for p in parts]
+            text = ''.join(p['text'] for p in parts)
+        else:
+            text = item.get('arguments')
+            if not isinstance(text, str):
+                capture['replayable'] = False
+                continue
+        # Headers are never copied. Visible credential-like echoes are omitted, not rewritten.
+        encoded = canonical(saved)
+        if any(marker in encoded.lower() for marker in ('authorization', 'bearer ', 'api_key')):
+            return {'schema_version': capture['schema_version'], 'items': [], 'replayable': False,
+                'omission_reason': 'credential_echo'}
+        capture['items'].append({'output_index': index, 'item': saved,
+            'text_sha256': hashlib.sha256(text.encode('utf-8')).hexdigest()})
+        if len(canonical(capture).encode('utf-8')) > 96 * 1024:
+            return {'schema_version': capture['schema_version'], 'items': [], 'replayable': False,
+                'omission_reason': 'capture_size_limit'}
+    return capture
+
+
+def response_diagnostic(envelope, *, failure=False):
     from fourrouter_probe import _native_usage
     body = envelope.get('body')
     body = body if isinstance(body, dict) else {}
-    return {'http_status': envelope.get('http_status'), 'returned_model': body.get('model'),
+    result = {'http_status': envelope.get('http_status'), 'returned_model': body.get('model'),
         'response_id': body.get('id'), 'request_id': envelope.get('request_id'),
         'usage_diagnostic': usage_diagnostic(envelope.get('body')), 'native_usage': _native_usage(body.get('usage')),
         'output_structure': [output_structure(item, n) for n, item in enumerate(body.get('output', []))]
             if isinstance(body.get('output'), list) else None,
         'request_body_bytes': envelope.get('request_body_bytes')}
+    if failure:
+        result['business_output'] = failure_business_output(envelope)
+    return result
 
 
 def terminal_error(envelope):
@@ -270,7 +332,7 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
             status=status if status in ('incomplete', 'failed', 'cancelled', 'queued', 'in_progress') else 'unknown')
     if not isinstance(body.get('output'), list) or not body['output']:
         raise ProtocolError('output_item', 'invalid_output_shape', field='output')
-    calls, texts, seen, reasoning_items = [], [], set(), []
+    calls, messages, seen, reasoning_items = [], [], set(), []
     prior = {c['call_id'] for m in request['messages'] for c in m.get('tool_requests', [])}
     for index, item in enumerate(body['output']):
         if not isinstance(item, dict):
@@ -284,6 +346,8 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
             raise ProtocolError('output_item', 'unsupported_output_type', field='type', output_index=index,
                 item_type=kind if kind in ('reasoning', 'refusal') else 'unknown')
         if kind == 'function_call':
+            if 'status' in item and item['status'] != 'completed':
+                raise ProtocolError('tool_call', 'function_call_not_completed', field='status', output_index=index)
             arguments = _decode_response_JSON(item.get('arguments'), 'invalid_tool_JSON',
                 field='arguments', output_index=index)
             call = {'call_id': item.get('call_id'), 'name': item.get('name'), 'arguments': arguments}
@@ -296,8 +360,16 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
             seen.add(call['call_id'])
             calls.append(call)
         else:
+            phase = item.get('phase')
+            if phase not in (None, 'commentary', 'final_answer'):
+                raise ProtocolError('message', 'unsupported_message_phase', field='phase', output_index=index)
+            if 'role' in item and item['role'] != 'assistant':
+                raise ProtocolError('message', 'invalid_message_role', field='role', output_index=index)
+            if 'status' in item and item['status'] != 'completed':
+                raise ProtocolError('message', 'message_not_completed', field='status', output_index=index)
             if not isinstance(item.get('content'), list):
                 raise ProtocolError('output_item', 'invalid_content_shape', field='content', output_index=index)
+            parts = []
             for content_index, part in enumerate(item['content']):
                 if not isinstance(part, dict) or part.get('type') != 'output_text':
                     raise ProtocolError('output_item', 'unsupported_content_type', field='type',
@@ -305,13 +377,19 @@ def normalize(envelope, request, *, pricing, engineering=False, continuations=No
                 if not isinstance(part.get('text'), str):
                     raise ProtocolError('output_item', 'invalid_output_text', field='text',
                         output_index=index, content_index=content_index)
-                texts.append(part['text'])
+                parts.append(part['text'])
+            messages.append((index, phase, ''.join(parts)))
+    business = [m for m in messages if m[1] != 'commentary']
     if calls:
-        if texts:
+        if business:
             raise ProtocolError('output_item', 'mixed_tool_and_text_output', field='output')
         content = None
     else:
-        content = _decode_response_JSON(''.join(texts), 'invalid_role_JSON', field='output_text')
+        if len(business) != 1:
+            raise ProtocolError('message', 'ambiguous_business_messages' if business else 'missing_business_message',
+                field='phase', message_indices=[m[0] for m in business])
+        index, _, text = business[0]
+        content = _decode_response_JSON(text, 'invalid_role_JSON', field='output_text', output_index=index)
         if not matches(content, request['output_schema']):
             raise ProtocolError('role_schema', 'role_schema_mismatch', field='output_schema')
     if engineering:
@@ -397,5 +475,15 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
         if isinstance(reply.get('body'), dict):
             for name in ('id', 'model'):
                 reply['body'][name] = _safe_identifier(reply['body'].get(name), key)
+            # Keep authentication out of replay artifacts even if a provider echoes it.
+            output = reply['body'].get('output')
+            for item in output if isinstance(output, list) else []:
+                if not isinstance(item, dict) or item.get('type') == 'reasoning':
+                    continue
+                values = [v for k, v in item.items() if k != 'content']
+                parts = item.get('content')
+                values += [p.get('text') for p in parts if isinstance(p, dict)] if isinstance(parts, list) else []
+                if any(isinstance(v, str) and key in v for v in values):
+                    reply['_business_capture_forbidden'] = True
         return reply
     return sender

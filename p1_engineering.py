@@ -142,7 +142,7 @@ def invoke(adapter, request):
         result['deadline_diagnostic'] = {'stage': 'deadline', 'code': 'response_late'}
         result['late'] = True
     fixture = adapter.binding.get('provenance') == 'fixture'
-    diagnostic = provider.response_diagnostic(raw) if isinstance(raw, dict) else {
+    diagnostic = provider.response_diagnostic(raw, failure=bool(result.get('error'))) if isinstance(raw, dict) else {
         'http_status': None, 'returned_model': None, 'response_id': None, 'request_id': None,
         'usage_diagnostic': {'state': 'unknown', 'usage': None}}
     result.update(provenance='fixture' if fixture else '4router', usage_basis=(
