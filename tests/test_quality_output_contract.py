@@ -12,6 +12,19 @@ def setUpModule():
 
 
 class QualityOutputContract(unittest.TestCase):
+    def test_legacy_requirement_analysis_still_requires_an_observations_list(self):
+        from tests.runtime_fixtures import RuntimeFixture, ScriptedTransport
+        parent = Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime'
+        for bad in ({}, 7, None):
+            with self.subTest(value=bad), tempfile.TemporaryDirectory(dir=parent) as tmp:
+                def mutate(request, raw, context):
+                    if context['stage'] == '需求解析':
+                        raw['message']['content']['data']['observations'] = copy.deepcopy(bad)
+                transport = ScriptedTransport(mutate=mutate)
+                result = RuntimeFixture(Path(tmp)).make('M', model=transport.adapter()).run()
+                self.assertEqual((result['terminal'], result['reason']), ('failed_protocol', 'changed_request'))
+                self.assertEqual(len(transport.requests), 1)
+
     def flow(self, mutate=None, *, calls=18, count=5):
         from tests.runtime_fixtures import RuntimeFixture
         from tests.test_p1_wiring import RouterHTTPFixture, FIXTURE_BINDING

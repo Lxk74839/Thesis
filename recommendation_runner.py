@@ -687,7 +687,10 @@ class RecommendationRun:
                     self.state.pop('profile_request_candidates', None)
                 return
         data = self._role(role, 'analysis', role)
-        if set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']:
+        keyed_profile = role == '农产品画像' and authorized(self.binding) and self.batched and bool(self.queue)
+        if (set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']
+                or not isinstance(data['observations'], list)
+                    and not (keyed_profile and isinstance(data['observations'], dict))):
             raise RunStop('failed_protocol', 'changed_request')
         if role == '需求解析':
             self._complete(role)

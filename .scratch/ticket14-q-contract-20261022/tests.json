@@ -20,6 +20,18 @@
       "seconds": 0.667,
       "status": "PASS",
       "note": "isolated process; existing R seal reused"
+    },
+    {
+      "command": "python -B -m unittest tests.test_quality_output_contract.QualityOutputContract.test_old_array_duplicate_pattern_cannot_satisfy_the_new_object_contract",
+      "tests": 1,
+      "seconds": 0.866,
+      "status": "PASS"
+    },
+    {
+      "command": "python -B -m unittest <legacy requirement guard, keyed profile, full32-Q IO>",
+      "tests": 3,
+      "status": "PASS",
+      "note": "targeted review fix only; other accepted checks inherited"
     }
   ],
   "RED_GREEN": [
@@ -43,6 +55,12 @@
       "behavior": "new224 grant with188 preserved",
       "RED": "development_completion_authorization",
       "GREEN": "18 each, total224, old bytes preserved, old runIDs and truncated prefix rejected"
+    },
+    {
+      "behavior": "legacy requirement observations must remain a list",
+      "RED": "all {}, 7, null were released under6be2eb4",
+      "GREEN": "changed_request before second model call; keyed profile and full32-Q IO still pass",
+      "review": "same P2 from both independent axes"
     }
   ],
   "API": {
