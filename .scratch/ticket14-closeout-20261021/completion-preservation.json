@@ -1,0 +1,282 @@
+{
+  "previous_eight_selected_artifacts": [
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/evaluation/T14-D1-EVALUATION-1792631295989/R-result-sidecar.json",
+      "bytes": 1848,
+      "sha256": "87692146044f739fa02bd1eabe7f4bbf636cf5bb98e176719a56aa96f800ad40",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-R-R-FROZEN-RETRY-20261020/audit.json",
+      "bytes": 1852958,
+      "sha256": "c6108fb058cb6f7ba222a5f1668dd1a9ba5459d6d9ab09aa88954b824eb719e2",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/evaluation/T14-D1-EVALUATION-1792631295989/R-acquired.json",
+      "bytes": 991847,
+      "sha256": "33caded7586f38ff20a931ddf4e08a06cdbb380f710d11cc48e01904a0a81249",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-R-R-FROZEN-RETRY-20261020/budget.jsonl",
+      "bytes": 215184,
+      "sha256": "cd89e23b7d7c9ad8a8f644a216b895adaf1872447a5e7815563bd9c0a4840a14",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/P1-D1-V00-R-R-FROZEN-RETRY-20261020/publication.json",
+      "bytes": 316916,
+      "sha256": "3a13f9357477f2e468fd17fb40f4be04eeed644e987115bbbf8288265001ead2",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-S-1792585830710/result.json",
+      "bytes": 34764,
+      "sha256": "b0b5bb03941ee9bd583dd38e6d0827f534b050275ba1d31b2ef5b961e924c9cb",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-S-1792585830710/audit.json",
+      "bytes": 7198039,
+      "sha256": "8987d088e3b1b8045e0179cf53f22a7cda21e5aa1b54da6f7cd1974f5d6a4986",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-S-1792585830710/trace/acquired-da7dc6369f57e900e38bb8b03628efb950b45fdfd470b22e10fd1c1e0104b31c.json",
+      "bytes": 991838,
+      "sha256": "da7dc6369f57e900e38bb8b03628efb950b45fdfd470b22e10fd1c1e0104b31c",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-S-1792585830710/budget.jsonl",
+      "bytes": 3067263,
+      "sha256": "5c9bcec19710fd4855fe209c46d338695c6a0f93ac85803ed0d022691550972e",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-S-1792585830710/publication.json",
+      "bytes": 6016722,
+      "sha256": "cf68ca618d2decc4581dc7ae27f488406b0c9005d0b095e673d84f5259181405",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/result.json",
+      "bytes": 73393,
+      "sha256": "33e10231b78dec522406fa1d7fedd7534e75acfa7113d2be4179c68ce987dd94",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/audit.json",
+      "bytes": 4505537,
+      "sha256": "804e904202f39bc423e7b2a93b40e8aaffda8a52593102926d6a0687b6cf3909",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/trace/acquired-11e69ad343e4b1a8524269b850c3c107684cea032977167e19eff102509d994d.json",
+      "bytes": 3202018,
+      "sha256": "11e69ad343e4b1a8524269b850c3c107684cea032977167e19eff102509d994d",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/budget.jsonl",
+      "bytes": 403471,
+      "sha256": "0f4389bc1492c1ec92f5439a92e121e458963b857aea1cb4b0c0611d776213ee",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/result.json",
+      "bytes": 69184,
+      "sha256": "e90867bf66bfe63c61b9b6ead57e1753598aad2a7a61350476aa05f6200fc053",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/audit.json",
+      "bytes": 4346245,
+      "sha256": "49bcdc109ee9bddaf103a87c6d5c7c4fed7eef074165a5a4738c4595f6154939",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/trace/acquired-eb121725d5fb9fde52304b2ddf335d8602a52170140de21ff325ca3fbd650695.json",
+      "bytes": 3202018,
+      "sha256": "eb121725d5fb9fde52304b2ddf335d8602a52170140de21ff325ca3fbd650695",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/budget.jsonl",
+      "bytes": 395427,
+      "sha256": "1750db4d873bfa59746fa4703677f005804792c70fe1328e48f6c6ad604c72f8",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-M-1792586129038/result.json",
+      "bytes": 34786,
+      "sha256": "048e7243bb64819a111c16a89cfe6ad84266983c84c704d7ba492186df86fe75",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-M-1792586129038/audit.json",
+      "bytes": 7198491,
+      "sha256": "8b96226b7b9faad0ffd2e8028466b02d5b9c9a919d680c917d45aa8673f2a7bb",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-M-1792586129038/trace/acquired-dc06d728bb41100eb9919229ed783b826bfbb09deca5c88512b0bf6f52ac76e0.json",
+      "bytes": 991838,
+      "sha256": "dc06d728bb41100eb9919229ed783b826bfbb09deca5c88512b0bf6f52ac76e0",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-M-1792586129038/budget.jsonl",
+      "bytes": 3067365,
+      "sha256": "12a9f182f0d6bc36be725f760f8e11fffa703d75ff0eda3fe42b778b733e5e3b",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V00-M-1792586129038/publication.json",
+      "bytes": 6016926,
+      "sha256": "3b3a6c95cfcf8d89f64fca0cb241b3c3fc05e775c0675b0373af7a79819f1478",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V01-M-1792586567651/result.json",
+      "bytes": 34778,
+      "sha256": "012cab122e46bb3439c7f1b5192bb33b4b305c9fadd8573539c592ce6d843efd",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V01-M-1792586567651/audit.json",
+      "bytes": 1897594,
+      "sha256": "0930ee61fcfe6f14db335496b7ef930c9e6c5176ee41cf41abe912e6e2e7869a",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V01-M-1792586567651/trace/acquired-7431949458053f258284dae4e6afeb451988d71fce240421e3f92f81851ee4f7.json",
+      "bytes": 1175167,
+      "sha256": "7431949458053f258284dae4e6afeb451988d71fce240421e3f92f81851ee4f7",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V01-M-1792586567651/budget.jsonl",
+      "bytes": 237783,
+      "sha256": "3a82d2e07d514ffb1f80bb425adf87526db92dc336eb6d89f5271561724205fc",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V01-M-1792586567651/publication.json",
+      "bytes": 350102,
+      "sha256": "5ff1e5be4f54130880aadb466c414b9fe184cd0399dd3626eb34428629e2ef8e",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V05-M-1792586762060/result.json",
+      "bytes": 36148,
+      "sha256": "a0e3ddaea79a2f36a26a0f9ef56a3472e14541b4afc97f860f2b1e7a2dfbe0e0",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V05-M-1792586762060/audit.json",
+      "bytes": 1901415,
+      "sha256": "d2fac05b7960832b13b6a7f7a948c351f7184f29d9176cfe23a2f2f518cdb8b2",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V05-M-1792586762060/trace/acquired-352e533044313f7f8b84218a74dae66677c0335264c66b9d390d8430404dad68.json",
+      "bytes": 1180805,
+      "sha256": "352e533044313f7f8b84218a74dae66677c0335264c66b9d390d8430404dad68",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V05-M-1792586762060/budget.jsonl",
+      "bytes": 237781,
+      "sha256": "d7cfb9a4b5a5d660782e9bd13f3f65fb49282a0f2f7224a4c72bdb0e9d3296d3",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V05-M-1792586762060/publication.json",
+      "bytes": 350100,
+      "sha256": "b2aa2b8474ba9951a75e97c2e457a2fefd13fea3710b5843f8c06aea1805e2aa",
+      "unchanged": true
+    },
+    {
+      "path": "D:/Work/Codex/Project/Thesis/data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V06-M-1792586930616/result.json",
+      "bytes": 36147,
+      "sha256": "c8546e2ba4804e44871a65eb61278cd3f81cc98dd17f20c65b85383729cc777f",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V06-M-1792586930616/audit.json",
+      "bytes": 1915436,
+      "sha256": "bd5105fbbc136072b3b2fa80da8775fa1210dd7880bfc278e2d74907de7f2be2",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V06-M-1792586930616/trace/acquired-4528b73937d3e015cda56d907e8c01772272f706f6186b2637b8ca6746216576.json",
+      "bytes": 1193767,
+      "sha256": "4528b73937d3e015cda56d907e8c01772272f706f6186b2637b8ca6746216576",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V06-M-1792586930616/budget.jsonl",
+      "bytes": 237790,
+      "sha256": "f9e841a0a97e377efddfa1f75177e2bfab14625a99ca2f1c79fb827747c31e4c",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-V06-M-1792586930616/publication.json",
+      "bytes": 350109,
+      "sha256": "1226904db354e355241748bc874c6a170e62b9a1053c96364073f0fef5559a3a",
+      "unchanged": true
+    }
+  ],
+  "previous_selected_unchanged": true,
+  "formal_six": [
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/plan.json",
+      "bytes": 3910,
+      "sha256": "ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/root-references.jsonl",
+      "bytes": 76909,
+      "sha256": "806ad3dd8d3a8cddadec9a32369e7232f54c5f78731e614e1190839257ed5ca3",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/sample-users.jsonl",
+      "bytes": 18992,
+      "sha256": "fe400606662853114b4b09765f06e33acb33fd3d42ac13150401869e8ea47898",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/scenes.jsonl",
+      "bytes": 8070,
+      "sha256": "b61a9253ee20f69d081d457fc17c40f2afb8ff6cf8afedb08e798263c705f582",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/tasks.jsonl",
+      "bytes": 1011600,
+      "sha256": "c4ebb869c0a89fe26699c66549cb1c39711853ac2f70e68346a33a3b8cd15173",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/user-scenarios.jsonl",
+      "bytes": 667560,
+      "sha256": "6a9bfe4844e1eb46236ce0f3b505db269cbd5f332997466cc24945f1dc81b3a5",
+      "unchanged": true
+    }
+  ],
+  "formal_six_unchanged": true,
+  "historical_ledger": {
+    "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+    "bytes": 1735929,
+    "sha256": "33d6d8a0c91bebbc30fa69d286cff0c7497f5686405c11a45d18ee263e74424a",
+    "unchanged": true
+  },
+  "current_first_158_claims_unchanged": true,
+  "old_evaluation_unchanged": true,
+  "old_failure_states_preserved": true,
+  "source_data_and_paper_modified": false
+}

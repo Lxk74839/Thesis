@@ -1,6 +1,6 @@
 {
   "repair_targeted_tests": 20,
-  "candidate": "31284f6facd034402c2b1bb1ea9085e5a38f46ee",
+  "candidate": "c01cdbf68f0eb518cf1270cd12d3ea052e3c989f",
   "real_preflight_tasks": 7,
   "standards_agent": "closeout_standards",
   "initial_diagnostic_requests": 3,
@@ -13,5 +13,6 @@
   "quality_fixed_schema_tests": 28,
   "stock_projection_direct_tests": 3,
   "unit_projection_direct_tests": 3,
-  "revision_ranking_direct_tests": 4
+  "revision_ranking_direct_tests": 4,
+  "completion_direct_tests": 10
 }

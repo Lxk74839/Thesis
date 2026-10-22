@@ -1,0 +1,14 @@
+{
+  "consumed": 158,
+  "limit": 194,
+  "prior_158_prefix_unchanged": true,
+  "run_artifacts_absent": true,
+  "active_lock": false,
+  "shared_bytes": 323896849,
+  "shared_limit": 1073741824,
+  "write_balance": 1283560105,
+  "disk_free_bytes": 818212347904,
+  "generate": 0,
+  "count": 0,
+  "other_api": 0
+}

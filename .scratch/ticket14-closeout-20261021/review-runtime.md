@@ -36,3 +36,5 @@ closeout_spec：PASS。原评价文件读取P1及共享根控制产物遗漏P2�
 候选7df3e5fe9bf6a90f168e3d71fbf2702bcfe9d79f：Standards PASS / Spec PASS，各0阻断。原始SIM_PACK与原发布units标签分存并明确既有映射，数值/Schema/评分/模型否决/发布守卫不改，3项直接生产回归通过。142次历史本轮调用保留，下一步仅Q2；Q1仍未成功。
 
 候选31284f6facd034402c2b1bb1ea9085e5a38f46ee：Standards PASS / Spec PASS，各0阻断。根问题/后代范围与原合同一致；窄范围拒绝和原错误排序门禁保留，冻结排序说明不改算法。4项直接回归通过。Q1/Q2未真实通过，仅剩2次调用，不再启动新run。
+
+候选c01cdbf68f0eb518cf1270cd12d3ea052e3c989f：Standards PASS / Spec PASS，各0阻断。194总额仅Q1/Q2固定run各一次18次，历史158不清零；评价精确只读复用已验证旧R sidecar/A，保留原文件哈希与实际A一致性。实际评价入口PUBLIC守护RED→GREEN，4项评价+6项授权测试通过。959051e双轴P2历史保留且已关闭；静态复核无API/凭据/标签/大审计读取。

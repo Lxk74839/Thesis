@@ -1,0 +1,133 @@
+{
+  "run_id": "T14-D1-Q2-M-1792632005755",
+  "source": "sealed actual request/response; no new API, no evaluation labels",
+  "terminal": "failed_protocol",
+  "reason": "invalid_profile",
+  "profiled_completed": 24,
+  "expected_observations": 4,
+  "actual_observations": 4,
+  "clauses_equal": true,
+  "checks": [
+    {
+      "observation_index": 0,
+      "flags": {
+        "keys": true,
+        "candidate": false,
+        "assessment_receipt": false,
+        "quality_type": true,
+        "quality_value": false,
+        "unknown": true,
+        "attributes_list": true
+      },
+      "attribute_error": "unclassified_attribute_error"
+    },
+    {
+      "observation_index": 1,
+      "flags": {
+        "keys": true,
+        "candidate": false,
+        "assessment_receipt": false,
+        "quality_type": true,
+        "quality_value": false,
+        "unknown": true,
+        "attributes_list": true
+      },
+      "attribute_error": "unclassified_attribute_error"
+    },
+    {
+      "observation_index": 2,
+      "flags": {
+        "keys": true,
+        "candidate": false,
+        "assessment_receipt": false,
+        "quality_type": true,
+        "quality_value": false,
+        "unknown": true,
+        "attributes_list": true
+      },
+      "attribute_error": "unclassified_attribute_error"
+    },
+    {
+      "observation_index": 3,
+      "flags": {
+        "keys": true,
+        "candidate": false,
+        "assessment_receipt": false,
+        "quality_type": true,
+        "quality_value": false,
+        "unknown": true,
+        "attributes_list": true
+      },
+      "attribute_error": "unclassified_attribute_error"
+    }
+  ],
+  "request_ref": {
+    "bytes": 754865,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792632005755/trace/request-f6c14f1de20220f85af3a24dce431e5d2e17e884ae41ee2025fcc6cb894b439f.json",
+    "sha256": "f6c14f1de20220f85af3a24dce431e5d2e17e884ae41ee2025fcc6cb894b439f"
+  },
+  "response_ref": {
+    "bytes": 7344,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792632005755/trace/response-ca6cf8b5bd55bcc885dc2528f07f3a00983ca2bf4d260ee76113476e41a6e3f4.json",
+    "sha256": "ca6cf8b5bd55bcc885dc2528f07f3a00983ca2bf4d260ee76113476e41a6e3f4"
+  },
+  "A_ref": {
+    "bytes": 3202018,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792632005755/trace/acquired-20d2b038770971aad5aa541d81e3557231e2b149218b8b4de67332d1f3cb47d1.json",
+    "sha256": "20d2b038770971aad5aa541d81e3557231e2b149218b8b4de67332d1f3cb47d1"
+  },
+  "http_status": 200,
+  "returned_model": "gpt-6-luna",
+  "generate": 0,
+  "count": 0,
+  "other_api": 0,
+  "same_candidate_set": false,
+  "same_candidate_order": false,
+  "duplicate_ids": true,
+  "by_id_checks": [
+    {
+      "returned_index": 0,
+      "expected_index": 1,
+      "receipt_bound_to_own_id": true,
+      "quality_bound_to_own_id": true,
+      "own_attribute_reference_error": null
+    },
+    {
+      "returned_index": 1,
+      "expected_index": 2,
+      "receipt_bound_to_own_id": true,
+      "quality_bound_to_own_id": true,
+      "own_attribute_reference_error": null
+    },
+    {
+      "returned_index": 2,
+      "expected_index": 3,
+      "receipt_bound_to_own_id": true,
+      "quality_bound_to_own_id": true,
+      "own_attribute_reference_error": null
+    },
+    {
+      "returned_index": 3,
+      "expected_index": 2,
+      "receipt_bound_to_own_id": true,
+      "quality_bound_to_own_id": true,
+      "own_attribute_reference_error": null
+    }
+  ],
+  "confirmed_condition": "Requested 4 distinct candidate observations, but returned expected indices [1,2,3,2]: index0 missing, index2 duplicated. Each returned item binds to its own candidate receipt, quality and actual attributes; strict complete ordered binding correctly rejects.",
+  "unknown_model_cause": true,
+  "missing_expected_indices": [
+    0
+  ],
+  "duplicated_expected_indices": [
+    2
+  ],
+  "candidate_coverage_schema": "array(anyOf(current candidate bindings)) with exact length permits duplicates; host coverage/order check remains necessary",
+  "prohibited_repairs": [
+    "deduplicate or fill the missing answer",
+    "replace candidate IDs or receipts",
+    "copy profile from reference",
+    "relabel run as valid_empty"
+  ],
+  "minimal_next_contract_option": "Version the product profile envelope as an object keyed by the four frozen requested IDs (all required, additionalProperties=false), preserving model raw output and explicit derived ordered projection; retain all receipt/quality/fact checks. No new real run is authorized."
+}

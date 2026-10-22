@@ -1,0 +1,69 @@
+{
+  "run_id": "T14-D1-Q1-M-1792632005754",
+  "scope": "read-only sealed actual A; no evaluation references",
+  "terminal": "blocked_evidence",
+  "reason": "final_gate_blocked",
+  "A": 32,
+  "G": 32,
+  "drafts": [
+    {
+      "draft_id": "T14-D1-Q1-M-1792632005754:message:13:draft",
+      "items": 10,
+      "matches_frozen_production_order": true
+    },
+    {
+      "draft_id": "T14-D1-Q1-M-1792632005754:message:15:draft",
+      "items": 10,
+      "matches_frozen_production_order": false
+    }
+  ],
+  "all_issue_codes": {
+    "ranking_order_mismatch": 2,
+    "invalid_order_or_count": 1
+  },
+  "model_verifications": [
+    {
+      "draft_id": "T14-D1-Q1-M-1792632005754:message:13:draft",
+      "issues": [
+        {
+          "code": "ranking_order_mismatch",
+          "pointer": "/items",
+          "blocking": true,
+          "verifier": "model"
+        }
+      ]
+    },
+    {
+      "draft_id": "T14-D1-Q1-M-1792632005754:message:15:draft",
+      "issues": [
+        {
+          "code": "ranking_order_mismatch",
+          "pointer": "/items",
+          "blocking": true,
+          "verifier": "model"
+        }
+      ]
+    }
+  ],
+  "final_program_issue_codes": [
+    "invalid_order_or_count"
+  ],
+  "final_model_issue_codes": [
+    "ranking_order_mismatch"
+  ],
+  "audit_ref": {
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792632005754/audit.json",
+    "bytes": 4724712,
+    "sha256": "b2c0a8b023cf11134ef1ff00a6e38f883d78cb6960b21f7fdf7a15962e56c60a"
+  },
+  "actual_A_ref": {
+    "bytes": 3202018,
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792632005754/trace/acquired-8148a2215e7e8a89641fa6fc453eeb3c1f54e8a150456c6f13a308d2c32887ea.json",
+    "sha256": "8148a2215e7e8a89641fa6fc453eeb3c1f54e8a150456c6f13a308d2c32887ea"
+  },
+  "model_internal_reason": "unknown",
+  "not_a_success": true,
+  "generate": 0,
+  "count": 0,
+  "other_api": 0
+}
