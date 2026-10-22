@@ -1,0 +1,44 @@
+{
+  "run_id": "T14-D1-Q1-M-1792589828802",
+  "terminal": "blocked_evidence",
+  "reason": "final_gate_blocked",
+  "model_calls": 18,
+  "A": 32,
+  "verified": 32,
+  "G": 32,
+  "profiled": 32,
+  "publication": null,
+  "issue_counts": {
+    "retail_stock_unit_mismatch": 20,
+    "no_revision": 1
+  },
+  "confirmed": {
+    "model_points_to_stock_reason_unit": true,
+    "source_unit": "SIM_PACK",
+    "existing_publication_unit": "units",
+    "raw_values_and_receipts_equal": true,
+    "source_and_output_labels_differ": true
+  },
+  "local_contract_sources": {
+    "source": "quality_fusion.py:86-87 requires SIM_PACK",
+    "publication": "recommendation_runner.py stock reason requires units",
+    "profile": "resolve_attribute_references preserves original unit"
+  },
+  "repair": "composer0.13 separately exposes actual source_unit and existing publication_unit, explicitly defines label mapping with no numeric conversion; no raw source, output schema, role veto or publication validator change",
+  "remaining_before_Q2": 18,
+  "no_further_Q1_authorization_consumed": true,
+  "response_refs": [
+    {
+      "bytes": 6341,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/trace/response-b634442b3665d6607f484f0dbcd925cd56a2634c743acc3eb559e8d7c0c50e5d.json",
+      "sha256": "b634442b3665d6607f484f0dbcd925cd56a2634c743acc3eb559e8d7c0c50e5d"
+    },
+    {
+      "bytes": 6341,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792589828802/trace/response-d45730b7e93e930e9691a1c6651f2eb279d6ddd02cf42c3d7fd87d10d92d937f.json",
+      "sha256": "d45730b7e93e930e9691a1c6651f2eb279d6ddd02cf42c3d7fd87d10d92d937f"
+    }
+  ],
+  "tests": "PUBLIC production fixture stock-unit projection RED missing labels -> GREEN; invalid stock/quality still rejects; 3 direct tests pass",
+  "not_claimed": "new Q1 success, or recovery/reclassification of old failures"
+}

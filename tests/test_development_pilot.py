@@ -360,6 +360,7 @@ class ProductionFlow(unittest.TestCase):
                         for parent, stock in frame['retail_stock_sources'].items():
                             fact = next(f for f in frame['facts'][parent] if f['data'].get('kind') == 'retail_status')
                             self.assertEqual(stock, [{'stock_units': fact['data']['facts']['stock_units'],
+                                'source_unit': 'SIM_PACK', 'publication_unit': 'units',
                                 'citation': fact['citation'] | {'pointer': '/facts/stock_units'}}])
                         self.assertIn('dimensionless', frame['output_contract']['instruction'])
                     if arm != 'quality':

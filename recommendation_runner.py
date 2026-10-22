@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.12.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.13.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -105,6 +105,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             if binding['arm'] == 'quality':
                 context['retail_stock_sources'] = {item['parent_asin']: [
                     {'stock_units': fact['data']['facts']['stock_units'],
+                     'source_unit': fact['data']['facts'].get('unit'), 'publication_unit': 'units',
                      'citation': fact['citation'] | {'pointer': '/facts/stock_units'}}
                     for fact in facts.get(item['parent_asin'], [])
                     if fact['data'].get('kind') == 'retail_status' and 'stock_units' in fact['data']['facts']]
@@ -123,6 +124,10 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             ' Verify retail_stock against raw stock_units at the exact cited source in retail_stock_sources, '
             'which is a projection of acquired originals, not an expected verdict. '
             'Quality m and q are dimensionless scoring inputs, not stock counts. '
+            'The existing publication contract labels the SIM_PACK count as units with no numeric conversion. '
+            'source_unit is copied from the original; publication_unit is the separate output-contract label. '
+            'For source_unit=SIM_PACK, unit=units is therefore correct; report other unsupported units, '
+            'but do not require the output label to equal the original label for this explicit mapping. '
             'Report retail_stock_mismatch only for a concrete inequality with that cited original; '
             'do not infer it from score differences. Continue to report incorrect values, citations, units '
             'or other evidence problems with the actual supporting receipt; never assume the draft is valid.')
