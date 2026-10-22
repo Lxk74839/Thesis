@@ -94,6 +94,35 @@ class SharedCalls(unittest.TestCase):
 
 
 class ProductionFlow(unittest.TestCase):
+    def test_root_issue_allows_item_revision_but_narrow_issue_does_not(self):
+        from tests.runtime_fixtures import RuntimeFixture, ScriptedTransport
+        for scope, expected, reorder in (('/', 'released', False), ('/items/1', 'failed_protocol', False),
+                ('/', 'blocked_evidence', True)):
+            with self.subTest(scope=scope, reorder=reorder), tempfile.TemporaryDirectory(
+                    dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
+                fixture = RuntimeFixture(Path(tmp)).candidates(['PUBLIC-A', 'PUBLIC-B'])
+                def mutate(request, raw, context):
+                    data = raw['message']['content']['data'] if raw['message']['content'] else None
+                    if request['output_kind'] == 'verification' and context['draft']['parent_draft_id'] is None:
+                        data['issues'] = [{'issue_id': 'PUBLIC-root', 'draft_id': context['draft']['draft_id'],
+                            'candidate_id': None, 'claim_id': None, 'pointer': scope, 'code': 'PUBLIC-explanation',
+                            'blocking': True, 'allowed_actions': ['revise_and_resubmit'],
+                            'verifier': 'model', 'source_receipts': []}]
+                    if request['output_kind'] == 'draft' and context['stage'] == 'revision':
+                        if reorder:
+                            data['items'].reverse()
+                            return
+                        item = data['items'][0]; base = context['base_preferences'][item['parent_asin']]
+                        item['reasons'].append({'claim_id': 'base_preference', 'kind': 'base_preference',
+                            'value': base['value'], 'unit': None, 'text': '偏好基础分为%.12f。' % base['value'],
+                            'citations': [copy.deepcopy(base['citation'])]})
+                result = fixture.make('M', model=ScriptedTransport(mutate=mutate).adapter()).run()
+                self.assertEqual(result['terminal'], expected, result.get('reason'))
+                if scope != '/':
+                    self.assertEqual(result['reason'], 'revision_outside_issue')
+                if reorder:
+                    self.assertIn('invalid_order_or_count', [i['code'] for i in result['issues']])
+
     def test_legacy_public_quality_rejects_numeric_boolean_alias(self):
         from tests.runtime_fixtures import RuntimeFixture, ScriptedTransport
         with tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[1] / '.tmp/recommendation-runtime') as tmp:
@@ -357,6 +386,8 @@ class ProductionFlow(unittest.TestCase):
                         reply['data'].update(frame['draft_identifiers'])
                         output['text'] = json.dumps(reply, ensure_ascii=False)
                     if frame and arm == 'quality' and frame['stage'] == 'verification':
+                        self.assertEqual(frame['ranking_contract']['alpha'], .5)
+                        self.assertEqual(frame['ranking_contract']['scope'], 'actual_G_full')
                         for parent, stock in frame['retail_stock_sources'].items():
                             fact = next(f for f in frame['facts'][parent] if f['data'].get('kind') == 'retail_status')
                             self.assertEqual(stock, [{'stock_units': fact['data']['facts']['stock_units'],

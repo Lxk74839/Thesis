@@ -1,0 +1,49 @@
+{
+  "run_id": "T14-D1-Q2-M-1792630627668",
+  "terminal": "failed_protocol",
+  "reason": "revision_outside_issue",
+  "model_calls": 16,
+  "A": 32,
+  "verified": 32,
+  "G": 32,
+  "profiled": 32,
+  "publication": null,
+  "confirmed": {
+    "initial_draft_order_matches_runtime_full_fusion_order": true,
+    "model_issue_code": "ranking_order",
+    "model_issue_pointer": "/",
+    "revision_order_does_not_match_runtime": true,
+    "runtime_root_pointer_supported_by_pointer_value_and_Schema": true,
+    "revision_prefix_bug_root_becomes_double_slash": true,
+    "model_reported_unit_issue": false
+  },
+  "unknown": "why model rejected the initially correct order; no internal reasoning saved",
+  "repair": {
+    "composer": "rsm-role-composer-0.14.0",
+    "ranking": "expose existing alpha/beta/full-G score and tie rule; all original C/G/order rules unchanged",
+    "root_scope": "allow existing root / issue to cover descendant changes; narrow scopes and final order gate unchanged"
+  },
+  "tests": "RED root-authorized valid revision rejected -> GREEN release; narrow scope still rejects; root-authorized wrong reorder blocked by original final gate; PUBLIC production S/M/Q has frozen ranking contract; 4 direct tests PASS",
+  "actual_retest": false,
+  "response_refs": [
+    {
+      "bytes": 10112,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/trace/response-0eac2412fa81b396f6d364ed7b0f7b78820b623d9dcea7d4009b4582e550fa6f.json",
+      "sha256": "0eac2412fa81b396f6d364ed7b0f7b78820b623d9dcea7d4009b4582e550fa6f"
+    },
+    {
+      "bytes": 2864,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/trace/response-534db43d3a40ec4ca582bc39a0556501aab4961eb669e55b9e79a4a5668da45b.json",
+      "sha256": "534db43d3a40ec4ca582bc39a0556501aab4961eb669e55b9e79a4a5668da45b"
+    },
+    {
+      "bytes": 10152,
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q2-M-1792630627668/trace/response-b0d921b6edf4fd7ac17594eada14e78545411442ead91ed3948701eb6a2cdda3.json",
+      "sha256": "b0d921b6edf4fd7ac17594eada14e78545411442ead91ed3948701eb6a2cdda3"
+    }
+  ],
+  "current_generate_used": 158,
+  "current_generate_limit": 160,
+  "current_balance": 2,
+  "no_automatic_extra_requests": true
+}

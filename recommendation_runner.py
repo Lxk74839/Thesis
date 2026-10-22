@@ -10,7 +10,7 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.13.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.14.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
@@ -103,6 +103,9 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         if kind == 'verification':
             context['verification_receipts'] = state.get('verification_receipts', [])
             if binding['arm'] == 'quality':
+                context['ranking_contract'] = {'scope': 'actual_G_full', 'alpha': binding['fusion']['alpha'],
+                    'beta': copy.deepcopy(binding['fusion']['beta']), 'round_decimals': 12,
+                    'score': 'alpha*base+(1-alpha)*q*m', 'tie_break': 'parent_asin_UTF8_ascending'}
                 context['retail_stock_sources'] = {item['parent_asin']: [
                     {'stock_units': fact['data']['facts']['stock_units'],
                      'source_unit': fact['data']['facts'].get('unit'), 'publication_unit': 'units',
@@ -121,6 +124,11 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         'Use only actually acquired evidence for observations and citations.'}
     if kind == 'verification' and development(binding) and binding['arm'] == 'quality':
         context['output_contract']['instruction'] += (
+            ' Check item order against runtime.ordered, the full fusion ranking over actual G. '
+            'ranking_contract describes the frozen alpha/beta and score rule; base is candidate_base_scores, '
+            'and q/m are the acquired-quality values. Round scores to 12 decimal places, sort descending '
+            'then parent ID UTF-8 ascending on ties. Do not substitute a base-only, no_quality or mean_quality '
+            'component order, or report ranking_order when the draft already matches this contract. '
             ' Verify retail_stock against raw stock_units at the exact cited source in retail_stock_sources, '
             'which is a projection of acquired originals, not an expected verdict. '
             'Quality m and q are dimensionless scoring inputs, not stock counts. '
@@ -1095,7 +1103,7 @@ class RecommendationRun:
                 changes.append((pointer, copy.deepcopy(left), copy.deepcopy(right)))
         difference(old['items'], new['items'], '/items')
         for pointer, before, after in changes:
-            issue = next((i for i in self.state['visible_issues'] if pointer == i['pointer']
+            issue = next((i for i in self.state['visible_issues'] if i['pointer'] == '/' or pointer == i['pointer']
                           or pointer.startswith(i['pointer'] + '/')), None)
             if issue is None:
                 raise RunStop('failed_protocol', 'revision_outside_issue')
