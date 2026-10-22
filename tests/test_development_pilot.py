@@ -10,6 +10,48 @@ from unittest.mock import patch
 
 
 class SharedCalls(unittest.TestCase):
+    def test_completion_grant_keeps_158_spent_and_allows_only_one_18_call_run_per_Q(self):
+        import development_pilot as entry
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); path = root / 'PUBLIC-requests.jsonl'
+            prior = [{'sequence': i + 1, 'run_id': 'T14-D1-Q1-M-old', 'output_cap': 8192,
+                'diagnostic': False} for i in range(158)]
+            original = ''.join(json.dumps(r) + '\n' for r in prior).encode()
+            path.write_bytes(original)
+            ids = {'Q1': 'T14-D1-Q1-M-1792632000001', 'Q2': 'T14-D1-Q2-M-1792632000002'}
+            (root / 'config.json').write_text(json.dumps({'generate_limit': 194, 'completion_grant': {
+                'start_after_generations': 158, 'max_run_calls': 18, 'max_runs_per_task': 1,
+                'labels': ['Q1', 'Q2'], 'method': 'M', 'run_ids': ids}}))
+            body = {'model': 'gpt-6-luna', 'max_output_tokens': 8192}
+            with patch.object(entry, 'PACKAGE', root):
+                for bad in ('T14-D1-V00-S-new', 'T14-D1-Q1-S-new', 'T14-D1-Q1-M-old', 'PUBLIC-probe'):
+                    with self.assertRaises(OSError):
+                        entry.claim_request(path, body, bad)
+                self.assertEqual(path.read_bytes(), original)
+                control = root / 'control'; control.mkdir()
+                (control / 'requests.jsonl').write_bytes(original)
+                with patch.object(entry, 'CONTROL', control), patch.object(entry, 'OUTPUT', root / 'out'), \
+                        patch.object(entry, 'prepare_task') as assemble:
+                    with self.assertRaises(OSError):
+                        entry.execute_task('run-V00-S', 'T14-D1-V00-S-new')
+                    self.assertEqual(assemble.call_count, 0)
+                    self.assertFalse((root / 'out').exists())
+                    (root / 'out' / ids['Q1']).mkdir(parents=True)
+                    with self.assertRaises(FileExistsError):
+                        entry.execute_task('run-Q1-M', ids['Q1'])
+                    self.assertEqual(assemble.call_count, 0)
+                for label in ('Q1', 'Q2'):
+                    run_id = ids[label]
+                    for _ in range(18):
+                        entry.claim_request(path, body, run_id)
+                    for denied in (run_id, run_id + '-second'):
+                        with self.assertRaises(OSError):
+                            entry.claim_request(path, body, denied)
+                rows = [json.loads(x) for x in path.read_text().splitlines()]
+                self.assertEqual(len(rows), 194)
+                self.assertEqual(rows[-1]['sequence'], 194)
+                self.assertTrue(path.read_bytes().startswith(original))
+
     def test_runtime_cannot_read_independent_reference_paths(self):
         from p1_storage import P1StorageGuard
         with tempfile.TemporaryDirectory() as tmp:
@@ -26,8 +68,10 @@ class SharedCalls(unittest.TestCase):
     def test_entry_preserves_control_space_and_never_starts_worker_when_root_is_full(self):
         import development_pilot as entry
         from unittest.mock import Mock
+        config = json.loads((entry.PACKAGE / 'config.json').read_bytes()) | {'generate_limit': 160}
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
+            (root / 'config.json').write_text(json.dumps(config))
             existing = root / 'PUBLIC-existing'
             existing.write_bytes(b'PUBLIC')
             original = Path.stat
@@ -39,7 +83,7 @@ class SharedCalls(unittest.TestCase):
                     return os.stat_result(values)
                 return result
             worker = Mock(side_effect=AssertionError('PUBLIC_worker_must_not_start'))
-            with patch.object(entry, 'OUTPUT', root), patch.object(entry, 'CONTROL', root / 'control'), \
+            with patch.object(entry, 'PACKAGE', root), patch.object(entry, 'OUTPUT', root), patch.object(entry, 'CONTROL', root / 'control'), \
                     patch.object(Path, 'stat', stat), patch('subprocess.Popen', worker):
                 with self.assertRaises(OSError):
                     entry.run_guarded('diag-short_tools', 'PUBLIC-headroom')
@@ -48,7 +92,8 @@ class SharedCalls(unittest.TestCase):
 
     def test_initial_diagnostics_have_six_call_subcap_and_bad_model_is_not_sent(self):
         from development_pilot import claim_request
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory() as tmp, patch('development_pilot.PACKAGE', Path(tmp)):
+            (Path(tmp) / 'config.json').write_text('{"generate_limit":160}')
             path = Path(tmp) / 'PUBLIC-requests.jsonl'
             for _ in range(6):
                 claim_request(path, {'model': 'gpt-6-luna', 'max_output_tokens': 512}, 'PUBLIC-diagnostic', diagnostic=True)
@@ -79,7 +124,8 @@ class SharedCalls(unittest.TestCase):
 
     def test_persistent_new_budget_counts_failed_intents_without_using_old_balance(self):
         from development_pilot import claim_request
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory() as tmp, patch('development_pilot.PACKAGE', Path(tmp)):
+            (Path(tmp) / 'config.json').write_text('{"generate_limit":160}')
             path = Path(tmp) / 'PUBLIC-requests.jsonl'
             old = Path(tmp) / 'PUBLIC-historical.jsonl'
             old.write_text('{"historical_calls":16}\n')

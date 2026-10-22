@@ -43,14 +43,40 @@ def budget_tables(calls=24):
     return limits, reserve
 
 
+def generation_balance(rows, run_id, cfg, *, diagnostic=False):
+    """The approved continuation spends the old balance, never reissues it."""
+    if cfg['generate_limit'] == 160:
+        return min(24, 160 - len(rows))
+    expected = {'start_after_generations': 158, 'max_run_calls': 18, 'max_runs_per_task': 1,
+        'labels': ['Q1', 'Q2'], 'method': 'M'}
+    grant = cfg.get('completion_grant', {})
+    ids = grant.get('run_ids', {})
+    valid_ids = (isinstance(ids, dict) and set(ids) == {'Q1', 'Q2'} and all(isinstance(value, str)
+        and value.startswith('T14-D1-' + label + '-M-')
+        and value.removeprefix('T14-D1-' + label + '-M-').isdecimal() for label, value in ids.items()))
+    if (cfg['generate_limit'] != 194 or grant != expected | {'run_ids': ids} or not valid_ids
+            or len(rows) < 158 or diagnostic):
+        raise OSError('development_completion_authorization')
+    prefix = next(('T14-D1-' + label + '-M-' for label in grant['labels']
+        if run_id.startswith('T14-D1-' + label + '-M-')), None)
+    prior, current = rows[:158], rows[158:]
+    runs = {r['run_id'] for r in current if prefix and r['run_id'].startswith(prefix)}
+    if (prefix is None or run_id not in ids.values() or any(r['run_id'] == run_id for r in prior)
+            or len(runs) > 1 or runs and run_id not in runs):
+        raise OSError('development_completion_task_or_attempt')
+    return min(18 - sum(r['run_id'] == run_id for r in current), 194 - len(rows))
+
+
 def claim_request(path, body, run_id, *, diagnostic=False):
     """Durable send intent, never refunded after failed or uncertain transmission."""
     path = Path(path)
     rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+    cfg = json.loads((PACKAGE / 'config.json').read_bytes())
+    balance = generation_balance(rows, run_id, cfg, diagnostic=diagnostic)
     cap = body.get('max_output_tokens')
     if (body.get('model') != 'gpt-6-luna' or type(cap) is not int or not 0 < cap <= 8192
             or body.get('text', {}).get('format', {}).get('name') == 'rsm_final_submit' and cap > 1500
-            or len(rows) >= 160 or diagnostic and sum(r.get('diagnostic') is True for r in rows) >= 6):
+            or balance <= 0 or diagnostic and sum(r.get('diagnostic') is True for r in rows) >= 6):
         raise OSError('development_generation_limit')
     from fourrouter_probe import _request_bytes
     raw = _request_bytes(body, 2 * 1024**2)
@@ -167,8 +193,9 @@ def execute_task(command, run_id):
         raise FileExistsError('development_attempt_already_exists')
     path = CONTROL / 'requests.jsonl'
     rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
-    calls = min(24, 160 - len(rows))
-    if calls < 2:
+    session = json.loads((PACKAGE / 'config.json').read_bytes())
+    calls = generation_balance(rows, run_id, session)
+    if calls < (16 if session['generate_limit'] == 194 else 2):
         raise OSError('development_generation_balance')
     guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
         run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True)
@@ -315,11 +342,16 @@ def run_guarded(command, run_id):
     if Path(sys.prefix).resolve() != PROJECT / '.conda/envs/Thesis':
         raise ValueError('Thesis_environment_required')
     cfg = json.loads((PACKAGE / 'config.json').read_bytes())
-    if (cfg['authorization_id'] != AUTHORIZATION or cfg['generate_limit'] != 160
+    if (cfg['authorization_id'] != AUTHORIZATION or cfg['generate_limit'] not in (160, 194)
             or not 0 < cfg['run_watchdog_seconds'] <= 1800
             or not 0 < cfg['new_write_limit_bytes'] <= 2 * 1024**3
             or cfg['local_write_upper_bytes'] < 128 * 1024**2):
         raise ValueError('development_configuration_mismatch')
+    if cfg['generate_limit'] == 194 and command != 'evaluate':
+        path = CONTROL / 'requests.jsonl'
+        rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
+        if not command.startswith('run-') or generation_balance(rows, run_id, cfg) < 16:
+            raise OSError('development_completion_task_or_balance')
     if command.startswith('run-') or command == 'evaluate':
         ready = json.loads((PACKAGE / 'ready.json').read_bytes())
         sources = ['development_pilot.py', 'p1_engineering.py', 'p1_runtime.py', 'p1_storage.py', 'model_adapter.py',
@@ -330,6 +362,8 @@ def run_guarded(command, run_id):
                 or subprocess.run(['git', 'diff', '--quiet', ready['candidate'], '--', *sources], cwd=PROJECT).returncode):
             raise ValueError('development_candidate_not_reviewed')
     storage_headroom(OUTPUT)
+    if (CONTROL / run_id).exists():
+        raise FileExistsError('development_attempt_already_exists')
     CONTROL.mkdir(exist_ok=True)
     lock = CONTROL / 'active.lock'
     with lock.open('x') as stream:
@@ -423,6 +457,11 @@ def main(argv=None):
     if command.startswith('run-'):
         _, label, method = command.split('-')
         run_id = 'T14-D1-' + label + '-' + method + '-' + stamp
+        cfg = json.loads((PACKAGE / 'config.json').read_bytes())
+        if cfg['generate_limit'] == 194:
+            if method != 'M' or label not in cfg['completion_grant']['run_ids']:
+                raise OSError('development_completion_task_or_attempt')
+            run_id = cfg['completion_grant']['run_ids'][label]
     elif command == 'evaluate':
         run_id = 'T14-D1-EVALUATION-' + stamp
     else:

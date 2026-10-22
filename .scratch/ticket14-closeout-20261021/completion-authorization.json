@@ -1,0 +1,27 @@
+{
+  "status": "approved_by_user_reply",
+  "client_date": "2026-10-22",
+  "request_ref": ".scratch/ticket14-closeout-20261021/remaining-budget-request.json",
+  "previous_config_sha256": "ff35dcbc546de0b8963013db760592f30a8fd9b4e7aea9a5197d026fe5b80bef",
+  "ledger_prefix_bytes": 51185,
+  "ledger_prefix_sha256": "4d630679e40639a07444ade49df4795a622ef6442ef9e6618dd22d4a2a3519c2",
+  "consumed_preserved": 158,
+  "previous_remaining_included": 2,
+  "additional_limit": 34,
+  "generate_limit": 194,
+  "remaining_combined": 36,
+  "max_calls_each": 18,
+  "max_runs_each": 1,
+  "scope": [
+    "D1/Q1/M",
+    "D1/Q2/M"
+  ],
+  "run_ids": {
+    "Q1": "T14-D1-Q1-M-1792632005754",
+    "Q2": "T14-D1-Q2-M-1792632005755"
+  },
+  "other_boundaries_and_engineering_metering_exemption": "unchanged",
+  "price": null,
+  "cost": null,
+  "R_actual_A": "reuse previously verified evaluation sidecar; no reseal"
+}

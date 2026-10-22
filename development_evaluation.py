@@ -47,7 +47,7 @@ def project_rows(source, target, fields, predicate):
     return reference(target) | {'source': source, 'rows': rows}
 
 
-def legacy_R_sidecar(target, *, run_root, task_key, plan_id, expected_files):
+def legacy_R_sidecar(target, *, run_root, task_key, plan_id, expected_files, existing_ref=None):
     """Seal actual legacy A once, without modifying its audit, publication or budget."""
     refs = {Path(r['path'].replace('\\\\', '\\')).name: r for r in expected_files}
     for name in ('audit.json', 'publication.json', 'budget.jsonl', 'attempt.json'):
@@ -61,12 +61,20 @@ def legacy_R_sidecar(target, *, run_root, task_key, plan_id, expected_files):
     if (audit.get('acquired_ref') is not None or audit['binding']['method'] != 'R' or audit['binding']['task_key'] != task_key
             or audit['terminal'] != 'released' or audit['messages'] or audit['budget']['usage']['model_calls'] != 0):
         raise ValueError('legacy_R_invalid')
-    acquired_ref = store(target / 'R-acquired.json', audit['evidence']['acquired'])
     result = {k: audit[k] for k in ('run_id', 'terminal', 'delivered')}
     result.update(task_key=task_key, plan_id=plan_id, started=True,
         audit_path=str(run_root / 'audit.json'), audit_ref=audit_ref, legacy_R_source=audit_ref,
-        acquired_ref=acquired_ref, publication_path=str(run_root / 'publication.json'),
+        publication_path=str(run_root / 'publication.json'),
         publication_ref=reference(run_root / 'publication.json'), budget_ref=reference(run_root / 'budget.jsonl'))
+    if existing_ref is not None:
+        previous = json.loads(read(existing_ref))
+        actual_A = encoded(audit['evidence']['acquired']) + b'\n'
+        acquired = previous.get('acquired_ref')
+        if ({k: v for k, v in previous.items() if k != 'acquired_ref'} != result
+                or not isinstance(acquired, dict) or read(acquired) != actual_A):
+            raise ValueError('legacy_R_sidecar_mismatch')
+        return existing_ref
+    result['acquired_ref'] = store(target / 'R-acquired.json', audit['evidence']['acquired'])
     return store(target / 'R-result-sidecar.json', result)
 
 
@@ -110,8 +118,10 @@ def evaluate(run_id):
         index, selected, attempts = {}, [], []
         R_task = next(t for t in rows['tasks.jsonl'] if t['method'] == 'R')
         old = json.loads((PROJECT / '.scratch/ticket14-r-frozen-preflight-20261020/resource-closeout.json').read_bytes())
+        existing = sorted((OUTPUT / 'evaluation').glob('*/R-result-sidecar.json'))
         index[R_task['task_key']] = legacy_R_sidecar(target, run_root=OUTPUT / R_RUN,
-            task_key=R_task['task_key'], plan_id=PILOT_ID, expected_files=old['files'])
+            task_key=R_task['task_key'], plan_id=PILOT_ID, expected_files=old['files'],
+            existing_ref=reference(existing[0]) if existing else None)
         for task in (t for t in rows['tasks.jsonl'] if t['method'] != 'R'):
             candidates = []
             for path in OUTPUT.glob('T14-D1-*/result.json'):
@@ -147,7 +157,7 @@ def evaluate(run_id):
                 and all(c['covered'] for c in anomaly_coverage.values()) else 'incomplete',
             'formal_experiment_complete': False, 'full_50_slot_summary_status': summary['status'],
             'unscheduled_slots': len(scores) - 8, 'sources': original, 'projection_sources': sources,
-            'selected': selected, 'historical_attempts_retained': attempts,
+            'selected': selected, 'R_sidecar_ref': index[R_task['task_key']], 'historical_attempts_retained': attempts,
             'anomaly_coverage': anomaly_coverage,
             'network_requests': 0, 'credentials': 0, 'count_api': 0, 'other_api': 0,
             'guard_denied': guard.attempts}

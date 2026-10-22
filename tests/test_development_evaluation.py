@@ -54,6 +54,16 @@ class EvaluationReadPolicy(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'legacy_R_evidence_changed'):
                 legacy_R_sidecar(target, run_root=run.output_root, task_key='PUBLIC-TASK',
                     plan_id=plan['plan_id'], expected_files=bad)
+            again = case.root / 'legacy-evaluation-again'
+            again.mkdir()
+            reused = legacy_R_sidecar(again, run_root=run.output_root, task_key='PUBLIC-TASK',
+                plan_id=plan['plan_id'], expected_files=files, existing_ref=ref)
+            self.assertEqual(reused, ref)
+            self.assertEqual(list(again.iterdir()), [])
+            (target / 'R-acquired.json').write_text('{}\n')  # PUBLIC fixture corruption.
+            with self.assertRaises(ValueError):
+                legacy_R_sidecar(again, run_root=run.output_root, task_key='PUBLIC-TASK',
+                    plan_id=plan['plan_id'], expected_files=files, existing_ref=ref)
         finally:
             case.temp.cleanup()
 
