@@ -64,7 +64,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         context['forwards'] = list(latest.values())
         if 'profile_request_candidates' in state:
             context['profile_candidates'] = state['profile_request_candidates'][:]
-    from development_pilot import authorized as development
+    from runtime_contracts import bound_contract as development
     if development(binding):
         # All candidate scores and batch associations remain visible. Repeat the long
         # citation envelope only for candidates that can currently need citations.
@@ -402,7 +402,7 @@ class RecommendationRun:
         self.native_fixture = binding.get('execution_kind') == 'openai_native_fixture'
         self.fourrouter = binding.get('execution_kind') == 'fourrouter_responses'
         self.on_demand = binding.get('execution_kind') == 'on_demand_public'
-        from development_pilot import authorized as development
+        from runtime_contracts import bound_contract as development
         self.trace_artifacts = self.on_demand or development(binding)
         self.evidence, self.model, self.budget = evidence, model, root_budget
         self.output_root = Path(output_root).resolve()
@@ -468,6 +468,10 @@ class RecommendationRun:
             execution_scope = (b['plan_source_scope'] == 'development_pilot' and b['root_task_id'] == D1
                 and b.get('pilot_id') == PILOT_ID and (task_allowed(b) if development(b) else b.get('task_key') == TASK_KEYS.get(b['method']))
                 and b['execution_authorized'] is True and b['execution_budget'] == self.budget.limits)
+            from formal_runtime import authorized as formal, task_allowed as formal_task
+            if formal(b):
+                execution_scope = (formal_task(b) and b['execution_authorized'] is True
+                    and b['execution_budget'] == self.budget.limits)
         valid = (b == self.budget.binding and b['schema_version'] == ('rsm-run-0.4.0' if self.fourrouter else 'rsm-run-0.3.0' if self.on_demand else 'rsm-run-0.2.0' if self.native_fixture else 'rsm-run-0.1.0')
             and b['execution_kind'] in ('scripted_public', 'openai_native_fixture', 'on_demand_public', 'fourrouter_responses') and execution_scope
             and b['method'] in ('R', 'S', 'M') and b['arm'] in ('necessary', 'quality')
@@ -497,6 +501,9 @@ class RecommendationRun:
         source_error = None
         if self.fourrouter and b.get('fixture') is None:
             from p1_runtime import frozen_snapshot_error
+            from formal_runtime import authorized as formal, frozen_snapshot_error as formal_snapshot
+            if formal(b):
+                frozen_snapshot_error = formal_snapshot
             source_error = frozen_snapshot_error(b, self.evidence.source.snapshot_ref)
             valid = valid and source_error is None
         else:
@@ -651,7 +658,7 @@ class RecommendationRun:
         return self._composed('需求解析', 'analysis', stage)['messages'][-1]['content']['runtime']
 
     def _derive_draft(self, proposal):
-        from development_pilot import authorized
+        from runtime_contracts import bound_contract as authorized
         if not authorized(self.binding):
             return proposal
         context = self._composed('推荐管理', 'draft', 'draft')['messages'][-1]['content']['runtime']
@@ -673,7 +680,7 @@ class RecommendationRun:
             'version': 1, 'pointer': '/base_score'}}
 
     def _analysis(self, role):
-        from development_pilot import authorized
+        from runtime_contracts import bound_contract as authorized
         chunk = self.binding.get('profile_chunk_size')
         if (authorized(self.binding) and role == '农产品画像' and self.batched and self.binding['arm'] == 'quality'
                 and chunk and 'profile_request_candidates' not in self.state):
@@ -944,7 +951,7 @@ class RecommendationRun:
                 history.append({'role': 'tool', 'tool_call_id': call['call_id'], 'content': result})
 
     def _dispatch_checkpoint(self, passed, reason=None):
-        from development_pilot import authorized as development
+        from runtime_contracts import bound_contract as development
         if (not development(self.binding) and self.binding.get('authorization_id') not in
                 ('S-COMPLETE-ONCE-20261021-A6', 'S-COMPLETE-ONCE-20261021-A7')) or 'dispatch_checkpoint' in self.state:
             return
@@ -1112,7 +1119,7 @@ class RecommendationRun:
         draft = self.state['drafts'][-1]
         model_issues = []
         if self.binding['method'] != 'R':
-            from development_pilot import authorized
+            from runtime_contracts import bound_contract as authorized
             from provider_openai import RANKING_ISSUE_VERSION
             proof_contract = authorized(self.binding) and self.binding['arm'] == 'quality'
             if proof_contract:
@@ -1235,6 +1242,9 @@ class RecommendationRun:
         if self.result is not None:
             return copy.deepcopy(self.result)
         release_scope = 'development_pilot' if self.fourrouter and self.binding['fixture'] is None else 'public_fixture_only'
+        from formal_runtime import authorized as formal
+        if formal(self.binding):
+            release_scope = 'formal_test100'
         committed = False
         stage = 'work'
         audit_path = self.output_root / 'audit.json'

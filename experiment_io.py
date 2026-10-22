@@ -4,7 +4,7 @@ import json
 
 from evidence_access import PROJECT, digest, encoded
 from experiment_runner import _path, _task_plan, assemble_task
-from experiment_evaluation import BINDING, ORIGINAL, SCENES
+from experiment_evaluation import BINDING, ORIGINAL, SCENES, FAILED
 
 
 def _public_path(path):
@@ -49,6 +49,11 @@ def _execution(task, ref, plan_id, *, read_artifact=None, resolve_artifact=None,
     if result['terminal'] in ('running', 'unresolved_attempt'):
         return {'task_key': task['task_key'], 'binding': binding, 'started': True,
                 'terminal': result['terminal'], 'usage': result.get('usage')}
+    if result['terminal'] in FAILED and result.get('started') is True and not result.get('audit_path'):
+        return {'task_key': task['task_key'], 'binding': binding, 'started': True,
+            'terminal': result['terminal'], 'usage': result.get('usage'), 'delivered': [], 'G': [],
+            'cursor': 0, 'assessments': {}, 'complete_C': False, 'gate_passed': False,
+            'publication_verified': False, 'acquired': None, 'components': None}
     directory = path(ref['path']).parent
     audit_path = path(result['audit_path'])
     legacy = (legacy_R and task['method'] == 'R' and result.get('legacy_R_source') == result['audit_ref'])
@@ -173,12 +178,22 @@ def _execution(task, ref, plan_id, *, read_artifact=None, resolve_artifact=None,
 
 
 def load_evaluation_inputs(plan, *, execution_index, reference_sources, read_artifact=None, resolve_artifact=None,
-                           development=False):
+                           development=False, formal=False, root_task_ids=None):
     """Return fixed evaluation slots and observations; perform no scoring or execution."""
     read, path = read_artifact or _read, resolve_artifact or _public_path
     path(plan)
     _, manifest, rows = _task_plan(plan)
-    if development:
+    if formal:
+        from formal_runtime import PLAN, PLAN_ID
+        from formal_evaluation import source_references
+        original = source_references()
+        if (development or path(plan) != PLAN or manifest.get('plan_id') != PLAN_ID
+                or manifest['source_scope'] != 'accepted_test_pool'
+                or reference_sources['scope'] != 'accepted_formal_evaluation'
+                or any(reference_sources[k] != original[k] for k in ('preference', 'joint_states', 'scenario_states'))
+                or read_artifact is None or resolve_artifact is None):
+            raise ValueError('formal_evaluation_binding')
+    elif development:
         from p1_runtime import PILOT, PILOT_ID, PLAN_ID, D1
         if (path(plan) != PILOT or manifest.get('pilot_id') != PILOT_ID
                 or manifest.get('parent_plan_id') != PLAN_ID or len(rows['tasks.jsonl']) != 8
@@ -195,6 +210,10 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources, read_art
     roots = [u['root_task_id'] for u in rows['sample-users.jsonl']]
     if len(roots) != len(set(roots)):
         raise ValueError('duplicate_evaluation_user')
+    if root_task_ids is not None:
+        if len(root_task_ids) != len(set(root_task_ids)) or set(root_task_ids) - set(roots):
+            raise ValueError('unknown_evaluation_user')
+        roots = [u for u in roots if u in root_task_ids]
     scheduled = {}
     for row in rows['tasks.jsonl']:
         relation = next(b for b in rows['user-scenarios.jsonl'] if b['binding_id'] == row['binding_id'])
@@ -266,9 +285,11 @@ def load_evaluation_inputs(plan, *, execution_index, reference_sources, read_art
                 execution = (_execution(task, execution_index[key], plan_id, read_artifact=read,
                     resolve_artifact=path, legacy_R=development) if key in execution_index else None) if scheduled_task else {
                     'task_key': key, 'binding': reference['binding'], 'started': False, 'terminal': 'not_started'}
+                if formal and execution is None:
+                    execution = {'task_key': key, 'binding': reference['binding'], 'started': False, 'terminal': 'not_started'}
                 tasks.append(task)
                 observations.append({'task': task, 'execution': execution, 'reference': reference})
-    evaluation_plan = {'source_scope': 'frozen_development' if development else 'public_fixture', 'plan_id': plan_id, 'users': roots,
+    evaluation_plan = {'source_scope': 'formal_test100' if formal else 'frozen_development' if development else 'public_fixture', 'plan_id': plan_id, 'users': roots,
         'scenes': list(SCENES), 'tasks': tasks, 'applicability': applicability,
         'cohorts': {'U8': [u for u in roots if all(applicability[u][s] for s in ORIGINAL)],
                     'UQ': [u for u in roots if all(applicability[u][s] for s in ('Q1', 'Q2'))]}}

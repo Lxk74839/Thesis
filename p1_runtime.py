@@ -176,12 +176,15 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
     from provider_fourrouter import make_sender
     from p1_engineering import http_window_ms
     from recommendation_runner import RecommendationRun
+    from formal_runtime import authorized as formal
     binding = copy.deepcopy(assembly['binding'])
     binding.update(schema_version='rsm-run-0.4.0', execution_kind='fourrouter_responses', fixture=None,
-        execution_authorized=True, execution_budget=cfg['limits'][method], pilot_id=PILOT_ID,
+        execution_authorized=True, execution_budget=cfg['limits'][method],
         orchestration='batch32-0.1.0', project_id=cfg['model_binding']['project_id'])
+    if not formal(binding):
+        binding['pilot_id'] = PILOT_ID
     from development_pilot import authorized as development
-    engineering = development(cfg['model_binding']) or _engineering_config(cfg, method)
+    engineering = method != 'R' and (formal(binding) or development(cfg['model_binding']) or _engineering_config(cfg, method))
     if development(cfg['model_binding']):
         binding['development_authorization'] = cfg['model_binding']['development_authorization']
     if engineering:
@@ -200,6 +203,7 @@ def build_runtime(assembly, cfg, method, *, counter, output_root=OUTPUT, storage
         limits=cfg['limits'][method], final_reserve=cfg['final_reserve'][method], root_budget=budget, joint=joint)
     model = None if method == 'R' else ModelAdapter(make_sender(clock=budget.clock,
         max_request_bytes=cfg['model_binding']['max_request_bytes'], storage_guard=storage_guard,
+        formal_configuration_id=binding.get('formal_configuration_id'),
         max_response_bytes=cfg['model_binding'].get('max_response_bytes', 65536),
         http_timeout_seconds=http_window_ms(cfg['model_binding']) / 1000 if engineering else 30),
         capability_binding=cfg['model_binding'] | {'execution_authorized': True}, counter=counter, root_budget=budget)

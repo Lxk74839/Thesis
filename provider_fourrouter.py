@@ -465,7 +465,7 @@ def prepared_diagnostic(prepared):
 
 
 def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=None, storage_guard=None,
-                http_timeout_seconds=30, max_response_bytes=65536):
+                http_timeout_seconds=30, max_response_bytes=65536, formal_configuration_id=None):
     from pathlib import Path
     from fourrouter_probe import LOCAL_CREDENTIAL, _safe_identifier, send_response, _request_bytes
     path = Path(credential_path) if credential_path is not None else LOCAL_CREDENTIAL
@@ -475,6 +475,11 @@ def make_sender(*, clock, max_request_bytes, credential_path=None, http_sender=N
         raise ValueError('invalid_response_limit')
     http_sender = send_response if http_sender is None else http_sender
     def sender(wire_utf8, *, deadline_ms):
+        if formal_configuration_id is not None and not (storage_guard is not None
+                and storage_guard.active and storage_guard.formal and storage_guard.S_authorized
+                and getattr(storage_guard, 'formal_configuration_id', None) == formal_configuration_id
+                and callable(getattr(storage_guard, 'claim_S_request', None))):
+            raise OSError('formal_sender_guard_required')
         request = json.loads(wire_utf8)
         timeout = min(http_timeout_seconds, (deadline_ms - clock()) / 1000)
         if timeout <= 0:

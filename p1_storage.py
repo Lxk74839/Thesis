@@ -9,9 +9,12 @@ import sys
 
 class P1StorageGuard:
     def __init__(self, root, limit_bytes, *, run_root=None, run_limit_bytes=None, development=False,
-                 evaluation_sources=()):
+                 evaluation_sources=(), formal=False):
         self.development = development
-        if type(limit_bytes) is not int or not 0 < limit_bytes <= (1024**3 if development else 128 * 1024**2):
+        self.formal = formal
+        if formal and development:
+            raise ValueError('distinct_execution_scopes')
+        if type(limit_bytes) is not int or not 0 < limit_bytes <= (1024**3 if development or formal else 128 * 1024**2):
             raise ValueError('invalid_storage_limit')
         self.root, self.limit_bytes = Path(root).absolute(), limit_bytes
         self.run_root = Path(run_root).absolute() if run_root is not None else None
@@ -19,7 +22,7 @@ class P1StorageGuard:
         if ((self.run_root is None) != (run_limit_bytes is None)
                 or self.run_root is not None and (self.run_root == self.root
                     or not self.run_root.is_relative_to(self.root) or type(run_limit_bytes) is not int
-                    or not 0 < run_limit_bytes <= (128 if development else 64) * 1024**2)):
+                    or not 0 < run_limit_bytes <= (128 if development or formal else 64) * 1024**2)):
             raise ValueError('invalid_run_storage_limit')
         self.charged_bytes = 0
         self.active = self.used = self._opening = False
@@ -28,8 +31,20 @@ class P1StorageGuard:
         self.credential_read = None
         self.allowed = {'credentials': 0, 'response_workers': 0}
         self.evaluation_sources = frozenset(Path(p).absolute() for p in evaluation_sources)
-        if self.evaluation_sources and (not development or self.run_root is None):
+        if self.evaluation_sources and (not (development or formal) or self.run_root is None):
             raise ValueError('evaluation_scope_required')
+
+    def authorize_formal(self, configuration_id):
+        from formal_runtime import OUTPUT, load_config
+        from formal_experiment import require_authorization
+        cfg = load_config()
+        require_authorization(cfg)
+        if (not self.active or not self.formal or self.evaluation_sources
+                or self.root.parent != OUTPUT / 'runs' or self.limit_bytes > cfg['run_storage_limit_bytes']
+                or configuration_id != cfg['configuration_id']):
+            raise OSError('formal_sender_not_authorized')
+        self.S_authorized = True
+        self.formal_configuration_id = configuration_id
 
     def authorize_S(self, authorization_id):
         from p1_engineering import AUTHORIZATIONS
