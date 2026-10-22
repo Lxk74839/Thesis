@@ -1,6 +1,8 @@
 # 任务14集中收口
 
-Status: claimed
+Status: resolved
+
+最新验收：2026-10-22 Q1/Q2输出合同修订及真实复验通过，8项独立评价PASS。见../ticket14-q-contract-20261022/acceptance.md。下文保留各阶段原始规格与当时状态，旧失败不改判。
 
 2026-10-22续权已执行：用户批准总上限194，仅Q1/Q2固定run各一次18次。实际累计188，Q1/Q2均保留失败，独立评价6 scored/2 failed；任务未完成，剩余6次不授权新run。详见completion-acceptance.md和completion-authorization.json。下文160是原始范围历史，不重置旧账。
 基线：b4d5cb2。规格来源：用户本轮完整授权；替代逐次A编号与离线秒数门槛。

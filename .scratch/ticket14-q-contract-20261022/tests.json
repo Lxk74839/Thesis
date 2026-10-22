@@ -31,7 +31,8 @@
       "command": "python -B -m unittest <legacy requirement guard, keyed profile, full32-Q IO>",
       "tests": 3,
       "status": "PASS",
-      "note": "targeted review fix only; other accepted checks inherited"
+      "note": "targeted review fix only; other accepted checks inherited",
+      "seconds": 10.628
     }
   ],
   "RED_GREEN": [
@@ -68,5 +69,13 @@
     "count": 0,
     "other": 0
   },
-  "inherited": "unchanged accepted API parser, sender, R and upstream checks"
+  "inherited": "unchanged accepted API parser, sender, R and upstream checks",
+  "coverage_summary": {
+    "unique_behavior_methods": 31,
+    "evaluation_methods": 4,
+    "successful_method_invocations_in_recorded_commands": 38,
+    "includes_targeted_repeats": true,
+    "real_preflight_tasks": 7,
+    "current_two_Q_preflight_record": ".scratch/ticket14-q-contract-20261022/prelaunch.json"
+  }
 }

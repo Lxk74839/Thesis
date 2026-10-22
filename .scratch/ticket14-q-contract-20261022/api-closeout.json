@@ -1,0 +1,50 @@
+{
+  "current_generate_claims": 220,
+  "current_limit": 224,
+  "remaining": 4,
+  "new_generations": 32,
+  "new_grants_consumed": [
+    "T14-D1-Q1-M-1792635147010",
+    "T14-D1-Q2-M-1792635147011"
+  ],
+  "unused_balance_is_not_new_run_authority": true,
+  "historical_S_generations_separate": 16,
+  "diagnostic_generations": 3,
+  "count_api": 0,
+  "other_api": 0,
+  "retry": 0,
+  "known_native_subtotal": {
+    "input_tokens": 53039462,
+    "output_tokens": 251629,
+    "cached_input_tokens": 924288,
+    "reasoning_output_tokens": 19069
+  },
+  "unknown_counts": {
+    "input_tokens": 2,
+    "output_tokens": 2,
+    "cached_input_tokens": 2,
+    "reasoning_output_tokens": 2,
+    "cost_microusd": 220
+  },
+  "cost": null,
+  "http_status_counts": {
+    "408": 1,
+    "200": 219
+  },
+  "returned_model_counts": {
+    "None": 2,
+    "gpt-6-luna": 218
+  },
+  "new_native_subtotal": {
+    "input_tokens": 9823079,
+    "output_tokens": 42986,
+    "cached_input_tokens": 0,
+    "reasoning_output_tokens": 3868
+  },
+  "new_usage_missing": 0,
+  "new_HTTP200": 32,
+  "request_output_cap_sum": 1712280,
+  "max_actual_POST_bytes_known": 1513514,
+  "actual_POST_size_unknown_claims": 3,
+  "reasoning_tokens_are_output_subset": true
+}

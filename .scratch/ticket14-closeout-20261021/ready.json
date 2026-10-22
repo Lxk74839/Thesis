@@ -1,6 +1,6 @@
 {
   "repair_targeted_tests": 20,
-  "candidate": "c01cdbf68f0eb518cf1270cd12d3ea052e3c989f",
+  "candidate": "75f5943dfbf53301cf48217e4b11d1c734c3e8b0",
   "real_preflight_tasks": 7,
   "standards_agent": "closeout_standards",
   "initial_diagnostic_requests": 3,
@@ -14,5 +14,6 @@
   "stock_projection_direct_tests": 3,
   "unit_projection_direct_tests": 3,
   "revision_ranking_direct_tests": 4,
-  "completion_direct_tests": 10
+  "completion_direct_tests": 10,
+  "Q_contract_record": ".scratch\\ticket14-q-contract-20261022\\review.md"
 }

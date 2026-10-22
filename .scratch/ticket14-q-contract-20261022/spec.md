@@ -1,6 +1,8 @@
 # 任务14：Q输出合同修订与一次复验
 
-Status: claimed
+Status: resolved
+
+验收：见acceptance.md。Q1/Q2各一次真实released、各16次调用；八项独立评价pilot_acceptance=PASS。集中收口账220/224，余4不授权新run。正式实验未开始，HR/NDCG为0不代表效果成立。
 BASE: 3d25e85。规格来源：2026-10-22用户完整确认，继承全部旧结果和账本。
 
 范围仅Q1/M、Q2/M各一个新run、每项18次，累计188→224（旧余6包含在36内，新增上限30）。固定4Router/gpt-6-luna；count/其他API/自动重试0，并发1、HTTP120秒、run1800秒、最终1次/1500/145秒预留。存储1GiB共享/128MiB单run/2GiB新增、内存4GiB不变；历史时间和超限保持统计，不恢复分钟级门槛。

@@ -1,0 +1,159 @@
+{
+  "historical_offline_seconds": 10765.55981900054,
+  "historical_S_execution_seconds": 273.94399349991,
+  "old_limits_and_overruns_retained": true,
+  "offline_historical_seconds_are_not_current_gates": true,
+  "current_local_offline_seconds": null,
+  "current_local_offline_seconds_reason": "No continuous local elapsed meter; not reconstructed from user waiting gaps.",
+  "current_guarded_job_seconds": 5517.9260890001315,
+  "current_generate_job_seconds": 5496.578401800129,
+  "current_evaluation_job_seconds": 21.347687200002838,
+  "job_write_transfer_bytes_measured": 528580719,
+  "local_write_upper_bytes_conservative_not_measured": 536870912,
+  "new_write_upper_charged_bytes": 1065451631,
+  "new_write_limit_bytes": 2147483648,
+  "shared_root_current_bytes": 479027551,
+  "shared_root_limit_bytes": 1073741824,
+  "max_run_current_bytes": 39356485,
+  "run_limit_bytes": 134217728,
+  "max_job_peak_commit_bytes": 259923968,
+  "memory_limit_bytes": 4294967296,
+  "active_lock": false,
+  "job_count": 26,
+  "per_job_resources": [
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/PUBLIC-T14-diag-short_tools-1792571069048/execution-resources.json",
+      "bytes": 391,
+      "sha256": "88c349a8a81266eb70f704612b0443ee1a2d8fe3a7963cd4acf259d1442ec7c0"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/PUBLIC-T14-diag-short_tools_supported-1792571187702/execution-resources.json",
+      "bytes": 411,
+      "sha256": "66c889544dca62bbfa0938c9ca0907a89187687582be77ea963b03044631a71e"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-EVALUATION-1792631295989/execution-resources.json",
+      "bytes": 377,
+      "sha256": "272624de97b0156c8bd4c6e62b25b2602698daccbb233703f5e6b1b55695bee0"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-EVALUATION-1792633292549/execution-resources.json",
+      "bytes": 377,
+      "sha256": "64b8a0d7d7a9739599e6e0882ae530f43bc099776481c54f3419ce1ea4fbde8b"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-EVALUATION-1792636724274/execution-resources.json",
+      "bytes": 377,
+      "sha256": "4d7794d5c75245a703dab0d68457acf2b94b3fa46c54025e64dff003fa8550cf"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792587162199/execution-resources.json",
+      "bytes": 372,
+      "sha256": "849541cebc67ee3929388d7eb6f1604629a33325f3c1957c1d9650d6f639d65b"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792588139764/execution-resources.json",
+      "bytes": 372,
+      "sha256": "e5d3e70e6ef0dbfce42da5ff9c23f87d73dd2e8c8f066e4c5d3882d4117fcf57"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792588790640/execution-resources.json",
+      "bytes": 371,
+      "sha256": "288d20128521f35cac4a73fef25017dc37e25e07f22d8636a7efc409c2bddb4b"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792589828802/execution-resources.json",
+      "bytes": 371,
+      "sha256": "16892a6bcf1f03db72421afc3e7d522b123ddb01196dbc8fa6e2ee2bacfe4835"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792632005754/execution-resources.json",
+      "bytes": 371,
+      "sha256": "32cbfc782ab48a45a8f3099a7e342904f78a93047b00b88e586df2343c30c844"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q1-M-1792635147010/execution-resources.json",
+      "bytes": 371,
+      "sha256": "7d0a7363065a2808ed36224510f59d5f794cd4ead84314decf73d51ecd5026ee"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q2-M-1792630627668/execution-resources.json",
+      "bytes": 370,
+      "sha256": "853db52586233026494a6cf203c9ad435088cf90a148d68d1406b76b354aaf92"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q2-M-1792632005755/execution-resources.json",
+      "bytes": 372,
+      "sha256": "5d83bb37a8da24dcace72f5cf15dcebb3153e260b6873aa4a7011c7d92682f3c"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-Q2-M-1792635147011/execution-resources.json",
+      "bytes": 371,
+      "sha256": "ff7e0d25ba629f6778e6b34a10e5238b685f2d017b0da7f56b444be3efd5d2ee"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-M-1792586129038/execution-resources.json",
+      "bytes": 374,
+      "sha256": "90586b7830efc09156cfffba8f19480ccbffb7eb6f1c3a5a9c6d9e23c53f637a"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792572853477/execution-resources.json",
+      "bytes": 373,
+      "sha256": "39a3964fe2e2e998ffee7a0c2866d98a1e39d0156d964498f2adacbecb43be5c"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792577446761/execution-resources.json",
+      "bytes": 372,
+      "sha256": "22d6323de477b2792fc1e26b685855c55c3094608dbd94d0e650d6d1b707d0ce"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792578102598/execution-resources.json",
+      "bytes": 374,
+      "sha256": "fb9054d74df2c035983d337d934ff5687da4f2e93bb02f0458d2a2757b79c6b7"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792583847292/execution-resources.json",
+      "bytes": 374,
+      "sha256": "1a8ebbc0429f75cd2f47bec4974bb4b3dacaadb0bae25ceeaa50b0131f5b9824"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792584535014/execution-resources.json",
+      "bytes": 374,
+      "sha256": "477c1d005bee6fcc1c03e5223812da560134246073ff303721bbb69172c477fd"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792585222115/execution-resources.json",
+      "bytes": 371,
+      "sha256": "7edcfb1e9a55363d9e1a9aaa3ddb67c1d56ba558b970dd3da1db38a7ac6af86a"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-1792585830710/execution-resources.json",
+      "bytes": 374,
+      "sha256": "16a6bdb52f474a2b275598c5d92a78f990fd66f2a367814e228c00bef0a98bca"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V00-S-DIAG-1792571209297/execution-resources.json",
+      "bytes": 390,
+      "sha256": "cf27406fcda5ea661bea8743d013b4ce9e4efb5d77da39cf85c8e36c51d381e1"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V01-M-1792586567651/execution-resources.json",
+      "bytes": 374,
+      "sha256": "c7f1049f50cd6a88cbfff33eba30a0a9fbbf7bc3a609525208f234bdec401599"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V05-M-1792586762060/execution-resources.json",
+      "bytes": 374,
+      "sha256": "6704984ffe432812e063c5573e38083fa4189283bc64a78a21b8a263c8e7d856"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-DEVELOPMENT-CLOSEOUT-20261021/T14-D1-V06-M-1792586930616/execution-resources.json",
+      "bytes": 373,
+      "sha256": "3664bc6b94c8c2075885acf7d72382fe0f9ced07fb5a1a347cbcd9f3da2c13ca"
+    }
+  ],
+  "current_Q_execution_seconds": {
+    "Q1": 431.6819544000318,
+    "Q2": 451.5033309000428
+  }
+}

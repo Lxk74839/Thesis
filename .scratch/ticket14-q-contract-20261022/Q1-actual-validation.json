@@ -1,0 +1,170 @@
+{
+  "run_id": "T14-D1-Q1-M-1792635147010",
+  "terminal": "released",
+  "candidate_count": 1493,
+  "A": 32,
+  "verified": 32,
+  "G": 32,
+  "delivered": 10,
+  "profile_groups": [
+    {
+      "raw_ref": {
+        "bytes": 4652,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-7dcd062249b46ece87571ae9180e14ee55b9556f129328af92b0f86bb7ea7930.json",
+        "sha256": "7dcd062249b46ece87571ae9180e14ee55b9556f129328af92b0f86bb7ea7930"
+      },
+      "derived_ref": {
+        "bytes": 4712,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-33c77be51d02cbf3bd9c5a29d62befbd8c498f8098e90830c4039ae3703058ed.json",
+        "sha256": "33c77be51d02cbf3bd9c5a29d62befbd8c498f8098e90830c4039ae3703058ed"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4655,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-22f2dd17a3cec4b0d3f5dfbecafd88f95565bfbb6a6518d31fca7b661a7820f7.json",
+        "sha256": "22f2dd17a3cec4b0d3f5dfbecafd88f95565bfbb6a6518d31fca7b661a7820f7"
+      },
+      "derived_ref": {
+        "bytes": 4715,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-452d79674a9df484cea57713fb2860cb7765bbe1368ac555508e6981fcd78941.json",
+        "sha256": "452d79674a9df484cea57713fb2860cb7765bbe1368ac555508e6981fcd78941"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4656,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-28f8a73e40bd373bfd78a4d48c5ac0f7a66f23ab424169c99c7fa3e1464084ee.json",
+        "sha256": "28f8a73e40bd373bfd78a4d48c5ac0f7a66f23ab424169c99c7fa3e1464084ee"
+      },
+      "derived_ref": {
+        "bytes": 4716,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-4b88d60ea7ebfaa3be5a656696e2851105b9aee4616fb5f966c39a5603e31730.json",
+        "sha256": "4b88d60ea7ebfaa3be5a656696e2851105b9aee4616fb5f966c39a5603e31730"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4655,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-2ac5b0b29b2d208f28c354290983018203ad46d3113fb18f41145de738cebcc3.json",
+        "sha256": "2ac5b0b29b2d208f28c354290983018203ad46d3113fb18f41145de738cebcc3"
+      },
+      "derived_ref": {
+        "bytes": 4715,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-3d19220f42fe508ccbc3df660f7c43a433b52029615a8ca4129c4ce563587ea1.json",
+        "sha256": "3d19220f42fe508ccbc3df660f7c43a433b52029615a8ca4129c4ce563587ea1"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4655,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-953914fd5a04146529bbd0ec251c47bbc8b069b3daf2dde6793251ae62279952.json",
+        "sha256": "953914fd5a04146529bbd0ec251c47bbc8b069b3daf2dde6793251ae62279952"
+      },
+      "derived_ref": {
+        "bytes": 4715,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-f8e0786f0a44f636d106836b058870a3f78eb7565b0da1918cfa768dd08ae118.json",
+        "sha256": "f8e0786f0a44f636d106836b058870a3f78eb7565b0da1918cfa768dd08ae118"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4654,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-97809e599bd5f97ac5e400f74d67038dd0e98493ea924c06c75cbc7aa3c62e64.json",
+        "sha256": "97809e599bd5f97ac5e400f74d67038dd0e98493ea924c06c75cbc7aa3c62e64"
+      },
+      "derived_ref": {
+        "bytes": 4714,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-74bc0caf0116b96ffe26282351cca187ed6fe9a846f08bf2b4390c020b7bb128.json",
+        "sha256": "74bc0caf0116b96ffe26282351cca187ed6fe9a846f08bf2b4390c020b7bb128"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4651,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-9f837c51072a241eb5307284e58602728494cfdf7463bcc6cb7a81ae4d77614a.json",
+        "sha256": "9f837c51072a241eb5307284e58602728494cfdf7463bcc6cb7a81ae4d77614a"
+      },
+      "derived_ref": {
+        "bytes": 4711,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-e82b439dd4821a37c95fe92c1fd03040b8e9c8454f87ff3d9e84fbccbad9156b.json",
+        "sha256": "e82b439dd4821a37c95fe92c1fd03040b8e9c8454f87ff3d9e84fbccbad9156b"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    },
+    {
+      "raw_ref": {
+        "bytes": 4654,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-object-00f8336a3341ae29dd2683342bcecd78698d7d8e6915c878c55076b3133a643b.json",
+        "sha256": "00f8336a3341ae29dd2683342bcecd78698d7d8e6915c878c55076b3133a643b"
+      },
+      "derived_ref": {
+        "bytes": 4714,
+        "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/profile-list-ea8df303d80cf6820b833a5ae97852927fb6ca44f22f2ffe1e289a01715f2ca8.json",
+        "sha256": "ea8df303d80cf6820b833a5ae97852927fb6ca44f22f2ffe1e289a01715f2ca8"
+      },
+      "candidates": 4,
+      "exact_projection": true
+    }
+  ],
+  "all_three_anchor_equal": true,
+  "full_topK_equals_publication": true,
+  "model_verifications": [
+    {
+      "stage": "verification",
+      "valid": true,
+      "issues_count": 0
+    }
+  ],
+  "real_verification_correction_used": false,
+  "correction_actual_coverage": "not triggered; PUBLIC regression only",
+  "versions": {
+    "adapter": "rsm-model-adapter-4router-0.1.0",
+    "baseline": "1d688a3ddee04f634773ad62204a69f45fd55f19",
+    "contract_sha256": "9cfd918e4b0e3e6316e2e0a62e6a42c8518c38ed990751448b2cbb215fcee08e",
+    "implementation_candidate": "75f5943dfbf53301cf48217e4b11d1c734c3e8b0",
+    "product_profile_contract": "acquired-product-object-0.3.0",
+    "profile_schema": "rsm-profile-references-0.1.0",
+    "prompt": "rsm-role-composer-0.15.0",
+    "ranking_issue_contract": "ranking-issue-proof-0.1.0",
+    "runner": "rsm-runner-4router-0.3.0",
+    "tools": "restricted-evidence-batch-0.1.0"
+  },
+  "publication_ref": {
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/publication.json",
+    "bytes": 547819,
+    "sha256": "ccc0e431162ba430e5ab32b0fb8c512fd43658ec94d80d92338a6a77769cfb69"
+  },
+  "audit_ref": {
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/audit.json",
+    "bytes": 5979238,
+    "sha256": "d2e44cad01185a3196094c72cb851d6571699eccb7af66527f2d9b961f7a52ac"
+  },
+  "A_ref": {
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/trace/acquired-acded70aa14efdac11e529b387677b3dd19c810c1b54991aeacf00b5c3df7a53.json",
+    "sha256": "acded70aa14efdac11e529b387677b3dd19c810c1b54991aeacf00b5c3df7a53",
+    "bytes": 3202018
+  },
+  "budget_ref": {
+    "path": "data/recommendation-runtime-audit/ticket14-development/p1/T14-D1-Q1-M-1792635147010/budget.jsonl",
+    "bytes": 399161,
+    "sha256": "a1e5753dc16456fc6ca00d65be4262439c573fcb1d18d457e3e074812e15f8c6"
+  },
+  "engineering_limits_settled": true,
+  "analysis_generate": 0,
+  "count_api": 0,
+  "other_api": 0
+}

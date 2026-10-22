@@ -1,0 +1,43 @@
+{
+  "candidate": "75f5943dfbf53301cf48217e4b11d1c734c3e8b0",
+  "preflight": [
+    {
+      "label": "Q1",
+      "method": "M",
+      "task_key": "158c0644067e77ecfa3435163d9d07789bf0925c09028a540065a68129630a86",
+      "terminal": "ready",
+      "started": false,
+      "candidate_count": 1493,
+      "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+      "H_sha256": "888b5d2033d949b65efd73622dabcf046313d16cfa35c00b31f3dbf72635aff6",
+      "request_bytes": 179413,
+      "model_calls": 0,
+      "count_api": 0,
+      "other_api": 0
+    },
+    {
+      "label": "Q2",
+      "method": "M",
+      "task_key": "9a373be927071c842734a0a2b03bc79b133b04cb06dbe8394910da9ec7ed39c8",
+      "terminal": "ready",
+      "started": false,
+      "candidate_count": 1493,
+      "C_sha256": "6ce1fa2372935c80f0a66fc035b466acdc2c703726cedb56cecb82dc69f9a874",
+      "H_sha256": "888b5d2033d949b65efd73622dabcf046313d16cfa35c00b31f3dbf72635aff6",
+      "request_bytes": 179413,
+      "model_calls": 0,
+      "count_api": 0,
+      "other_api": 0
+    }
+  ],
+  "ledger_prefix_preserved": true,
+  "consumed": 188,
+  "limit": 224,
+  "new_runs_absent": true,
+  "shared_bytes_before": 398560734,
+  "write_balance_before": 1186526800,
+  "disk_free_bytes": 818138333184,
+  "count_api": 0,
+  "other_api": 0,
+  "generate": 0
+}
