@@ -1,0 +1,13 @@
+{
+  "base": "b4d5cb2",
+  "historical_offline_seconds": 10765.55981900054,
+  "historical_ledger": {
+    "path": "data\\recommendation-runtime-audit\\20261018-batch\\resource-ledger.jsonl",
+    "bytes": 1735929,
+    "sha256": "33d6d8a0c91bebbc30fa69d286cff0c7497f5686405c11a45d18ee263e74424a"
+  },
+  "historical_S_calls": 16,
+  "old_unused_authorizations_added_to_new_budget": false,
+  "old_overspends_retained": true,
+  "new_offline_seconds_are_statistics_only": true
+}

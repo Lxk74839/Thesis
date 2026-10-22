@@ -1,0 +1,49 @@
+{
+  "formal_plan_six_unchanged": true,
+  "files": [
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/plan.json",
+      "bytes": 3910,
+      "sha256": "ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/root-references.jsonl",
+      "bytes": 76909,
+      "sha256": "806ad3dd8d3a8cddadec9a32369e7232f54c5f78731e614e1190839257ed5ca3",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/sample-users.jsonl",
+      "bytes": 18992,
+      "sha256": "fe400606662853114b4b09765f06e33acb33fd3d42ac13150401869e8ea47898",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/scenes.jsonl",
+      "bytes": 8070,
+      "sha256": "b61a9253ee20f69d081d457fc17c40f2afb8ff6cf8afedb08e798263c705f582",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/tasks.jsonl",
+      "bytes": 1011600,
+      "sha256": "c4ebb869c0a89fe26699c66549cb1c39711853ac2f70e68346a33a3b8cd15173",
+      "unchanged": true
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-100x18/plan/user-scenarios.jsonl",
+      "bytes": 667560,
+      "sha256": "6a9bfe4844e1eb46236ce0f3b505db269cbd5f332997466cc24945f1dc81b3a5",
+      "unchanged": true
+    }
+  ],
+  "historical_ledger": {
+    "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+    "bytes": 1735929,
+    "sha256": "33d6d8a0c91bebbc30fa69d286cff0c7497f5686405c11a45d18ee263e74424a",
+    "unchanged_from_resume": true,
+    "historical_limits_and_overruns_retained": true
+  },
+  "formal_experiment_started": false
+}

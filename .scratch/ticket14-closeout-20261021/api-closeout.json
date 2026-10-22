@@ -1,0 +1,41 @@
+{
+  "new_generate_claims": 158,
+  "new_generate_limit": 160,
+  "remaining": 2,
+  "historical_S_generations_separate": 16,
+  "diagnostic_generations": 3,
+  "count_api": 0,
+  "other_api": 0,
+  "retry": 0,
+  "known_native_subtotal": {
+    "input_tokens": 34061157,
+    "output_tokens": 167148,
+    "cached_input_tokens": 924288,
+    "reasoning_output_tokens": 11264
+  },
+  "unknown_counts": {
+    "input_tokens": 2,
+    "output_tokens": 2,
+    "cached_input_tokens": 2,
+    "reasoning_output_tokens": 2,
+    "cost_microusd": 158
+  },
+  "cost": null,
+  "http_status_counts": {
+    "408": 1,
+    "200": 157
+  },
+  "returned_model_counts": {
+    "None": 2,
+    "gpt-6-luna": 156
+  },
+  "usage_states": {
+    "field_absent": 1,
+    "accepted": 156,
+    "unknown": 1
+  },
+  "request_output_cap_sum": 1224452,
+  "max_actual_POST_bytes_known": 1513514,
+  "actual_POST_size_unknown_claims": 3,
+  "reasoning_tokens_are_output_subset": true
+}

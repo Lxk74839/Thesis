@@ -1,0 +1,33 @@
+{
+  "status": "pending_user_approval_not_enabled",
+  "current_limit": 160,
+  "current_consumed": 158,
+  "current_remaining": 2,
+  "proposed_limit": 194,
+  "additional_limit": 34,
+  "balance_for_remaining_tasks": 36,
+  "remaining_tasks": [
+    {
+      "scene": "Q1",
+      "method": "M",
+      "max_attempts": 1,
+      "max_generate": 18
+    },
+    {
+      "scene": "Q2",
+      "method": "M",
+      "max_attempts": 1,
+      "max_generate": 18
+    }
+  ],
+  "old_consumption_preserved": true,
+  "old_unused_other_authorizations_not_added": true,
+  "reuse_other_six_valid_results": true,
+  "fixed_candidate": "31284f6facd034402c2b1bb1ea9085e5a38f46ee",
+  "other_model_channel_input_http_storage_memory_metering_conditions_unchanged": true,
+  "pricing": null,
+  "cost": null,
+  "no_api_until_confirmation": true,
+  "minimum_normal_path_total_generate": 32,
+  "maximum_with_one_protocol_revision_each": 36
+}

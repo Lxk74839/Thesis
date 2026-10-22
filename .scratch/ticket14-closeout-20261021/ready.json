@@ -1,0 +1,17 @@
+{
+  "repair_targeted_tests": 20,
+  "candidate": "31284f6facd034402c2b1bb1ea9085e5a38f46ee",
+  "real_preflight_tasks": 7,
+  "standards_agent": "closeout_standards",
+  "initial_diagnostic_requests": 3,
+  "authorization_id": "T14-DEVELOPMENT-CLOSEOUT-20261021",
+  "standards": "PASS",
+  "spec_agent": "closeout_spec",
+  "inherited_tests": 43,
+  "spec": "PASS",
+  "quality_increment_direct_tests": 3,
+  "quality_fixed_schema_tests": 28,
+  "stock_projection_direct_tests": 3,
+  "unit_projection_direct_tests": 3,
+  "revision_ranking_direct_tests": 4
+}

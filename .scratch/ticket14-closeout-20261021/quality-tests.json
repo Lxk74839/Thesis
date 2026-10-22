@@ -1,0 +1,14 @@
+{
+  "production_candidate": "ab5e90b63c1484cc867070a6548502bf5c5fe8ba",
+  "targeted_behavior_tests": 3,
+  "shared_mapper_protocol_tests": 25,
+  "all_pass": true,
+  "behavior_RED": "handwritten PUBLIC m/q/nested quality mutations accepted by old production Schema",
+  "behavior_GREEN": "production Schema rejects altered fixed quality; complete S/M/Q fixture passes; numeric spelling equivalence and legacy type guard retained",
+  "test_setup_attempt": "first mapper/protocol command lacked required THESIS_BATCH_CHECK_LABEL; 24 setup errors/25 tests; corrected environment only, no production workaround",
+  "public_case_label": "ticket14-quality-schema-20261021",
+  "network_generate": 0,
+  "count_api": 0,
+  "other_api": 0,
+  "credentials_read": 0
+}
