@@ -36,8 +36,8 @@ class EvaluationReadPolicy(unittest.TestCase):
             attempt.write_text('{"scope":"PUBLIC fixture"}')
             files.append(fixture.file_ref(attempt))
             original = {r['path']: Path(r['path']).read_bytes() for r in files}
-            target = case.root / 'legacy-evaluation'
-            target.mkdir()
+            target = case.root / 'evaluation/legacy'
+            target.mkdir(parents=True)
             ref = legacy_R_sidecar(target, run_root=run.output_root, task_key='PUBLIC-TASK',
                 plan_id=case.manifest['plan_id'], expected_files=files)
             plan, observations = load_evaluation_inputs(case.plan, execution_index={}, reference_sources=sources)
@@ -60,6 +60,43 @@ class EvaluationReadPolicy(unittest.TestCase):
                 plan_id=plan['plan_id'], expected_files=files, existing_ref=ref)
             self.assertEqual(reused, ref)
             self.assertEqual(list(again.iterdir()), [])
+            # Exercise the entry's actual guard and protected evaluation path.
+            # Only frozen-source discovery/projection is replaced by PUBLIC metadata.
+            from unittest.mock import patch
+            from development_evaluation import evaluate, read
+            metadata = fixture.PROJECT / '.scratch/ticket14-r-frozen-preflight-20261020/resource-closeout.json'
+            original_read_bytes = Path.read_bytes
+            def metadata_bytes(path):
+                return fixture.wire({'files': files}) if path == metadata else original_read_bytes(path)
+            original_ref = fixture.file_ref(attempt)
+            joint = {'independent_reference': {'components': {
+                'preference-reference.jsonl': original_ref, 'sim-reference-index.jsonl': original_ref}}}
+            scenes = {'independent_reference': {'reference': original_ref},
+                'audit_private': {'mutation-plan.jsonl': original_ref}}
+            class ReusedInsideGuard(Exception):
+                pass
+            def observed(plan, *, execution_index, **kwargs):
+                import json
+                self.assertEqual(execution_index['PUBLIC-TASK'], ref)
+                sidecar = json.loads(read(ref))
+                self.assertEqual(read(sidecar['acquired_ref']), (target / 'R-acquired.json').read_bytes())
+                self.assertFalse((case.root / 'evaluation/PUBLIC-ENTRY/R-acquired.json').exists())
+                raise ReusedInsideGuard
+            with (patch.object(Path, 'read_bytes', metadata_bytes),
+                    patch('development_evaluation.R_RUN', run.output_root.relative_to(case.root)),
+                    patch('development_pilot.OUTPUT', case.root),
+                    patch('development_evaluation._task_plan', return_value=(None,
+                        {'parent_plan_id': 'PUBLIC'}, {'tasks.jsonl': [{'method': 'R', 'task_key': 'PUBLIC-TASK'}],
+                            'scenes.jsonl': []})),
+                    patch('development_evaluation.accepted_sources', return_value={
+                        'authority': [{'path': 'PUBLIC/joint-tasks/PUBLIC-acceptance.json'}], 'scenarios': {}}),
+                    patch('development_evaluation._json', side_effect=[joint, scenes]),
+                    patch('development_evaluation.project_rows', return_value=original_ref),
+                    patch('development_evaluation._scan', return_value=[({'selected_parents': []}, {})]),
+                    patch('p1_runtime.PILOT_ID', case.manifest['plan_id']),
+                    patch('experiment_io.load_evaluation_inputs', side_effect=observed)):
+                with self.assertRaises(ReusedInsideGuard):
+                    evaluate('PUBLIC-ENTRY')
             (target / 'R-acquired.json').write_text('{}\n')  # PUBLIC fixture corruption.
             with self.assertRaises(ValueError):
                 legacy_R_sidecar(again, run_root=run.output_root, task_key='PUBLIC-TASK',

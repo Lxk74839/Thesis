@@ -97,6 +97,10 @@ def evaluate(run_id):
         'fixed_S': scenes['audit_private']['mutation-plan.jsonl']}
     target = evaluation_directory(OUTPUT, run_id)
     pinned_paths = [_path(r['path']) for r in original.values()]
+    existing = sorted((OUTPUT / 'evaluation').glob('*/R-result-sidecar.json'))
+    if existing:
+        previous = _path(existing[0])
+        pinned_paths.extend((previous, previous.with_name('R-acquired.json')))
     guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
         run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True, evaluation_sources=pinned_paths)
     with guard:
@@ -118,7 +122,6 @@ def evaluate(run_id):
         index, selected, attempts = {}, [], []
         R_task = next(t for t in rows['tasks.jsonl'] if t['method'] == 'R')
         old = json.loads((PROJECT / '.scratch/ticket14-r-frozen-preflight-20261020/resource-closeout.json').read_bytes())
-        existing = sorted((OUTPUT / 'evaluation').glob('*/R-result-sidecar.json'))
         index[R_task['task_key']] = legacy_R_sidecar(target, run_root=OUTPUT / R_RUN,
             task_key=R_task['task_key'], plan_id=PILOT_ID, expected_files=old['files'],
             existing_ref=reference(existing[0]) if existing else None)

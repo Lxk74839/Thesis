@@ -1,0 +1,14 @@
+{
+  "scope": "PUBLIC fixture; no credentials, network or real evaluation labels",
+  "completion_authorization": {"tests": 6, "status": "PASS", "history_preserved": 158, "limit": 194},
+  "R_reuse_guard": {
+    "red": "actual evaluate entry: R_evaluation_forbidden at existing sidecar read",
+    "green": "exact prior sidecar and R-acquired paths admitted read-only; canonical R evidence still verified",
+    "tests": 4,
+    "status": "PASS",
+    "new_A_seal": false
+  },
+  "generate": 0,
+  "count": 0,
+  "other_api": 0
+}
