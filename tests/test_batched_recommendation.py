@@ -63,6 +63,10 @@ class BatchTransport(ScriptedTransport):
                     'assessment_receipt_id': context['assessment_receipts'][parent], 'quality': quality,
                     'attributes': attributes, 'unknown': [c for c, v in assessment['claims'].items()
                         if v['evidence_state'] != 'Supported'] + (['retail_stock'] if quality and not quality['z'] else [])})
+            from provider_openai import PRODUCT_OBJECT_VERSION
+            if context.get('bound_profile_contract') == PRODUCT_OBJECT_VERSION:
+                observations = {o['candidate_id']: {k: v for k, v in o.items() if k != 'candidate_id'}
+                    for o in observations}
             data = {'kind': kind, 'data': {'necessary_clauses': ['c1', 'c2'], 'observations': observations}}
         raw['finish_reason'] = 'tool_calls' if calls else 'stop'
         raw['message'] = {'role': 'assistant', 'content': data, 'tool_requests': calls}

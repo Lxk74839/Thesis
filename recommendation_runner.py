@@ -10,14 +10,14 @@ from evidence_access import PROJECT, digest, encoded
 from evidence_verification import assess_evidence, rank_acquired_quality
 from quality_fusion import RULES
 
-COMPOSER_VERSION = 'rsm-role-composer-0.14.0'
+COMPOSER_VERSION = 'rsm-role-composer-0.15.0'
 
 
 def compose_role_request(*, binding, state, acquired, initial_messages, quality, ordered,
-                         role, kind, stage, output_cap, request_id, protocol, history=None):
+                         role, kind, stage, output_cap, request_id, protocol, history=None, ranking_scores=None):
     """Pure shared projection and message/schema composition; grants no execution capability."""
     from evidence_access import EvidenceSession
-    from provider_openai import MODEL, PROFILE_SCHEMA_VERSION, role_output_schema
+    from provider_openai import MODEL, PROFILE_SCHEMA_VERSION, PRODUCT_OBJECT_VERSION, RANKING_ISSUE_VERSION, role_output_schema
     batched = binding.get('orchestration') == 'batch32-0.1.0'
     queue = state['queue']
     def originals(pack):
@@ -71,7 +71,7 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         context['candidate_base_scores'] = dict(zip(binding['C'], binding['base_scores']))
         relevant = set(context['G']) | {context['current']}
         context['base_preferences'] = {p: v for p, v in context['base_preferences'].items() if p in relevant}
-        context['bound_profile_contract'] = 'acquired-product-bindings-0.2.0'
+        context['bound_profile_contract'] = PRODUCT_OBJECT_VERSION
         if kind == 'draft':
             catalog = {}
             for parent in context['ordered']:
@@ -103,9 +103,15 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
         if kind == 'verification':
             context['verification_receipts'] = state.get('verification_receipts', [])
             if binding['arm'] == 'quality':
+                context['ranking_issue_contract'] = RANKING_ISSUE_VERSION
                 context['ranking_contract'] = {'scope': 'actual_G_full', 'alpha': binding['fusion']['alpha'],
                     'beta': copy.deepcopy(binding['fusion']['beta']), 'round_decimals': 12,
-                    'score': 'alpha*base+(1-alpha)*q*m', 'tie_break': 'parent_asin_UTF8_ascending'}
+                    'score': 'alpha*base+(1-alpha)*q*m', 'tie_break': 'parent_asin_UTF8_ascending',
+                    'score_by_candidate': copy.deepcopy(ranking_scores),
+                    'basis': {'scope': 'actual_G_full', 'G_sha256': digest(encoded(state['G'])),
+                        'fusion_sha256': digest(encoded(binding['fusion']))}}
+                if state.get('verification_correction'):
+                    context['verification_correction'] = copy.deepcopy(state['verification_correction'])
                 context['retail_stock_sources'] = {item['parent_asin']: [
                     {'stock_units': fact['data']['facts']['stock_units'],
                      'source_unit': fact['data']['facts'].get('unit'), 'publication_unit': 'units',
@@ -139,6 +145,19 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             'Report retail_stock_mismatch only for a concrete inequality with that cited original; '
             'do not infer it from score differences. Continue to report incorrect values, citations, units '
             'or other evidence problems with the actual supporting receipt; never assume the draft is valid.')
+        context['output_contract']['instruction'] += (
+            ' Every issue requires category and ranking_evidence. For a ranking issue use category=ranking, '
+            'code=ranking_order_mismatch, candidate_id=null, claim_id=null, pointer=/items, blocking=true. '
+            'Provide ranking_evidence.observed_order copied from the actual draft, claimed_expected_order '
+            'from actual G under the frozen full-fusion rule, basis copied from ranking_contract.basis, '
+            'and the zero-based first_difference. score_by_candidate contains the actual program-computed '
+            'full-fusion scores, not evaluation labels. If the observed and expected orders agree, there '
+            'is no ranking issue: do not invent a first difference. Evidence issues use category=evidence, '
+            'ranking_evidence=null and the exact affected candidate/item/claim pointer. '
+            'The host checks each ranking claim before it can authorize revision. '
+            'When verification_correction is present, explicitly correct or withdraw the rejected issue '
+            'on the SAME unchanged draft; return a complete new issues verdict. This is the only allowed '
+            'verification correction, not a draft revision or automatic HTTP retry.')
     if kind == 'analysis' and stage == '用户画像':
         context['output_contract']['instruction'] += (
             ' Each observation contains only pointer (an exact /H or /H/... reference into frozen history) '
@@ -151,7 +170,9 @@ def compose_role_request(*, binding, state, acquired, initial_messages, quality,
             'the host reads these from acquired originals. Keep the existing assessment/quality/unknown fields.')
         if development(binding):
             context['output_contract']['instruction'] += (
-                ' Return one observation for every profile_candidates ID in exactly that order. '
+                ' Return observations as a closed object keyed by every profile_candidates ID exactly once. '
+                'Every key is required; no extra keys or candidate_id field in its value. Object key order '
+                'is immaterial; the host records your original object and a separate frozen-order list. '
                 'Copy assessment_receipt_id exactly from assessment_receipts for that candidate. '
                 'Include every acquired inspection_report conclusion and retail_status status/stock_units '
                 'once each, with the original citation and /facts/<attribute> pointer. Do not omit any '
@@ -310,6 +331,34 @@ def resolve_attribute_references(facts, attributes):
     return resolved
 
 
+def check_ranking_issue(issue, draft, expected, basis):
+    """Validate a claimed defect against this draft and the frozen actual-G ranking."""
+    proof = issue['ranking_evidence']
+    if issue['category'] not in ('ranking', 'evidence'):
+        return 'issue_category_mismatch'
+    if issue['category'] != 'ranking':
+        if (proof is not None or issue['candidate_id'] is None
+                or issue['code'] in ('ranking_order', 'ranking_order_mismatch', 'invalid_order_or_count')):
+            return 'issue_category_mismatch'
+        return None
+    if (issue['code'] != 'ranking_order_mismatch' or issue['candidate_id'] is not None
+            or issue['claim_id'] is not None or issue['pointer'] != '/items' or issue['blocking'] is not True
+            or not isinstance(proof, dict)):
+        return 'invalid_ranking_claim'
+    if proof['basis'] != basis:
+        return 'ranking_basis_mismatch'
+    observed = [i['parent_asin'] for i in draft['items']]
+    if proof['observed_order'] != observed or proof['claimed_expected_order'] != expected:
+        return 'ranking_order_binding_mismatch'
+    first = next((i for i in range(max(len(observed), len(expected)))
+        if (observed[i] if i < len(observed) else None) != (expected[i] if i < len(expected) else None)), None)
+    if first is None:
+        return 'ranking_claim_has_no_difference'
+    if type(proof['first_difference']) is not int or proof['first_difference'] != first:
+        return 'ranking_first_difference_mismatch'
+    return None
+
+
 def _draft_shape(draft):
     return (isinstance(draft, dict) and set(draft) == {'draft_id', 'parent_draft_id', 'items'}
         and isinstance(draft['draft_id'], str) and bool(draft['draft_id'])
@@ -390,7 +439,7 @@ class RecommendationRun:
                 adapter='rsm-model-adapter-on-demand-fixture-0.1.0')
         if self.fourrouter:
             self.state['versions'].update(baseline='1d688a3ddee04f634773ad62204a69f45fd55f19',
-                runner='rsm-runner-4router-0.2.0', adapter='rsm-model-adapter-4router-0.1.0', prompt=COMPOSER_VERSION)
+                runner='rsm-runner-4router-0.3.0', adapter='rsm-model-adapter-4router-0.1.0', prompt=COMPOSER_VERSION)
         from provider_openai import PROFILE_SCHEMA_VERSION
         self.state['versions']['profile_schema'] = PROFILE_SCHEMA_VERSION
         self.state['profile_facts'] = {'user': [], 'products': []}
@@ -585,8 +634,9 @@ class RecommendationRun:
         return components
 
     def _composed(self, role, kind, stage, *, history=None):
+        ranking = self._rank('full') if self.binding['arm'] == 'quality' and self.state['assessments'] else None
         quality = ({r['parent_asin']: {k: r[k] for k in ('z', 'm', 'q', 'stock_state')}
-                    for r in self._rank('full')['candidates']} if self.binding['arm'] == 'quality' and self.state['assessments'] else {})
+                    for r in ranking['candidates']} if ranking else {})
         return compose_role_request(binding=self.binding,
             state={**self.state, 'profile_batch_start': self.profile_batch_start,
                 'verification_receipts': [r['receipt_id'] for r in self.evidence.receipts] if kind == 'verification' else []},
@@ -594,7 +644,8 @@ class RecommendationRun:
             quality=quality, ordered=self._order(), role=role, kind=kind, stage=stage,
             output_cap=1500 if kind == 'final_submit' else 8192,
             request_id=self.binding['run_id'] + ':message:' + str(len(self.state['messages'])),
-            protocol=self.state['versions']['runner'] if self.native_fixture or self.fourrouter else self.version, history=history)
+            protocol=self.state['versions']['runner'] if self.native_fixture or self.fourrouter else self.version, history=history,
+            ranking_scores={r['parent_asin']: r['score'] for r in ranking['candidates'] if r['parent_asin'] in self.state['G']} if ranking else {})
 
     def _context(self, stage):
         return self._composed('需求解析', 'analysis', stage)['messages'][-1]['content']['runtime']
@@ -636,14 +687,14 @@ class RecommendationRun:
                     self.state.pop('profile_request_candidates', None)
                 return
         data = self._role(role, 'analysis', role)
-        if (set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']
-                or not isinstance(data['observations'], list)):
+        if set(data) != {'necessary_clauses', 'observations'} or data['necessary_clauses'] != self.binding['necessary_clauses']:
             raise RunStop('failed_protocol', 'changed_request')
         if role == '需求解析':
             self._complete(role)
             return
         context = self._context(role)
         observations = data['observations']
+        raw_object = None
         try:
             if not observations:
                 raise ValueError('missing_profile')
@@ -655,6 +706,16 @@ class RecommendationRun:
                 return
             batch_profile = self.batched and bool(self.queue)
             parents = context['profile_candidates'] if batch_profile else [context['current']]
+            from provider_openai import PRODUCT_OBJECT_VERSION
+            if context.get('bound_profile_contract') == PRODUCT_OBJECT_VERSION and batch_profile:
+                if (not isinstance(observations, dict) or set(observations) != set(parents)
+                        or any(not isinstance(v, dict) or set(v) != {'assessment_receipt_id', 'quality',
+                            'attributes', 'unknown'} for v in observations.values())):
+                    raise ValueError('incomplete_profile_object')
+                raw_object = copy.deepcopy(observations)
+                observations = [{'candidate_id': parent, **observations[parent]} for parent in parents]
+            if not isinstance(observations, list):
+                raise ValueError('invalid_profile_list')
             if len(observations) != len(parents):
                 raise ValueError('missing_candidate_profile')
             from provider_openai import matches, shape
@@ -677,6 +738,12 @@ class RecommendationRun:
                     'role_message_id': self.state['messages'][-1]['role_message_id'], 'facts': resolved})
             if batch_profile:
                 self.state['profiled_candidates'].extend(parents)
+            if raw_object is not None:
+                self.state['versions']['product_profile_contract'] = PRODUCT_OBJECT_VERSION
+                self.state.setdefault('profile_object_bindings', []).append({
+                    'contract': PRODUCT_OBJECT_VERSION, 'role_message_id': self.state['messages'][-1]['role_message_id'],
+                    'frozen_order': parents[:], 'raw_ref': self._trace_ref('profile-object', raw_object),
+                    'derived_ref': self._trace_ref('profile-list', observations)})
             self._complete(role)
         except (ValueError, KeyError, TypeError, IndexError, StopIteration):
             raise RunStop('failed_protocol', 'invalid_profile') from None
@@ -1042,41 +1109,64 @@ class RecommendationRun:
         draft = self.state['drafts'][-1]
         model_issues = []
         if self.binding['method'] != 'R':
-            verification = self._role('推荐依据核验', 'verification', 'verification')
-            if set(verification) != {'issues'} or not isinstance(verification['issues'], list):
-                raise RunStop('failed_protocol', 'invalid_verification')
-            model_issues = verification['issues']
+            from development_pilot import authorized
+            from provider_openai import RANKING_ISSUE_VERSION
+            proof_contract = authorized(self.binding) and self.binding['arm'] == 'quality'
+            if proof_contract:
+                self.state['versions']['ranking_issue_contract'] = RANKING_ISSUE_VERSION
             receipts = {r['receipt_id'] for r in self.evidence.audit_view()['receipts']}
-            seen = set()
-            for issue in model_issues:
-                try:
-                    valid = (isinstance(issue, dict) and set(issue) == {'issue_id', 'draft_id', 'candidate_id',
-                        'claim_id', 'pointer', 'code', 'blocking', 'allowed_actions', 'verifier', 'source_receipts'}
-                        and isinstance(issue['issue_id'], str) and bool(issue['issue_id']) and issue['issue_id'] not in seen
-                        and issue['draft_id'] == draft['draft_id'] and issue['verifier'] == 'model'
-                        and type(issue['blocking']) is bool and isinstance(issue['code'], str) and bool(issue['code'])
-                        and issue['allowed_actions'] == ['revise_and_resubmit']
-                        and isinstance(issue['source_receipts'], list) and set(issue['source_receipts']) <= receipts)
-                    if not valid:
-                        raise ValueError('invalid_issue')
-                    pointer_value(draft, issue['pointer'])
-                    if issue['candidate_id'] is not None:
-                        position = [i['parent_asin'] for i in draft['items']].index(issue['candidate_id'])
-                        scope = '/items/' + str(position)
-                        if issue['pointer'] != scope and not issue['pointer'].startswith(scope + '/'):
-                            raise ValueError('invalid_issue_scope')
-                        if issue['claim_id'] is not None:
-                            claim = [r['claim_id'] for r in draft['items'][position]['reasons']].index(issue['claim_id'])
-                            scope += '/reasons/' + str(claim)
+            for attempt in range(2):
+                stage = 'verification_correction' if attempt else 'verification'
+                context = self._composed('推荐依据核验', 'verification', stage)['messages'][-1]['content']['runtime'] if proof_contract else None
+                verification = self._role('推荐依据核验', 'verification', stage)
+                if set(verification) != {'issues'} or not isinstance(verification['issues'], list):
+                    raise RunStop('failed_protocol', 'invalid_verification')
+                model_issues, seen, errors = verification['issues'], set(), []
+                for index, issue in enumerate(model_issues):
+                    code = None
+                    try:
+                        fields = {'issue_id', 'draft_id', 'candidate_id', 'claim_id', 'pointer', 'code',
+                            'blocking', 'allowed_actions', 'verifier', 'source_receipts'}
+                        if proof_contract:
+                            fields |= {'category', 'ranking_evidence'}
+                        valid = (isinstance(issue, dict) and set(issue) == fields
+                            and isinstance(issue['issue_id'], str) and bool(issue['issue_id']) and issue['issue_id'] not in seen
+                            and issue['draft_id'] == draft['draft_id'] and issue['verifier'] == 'model'
+                            and type(issue['blocking']) is bool and isinstance(issue['code'], str) and bool(issue['code'])
+                            and issue['allowed_actions'] == ['revise_and_resubmit']
+                            and isinstance(issue['source_receipts'], list) and set(issue['source_receipts']) <= receipts)
+                        if not valid:
+                            raise ValueError('invalid_issue')
+                        pointer_value(draft, issue['pointer'])
+                        if issue['candidate_id'] is not None:
+                            position = [i['parent_asin'] for i in draft['items']].index(issue['candidate_id'])
+                            scope = '/items/' + str(position)
                             if issue['pointer'] != scope and not issue['pointer'].startswith(scope + '/'):
-                                raise ValueError('invalid_claim_scope')
-                    elif issue['claim_id'] is not None:
-                        raise ValueError('unbound_claim')
-                    seen.add(issue['issue_id'])
-                except (KeyError, ValueError, TypeError, IndexError):
-                    raise RunStop('failed_protocol', 'invalid_model_issue') from None
-            self.state.setdefault('model_verifications', []).append({'draft_id': draft['draft_id'],
-                'role_message_id': self.state['messages'][-1]['role_message_id'], 'issues': copy.deepcopy(model_issues)})
+                                raise ValueError('invalid_issue_scope')
+                            if issue['claim_id'] is not None:
+                                claim = [r['claim_id'] for r in draft['items'][position]['reasons']].index(issue['claim_id'])
+                                scope += '/reasons/' + str(claim)
+                                if issue['pointer'] != scope and not issue['pointer'].startswith(scope + '/'):
+                                    raise ValueError('invalid_claim_scope')
+                        elif issue['claim_id'] is not None:
+                            raise ValueError('unbound_claim')
+                        seen.add(issue['issue_id'])
+                        if proof_contract:
+                            code = check_ranking_issue(issue, draft, context['ordered'], context['ranking_contract']['basis'])
+                    except (KeyError, ValueError, TypeError, IndexError):
+                        code = 'invalid_model_issue_binding'
+                    if code:
+                        errors.append({'index': index, 'code': code})
+                record = {'draft_id': draft['draft_id'], 'role_message_id': self.state['messages'][-1]['role_message_id'],
+                    'issues': copy.deepcopy(model_issues), 'valid': not errors, 'errors': errors, 'stage': stage}
+                self.state.setdefault('model_verifications', []).append(record)
+                if not errors:
+                    self.state.pop('verification_correction', None)
+                    break
+                if not proof_contract or self.state.get('verification_correction_used'):
+                    raise RunStop('failed_protocol', 'invalid_model_issue_claim' if proof_contract else 'invalid_model_issue')
+                self.state['verification_correction_used'] = True
+                self.state['verification_correction'] = copy.deepcopy(record)
             self._complete('推荐依据核验')
         issues = self._program('verify_draft', lambda: self._draft_issues(draft)) + model_issues
         self.state['issues'].extend(copy.deepcopy(issues))

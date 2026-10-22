@@ -47,24 +47,25 @@ def generation_balance(rows, run_id, cfg, *, diagnostic=False):
     """The approved continuation spends the old balance, never reissues it."""
     if cfg['generate_limit'] == 160:
         return min(24, 160 - len(rows))
-    expected = {'start_after_generations': 158, 'max_run_calls': 18, 'max_runs_per_task': 1,
+    start = {194: 158, 224: 188}.get(cfg['generate_limit'])
+    expected = {'start_after_generations': start, 'max_run_calls': 18, 'max_runs_per_task': 1,
         'labels': ['Q1', 'Q2'], 'method': 'M'}
     grant = cfg.get('completion_grant', {})
     ids = grant.get('run_ids', {})
     valid_ids = (isinstance(ids, dict) and set(ids) == {'Q1', 'Q2'} and all(isinstance(value, str)
         and value.startswith('T14-D1-' + label + '-M-')
         and value.removeprefix('T14-D1-' + label + '-M-').isdecimal() for label, value in ids.items()))
-    if (cfg['generate_limit'] != 194 or grant != expected | {'run_ids': ids} or not valid_ids
-            or len(rows) < 158 or diagnostic):
+    if (start is None or grant != expected | {'run_ids': ids} or not valid_ids
+            or len(rows) < start or diagnostic):
         raise OSError('development_completion_authorization')
     prefix = next(('T14-D1-' + label + '-M-' for label in grant['labels']
         if run_id.startswith('T14-D1-' + label + '-M-')), None)
-    prior, current = rows[:158], rows[158:]
+    prior, current = rows[:start], rows[start:]
     runs = {r['run_id'] for r in current if prefix and r['run_id'].startswith(prefix)}
     if (prefix is None or run_id not in ids.values() or any(r['run_id'] == run_id for r in prior)
             or len(runs) > 1 or runs and run_id not in runs):
         raise OSError('development_completion_task_or_attempt')
-    return min(18 - sum(r['run_id'] == run_id for r in current), 194 - len(rows))
+    return min(18 - sum(r['run_id'] == run_id for r in current), cfg['generate_limit'] - len(rows))
 
 
 def claim_request(path, body, run_id, *, diagnostic=False):
@@ -195,7 +196,7 @@ def execute_task(command, run_id):
     rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
     session = json.loads((PACKAGE / 'config.json').read_bytes())
     calls = generation_balance(rows, run_id, session)
-    if calls < (16 if session['generate_limit'] == 194 else 2):
+    if calls < (16 if session['generate_limit'] > 160 else 2):
         raise OSError('development_generation_balance')
     guard = P1StorageGuard(OUTPUT, storage_headroom(OUTPUT), run_root=target,
         run_limit_bytes=128 * 1024**2 - METADATA_RESERVE, development=True)
@@ -342,12 +343,12 @@ def run_guarded(command, run_id):
     if Path(sys.prefix).resolve() != PROJECT / '.conda/envs/Thesis':
         raise ValueError('Thesis_environment_required')
     cfg = json.loads((PACKAGE / 'config.json').read_bytes())
-    if (cfg['authorization_id'] != AUTHORIZATION or cfg['generate_limit'] not in (160, 194)
+    if (cfg['authorization_id'] != AUTHORIZATION or cfg['generate_limit'] not in (160, 194, 224)
             or not 0 < cfg['run_watchdog_seconds'] <= 1800
             or not 0 < cfg['new_write_limit_bytes'] <= 2 * 1024**3
             or cfg['local_write_upper_bytes'] < 128 * 1024**2):
         raise ValueError('development_configuration_mismatch')
-    if cfg['generate_limit'] == 194 and command != 'evaluate':
+    if cfg['generate_limit'] > 160 and command != 'evaluate':
         path = CONTROL / 'requests.jsonl'
         rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
         if not command.startswith('run-') or generation_balance(rows, run_id, cfg) < 16:
@@ -458,7 +459,7 @@ def main(argv=None):
         _, label, method = command.split('-')
         run_id = 'T14-D1-' + label + '-' + method + '-' + stamp
         cfg = json.loads((PACKAGE / 'config.json').read_bytes())
-        if cfg['generate_limit'] == 194:
+        if cfg['generate_limit'] > 160:
             if method != 'M' or label not in cfg['completion_grant']['run_ids']:
                 raise OSError('development_completion_task_or_attempt')
             run_id = cfg['completion_grant']['run_ids'][label]

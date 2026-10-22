@@ -10,6 +10,36 @@ from unittest.mock import patch
 
 
 class SharedCalls(unittest.TestCase):
+    def test_224_grant_preserves_188_and_does_not_reissue_the_old_six(self):
+        import development_pilot as entry
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); path = root / 'PUBLIC-requests.jsonl'
+            prior = [{'run_id': 'T14-D1-Q1-M-old', 'sequence': i+1, 'output_cap': 8192,
+                'diagnostic': False} for i in range(188)]
+            original = ''.join(json.dumps(r)+'\n' for r in prior).encode()
+            path.write_bytes(original)
+            ids = {'Q1': 'T14-D1-Q1-M-1792634000001', 'Q2': 'T14-D1-Q2-M-1792634000002'}
+            cfg = {'generate_limit': 224, 'completion_grant': {'start_after_generations': 188,
+                'max_run_calls': 18, 'max_runs_per_task': 1, 'labels': ['Q1','Q2'], 'method': 'M', 'run_ids': ids}}
+            (root / 'config.json').write_text(json.dumps(cfg))
+            body = {'model': 'gpt-6-luna', 'max_output_tokens': 8192}
+            with patch.object(entry, 'PACKAGE', root):
+                self.assertEqual(entry.generation_balance(prior, ids['Q1'], cfg), 18)
+                with self.assertRaises(OSError):
+                    entry.generation_balance(prior[:-1], ids['Q1'], cfg)
+                for old in ('T14-D1-Q1-M-old', 'T14-D1-V00-S-1792634000001'):
+                    with self.assertRaises(OSError):
+                        entry.claim_request(path, body, old)
+                for label in ('Q1','Q2'):
+                    for _ in range(18):
+                        entry.claim_request(path, body, ids[label])
+                    with self.assertRaises(OSError):
+                        entry.claim_request(path, body, ids[label])
+                self.assertEqual(len(path.read_text().splitlines()), 224)
+                self.assertTrue(path.read_bytes().startswith(original))
+                with self.assertRaises(OSError):
+                    entry.claim_request(path, body, ids['Q1']+'1')
+
     def test_completion_grant_keeps_158_spent_and_allows_only_one_18_call_run_per_Q(self):
         import development_pilot as entry
         with tempfile.TemporaryDirectory() as tmp:
@@ -400,13 +430,15 @@ class ProductionFlow(unittest.TestCase):
                         # PUBLIC synthetic JSON number spelling, not the saved Q1 response.
                         output = result['body']['output'][0]['content'][0]
                         reply = json.loads(output['text'])
-                        for observation in reply['data']['observations']:
+                        observations = reply['data']['observations']
+                        for observation in observations.values() if isinstance(observations, dict) else observations:
                             for key, value in observation['quality'].items():
                                 if type(value) is float and value.is_integer():
                                     observation['quality'][key] = int(value)
                                     numeric_forms.append(key)
                         if corruption == 'quality':
-                            reply['data']['observations'][0]['quality']['m'] += 0.125
+                            first = next(iter(observations.values())) if isinstance(observations, dict) else observations[0]
+                            first['quality']['m'] += 0.125
                         output['text'] = json.dumps(reply, ensure_ascii=False)
                     if frame and frame.get('bound_draft_contract'):
                         # PUBLIC synthetic model follows the compact production wire contract.

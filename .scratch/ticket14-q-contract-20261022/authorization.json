@@ -1,0 +1,23 @@
+{
+  "status": "confirmed_by_user",
+  "base": "3d25e85",
+  "client_date": "2026-10-22",
+  "generate_limit": 224,
+  "preserved_consumed": 188,
+  "old_unspent_included": 6,
+  "limit_increment": 30,
+  "available": 36,
+  "each_task_runs": 1,
+  "each_run_calls": 18,
+  "run_ids": {
+    "Q1": "T14-D1-Q1-M-1792635147010",
+    "Q2": "T14-D1-Q2-M-1792635147011"
+  },
+  "ledger_prefix_bytes": 60970,
+  "ledger_prefix_sha256": "330b8722e8f11a704a4b382cb9b4b9b7cd8ae0d6269e0f873341461373ae1f5e",
+  "prior_config_sha256": "39607998039467be6698db4cb92ad41e56f6b2bf4f7737b92ca167d7513de256",
+  "other_limits": "unchanged",
+  "cost": null,
+  "count": 0,
+  "other_api": 0
+}

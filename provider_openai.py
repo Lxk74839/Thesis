@@ -8,6 +8,8 @@ import base64
 MODEL = 'gpt-5.4-mini-2026-03-17'
 MAPPER = 'openai-responses-mapper-0.1.0'
 PROFILE_SCHEMA_VERSION = 'rsm-profile-references-0.1.0'
+PRODUCT_OBJECT_VERSION = 'acquired-product-object-0.3.0'
+RANKING_ISSUE_VERSION = 'ranking-issue-proof-0.1.0'
 
 
 def send_count(body, *, deadline_ms, credential, clock, connection_factory=None):
@@ -115,10 +117,15 @@ def role_output_schema(role, kind, messages):
                         'assessment_receipt_id': {'type': 'string', 'enum': [context['assessment_receipts'][parent]]},
                         'quality': shape(context['quality'].get(parent), fixed=True), 'attributes': attributes, 'unknown': strings}))
                 observation = {'anyOf': options}
-        data = object_schema({'necessary_clauses': clause_ids, 'observations': array_schema(observation)})
+        observations = array_schema(observation)
+        if (context.get('bound_profile_contract') == PRODUCT_OBJECT_VERSION
+                and context['stage'] == '农产品画像' and context.get('profile_candidates')):
+            observations = object_schema({parent: object_schema({k: v for k, v in option['properties'].items()
+                if k != 'candidate_id'}) for parent, option in zip(context['profile_candidates'], options)})
+        data = object_schema({'necessary_clauses': clause_ids, 'observations': observations})
         if context.get('bound_profile_contract') and context['stage'] == '农产品画像' and context.get('profile_candidates'):
-            data['properties']['observations'].update(minItems=len(context['profile_candidates']),
-                maxItems=len(context['profile_candidates']))
+            if context.get('bound_profile_contract') != PRODUCT_OBJECT_VERSION:
+                observations.update(minItems=len(context['profile_candidates']), maxItems=len(context['profile_candidates']))
     elif kind == 'dispatch':
         data = object_schema({'candidate': {'type': ['string', 'null'], 'enum': [context['current']]},
             'to': {'type': 'string', 'enum': ['单智能体' if context['method'] == 'S' else '生命周期追溯']},
@@ -194,6 +201,17 @@ def role_output_schema(role, kind, messages):
             issue['properties']['claim_id'] = nullable | {'enum': [None, *sorted({r['claim_id'] for i in context['draft']['items']
                 for r in i['reasons']})]}
             issue['properties']['pointer'] = text | {'enum': paths(context['draft'], '')}
+            if context.get('ranking_issue_contract') == RANKING_ISSUE_VERSION:
+                order = array_schema(text | {'enum': context['G']})
+                order['maxItems'] = len(context['ordered'])
+                proof = object_schema({'observed_order': copy.deepcopy(order),
+                    'claimed_expected_order': copy.deepcopy(order),
+                    'basis': object_schema({'scope': text | {'enum': ['actual_G_full']},
+                        'G_sha256': text, 'fusion_sha256': text}),
+                    'first_difference': {'type': 'integer', 'minimum': 0, 'maximum': len(context['ordered'])}})
+                issue['properties'].update(category=text | {'enum': ['ranking', 'evidence']},
+                    ranking_evidence={'anyOf': [{'type': 'null'}, proof]})
+                issue['required'] = list(issue['properties'])
     else:
         data = object_schema({'draft_id': text})
         if context.get('bound_profile_contract') and context.get('draft'):

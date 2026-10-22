@@ -5,7 +5,7 @@
   "model_configuration": ".scratch/ticket14-live-integration-20261020/B-4router/config.draft.json",
   "pilot_id": "6353afe1bf05e4eadd56216d64bb5d29181798e29c6edf9468f9d537e10c1af1",
   "parent_plan_id": "9c37ffec84af6b92b3aa6911666c42ae5d4dc1170afa1b82fd01e6e33e86b088",
-  "generate_limit": 194,
+  "generate_limit": 224,
   "initial_diagnostic_limit": 6,
   "historical_S_generations": 16,
   "http_seconds": 120,
@@ -29,7 +29,7 @@
   "response_body_limit_bytes": 1048576,
   "quality_profile_chunk_size": 4,
   "completion_grant": {
-    "start_after_generations": 158,
+    "start_after_generations": 188,
     "max_run_calls": 18,
     "max_runs_per_task": 1,
     "labels": [
@@ -38,8 +38,8 @@
     ],
     "method": "M",
     "run_ids": {
-      "Q1": "T14-D1-Q1-M-1792632005754",
-      "Q2": "T14-D1-Q2-M-1792632005755"
+      "Q1": "T14-D1-Q1-M-1792635147010",
+      "Q2": "T14-D1-Q2-M-1792635147011"
     }
   }
 }

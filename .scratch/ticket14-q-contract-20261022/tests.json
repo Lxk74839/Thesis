@@ -1,0 +1,54 @@
+{
+  "scope": "PUBLIC synthetic fixtures except read-only frozen assembly preflight; no actual credential reads or network",
+  "commands": [
+    {
+      "command": "python -B -m unittest tests.test_quality_output_contract tests.test_development_pilot.SharedCalls tests.test_development_pilot.ProductionFlow",
+      "tests": 29,
+      "seconds": 73.287,
+      "status": "PASS"
+    },
+    {
+      "command": "python -B -m unittest tests.test_quality_output_contract.QualityOutputContract.test_full_32_candidate_Q_flow_keeps_all_three_components_and_final_reserve",
+      "tests": 1,
+      "seconds": 8.835,
+      "status": "PASS",
+      "note": "added read-only experiment_io closure assertions"
+    },
+    {
+      "command": "python -B -m unittest tests.test_development_evaluation",
+      "tests": 4,
+      "seconds": 0.667,
+      "status": "PASS",
+      "note": "isolated process; existing R seal reused"
+    }
+  ],
+  "RED_GREEN": [
+    {
+      "behavior": "keyed product object through production parser and full Q",
+      "RED": "failed_model/role_schema_mismatch",
+      "GREEN": "released, two raw/derived profile bindings; original receipt/value guards retained",
+      "setup_correction": "first harness project_id mismatched PUBLIC-P1; corrected before genuine RED, not counted as behavior reproduction"
+    },
+    {
+      "behavior": "invalid ranking claim on correctly ordered draft",
+      "RED": "blocked_evidence/final_gate_blocked after spurious revision",
+      "GREEN": "one explicit verifier correction; no draft revision; invalid verdict retained"
+    },
+    {
+      "behavior": "valid ranking claim on a wrong draft",
+      "RED": "unnecessary correction from context lacking ranking contract",
+      "GREEN": "correct typed verification context; valid claim triggers original revision, no correction"
+    },
+    {
+      "behavior": "new224 grant with188 preserved",
+      "RED": "development_completion_authorization",
+      "GREEN": "18 each, total224, old bytes preserved, old runIDs and truncated prefix rejected"
+    }
+  ],
+  "API": {
+    "generate": 0,
+    "count": 0,
+    "other": 0
+  },
+  "inherited": "unchanged accepted API parser, sender, R and upstream checks"
+}
