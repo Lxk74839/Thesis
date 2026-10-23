@@ -96,11 +96,7 @@ def preferences(task, proposed, tau, variant='I1'):
     return ([p | {'weight': p['weight'] / total} for p in result] if total else []), rejected
 
 
-def rank_i1(task, state, policy, variant='I1'):
-    if not {'User', 'Items', 'Search'} <= set(state['analyses']) or not state['observations']:
-        raise ValueError('macrec_incomplete_i1_analysis')
-    prefs = state['preferences']
-    rows = state['analyses']['Items'].get('matches')
+def match_rows(task, prefs, rows, *, partial=False):
     if not isinstance(rows, list):
         raise ValueError('macrec_match_matrix_required')
     if any(not isinstance(r, dict) or any(not isinstance(r.get(k), str) for k in ('candidate', 'aspect'))
@@ -110,16 +106,25 @@ def rank_i1(task, state, policy, variant='I1'):
             or any(not isinstance(ref, str) for ref in r.get('preference_refs', [])) for r in rows):
         raise ValueError('macrec_match_row_shape')
     matches = {(r['candidate'], r['aspect']): r for r in rows}
-    if len(matches) != len(rows) or set(matches) != {(p, a['id']) for p in task['D'] for a in prefs}:
+    expected = {(p, a['id']) for p in task['D'] for a in prefs}
+    if len(matches) != len(rows) or not set(matches) <= expected or not partial and set(matches) != expected:
         raise ValueError('macrec_incomplete_matches')
+    if any(row.get('match') not in (None, 0, .25, .5, .75, 1) or isinstance(row.get('match'), bool) for row in rows):
+        raise ValueError('macrec_match_value')
+    return matches
+
+
+def rank_i1(task, state, policy, variant='I1'):
+    if not {'User', 'Items', 'Search'} <= set(state['analyses']) or not state['observations']:
+        raise ValueError('macrec_incomplete_i1_analysis')
+    prefs = state['preferences']
+    matches = match_rows(task, prefs, state['analyses']['Items'].get('matches'))
     components = {}
     for p in task['D']:
         b, adjustment, terms = task['prior'][p], 0., []
         for pref in prefs:
             row = matches[p, pref['id']]
             m = row.get('match')
-            if m not in (None, 0, .25, .5, .75, 1) or isinstance(m, bool):
-                raise ValueError('macrec_match_value')
             cited = [reference(task, ref.get('ref'), state['observations']) for ref in row.get('references', [])]
             source_kind = 'stock' if pref['attribute'] == 'retail_stock' else 'catalog'
             expected_field = 'crop' if pref['attribute'] == 'crop' else 'title'
@@ -174,6 +179,11 @@ def run_task(task, *, method, invoke, evidence, policy):
     trajectory, versions = [], []
     calls = 0
 
+    def validated(ok=True):
+        observer = getattr(invoke, 'validated', None)
+        if observer is not None:
+            observer(ok)
+
     def ask(kind, context, *, agent=None):
         nonlocal calls
         if calls >= 37:
@@ -189,7 +199,8 @@ def run_task(task, *, method, invoke, evidence, policy):
         return reply
 
     def acquire(ids):
-        if len(ids) != len(set(ids)) or not set(ids) <= set(d):
+        if (not isinstance(ids, list) or any(not isinstance(p, str) for p in ids)
+                or len(ids) != len(set(ids)) or not set(ids) <= set(d)):
             raise ValueError('macrec_evidence_scope')
         observed = evidence(ids)
         if set(observed) != set(ids) or any(row['parent_asin'] != p for p, row in observed.items()):
@@ -202,10 +213,12 @@ def run_task(task, *, method, invoke, evidence, policy):
         for trial in range(2):
             state['trial'] = trial
             state['interpretation'] = ask('interpret', {'allowed': visible, 'trial': trial})
+            validated()
             dispatched, current = 0, None
             for step in range(4):
                 context = {'allowed': visible, 'state': state, 'step': step}
                 thought = ask('thought', context)
+                validated()
                 action = ask('action', context | {'decision': thought})
                 name, data = action.get('action'), action.get('data', {})
                 if not isinstance(data, dict):
@@ -216,29 +229,29 @@ def run_task(task, *, method, invoke, evidence, policy):
                                 or not state['observations']):
                             raise ValueError('macrec_incomplete_b0_collaboration')
                         ranking = data.get('ranking')
-                        if not isinstance(ranking, list) or len(ranking) != len(d) or set(ranking) != set(d):
+                        if (not isinstance(ranking, list) or any(not isinstance(p, str) for p in ranking)
+                                or len(ranking) != len(d) or set(ranking) != set(d)):
                             raise ValueError('macrec_complete_permutation_required')
                         components = {}
                     else:
                         revisions = data.get('revisions', [])
+                        changed_rows = match_rows(task, state.get('preferences', []), revisions, partial=True)
                         if revisions:
                             previous = state['analyses'].get('Items', {}).get('matches', [])
-                            changed = {(r['candidate'], r['aspect']): r for r in previous}
-                            for row in revisions:
-                                key = row['candidate'], row['aspect']
-                                if key not in changed:
-                                    raise ValueError('macrec_revision_scope')
-                                changed[key] = row
+                            changed = match_rows(task, state.get('preferences', []), previous)
+                            changed.update(changed_rows)
                             state['analyses']['Items']['matches'] = list(changed.values())
                         ranking, components = rank_i1(task, state, policy, method)
                     current = {'trial': trial, 'ranking': ranking, 'topK': [], 'components': components}
                     if improved:
                         current.update(preferences=copy.deepcopy(state['preferences']),
                             matches=copy.deepcopy(state['analyses']['Items']['matches']))
+                    validated()
                     break
                 if name not in ('User', 'Items', 'Search') or dispatched >= 3:
                     raise ValueError('macrec_dispatch_exhausted_or_invalid')
                 dispatched += 1
+                validated()
                 observation = None
                 for internal in range(3):
                     reply = ask('agent', {'allowed': visible, 'state': state, 'instruction': data,
@@ -252,6 +265,9 @@ def run_task(task, *, method, invoke, evidence, policy):
                         if improved and name == 'User':
                             state['preferences'], state['rejected_preferences'] = preferences(
                                 task, arguments.get('preferences'), policy.get('tau', 1), method)
+                        if improved and name == 'Items':
+                            match_rows(task, state.get('preferences', []), arguments.get('matches'))
+                        validated()
                         break
                     if name == 'User' and operation in ('Info', 'History'):
                         observation = {'history': visible['history'], 'request': visible['request']}
@@ -261,6 +277,7 @@ def run_task(task, *, method, invoke, evidence, policy):
                         observation = acquire(arguments.get('candidates', d))
                     else:
                         raise ValueError('macrec_agent_tool_denied')
+                    validated()
                     trajectory.append({'role': ROLES[name], 'kind': 'observation', 'output': copy.deepcopy(observation)})
                 else:
                     state['analyses'][name] = {'status': 'internal_exhausted'}
@@ -278,7 +295,8 @@ def run_task(task, *, method, invoke, evidence, policy):
                 raise ValueError('macrec_invalid_reflection')
             if improved and feedback['revise'] and (not feedback['issues'] or any(
                     not isinstance(issue, dict) or issue.get('candidate') not in d
-                    or not {'aspect', 'reference', 'problem'} <= set(issue) for issue in feedback['issues'])):
+                    or any(not isinstance(issue.get(k), str) or not issue[k]
+                        for k in ('aspect', 'reference', 'problem')) for issue in feedback['issues'])):
                 raise ValueError('macrec_unlocated_feedback')
             if improved and feedback['revise']:
                 for issue in feedback['issues']:
@@ -287,6 +305,7 @@ def run_task(task, *, method, invoke, evidence, policy):
                             or not source or source['kind'] in ('catalog', 'stock') and source['parent'] != issue['candidate']):
                         raise ValueError('macrec_feedback_source_denied')
             state['feedback'] = feedback
+            validated()
             if not feedback['revise']:
                 break
         if answer is None:
@@ -297,6 +316,7 @@ def run_task(task, *, method, invoke, evidence, policy):
         known_model_failure = str(exc).startswith('task16_failed')
         if not str(exc).startswith('macrec_') and not known_model_failure:
             raise
+        validated(False)
         return {'method': method, 'status': 'failed_model' if known_model_failure or 'exhausted' in str(exc) else 'failed_protocol',
             'reason': str(exc), 'topK': [], 'ranking': [], 'versions': versions,
             'trajectory': trajectory, 'model_calls': calls, 'observations': state['observations']}

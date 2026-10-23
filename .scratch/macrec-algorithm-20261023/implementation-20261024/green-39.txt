@@ -1,0 +1,6 @@
+test_business_schema_failures_count_toward_error_burst_and_valid_empty_profiles_count_as_success (tests.test_macrec.Collaboration.test_business_schema_failures_count_toward_error_burst_and_valid_empty_profiles_count_as_success) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.380s
+
+OK

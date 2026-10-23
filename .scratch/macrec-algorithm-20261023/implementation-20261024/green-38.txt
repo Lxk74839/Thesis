@@ -1,0 +1,6 @@
+test_empty_profile_still_requires_one_compact_matrix_row_for_every_candidate (tests.test_macrec.Collaboration.test_empty_profile_still_requires_one_compact_matrix_row_for_every_candidate) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.121s
+
+OK

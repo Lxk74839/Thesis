@@ -161,6 +161,55 @@ class Preparation(unittest.TestCase):
 
 
 class Collaboration(unittest.TestCase):
+    def test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures(self):
+        from macrec_experiment import prepare
+        from macrec_recommendation import run_task
+        task = prepare(source_fixture(), 'public_fixture', {'weights': [1,1,1], 'M': 2})['tasks']['u']
+        for fault in ('revision-number', 'revision-null', 'search-nested', 'ranking-nested', 'feedback-nested'):
+            model = i1_model(preference_fixture(), matches_fixture())
+            def external(request):
+                answer = model(request)
+                if fault == 'feedback-nested' and request['kind'] == 'reflect':
+                    return {'revise': True, 'issues': [{'candidate': 'A', 'aspect': [],
+                        'reference': 'c:A:title', 'problem': 'Recheck the match.'}]}
+                if fault == 'search-nested' and request['role'] == '生命周期追溯' and answer['action'] == 'Lookup':
+                    answer['data']['candidates'] = [['A']]
+                if request['kind'] == 'action' and answer['action'] == 'Finish' and fault != 'feedback-nested':
+                    answer['data'] = ({'ranking': [['A'], ['B']]} if fault == 'ranking-nested' else
+                        {'revisions': 1 if fault == 'revision-number' else [None]})
+                return answer
+            with self.subTest(fault=fault):
+                result = run_task(task, method='B0' if fault == 'ranking-nested' else 'I1',
+                    invoke=external, evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+                    policy={'lambda': .5, 'tau': 3})
+                self.assertEqual(result['status'], 'failed_protocol')
+                self.assertEqual(result['topK'], [])
+
+    def test_empty_profile_still_requires_one_compact_matrix_row_for_every_candidate(self):
+        from macrec_experiment import BusinessClient
+        from task16_control import Session
+        base = Path.cwd() / '.tmp/task16-execution'
+        for matrix in ([], [[0, [], []]], [[0, [], []], [0, [], []]], [[0, [], []], [1, [], []]]):
+            with tempfile.TemporaryDirectory(dir=base) as temp:
+                directory = Path(temp)
+                (directory / 'budget.json').write_text(json.dumps({'max_calls': 10,
+                    'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 120,
+                    'deadline_utc': time.time() + 200}), encoding='utf-8')
+                session = Session(directory, namespace='empty-profile', phase='parameters', unit='Items', limit=1)
+                def transport(wire):
+                    return {'status': 'completed', 'model': 'gpt-6-luna',
+                        'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
+                        'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(
+                            {'action': 'Finish', 'data': {'matrix': matrix}})})}]}]}
+                client = BusinessClient(session, {'effort': 'medium', 'quota': 'full'}, transport=transport)
+                request = {'kind': 'agent', 'role': '农产品画像', 'context': {'state': {'preferences': []},
+                    'allowed': {'candidates': source_fixture()['catalog'][1:]}}}
+                if matrix == [[0, [], []], [1, [], []]]:
+                    self.assertEqual(client(request)['data']['matches'], [])
+                else:
+                    with self.assertRaisesRegex(ValueError, '^macrec_business_response_shape$'):
+                        client(request)
+
     def test_history_confidence_deduplicates_parents_and_shrinks_with_opposing_evidence(self):
         from macrec_experiment import prepare
         from macrec_recommendation import run_task
@@ -312,6 +361,39 @@ class Collaboration(unittest.TestCase):
                         execute_unit(unit, session)
             self.assertEqual(call_counts(directory)[0]['attempts'], 2)
 
+    def test_business_schema_failures_count_toward_error_burst_and_valid_empty_profiles_count_as_success(self):
+        from macrec_experiment import prepare, execute_unit, store
+        from task16_control import Session, call_counts
+        base = Path.cwd() / '.tmp/task16-execution'
+        for valid_empty_first in (False, True):
+            with tempfile.TemporaryDirectory(dir=base) as temp:
+                directory = Path(temp)
+                (directory / 'budget.json').write_text(json.dumps({'max_calls': 100,
+                    'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 120,
+                    'deadline_utc': time.time() + 200}), encoding='utf-8')
+                task = prepare(source_fixture(), 'public_fixture', {'weights': [1,1,1], 'M': 2})['tasks']['u']
+                material = store(directory / 'material.json', {'candidates': {p: {'parent_asin': p,
+                    'eligible': True, 'stock': {'supported': False}, 'source': 'SIM'} for p in ('A','B')}})
+                model = store(directory / 'model.json', {'effort': 'medium','quota': 'full'})
+                maximum = 4 if valid_empty_first else 2
+                for i in range(maximum + 1):
+                    valid = valid_empty_first and i == 0
+                    unit = {'id': 'u' + str(i), 'root_id': 'u' + str(i), 'phase': 'parameters',
+                        'operation': 'probe', 'shape': 'User' if valid else 'action', 'method': 'B0',
+                        'scene': 'V00', 'limit': 1, 'materials': material, 'model': model,
+                        'task': store(directory / (str(i) + '.json'), task | {'root_task_id': 'u' + str(i)})}
+                    session = Session(directory, namespace='schema-burst', phase='parameters', unit=unit['id'], limit=1)
+                    response = {'action': 'Finish', 'data': {'preferences': []}} if valid else {}
+                    session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
+                        'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
+                        'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(response)})}]}]}
+                    if i == maximum:
+                        with self.assertRaisesRegex(ValueError, '^task16_business_error_burst$'):
+                            execute_unit(unit, session)
+                    else:
+                        self.assertEqual(execute_unit(unit, session)['status'], 'ok' if valid else 'failed_protocol')
+                self.assertEqual(call_counts(directory)[0]['attempts'], maximum)
+
     def test_worker_selects_one_shared_configuration_only_after_all_32_business_probes(self):
         from macrec_experiment import prepare, execute_unit, store, read_ref
         from task16_control import Session
@@ -418,6 +500,17 @@ class Collaboration(unittest.TestCase):
             self.assertEqual(call_counts(directory)[0]['successful'], 6)
             self.assertTrue(all(w['max_output_tokens'] == 1400 and 'reasoning' not in w for w in wires))
             self.assertNotIn('MACRec', result['protocol'])
+            failed = unit | {'id': 'u-M-malformed'}
+            failed_session = Session(directory, namespace='compact-aux-malformed', phase='auxiliary', unit=failed['id'], limit=6)
+            failed_session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
+                'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
+                'content': [{'type': 'output_text', 'text': json.dumps({'data_json': '{}'})}]}]}
+            failure = read_ref(execute_unit(failed, failed_session)['result'])
+            self.assertEqual(failure['status'], 'failed_protocol')
+            self.assertEqual(failure['model_calls'], 1)
+            attempts = call_counts(directory)[0]['attempts']
+            self.assertEqual(execute_unit(failed, failed_session)['status'], 'failed_protocol')
+            self.assertEqual(call_counts(directory)[0]['attempts'], attempts)
 
     def test_feature_stage_selects_scoring_components_without_sending_six_system_runs(self):
         from macrec_experiment import prepare, execute_unit, store, read_ref
@@ -480,13 +573,15 @@ class Collaboration(unittest.TestCase):
                     {'candidates': {p: {'parent_asin': p, 'eligible': True, 'state': 'Supported',
                         'stock': {'supported': False}, 'source': 'SIM'} for p in ('A', 'B')}}),
                 'model': store(directory / 'model.json', {'effort': 'medium', 'quota': 'full'})}
-            for invalid in (True, False):
-                current = unit | {'id': unit['id'] + ('-bad' if invalid else '-good')}
+            cases = [(ranking, invalid) for bad in ([0], [0, 1, 999], [0, 0], [True, 1], [['A'], ['B']])
+                for ranking, invalid in (([1, 0], False), (bad, True))]
+            for case, (ranking, invalid) in enumerate(cases):
+                current = unit | {'id': unit['id'] + '-' + str(case)}
                 session = Session(directory, namespace=current['id'], phase='parameters', unit=current['id'], limit=1)
                 session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
                     'usage': {'input_tokens': 200, 'output_tokens': 80}, 'output': [{'type': 'message',
                     'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(
-                        {'action': 'Finish', 'data': {'ranking': [0] if invalid else [1, 0]}})})}]}]}
+                        {'action': 'Finish', 'data': {'ranking': ranking}})})}]}]}
                 report = execute_unit(current, session)
                 result = read_ref(report['result'])
                 self.assertEqual(report['status'], 'failed_protocol' if invalid else 'ok')

@@ -1,0 +1,6 @@
+test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.020s
+
+OK

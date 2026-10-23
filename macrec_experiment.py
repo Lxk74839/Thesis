@@ -581,6 +581,12 @@ class BusinessClient:
     """Model boundary: every physical request is journalled by the accepted controller."""
     def __init__(self, session, configuration, *, transport=None):
         self.session, self.configuration, self.transport = session, configuration, transport
+        self.pending = None
+
+    def validated(self, ok):
+        if self.pending is not None:
+            model_health(self.session.directory, self.pending, ok)
+            self.pending = None
 
     def __call__(self, request):
         kind = request['kind']
@@ -626,6 +632,7 @@ class BusinessClient:
             if str(exc).startswith(('task16_failed', 'task16_unresolved')):
                 model_health(self.session.directory, health_id, False)
             raise
+        self.pending = health_id
         self.last_usage = reply.get('usage')
         try:
             text = ''.join(part['text'] for item in reply['output'] if item['type'] == 'message'
@@ -636,14 +643,27 @@ class BusinessClient:
             context = request['context']
             candidates = context.get('allowed', {}).get('candidates', [])
             data = value.get('data', {})
+            if not isinstance(data, dict):
+                raise ValueError()
             if isinstance(data.get('ranking'), list) and all(type(i) is int for i in data['ranking']):
-                data['ranking'] = [candidates[i]['parent_asin'] for i in data['ranking'] if 0 <= i < len(candidates)]
+                indices = data['ranking']
+                if len(indices) != len(candidates) or set(indices) != set(range(len(candidates))):
+                    raise ValueError()
+                data['ranking'] = [candidates[i]['parent_asin'] for i in indices]
             for source, destination in (('matrix', 'matches'), ('revisions_matrix', 'revisions')):
                 if source not in data:
                     continue
                 prefs = context['state']['preferences']
                 rows = []
-                for i, values, fields in data.pop(source):
+                matrix = data.pop(source)
+                if (not isinstance(matrix, list) or any(not isinstance(row, list) or len(row) != 3
+                        or type(row[0]) is not int or not 0 <= row[0] < len(candidates)
+                        or not isinstance(row[1], list) or not isinstance(row[2], list) for row in matrix)):
+                    raise ValueError()
+                indices = [row[0] for row in matrix]
+                if len(set(indices)) != len(indices) or source == 'matrix' and set(indices) != set(range(len(candidates))):
+                    raise ValueError()
+                for i, values, fields in matrix:
                     if type(i) is not int or not 0 <= i < len(candidates) or len(values) != len(prefs) or len(fields) != len(prefs):
                         raise ValueError()
                     candidate = candidates[i]
@@ -659,10 +679,9 @@ class BusinessClient:
                         rows.append({'candidate': parent, 'aspect': pref['id'], 'match': m,
                             'preference_refs': [s['ref'] for s in pref['supports']], 'references': cites})
                 data[destination] = rows
-            model_health(self.session.directory, health_id, True)
             return value
         except (ValueError, TypeError, KeyError, IndexError):
-            model_health(self.session.directory, health_id, False)
+            self.validated(False)
             raise ValueError('macrec_business_response_shape') from None
 
 
@@ -785,11 +804,13 @@ def probe(unit, session, task, client, configuration):
                 rank_i1(task, state, {'lambda': .5, 'tau': 3})
         elif set(answer.get('necessary', [])) != {'c1', 'c2'} or answer.get('preferences') != task['request']['preferences']:
             raise ValueError('macrec_probe_interpretation')
+        client.validated(True)
         return {'status': 'ok', 'passed': True, 'response': answer, 'configuration': configuration,
             'shape': shape, 'usage': usage, 'model_calls': 1}
     except (ValueError, KeyError, TypeError) as exc:
         if str(exc).startswith('task16_unresolved') or str(exc).startswith('task16_') and not str(exc).startswith('task16_failed'):
             raise
+        client.validated(False)
         return {'status': 'failed_model' if str(exc).startswith('task16_failed') else 'failed_protocol',
             'passed': False, 'reason': str(exc), 'configuration': configuration, 'shape': shape, 'model_calls': 1}
 
@@ -904,8 +925,21 @@ def model_for(unit, session):
 def auxiliary(unit, task, client):
     from personalized_recommendation import analyze_profile, run_task as compact_rank
     catalog = list(task['catalog'].values())
-    analyzed = analyze_profile(task['history'], catalog, method=unit['method'], invoke=lambda request:
-        client({'kind': 'auxiliary', 'role': request['role'], 'context': request}))
+    calls = 0
+    def invoke(request):
+        nonlocal calls
+        client.validated(True)  # The previous compact stage passed its original validator.
+        calls += 1
+        return client({'kind': 'auxiliary', 'role': request['role'], 'context': request})
+    try:
+        analyzed = analyze_profile(task['history'], catalog, method=unit['method'], invoke=invoke)
+    except (ValueError, TypeError, KeyError) as exc:
+        if str(exc).startswith('task16_') and not str(exc).startswith('task16_failed'):
+            raise
+        client.validated(False)
+        return {'status': 'failed_model' if str(exc).startswith('task16_failed') else 'failed_protocol',
+            'method': unit['method'], 'reason': str(exc), 'scene_results': {}, 'model_calls': calls}
+    client.validated(True)
     scenes = {}
     for label in ('V00', 'Q1', 'Q2'):
         current = unit | {'scene': label, 'materials': unit['evidence'][label]}

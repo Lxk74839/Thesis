@@ -1,0 +1,65 @@
+test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) ... 
+  test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='revision-number') ... ERROR
+  test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='revision-null') ... ERROR
+  test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='search-nested') ... ERROR
+  test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='ranking-nested') ... ERROR
+
+======================================================================
+ERROR: test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='revision-number')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 179, in test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures
+    result = run_task(task, method='B0' if fault == 'ranking-nested' else 'I1',
+        invoke=external, evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+        policy={'lambda': .5, 'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 227, in run_task
+    for row in revisions:
+               ^^^^^^^^^
+TypeError: 'int' object is not iterable
+
+======================================================================
+ERROR: test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='revision-null')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 179, in test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures
+    result = run_task(task, method='B0' if fault == 'ranking-nested' else 'I1',
+        invoke=external, evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+        policy={'lambda': .5, 'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 228, in run_task
+    key = row['candidate'], row['aspect']
+          ~~~^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+======================================================================
+ERROR: test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='search-nested')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 179, in test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures
+    result = run_task(task, method='B0' if fault == 'ranking-nested' else 'I1',
+        invoke=external, evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+        policy={'lambda': .5, 'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 261, in run_task
+    observation = acquire(arguments.get('candidates', d))
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 192, in acquire
+    if len(ids) != len(set(ids)) or not set(ids) <= set(d):
+                       ~~~^^^^^
+TypeError: unhashable type: 'list'
+
+======================================================================
+ERROR: test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures (tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures) (fault='ranking-nested')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 179, in test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures
+    result = run_task(task, method='B0' if fault == 'ranking-nested' else 'I1',
+        invoke=external, evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+        policy={'lambda': .5, 'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 219, in run_task
+    if not isinstance(ranking, list) or len(ranking) != len(d) or set(ranking) != set(d):
+                                                                  ~~~^^^^^^^^^
+TypeError: unhashable type: 'list'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.020s
+
+FAILED (errors=4)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec.Collaboration.test_malformed_external_revisions_search_and_permutation_are_terminal_protocol_failures -v` failed. (See above for error)

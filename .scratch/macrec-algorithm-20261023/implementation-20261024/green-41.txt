@@ -1,0 +1,6 @@
+test_auxiliary_worker_keeps_the_compact_six_profile_protocol_and_scene_replay (tests.test_macrec.Collaboration.test_auxiliary_worker_keeps_the_compact_six_profile_protocol_and_scene_replay) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.286s
+
+OK
