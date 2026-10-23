@@ -7,8 +7,10 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
+from unittest.mock import patch
 
 PROJECT = Path(__file__).resolve().parents[1]
 TEMP = PROJECT / '.tmp/task16-execution'
@@ -267,6 +269,36 @@ def execute_unit(unit, session):
         self.assertEqual(later['stop_reason'], 'task16_phase_limit')
         self.assertEqual(later['progress']['remaining_units'], 1)
         self.assertEqual(later['calls']['attempts'], 0)
+
+    def test_late_old_supervisor_does_not_overwrite_a_resumed_generation(self):
+        from task16_control import supervise
+        import formal_process
+        self.fixture_plan([{'id': 'u1-B0', 'root_id': 'u1', 'limit': 37, 'crash_during_send': True}])
+        old_result_ready, release_old = threading.Event(), threading.Event()
+        real_launch = formal_process.run_process
+
+        def delayed_process_result(*args, **kwargs):
+            result = real_launch(*args, **kwargs)
+            old_result_ready.set()
+            if not release_old.wait(15):
+                raise TimeoutError('fixture supervisor delay')
+            return result
+
+        # The external process boundary runs the real Windows worker; only result delivery waits.
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            with patch('formal_process.run_process', delayed_process_result):
+                old = pool.submit(supervise, self.directory)
+                try:
+                    self.assertTrue(old_result_ready.wait(10))
+                    _, resumed = self.command('resume')
+                    self.assertEqual(resumed['status'], 'blocked_unresolved')
+                    generation = json.loads((self.directory / 'worker.json').read_text())['generation']
+                finally:
+                    release_old.set()
+                old.result(timeout=10)
+        _, state = self.command('status')
+        self.assertEqual(state['status'], 'blocked_unresolved')
+        self.assertEqual(json.loads((self.directory / 'worker.json').read_text())['generation'], generation)
 
     def test_storage_guard_also_stops_local_work_without_a_model_request(self):
         self.fixture_plan([{'id': 'u1-local', 'root_id': 'u1', 'limit': 0, 'local_output': True}])

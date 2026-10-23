@@ -183,12 +183,13 @@ def stop_requested(directory):
         (read(worker)['generation'] + '.stop.json')).exists()
 
 
-def persist_halt(directory, reason):
+def persist_halt(directory, reason, *, generation=None):
     state = ('partial_budget' if reason in BUDGET_STOPS else 'paused' if reason == 'task16_stop_requested'
         else 'stopped' if reason.startswith('worker_exit_') else 'partial_control')
     worker = read(directory / 'worker.json') if (directory / 'worker.json').exists() else {}
-    replace_json(directory / 'halt.json', {'status': state, 'reason': reason, 'at': time.time(),
-        'generation': worker.get('generation')})
+    generation = generation or worker['generation']
+    replace_json(directory / 'halts' / (generation + '.json'), {'status': state,
+        'reason': reason, 'at': time.time(), 'generation': generation})
 
 
 @contextmanager
@@ -310,7 +311,7 @@ def worker_active(directory):
 
 
 @contextmanager
-def coordinator(directory):
+def coordinator(directory, generation):
     with (directory / 'worker.lock').open('a+b') as stream:
         if stream.tell() == 0:
             stream.write(b'0')
@@ -320,7 +321,7 @@ def coordinator(directory):
             msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
         except OSError:
             raise ValueError('task16_worker_already_active') from None
-        replace_json(directory / 'worker.json', {'pid': os.getpid(), 'generation': uuid.uuid4().hex,
+        replace_json(directory / 'worker.json', {'pid': os.getpid(), 'generation': generation,
             'started': time.time()})
         try:
             yield
@@ -511,10 +512,9 @@ def status(directory):
         state = 'paused'
     counts, usage, latency = call_counts(directory)
     used_bytes = new_bytes(directory, force=True)
-    halt = read(directory / 'halt.json') if (directory / 'halt.json').exists() else {}
     worker = read(directory / 'worker.json') if (directory / 'worker.json').exists() else {}
-    if halt.get('generation') != worker.get('generation'):
-        halt = {}
+    halt_path = directory / 'halts' / (worker.get('generation', 'none') + '.json')
+    halt = read(halt_path) if halt_path.exists() else {}
     if plan and not active and (state != 'complete' or used_bytes >= budget['max_new_bytes']):
         reason = ('task16_original_deadline_expired' if time.time() >= instant(budget['deadline_utc'])
             else 'task16_storage_limit' if used_bytes >= budget['max_new_bytes'] else halt.get('reason'))
@@ -611,10 +611,10 @@ def execute_stage(directory, plan, stage, module, plan_sha, budget):
             future.result()
 
 
-def run_worker(directory, *, confirm_live=False):
+def run_worker(directory, *, generation, confirm_live=False):
     if ready_plan(directory) is None:
         raise ValueError('task16_live_not_ready')
-    with coordinator(directory):
+    with coordinator(directory, generation):
         try:
             with storage_guard(directory):
                 execute_plan(directory, confirm_live=confirm_live)
@@ -634,17 +634,21 @@ def supervise(directory, *, confirm_live=False):
     if remaining <= 0:
         raise ValueError('task16_original_deadline_expired')
     from formal_process import run_process
-    log = directory / 'logs' / (uuid.uuid4().hex + '.worker.stdout')
+    generation = uuid.uuid4().hex
+    log = directory / 'logs' / (generation + '.worker.stdout')
     log.parent.mkdir(parents=True, exist_ok=True)
-    command = [sys.executable, '-B', str(PROJECT / 'task16_control.py'), 'worker', '--session', str(directory)]
+    command = [sys.executable, '-B', str(PROJECT / 'task16_control.py'), 'worker', '--session', str(directory),
+        '--generation', generation]
     if confirm_live:
         command.append('--confirm-live')
     measured = run_process(command, log, cwd=PROJECT, seconds=remaining, memory_bytes=4 * 1024**3)
-    write_once(directory / 'supervisions' / (log.stem + '.json'), measured)
+    write_once(directory / 'supervisions' / (log.stem + '.json'), measured | {'generation': generation})
     result = status(directory)
-    if measured['exit_code'] and not result['worker_active'] and not result['status'].startswith('partial'):
+    current_worker = read(directory / 'worker.json') if (directory / 'worker.json').exists() else {}
+    if (measured['exit_code'] and current_worker.get('generation') == generation
+            and not result['worker_active'] and not result['status'].startswith('partial')):
         reason = measured['stop_reason'] or 'worker_exit_' + str(measured['exit_code'])
-        persist_halt(directory, reason)
+        persist_halt(directory, reason, generation=generation)
         result = status(directory)
     result['supervisor'] = measured
     return result
@@ -656,6 +660,7 @@ def main():
         'development-begin', 'development-end'])
     parser.add_argument('--session', default=str(DEFAULT_SESSION))
     parser.add_argument('--confirm-live', action='store_true')
+    parser.add_argument('--generation')
     args = parser.parse_args()
     try:
         if Path(sys.prefix).resolve() != PROJECT / '.conda/envs/Thesis':
@@ -670,7 +675,9 @@ def main():
         elif args.action == 'worker':
             if sys.stdin.readline().strip() != 'GO':
                 raise ValueError('task16_worker_requires_supervisor')
-            result = run_worker(directory, confirm_live=args.confirm_live)
+            if args.generation is None or uuid.UUID(args.generation).hex != args.generation:
+                raise ValueError('task16_worker_requires_generation')
+            result = run_worker(directory, generation=args.generation, confirm_live=args.confirm_live)
         else:
             result = supervise(directory, confirm_live=args.confirm_live)
     except (ValueError, OSError, KeyError) as exc:

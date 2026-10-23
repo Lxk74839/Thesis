@@ -61,7 +61,7 @@ Stop只给当前worker代次写停止指令，不按任意PID杀进程。正在�
 | units/ | 原子提交的方法槽终态、内容校验及计划绑定 |
 | worker.json / worker.lock / commands/ | 当前代次、独占锁及安全停止指令 |
 | activity/ / supervisions/ / logs/ | 分项活动、监督终态、独立进程输出 |
-| halt.json | 绑定当前代次的停止原因及partial状态 |
+| halts/<generation>.json | 各代次独立的停止原因及partial状态；监督器与worker共用启动令牌，迟到结果不能覆盖新代次 |
 
 开发、测试、必要审查和离线准备计开发活动；模型阶段的服务等待计模型运行墙钟；独立评价计评价。其余原起算至当前的墙钟为等待，包括暂停、关机和人工确认。活动并行时报告重叠，不将分类简单相加；逐API已完成时延之和另列。worker每秒写活动心跳；异常死亡以最后心跳结束活动，之后仍计总墙钟中的等待。正在开发时可用`BeginDevelopment`，交付或等待用户时用`EndDevelopment`，均不改变原起算。首段开发从原账活动起点计算。
 
