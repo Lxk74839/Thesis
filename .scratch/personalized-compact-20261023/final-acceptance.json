@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-23",
+  "configuration_id": "9d0c8eb73b8ad0788eed05d0654353aa5154db348c7f974b78cfd24190a81fdf",
+  "production_candidate": "4e63a107215d9b238b59c049104c7d02198bdc4a",
+  "source_manuscript_sha256": "e09436082eb3cea837e81b89551da6d36b6e9f0ce213eb2d94065329bbc3e027",
+  "old_plan_files": [
+    {
+      "unchanged": true,
+      "sha256": "ced63edbf099271cc9ba5282c6d4f1ee918353c9319b0e4c6bc8d4e927d25316",
+      "name": "plan.json"
+    },
+    {
+      "unchanged": true,
+      "sha256": "806ad3dd8d3a8cddadec9a32369e7232f54c5f78731e614e1190839257ed5ca3",
+      "name": "root-references.jsonl"
+    },
+    {
+      "unchanged": true,
+      "sha256": "fe400606662853114b4b09765f06e33acb33fd3d42ac13150401869e8ea47898",
+      "name": "sample-users.jsonl"
+    },
+    {
+      "unchanged": true,
+      "sha256": "b61a9253ee20f69d081d457fc17c40f2afb8ff6cf8afedb08e798263c705f582",
+      "name": "scenes.jsonl"
+    },
+    {
+      "unchanged": true,
+      "sha256": "c4ebb869c0a89fe26699c66549cb1c39711853ac2f70e68346a33a3b8cd15173",
+      "name": "tasks.jsonl"
+    },
+    {
+      "unchanged": true,
+      "sha256": "6a9bfe4844e1eb46236ce0f3b505db269cbd5f332997466cc24945f1dc81b3a5",
+      "name": "user-scenarios.jsonl"
+    }
+  ],
+  "manuscript": {
+    "source": "E:\\工作\\成果\\小论文\\初稿\\论文初稿.docx",
+    "source_sha256": "e09436082eb3cea837e81b89551da6d36b6e9f0ce213eb2d94065329bbc3e027",
+    "output": "D:\\Work\\Codex\\Project\\Thesis\\manuscript\\论文初稿_推荐算法与精简实验修订版_20261023.docx",
+    "output_sha256": "cd2ef686719d765c9c7148408803bd257153c4ed29ba03ba7b9a1879d14c3647",
+    "numbered_equations_unchanged": 7,
+    "title_unchanged": true,
+    "changed_paragraphs": 69,
+    "tables": 4,
+    "formal_experiment_results_inserted": false
+  },
+  "visual_qa": {
+    "renderer": "Native Word readonly PDF export, Poppler PNG",
+    "pages": 15,
+    "all_pages_inspected": true,
+    "fallback_reason": "Packaged renderer: LibreOffice not installed"
+  },
+  "tests": {
+    "log_sha256": "9329c82d84b659f7e3a950478c4205029a8b7327f73fb02f86a37d0684c2b0c0",
+    "necessary": 35,
+    "passed": 35
+  },
+  "reviews": {
+    "Standards": "PASS",
+    "candidate": "4e63a107",
+    "Spec": "PASS"
+  },
+  "formal_supplier_calls": 0,
+  "formal_start_confirmed": false,
+  "independent_test_effects_run": false
+}

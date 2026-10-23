@@ -79,4 +79,5 @@ records/sim-scenarios/*.json -text
 /tests/test_compact_experiment.py text eol=lf
 /.scratch/personalized-compact-20261023/* text eol=lf
 /.scratch/personalized-compact-20261023/issues/* text eol=lf
+/.scratch/personalized-compact-20261023/tests-final.txt -text -whitespace
 /.scratch/data-preparation/diagnostics/ticket13-generation-location.py text eol=lf

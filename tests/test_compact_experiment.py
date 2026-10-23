@@ -11,6 +11,61 @@ from tests.runtime_fixtures import RuntimeFixture
 
 
 class CompactTools(unittest.TestCase):
+    def test_public_full_scene_run_and_resume_reuses_seven_profile_calls(self):
+        from compact_experiment import execute, store_json, file_ref
+        from evidence_access import digest, encoded
+        with tempfile.TemporaryDirectory(dir=PROJECT / '.tmp') as temp:
+            root = Path(temp)
+            normal = RuntimeFixture(root / 'normal').candidates(['PUBLIC-A', 'PUBLIC-B'])
+            quality = RuntimeFixture(root / 'quality').quality()
+            catalog = [{'parent_asin': 'PUBLIC-A', 'crop': 'rice', 'title': 'Rice Grain'},
+                       {'parent_asin': 'PUBLIC-B', 'crop': 'rice', 'title': 'Rice Flour'}]
+            mapping = [{'parent_asin': p, 'sim_batch_id': b} for p, b in zip(normal.parents, normal.batches)]
+            for name, rows in (('catalog', catalog), ('mapping', mapping)):
+                (root / (name + '.jsonl')).write_bytes(b''.join(encoded(r) + b'\n' for r in rows))
+            history = [{'parent_asin': 'PUBLIC-B', 'text': 'I prefer flour', 'rating': 5}]
+            source = {'root_task_id': 'PUBLIC-U', 'history': history, 'H_sha256': digest(encoded(history)),
+                'C_sha256': digest(encoded(normal.parents)),
+                'base_scores_sha256': digest(encoded(list(zip(normal.parents, [.6, .4]))))}
+            store_json(root / 'root.json', source)
+            store_json(root / 'candidates.json', {'root_task_id': 'PUBLIC-U', 'C': normal.parents, 'b': [.6, .4]})
+            tables = {'root-references.jsonl': [{'root_task_id': 'PUBLIC-U',
+                'root_ref': file_ref(root / 'root.json'), 'candidate_ref': file_ref(root / 'candidates.json')}],
+                'user-scenarios.jsonl': [], 'scenes.jsonl': [], 'tasks.jsonl': []}
+            for label in [f'V{i:02d}' for i in range(16)] + ['Q1', 'Q2']:
+                facts = quality.facts if label.startswith('Q') else normal.facts
+                snapshot = json.loads((PROJECT / facts.snapshot_ref['path']).read_bytes())
+                tables['scenes.jsonl'].append({'view_id': label, 'label': label,
+                    'snapshot': facts.snapshot_ref, 'snapshot_id': snapshot['snapshot_id'],
+                    'arm': 'quality' if label.startswith('Q') else 'necessary'})
+                tables['user-scenarios.jsonl'].append({'binding_id': label, 'root_task_id': 'PUBLIC-U', 'view_id': label})
+                tables['tasks.jsonl'].extend({'task_key': label + '-' + m, 'binding_id': label, 'method': m}
+                    for m in (('M',) if label.startswith('Q') else ('R', 'S', 'M')))
+            plan = {'sources': {'catalog': file_ref(root / 'catalog.jsonl'),
+                                'candidate_map': file_ref(root / 'mapping.jsonl')}}
+            cfg = {'configuration_id': 'public', 'users': ['PUBLIC-U'], 'plan_directory': 'unused',
+                'max_calls': 7, 'max_new_bytes': 16 * 1024**2, 'max_hours': 1, 'alpha': .5,
+                'counts': {'scenarios': 18, 'tasks': 50}}
+            requests = []
+            def provider(request):
+                requests.append(request)
+                option = 'h0:form' if request['role'] in ('单智能体', '推荐依据核验') else 'h0:crop'
+                return {'selections': [{'option_id': option, 'weight': 1}],
+                    'issues': ['History explicitly prefers flour'] if option == 'h0:form' else []}
+            with (patch('compact_experiment.OUTPUT', root / 'output'),
+                  patch('compact_experiment.load_config', return_value=cfg),
+                  patch('experiment_runner._task_plan', return_value=(root, plan, tables))):
+                completed = execute(confirm=True, provider=provider)
+                self.assertEqual(completed['completed_task_rows'], 50)
+                self.assertEqual(len(requests), 7)
+                self.assertNotIn('evidence_summary', str(requests))
+                row = json.loads((root / 'output/tasks/V00-M.json').read_bytes())
+                self.assertEqual(row['topK'][0], 'PUBLIC-B')
+                self.assertEqual(row['components']['no_feedback']['topK'][0], 'PUBLIC-A')
+                again = execute(confirm=True, provider=lambda request: self.fail('unnecessary resend'))
+                self.assertEqual(again['completed_task_rows'], 50)
+                self.assertEqual(again['actual_profile_attempts'], 7)
+
     def test_evaluation_checks_shared_deadline_and_storage_before_private_references(self):
         from compact_evaluation import evaluate
         with tempfile.TemporaryDirectory(dir=PROJECT / '.tmp') as temp:

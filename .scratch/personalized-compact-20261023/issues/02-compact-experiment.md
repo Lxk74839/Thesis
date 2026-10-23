@@ -1,6 +1,5 @@
 # 紧凑实验与独立评价
 Type: task
-Status: open
-Blocked by: 01
+Status: closed
 
 复用既有来源和名单，限制新增空间与调用，不触发正式供应商请求；交付可准备、执行、续跑和评价的命令。

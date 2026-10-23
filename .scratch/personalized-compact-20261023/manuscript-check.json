@@ -1,0 +1,11 @@
+{
+  "source": "E:\\工作\\成果\\小论文\\初稿\\论文初稿.docx",
+  "source_sha256": "e09436082eb3cea837e81b89551da6d36b6e9f0ce213eb2d94065329bbc3e027",
+  "output": "D:\\Work\\Codex\\Project\\Thesis\\manuscript\\论文初稿_推荐算法与精简实验修订版_20261023.docx",
+  "output_sha256": "cd2ef686719d765c9c7148408803bd257153c4ed29ba03ba7b9a1879d14c3647",
+  "numbered_equations_unchanged": 7,
+  "title_unchanged": true,
+  "changed_paragraphs": 69,
+  "tables": 4,
+  "formal_experiment_results_inserted": false
+}

@@ -1,0 +1,42 @@
+{
+  "scope": "production-materials-and-synthetic-history; no user targets or API",
+  "products": 1494,
+  "supplier_calls": 0,
+  "measurements": [
+    {
+      "scene": "V00",
+      "seconds": 17.420144899981096,
+      "cache_bytes": 13778138,
+      "shared_usage": {
+        "logical_tools": 50796,
+        "physical_tools": 2988,
+        "candidates": 1494,
+        "elapsed_ms": 15686.28149652481
+      },
+      "synthetic_profile_entries": 3,
+      "full_catalog_rank_seconds": 0.016959000029601157,
+      "sample_result_bytes": 6162
+    },
+    {
+      "scene": "Q1",
+      "seconds": 23.590232399990782,
+      "cache_bytes": 13881601,
+      "shared_usage": {
+        "logical_tools": 50796,
+        "physical_tools": 2988,
+        "candidates": 1494,
+        "elapsed_ms": 19283.85379779339
+      },
+      "synthetic_profile_entries": 3,
+      "full_catalog_rank_seconds": 0.025347799994051456,
+      "sample_result_bytes": 7298
+    }
+  ],
+  "elapsed_seconds": 41.278052400099114,
+  "linear_projection": {
+    "scene_cache_bytes_18_at_larger_sample": 249868818,
+    "task_bytes_5000_at_larger_sample_plus_2KiB_per_row": 46730000,
+    "profile_request_and_response_reserved_bytes_700": 126156800,
+    "caveat": "rough size projection for the measured synthetic profile, not a worst-case bound or an API throughput measurement"
+  }
+}
