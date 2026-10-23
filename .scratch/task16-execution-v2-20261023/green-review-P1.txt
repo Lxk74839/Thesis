@@ -1,0 +1,6 @@
+test_missing_intent_cannot_replenish_budget_in_a_new_process (test_task16_control.IndependentControl.test_missing_intent_cannot_replenish_budget_in_a_new_process) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.450s
+
+OK

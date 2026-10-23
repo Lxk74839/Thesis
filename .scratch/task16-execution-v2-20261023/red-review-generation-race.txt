@@ -1,0 +1,19 @@
+test_late_old_supervisor_does_not_overwrite_a_resumed_generation (test_task16_control.IndependentControl.test_late_old_supervisor_does_not_overwrite_a_resumed_generation) ... FAIL
+
+======================================================================
+FAIL: test_late_old_supervisor_does_not_overwrite_a_resumed_generation (test_task16_control.IndependentControl.test_late_old_supervisor_does_not_overwrite_a_resumed_generation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 300, in test_late_old_supervisor_does_not_overwrite_a_resumed_generation
+    self.assertEqual(state['status'], 'blocked_unresolved')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'stopped' != 'blocked_unresolved'
+- stopped
++ blocked_unresolved
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.613s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v -k late_old_supervisor` failed. (See above for error)

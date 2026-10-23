@@ -1,0 +1,6 @@
+test_bounded_artifacts_reject_large_requests_and_preserve_large_reply_failure (test_task16_control.IndependentControl.test_bounded_artifacts_reject_large_requests_and_preserve_large_reply_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.144s
+
+OK

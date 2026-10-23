@@ -1,0 +1,6 @@
+test_budget_stop_is_persisted_as_partial_with_remaining_units (test_task16_control.IndependentControl.test_budget_stop_is_persisted_as_partial_with_remaining_units) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.387s
+
+OK

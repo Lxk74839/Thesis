@@ -1,0 +1,16 @@
+test_missing_intent_cannot_replenish_budget_in_a_new_process (test_task16_control.IndependentControl.test_missing_intent_cannot_replenish_budget_in_a_new_process) ... FAIL
+
+======================================================================
+FAIL: test_missing_intent_cannot_replenish_budget_in_a_new_process (test_task16_control.IndependentControl.test_missing_intent_cannot_replenish_budget_in_a_new_process)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 229, in test_missing_intent_cannot_replenish_budget_in_a_new_process
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 1 test in 0.397s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v -k missing_intent` failed. (See above for error)

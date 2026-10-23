@@ -6,6 +6,7 @@
 - [修订预算](budget.md)：指定中转价、缓存/倍率未知项、时间与10GiB共享账。
 - [运行说明](runbook.md)：下面命令的语义、故障处理及生产就绪条件。
 - [实施工单](issues/01-independent-control.md)、[进度地图](map.md)。
+- [本轮验收](validation.md)、[最终双轴报告](reviews/round3.md)：24项离线控制测试通过，算法与正式计划仍未就绪。
 
 独立PowerShell查询（可立即执行，不读取凭据）：
 

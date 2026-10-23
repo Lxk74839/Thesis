@@ -1,0 +1,25 @@
+test_same_process_waits_for_a_matching_inflight_request_and_reuses_success (test_task16_control.IndependentControl.test_same_process_waits_for_a_matching_inflight_request_and_reuses_success) ... ERROR
+
+======================================================================
+ERROR: test_same_process_waits_for_a_matching_inflight_request_and_reuses_success (test_task16_control.IndependentControl.test_same_process_waits_for_a_matching_inflight_request_and_reuses_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 177, in test_same_process_waits_for_a_matching_inflight_request_and_reuses_success
+    self.assertEqual(calls[0].result(), calls[1].result())
+                                        ~~~~~~~~~~~~~~~^^
+  File "D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\Lib\concurrent\futures\_base.py", line 453, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\Lib\concurrent\futures\_base.py", line 402, in __get_result
+    raise self._exception
+  File "D:\Work\Codex\Project\Thesis\.conda\envs\Thesis\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "D:\Work\Codex\Project\Thesis\task16_control.py", line 448, in invoke
+    raise ValueError('task16_unresolved_not_resent')
+ValueError: task16_unresolved_not_resent
+
+----------------------------------------------------------------------
+Ran 1 test in 0.200s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v -k matching_inflight` failed. (See above for error)

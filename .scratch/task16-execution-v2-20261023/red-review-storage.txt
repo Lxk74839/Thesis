@@ -1,0 +1,19 @@
+test_storage_guard_also_stops_local_work_without_a_model_request (test_task16_control.IndependentControl.test_storage_guard_also_stops_local_work_without_a_model_request) ... FAIL
+
+======================================================================
+FAIL: test_storage_guard_also_stops_local_work_without_a_model_request (test_task16_control.IndependentControl.test_storage_guard_also_stops_local_work_without_a_model_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 259, in test_storage_guard_also_stops_local_work_without_a_model_request
+    self.assertEqual(state['status'], 'partial_budget')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'complete' != 'partial_budget'
+- complete
++ partial_budget
+
+
+----------------------------------------------------------------------
+Ran 1 test in 1.820s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v -k storage_guard` failed. (See above for error)

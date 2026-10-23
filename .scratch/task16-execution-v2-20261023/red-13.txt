@@ -1,0 +1,28 @@
+test_original_deadline_and_limits_reject_before_transport (test_task16_control.IndependentControl.test_original_deadline_and_limits_reject_before_transport) ... ok
+test_phase_limit_stops_other_roots_without_spending_remaining_global_budget (test_task16_control.IndependentControl.test_phase_limit_stops_other_roots_without_spending_remaining_global_budget) ... ok
+test_powershell_launcher_returns_while_worker_persists_and_is_queryable (test_task16_control.IndependentControl.test_powershell_launcher_returns_while_worker_persists_and_is_queryable) ... ok
+test_returned_failure_is_terminal_and_never_retried_to_success (test_task16_control.IndependentControl.test_returned_failure_is_terminal_and_never_retried_to_success) ... ok
+test_staged_progress_survives_new_process_and_completed_units_are_reused (test_task16_control.IndependentControl.test_staged_progress_survives_new_process_and_completed_units_are_reused) ... ok
+test_start_and_resume_cannot_bypass_the_missing_algorithm_review_seal (test_task16_control.IndependentControl.test_start_and_resume_cannot_bypass_the_missing_algorithm_review_seal) ... ok
+test_status_is_readonly_and_unimplemented_algorithm_is_not_ready (test_task16_control.IndependentControl.test_status_is_readonly_and_unimplemented_algorithm_is_not_ready) ... ok
+test_status_rejects_a_changed_response_instead_of_reporting_complete (test_task16_control.IndependentControl.test_status_rejects_a_changed_response_instead_of_reporting_complete) ... FAIL
+test_status_separates_known_token_cost_unknown_usage_and_request_latency (test_task16_control.IndependentControl.test_status_separates_known_token_cost_unknown_usage_and_request_latency) ... ok
+test_stop_resume_preserves_completed_work_clock_and_waiting_time (test_task16_control.IndependentControl.test_stop_resume_preserves_completed_work_clock_and_waiting_time) ... ok
+test_successful_request_is_reused_by_a_new_session (test_task16_control.IndependentControl.test_successful_request_is_reused_by_a_new_session) ... ok
+test_two_roots_overlap_and_methods_within_each_root_remain_ordered (test_task16_control.IndependentControl.test_two_roots_overlap_and_methods_within_each_root_remain_ordered) ... ok
+test_uncertain_send_remains_unresolved_and_resume_never_resends (test_task16_control.IndependentControl.test_uncertain_send_remains_unresolved_and_resume_never_resends) ... ok
+
+======================================================================
+FAIL: test_status_rejects_a_changed_response_instead_of_reporting_complete (test_task16_control.IndependentControl.test_status_rejects_a_changed_response_instead_of_reporting_complete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 137, in test_status_rejects_a_changed_response_instead_of_reporting_complete
+    self.assertEqual(result.returncode, 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+----------------------------------------------------------------------
+Ran 13 tests in 15.075s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v` failed. (See above for error)

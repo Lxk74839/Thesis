@@ -1,0 +1,6 @@
+test_status_rejects_a_changed_response_instead_of_reporting_complete (test_task16_control.IndependentControl.test_status_rejects_a_changed_response_instead_of_reporting_complete) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.381s
+
+OK

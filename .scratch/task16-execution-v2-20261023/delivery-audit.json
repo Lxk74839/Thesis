@@ -1,0 +1,144 @@
+{
+  "schema": "task16-control-delivery-audit/1",
+  "protected_unchanged": 26,
+  "original_drafts_unchanged": 12,
+  "changed": [],
+  "broken_links": [],
+  "api_calls": 0,
+  "budget_rows": [
+    {
+      "stage": "parameters",
+      "calls": 32,
+      "input_tokens": 256000,
+      "output_quota_tokens": 262144,
+      "base_CNY": "0.0705024"
+    },
+    {
+      "stage": "features-v00",
+      "calls": 288,
+      "input_tokens": 2304000,
+      "output_quota_tokens": 1409024,
+      "base_CNY": "0.4207104"
+    },
+    {
+      "stage": "v00-main",
+      "calls": 1184,
+      "input_tokens": 9472000,
+      "output_quota_tokens": 5767168,
+      "base_CNY": "1.7238528"
+    },
+    {
+      "stage": "q1",
+      "calls": 1184,
+      "input_tokens": 9472000,
+      "output_quota_tokens": 5767168,
+      "base_CNY": "1.7238528"
+    },
+    {
+      "stage": "q2",
+      "calls": 1184,
+      "input_tokens": 9472000,
+      "output_quota_tokens": 5767168,
+      "base_CNY": "1.7238528"
+    },
+    {
+      "stage": "semantic",
+      "calls": 592,
+      "input_tokens": 4736000,
+      "output_quota_tokens": 2883584,
+      "base_CNY": "0.8619264"
+    },
+    {
+      "stage": "confidence",
+      "calls": 592,
+      "input_tokens": 4736000,
+      "output_quota_tokens": 2883584,
+      "base_CNY": "0.8619264"
+    },
+    {
+      "stage": "quality",
+      "calls": 1184,
+      "input_tokens": 9472000,
+      "output_quota_tokens": 5767168,
+      "base_CNY": "1.7238528"
+    },
+    {
+      "stage": "feedback",
+      "calls": 592,
+      "input_tokens": 4736000,
+      "output_quota_tokens": 2883584,
+      "base_CNY": "0.8619264"
+    },
+    {
+      "stage": "auxiliary",
+      "calls": 112,
+      "input_tokens": 896000,
+      "output_quota_tokens": 156800,
+      "base_CNY": "0.0756"
+    }
+  ],
+  "total_base_CNY": "10.0480032",
+  "v00_prefix_base_CNY": "2.2150656",
+  "status": {
+    "status": "not_ready",
+    "ready_for_execution": false,
+    "ready_for_live": false,
+    "worker_active": false,
+    "mode": "development_only",
+    "stop_reason": null,
+    "reason": "algorithm_and_review_seal_required",
+    "progress": {
+      "completed_units": 0,
+      "unresolved_units": 0,
+      "planned_units": 0,
+      "remaining_units": 0,
+      "unstarted_units": 0,
+      "stages": []
+    },
+    "calls": {
+      "attempts": 0,
+      "successful": 0,
+      "failed": 0,
+      "unresolved": 0
+    },
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "unknown_requests": 0,
+      "cached_input_tokens": 0,
+      "cache_unknown_requests": 0
+    },
+    "cost": {
+      "known_token_subtotal_CNY": 0.0,
+      "fully_known": false,
+      "cache_CNY_per_M": null,
+      "extra_multiplier": null,
+      "fixed_surcharge_CNY": null
+    },
+    "deadline_utc": "2026-10-24T11:28:03.0000000+00:00",
+    "elapsed_seconds": 4403.204159975052,
+    "new_bytes": 6545183,
+    "timing": {
+      "development_seconds": 4399.70228600502,
+      "model_seconds": 0,
+      "evaluation_seconds": 0,
+      "waiting_seconds": 3.5016541481018066,
+      "overlap_seconds": 0.0,
+      "total_seconds": 4403.203940153122,
+      "request_latency_sum_seconds": 0
+    }
+  },
+  "control_candidate": "097015bb71319eaab900f6b35a4a4750dc6dccf9",
+  "reviews": {
+    "standards": "PASS",
+    "spec": "PASS",
+    "scope": "S4_control_only",
+    "report": ".scratch/task16-execution-v2-20261023/reviews/round3.md"
+  },
+  "offline_tests": {
+    "passed": 24,
+    "failed": 0,
+    "model_calls": 0,
+    "evidence": ".scratch/task16-execution-v2-20261023/candidate-tests-24.txt"
+  }
+}

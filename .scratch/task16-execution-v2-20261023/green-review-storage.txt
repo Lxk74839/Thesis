@@ -1,0 +1,6 @@
+test_storage_guard_also_stops_local_work_without_a_model_request (test_task16_control.IndependentControl.test_storage_guard_also_stops_local_work_without_a_model_request) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.222s
+
+OK

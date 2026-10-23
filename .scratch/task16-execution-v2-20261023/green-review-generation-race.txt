@@ -1,0 +1,6 @@
+test_late_old_supervisor_does_not_overwrite_a_resumed_generation (test_task16_control.IndependentControl.test_late_old_supervisor_does_not_overwrite_a_resumed_generation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.600s
+
+OK

@@ -1,0 +1,6 @@
+test_status_is_readonly_and_unimplemented_algorithm_is_not_ready (test_task16_control.IndependentControl.test_status_is_readonly_and_unimplemented_algorithm_is_not_ready) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.054s
+
+OK

@@ -1,0 +1,29 @@
+{
+  "schema": "task16-control-source-manifest/1",
+  "base": "7cf851e95b2254a76547d2785678f0056c1e1ff9",
+  "candidate": "097015bb71319eaab900f6b35a4a4750dc6dccf9",
+  "production_ready": false,
+  "production_seal": false,
+  "files": [
+    {
+      "path": "task16_control.py",
+      "bytes": 32238,
+      "sha256": "63e19269f44285c0db6713d2e2dd2c8e79228150a4983434be12589702111958"
+    },
+    {
+      "path": "tests/test_task16_control.py",
+      "bytes": 26365,
+      "sha256": "8f8895789809a10efecb792ad2bc517c9b7b6a6492f756f1a97010c51b10d2b4"
+    },
+    {
+      "path": ".scratch/task16-execution-v2-20261023/run-task16.ps1",
+      "bytes": 3483,
+      "sha256": "8aa7d39f530fab3feff7d0efc61a98d7b2b6d5f1aef57381211f6713f6bad33d"
+    },
+    {
+      "path": "formal_process.py",
+      "bytes": 3615,
+      "sha256": "3cd70b2a229b835b136426dea435ec54dd67bdc2802cd7d4cc10ac59711e58bf"
+    }
+  ]
+}

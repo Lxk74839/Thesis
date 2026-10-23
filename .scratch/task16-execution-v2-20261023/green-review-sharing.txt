@@ -1,0 +1,6 @@
+test_same_process_waits_for_a_matching_inflight_request_and_reuses_success (test_task16_control.IndependentControl.test_same_process_waits_for_a_matching_inflight_request_and_reuses_success) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.182s
+
+OK

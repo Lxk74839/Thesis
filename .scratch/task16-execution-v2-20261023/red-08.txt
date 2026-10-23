@@ -1,0 +1,24 @@
+test_original_deadline_and_limits_reject_before_transport (test_task16_control.IndependentControl.test_original_deadline_and_limits_reject_before_transport) ... ok
+test_powershell_launcher_returns_while_worker_persists_and_is_queryable (test_task16_control.IndependentControl.test_powershell_launcher_returns_while_worker_persists_and_is_queryable) ... FAIL
+test_returned_failure_is_terminal_and_never_retried_to_success (test_task16_control.IndependentControl.test_returned_failure_is_terminal_and_never_retried_to_success) ... ok
+test_staged_progress_survives_new_process_and_completed_units_are_reused (test_task16_control.IndependentControl.test_staged_progress_survives_new_process_and_completed_units_are_reused) ... ok
+test_start_and_resume_cannot_bypass_the_missing_algorithm_review_seal (test_task16_control.IndependentControl.test_start_and_resume_cannot_bypass_the_missing_algorithm_review_seal) ... ok
+test_status_is_readonly_and_unimplemented_algorithm_is_not_ready (test_task16_control.IndependentControl.test_status_is_readonly_and_unimplemented_algorithm_is_not_ready) ... ok
+test_successful_request_is_reused_by_a_new_session (test_task16_control.IndependentControl.test_successful_request_is_reused_by_a_new_session) ... ok
+test_uncertain_send_remains_unresolved_and_resume_never_resends (test_task16_control.IndependentControl.test_uncertain_send_remains_unresolved_and_resume_never_resends) ... ok
+
+======================================================================
+FAIL: test_powershell_launcher_returns_while_worker_persists_and_is_queryable (test_task16_control.IndependentControl.test_powershell_launcher_returns_while_worker_persists_and_is_queryable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 86, in test_powershell_launcher_returns_while_worker_persists_and_is_queryable
+    self.assertEqual(launched.returncode, 0, launched.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 4294770688 != 0 : The argument 'D:\Work\Codex\Project\Thesis\.scratch\task16-execution-v2-20261023\run-task16.ps1' to the -File parameter does not exist. Provide the path to an existing '.ps1' file as an argument to the -File parameter.
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.840s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_task16_control.py -v` failed. (See above for error)
