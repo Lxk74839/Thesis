@@ -35,13 +35,14 @@ def _require(condition, code):
         raise ValueError(code)
 
 
-def score_task(task, execution, reference):
+def score_task(task, execution, reference, *, component_protocol='legacy'):
     """Score one observed task against an independently supplied reference."""
     empty = {k: copy.deepcopy(task.get(k)) for k in ('task_key', 'root_task_id', 'view_id', 'scene', 'method', 'repeat')}
     empty.update(status='pipeline_error', error=None, execution_state='missing_record',
         reference_applicable=None, na_reason=None, terminal=None, usage=None, components=None,
         task_sha256=_digest(task), metrics={str(k): dict.fromkeys(METRICS) for k in (1, 5, 10)})
     try:
+        _require(component_protocol in ('legacy', 'personalized'), 'unknown_component_protocol')
         c = task['C']
         _require(task['repeat'] == 1 and task['method'] in ('R', 'S', 'M')
                  and len(c) == len(set(c)) and all(isinstance(p, str) for p in c)
@@ -62,7 +63,8 @@ def score_task(task, execution, reference):
             _require(execution['started'] == (execution['terminal'] not in ('not_started', 'configuration_required')),
                      'invalid_execution_state')
         result = _score_task(task, execution, reference) | {'task_sha256': empty['task_sha256']}
-        if task['scene'] in ('Q1', 'Q2') and result['status'] not in ('not_started', 'unresolved', 'pipeline_error'):
+        if (component_protocol == 'legacy' and task['scene'] in ('Q1', 'Q2')
+                and result['status'] not in ('not_started', 'unresolved', 'pipeline_error')):
             _quality(result, task, execution, reference)
         return result
     except (KeyError, TypeError, ValueError) as exc:
