@@ -50,7 +50,6 @@ if ($Action -in @('Start', 'Resume')) {
     }
     $logDirectory = Join-Path $SessionDir 'logs'
     New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
-    $launchId = [Guid]::NewGuid().ToString('N')
     $launchArgs = '-NoProfile -ExecutionPolicy Bypass -File "{0}" -Action Worker -SessionDir "{1}"' -f
         $PSCommandPath, $SessionDir
     if ($ConfirmLive) { $launchArgs += ' -ConfirmLive' }

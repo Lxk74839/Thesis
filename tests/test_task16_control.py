@@ -1,6 +1,7 @@
 """Public control contract; no provider, private labels or algorithm mocks."""
 import hashlib
 import ctypes
+from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import subprocess
@@ -50,6 +51,10 @@ class IndependentControl(unittest.TestCase):
 from pathlib import Path
 def execute_unit(unit, session):
     started = time.time()
+    if unit.get("local_output"):
+        Path(__file__).with_suffix('.local-output').write_bytes(b'x' * (1024 * 1024))
+        time.sleep(1.5)
+        return {"status":"ok"}
     time.sleep(unit.get("delay", 0))
     def send(body):
         if unit.get("crash_during_send"):
@@ -156,6 +161,22 @@ def execute_unit(unit, session):
             session.invoke({'input': 'same prompt'}, send, dependencies={'evidence_sha256': version})
         self.assertEqual(len(sends), 2)
 
+    def test_same_process_waits_for_a_matching_inflight_request_and_reuses_success(self):
+        from task16_control import Session
+        session = Session(self.directory, namespace='fixture', phase='v00-main', unit='u1', limit=37)
+        sends = []
+
+        def send(body):
+            sends.append(body)
+            time.sleep(.15)
+            return {'status': 'completed', 'output': ['A'], 'usage': None}
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            calls = [pool.submit(session.invoke, {'input': 'same'}, send, dependencies={'v': 1})
+                for _ in range(2)]
+            self.assertEqual(calls[0].result(), calls[1].result())
+        self.assertEqual(len(sends), 1)
+
 
     def test_two_roots_overlap_and_methods_within_each_root_remain_ordered(self):
         self.fixture_plan([{'id': root + '-' + method, 'root_id': root, 'limit': 37, 'delay': .3}
@@ -218,6 +239,44 @@ def execute_unit(unit, session):
         self.assertEqual(result.returncode, 2)
         self.assertEqual(state['status'], 'rejected')
         self.assertEqual(state['reason'], 'task16_response_changed')
+
+    def test_missing_intent_cannot_replenish_budget_in_a_new_process(self):
+        self.fixture_plan([{'id': 'u1-B0', 'root_id': 'u1', 'limit': 37}])
+        _, completed = self.command('start')
+        self.assertEqual(completed['calls']['attempts'], 1)
+        next((self.directory / 'calls').glob('*.intent.json')).unlink()
+        for action in ('status', 'resume'):
+            result, state = self.command(action)
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(state['reason'], 'task16_call_record_missing')
+
+    def test_budget_stop_is_persisted_as_partial_with_remaining_units(self):
+        self.fixture_plan([{'id': 'u1-B0', 'root_id': 'u1', 'limit': 37}])
+        plan_path = self.directory / 'run-plan.json'
+        plan = json.loads(plan_path.read_text(encoding='utf-8'))
+        plan['stages'][0]['max_calls'] = 0
+        plan_path.write_text(json.dumps(plan), encoding='utf-8')
+        seal_path = self.directory / 'review-seal.json'
+        seal = json.loads(seal_path.read_text(encoding='utf-8'))
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        _, halted = self.command('start')
+        self.assertEqual(halted['status'], 'partial_budget')
+        _, later = self.command('status')
+        self.assertEqual(later['status'], 'partial_budget')
+        self.assertEqual(later['stop_reason'], 'task16_phase_limit')
+        self.assertEqual(later['progress']['remaining_units'], 1)
+        self.assertEqual(later['calls']['attempts'], 0)
+
+    def test_storage_guard_also_stops_local_work_without_a_model_request(self):
+        self.fixture_plan([{'id': 'u1-local', 'root_id': 'u1', 'limit': 0, 'local_output': True}])
+        budget = self.budget | {'max_new_bytes': 128 * 1024}
+        (self.directory / 'budget.json').write_text(json.dumps(budget), encoding='utf-8')
+        _, state = self.command('start')
+        self.assertEqual(state['status'], 'partial_budget')
+        self.assertEqual(state['stop_reason'], 'task16_storage_limit')
+        self.assertEqual(state['progress']['remaining_units'], 1)
+        self.assertEqual(state['calls']['attempts'], 0)
 
     def test_bounded_artifacts_reject_large_requests_and_preserve_large_reply_failure(self):
         from task16_control import Session
