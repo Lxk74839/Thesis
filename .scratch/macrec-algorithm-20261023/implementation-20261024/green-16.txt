@@ -1,0 +1,6 @@
+test_real_reference_cli_exports_only_existing_development_identities (test_macrec.IndependentEvaluation.test_real_reference_cli_exports_only_existing_development_identities) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 2.300s
+
+OK

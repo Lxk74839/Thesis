@@ -1,0 +1,6 @@
+test_malformed_model_match_rows_fail_one_task_without_becoming_a_pipeline_exception (test_macrec.Collaboration.test_malformed_model_match_rows_fail_one_task_without_becoming_a_pipeline_exception) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+OK

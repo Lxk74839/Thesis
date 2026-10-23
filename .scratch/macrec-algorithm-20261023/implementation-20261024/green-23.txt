@@ -1,0 +1,6 @@
+test_parameter_worker_checks_a_complete_real_candidate_permutation (test_macrec.Collaboration.test_parameter_worker_checks_a_complete_real_candidate_permutation) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.088s
+
+OK

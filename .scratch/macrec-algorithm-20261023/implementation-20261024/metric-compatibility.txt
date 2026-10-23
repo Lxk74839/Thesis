@@ -1,0 +1,6 @@
+test_old_r_s_m_handwritten_metric_examples_remain_equal_and_na_stays_na (test_macrec.IndependentEvaluation.test_old_r_s_m_handwritten_metric_examples_remain_equal_and_na_stays_na) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+OK

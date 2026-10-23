@@ -1,0 +1,6 @@
+test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs (test_macrec.Collaboration.test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.432s
+
+OK

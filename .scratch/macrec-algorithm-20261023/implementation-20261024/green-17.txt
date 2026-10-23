@@ -1,0 +1,6 @@
+test_real_preparation_freezes_320_and_the_existing_hash_panel_without_model_authorization (test_macrec.Preparation.test_real_preparation_freezes_320_and_the_existing_hash_panel_without_model_authorization) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 87.014s
+
+OK

@@ -1,0 +1,14 @@
+test_b0_search_observation_and_reflection_change_the_second_solution (test_macrec.Collaboration.test_b0_search_observation_and_reflection_change_the_second_solution) ... ok
+test_confidence_ablation_removes_only_the_supported_history_shrinkage (test_macrec.Collaboration.test_confidence_ablation_removes_only_the_supported_history_shrinkage) ... ok
+test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior (test_macrec.Collaboration.test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior) ... ok
+test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking (test_macrec.Collaboration.test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking) ... ok
+test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix (test_macrec.Collaboration.test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix) ... ok
+test_quality_ablation_keeps_unknown_stock_unknown_and_never_bypasses_eligibility (test_macrec.Collaboration.test_quality_ablation_keeps_unknown_stock_unknown_and_never_bypasses_eligibility) ... ok
+test_semantic_ablation_uses_literal_observable_attributes_and_changes_the_order (test_macrec.Collaboration.test_semantic_ablation_uses_literal_observable_attributes_and_changes_the_order) ... ok
+test_private_target_changes_do_not_change_prepared_model_inputs (test_macrec.Preparation.test_private_target_changes_do_not_change_prepared_model_inputs) ... ok
+test_three_content_views_use_catalog_idf_and_average_rank_rrf (test_macrec.Preparation.test_three_content_views_use_catalog_idf_and_average_rank_rrf) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.025s
+
+OK

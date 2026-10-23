@@ -1,0 +1,7 @@
+test_private_target_changes_do_not_change_prepared_model_inputs (test_macrec.Preparation.test_private_target_changes_do_not_change_prepared_model_inputs) ... ok
+test_three_content_views_use_catalog_idf_and_average_rank_rrf (test_macrec.Preparation.test_three_content_views_use_catalog_idf_and_average_rank_rrf) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.032s
+
+OK

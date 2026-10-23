@@ -1,0 +1,6 @@
+test_unobserved_negative_attribute_cannot_be_treated_as_satisfied (test_macrec.Collaboration.test_unobserved_negative_attribute_cannot_be_treated_as_satisfied) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.017s
+
+OK

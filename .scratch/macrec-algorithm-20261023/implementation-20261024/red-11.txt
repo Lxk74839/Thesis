@@ -1,0 +1,15 @@
+test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero (test_macrec.IndependentEvaluation.test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero) ... ERROR
+
+======================================================================
+ERROR: test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero (test_macrec.IndependentEvaluation.test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 233, in test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero
+    from macrec_evaluation import score_task, summarize
+ImportError: cannot import name 'summarize' from 'macrec_evaluation' (D:\Work\Codex\Project\Thesis\macrec_evaluation.py)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k summary_reports` failed. (See above for error)

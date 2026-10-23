@@ -1,0 +1,28 @@
+test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit (test_macrec.Collaboration.test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit) ... ERROR
+
+======================================================================
+ERROR: test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit (test_macrec.Collaboration.test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 209, in test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit
+    result = run_task(task, method='I1', invoke=BusinessClient(session, {'effort':'medium','quota':'full'},
+        transport=transport), evidence=evidence, policy={'lambda': .5,'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 243, in run_task
+    reply = ask('agent', {'allowed': visible, 'state': state, 'instruction': data,
+        'observation': observation, 'internal_step': internal}, agent=name)
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 183, in ask
+    reply = invoke(request)
+  File "D:\Work\Codex\Project\Thesis\macrec_experiment.py", line 576, in __call__
+    reply = self.session.invoke(wire, send, dependencies={'business_protocol': 'macrec-agri-v1'})
+  File "D:\Work\Codex\Project\Thesis\task16_control.py", line 440, in invoke
+    return self._invoke(request_id, request, send, dependencies)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\task16_control.py", line 444, in _invoke
+    raise ValueError('task16_request_size')
+ValueError: task16_request_size
+
+----------------------------------------------------------------------
+Ran 1 test in 0.222s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k 200_candidate` failed. (See above for error)

@@ -1,0 +1,15 @@
+{
+  "business_tests": 33,
+  "panel_users": 16,
+  "model_api_calls": 0,
+  "base": "0545af7ebbec4e72ac604a67ed6d5cd9811b4880",
+  "slots": 259,
+  "plan": {
+    "sha256": "38d9ab078d267ca5297b449534a4e5a382cc5e857024db675bab25e747c8eeb9",
+    "bytes": 514335,
+    "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/prepared/frozen-plan.38d9ab078d267ca5297b449534a4e5a382cc5e857024db675bab25e747c8eeb9.json"
+  },
+  "execution_authorized": false,
+  "control_impact_tests": 25,
+  "prepared_users": 320
+}

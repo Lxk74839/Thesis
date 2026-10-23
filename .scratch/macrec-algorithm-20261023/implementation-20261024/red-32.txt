@@ -1,0 +1,23 @@
+test_unobserved_negative_attribute_cannot_be_treated_as_satisfied (test_macrec.Collaboration.test_unobserved_negative_attribute_cannot_be_treated_as_satisfied) ... FAIL
+
+======================================================================
+FAIL: test_unobserved_negative_attribute_cannot_be_treated_as_satisfied (test_macrec.Collaboration.test_unobserved_negative_attribute_cannot_be_treated_as_satisfied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 179, in test_unobserved_negative_attribute_cannot_be_treated_as_satisfied
+    self.assertEqual(result['topK'], ['B','A'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['A', 'B'] != ['B', 'A']
+
+First differing element 0:
+'A'
+'B'
+
+- ['A', 'B']
++ ['B', 'A']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k unobserved_negative` failed. (See above for error)

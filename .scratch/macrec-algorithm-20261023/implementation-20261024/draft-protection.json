@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "drafts": 12,
+  "files": [
+    {
+      "sha256": "6e28e70671974ac365fcb2f771ea588c25424c0baf4583aee10ab5d436922c9c",
+      "path": ".scratch/macrec-algorithm-20261023/acceptance.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "6225461d721cd96fc7d2630a3325258ef4b74faf7cd1e2c28d745bb52df74dce",
+      "path": ".scratch/macrec-algorithm-20261023/budget.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "beb6ea103bfe4f92233395ceb83d40ca07777be3f602b596aa8e58551cbc28e5",
+      "path": ".scratch/macrec-algorithm-20261023/map.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "62c3ba37c3159db641698cba10beca408cf9fb9365cff1cbd0d8abfefb23938e",
+      "path": ".scratch/macrec-algorithm-20261023/method-mapping.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "9ba0949b992f6b5dfb722e7c698aa0be996d8a0732d4f8a9a7909e6adcb88a8a",
+      "path": ".scratch/macrec-algorithm-20261023/README.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "d7a68cbb85ab2620c746b18560262b8911950f188b5322782b3d595ee49c4c49",
+      "path": ".scratch/macrec-algorithm-20261023/spec.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "f81ed0413cd824c8fe7e6fd4ede4d954b81f094bbc835d309e350ac90fbf5280",
+      "path": ".scratch/macrec-algorithm-20261023/stage1-check.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "7fb22039cdb1cabd294375058e4295a38406ebe1ac09beb18deb5cbb0a397c31",
+      "path": ".scratch/macrec-algorithm-20261023/issues/01-candidates-and-contract.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "f38d4502a26bf0aee21d41e868aa14b524530a1a3e979edee1f71c5d5d4bb82b",
+      "path": ".scratch/macrec-algorithm-20261023/issues/02-macrec-agri-baseline.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "aebe6aa9d76874f36a6e3aefcb4fde1b9996b48f1ec02b0101167a9a8e924ee0",
+      "path": ".scratch/macrec-algorithm-20261023/issues/03-source-grounded-ranking.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "a6f2089630eadb78d23e59aa5fb204e039d13594131508ff71ad7b50238c01dd",
+      "path": ".scratch/macrec-algorithm-20261023/issues/04-development-runner-and-evaluation.md",
+      "unchanged": true
+    },
+    {
+      "sha256": "3585a391cae26abc0f7529ba98b922b4a5ee3ff7f705c3cf8d832787529b2e27",
+      "path": ".scratch/macrec-algorithm-20261023/issues/05-review-and-development-validation.md",
+      "unchanged": true
+    }
+  ]
+}

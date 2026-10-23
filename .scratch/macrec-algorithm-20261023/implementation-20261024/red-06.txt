@@ -1,0 +1,20 @@
+test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix (test_macrec.Collaboration.test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix) ... ERROR
+
+======================================================================
+ERROR: test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix (test_macrec.Collaboration.test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 108, in test_located_feedback_revises_scores_and_no_feedback_keeps_the_identical_prefix
+    results.append(run_task(task, method=method, invoke=model, evidence=evidence,
+                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        policy={'lambda': .75, 'tau': 1}))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 130, in run_task
+    raise ValueError('macrec_unknown_method')
+ValueError: macrec_unknown_method
+
+----------------------------------------------------------------------
+Ran 1 test in 0.015s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k located_feedback` failed. (See above for error)

@@ -1,0 +1,7 @@
+test_b0_requires_an_actual_analysis_and_search_observation_before_publication (test_macrec.Collaboration.test_b0_requires_an_actual_analysis_and_search_observation_before_publication) ... ok
+test_b0_search_observation_and_reflection_change_the_second_solution (test_macrec.Collaboration.test_b0_search_observation_and_reflection_change_the_second_solution) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.012s
+
+OK

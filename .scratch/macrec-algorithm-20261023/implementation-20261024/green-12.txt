@@ -1,0 +1,6 @@
+test_real_evidence_tools_supply_quality_components_and_material_bound_observations (test_macrec.Collaboration.test_real_evidence_tools_supply_quality_components_and_material_bound_observations) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.122s
+
+OK

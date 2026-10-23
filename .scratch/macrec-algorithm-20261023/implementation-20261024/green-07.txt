@@ -1,0 +1,6 @@
+test_confidence_ablation_removes_only_the_supported_history_shrinkage (test_macrec.Collaboration.test_confidence_ablation_removes_only_the_supported_history_shrinkage) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+OK

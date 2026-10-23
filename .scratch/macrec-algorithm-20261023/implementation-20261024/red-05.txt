@@ -1,0 +1,19 @@
+test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior (test_macrec.Collaboration.test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior) ... FAIL
+
+======================================================================
+FAIL: test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior (test_macrec.Collaboration.test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 101, in test_explicit_stock_preference_uses_production_quality_and_zero_quality_returns_to_prior
+    self.assertEqual(result['status'], 'ok')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed_protocol' != 'ok'
+- failed_protocol
++ ok
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k explicit_stock` failed. (See above for error)

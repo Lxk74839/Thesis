@@ -1,0 +1,20 @@
+test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs (test_macrec.Collaboration.test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs) ... FAIL
+
+======================================================================
+FAIL: test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs (test_macrec.Collaboration.test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 273, in test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs
+    self.assertEqual(evaluated.returncode, 0, evaluated.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: macrec_evaluation.py [-h] [--inputs INPUTS] [--references REFERENCES]
+                            --output OUTPUT [--safe-output SAFE_OUTPUT]
+                            {select,references,grid}
+macrec_evaluation.py: error: argument command: invalid choice: 'report' (choose from 'select', 'references', 'grid')
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.240s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k real_worker` failed. (See above for error)

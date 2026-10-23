@@ -1,0 +1,6 @@
+test_completed_units_are_not_reused_after_frozen_material_changes (test_task16_control.IndependentControl.test_completed_units_are_not_reused_after_frozen_material_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.510s
+
+OK

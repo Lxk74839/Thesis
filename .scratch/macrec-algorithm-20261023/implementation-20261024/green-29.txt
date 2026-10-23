@@ -1,0 +1,6 @@
+test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing (test_macrec.Preparation.test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 392.833s
+
+OK

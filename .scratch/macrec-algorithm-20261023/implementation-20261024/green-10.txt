@@ -1,0 +1,6 @@
+test_rank_two_failure_and_unresolved_have_distinct_independent_scores (test_macrec.IndependentEvaluation.test_rank_two_failure_and_unresolved_have_distinct_independent_scores) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

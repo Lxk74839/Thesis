@@ -1,0 +1,6 @@
+test_feature_stage_selects_scoring_components_without_sending_six_system_runs (test_macrec.Collaboration.test_feature_stage_selects_scoring_components_without_sending_six_system_runs) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.863s
+
+OK

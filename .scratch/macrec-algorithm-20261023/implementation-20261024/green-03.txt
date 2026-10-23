@@ -1,0 +1,8 @@
+test_b0_search_observation_and_reflection_change_the_second_solution (test_macrec.Collaboration.test_b0_search_observation_and_reflection_change_the_second_solution) ... ok
+test_private_target_changes_do_not_change_prepared_model_inputs (test_macrec.Preparation.test_private_target_changes_do_not_change_prepared_model_inputs) ... ok
+test_three_content_views_use_catalog_idf_and_average_rank_rrf (test_macrec.Preparation.test_three_content_views_use_catalog_idf_and_average_rank_rrf) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.011s
+
+OK

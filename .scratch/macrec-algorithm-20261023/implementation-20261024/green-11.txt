@@ -1,0 +1,6 @@
+test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero (test_macrec.IndependentEvaluation.test_summary_reports_recall_and_all_users_and_does_not_score_unstarted_as_observed_zero) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
+
+OK

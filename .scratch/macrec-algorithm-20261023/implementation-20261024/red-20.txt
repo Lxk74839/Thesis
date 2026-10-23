@@ -1,0 +1,16 @@
+test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target (test_macrec.IndependentEvaluation.test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target) ... ERROR
+
+======================================================================
+ERROR: test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target (test_macrec.IndependentEvaluation.test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 440, in test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target
+    self.assertEqual(chosen['offline']['summary']['planned_rows'], 3)
+                     ~~~~~~^^^^^^^^^^^
+KeyError: 'offline'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.089s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k selection_cli` failed. (See above for error)

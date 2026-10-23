@@ -1,0 +1,6 @@
+test_controller_backed_business_client_replays_real_wire_and_expands_source_indexes (test_macrec.Collaboration.test_controller_backed_business_client_replays_real_wire_and_expands_source_indexes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.373s
+
+OK

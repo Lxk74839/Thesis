@@ -27,7 +27,8 @@ PHASES = [('offline', 0), ('parameters', 32), ('features-v00', 288), ('v00-main'
     ('evaluate-v00', 0), ('q1', 1184), ('q2', 1184), ('semantic', 592),
     ('confidence', 592), ('quality', 1184), ('feedback', 592), ('auxiliary', 112), ('evaluate-final', 0)]
 BUDGET_STOPS = {'task16_original_deadline_expired', 'task16_dispatch_deadline', 'task16_call_limit',
-    'task16_phase_limit', 'task16_unit_limit', 'task16_storage_limit', 'watchdog', 'stdout_limit'}
+    'task16_phase_limit', 'task16_unit_limit', 'task16_storage_limit', 'task16_insufficient_remaining_time',
+    'watchdog', 'stdout_limit'}
 
 
 def encoded(value):
@@ -104,7 +105,7 @@ def new_bytes(directory, *, force=False):
         if directory == DEFAULT_SESSION:
             paths += [PROJECT / '.scratch/macrec-algorithm-20261023',
                 PROJECT / '.scratch/task16-execution-v2-20261023', TEMP,
-                PROJECT / 'task16_control.py', PROJECT / 'tests/test_task16_control.py',
+                PROJECT / 'task16_control.py', PROJECT / 'tests/test_task16_control.py', PROJECT / 'tests/test_macrec.py',
                 PROJECT / 'research/MACRec原文与源码固定核查_20261023.md',
                 *(PROJECT / p for p in ('macrec_experiment.py', 'macrec_recommendation.py', 'macrec_evaluation.py'))]
         shared = 0
@@ -515,7 +516,7 @@ def status(directory):
     worker = read(directory / 'worker.json') if (directory / 'worker.json').exists() else {}
     halt_path = directory / 'halts' / (worker.get('generation', 'none') + '.json')
     halt = read(halt_path) if halt_path.exists() else {}
-    if plan and not active and (state != 'complete' or used_bytes >= budget['max_new_bytes']):
+    if plan and not active and (state != 'complete' or used_bytes >= budget['max_new_bytes'] or halt.get('reason')):
         reason = ('task16_original_deadline_expired' if time.time() >= instant(budget['deadline_utc'])
             else 'task16_storage_limit' if used_bytes >= budget['max_new_bytes'] else halt.get('reason'))
         if reason:
@@ -563,6 +564,8 @@ def execute_plan(directory, *, confirm_live=False):
     spec = importlib.util.spec_from_file_location('task16_execution_worker', verified_ref(plan['worker']))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    if hasattr(module, 'validate_plan'):
+        module.validate_plan(plan)
     for stage in plan['stages']:
         with activity(directory, stage['category']):
             execute_stage(directory, plan, stage, module, plan_sha, budget)

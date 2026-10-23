@@ -1,0 +1,25 @@
+test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial (test_macrec.Collaboration.test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial) ... ERROR
+
+======================================================================
+ERROR: test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial (test_macrec.Collaboration.test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 174, in test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial
+    result = run_task(task, method='I1', invoke=model,
+        evidence=lambda ids: {p: {'parent_asin': p, 'eligible': True} for p in ids},
+        policy={'lambda': .5, 'tau': 3})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 208, in run_task
+    action = ask('action', context | {'decision': thought})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 183, in ask
+    reply = invoke(request)
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 173, in model
+    return original(request)
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 40, in model
+    return next(actions)
+StopIteration
+
+----------------------------------------------------------------------
+Ran 1 test in 0.017s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k feedback_must` failed. (See above for error)

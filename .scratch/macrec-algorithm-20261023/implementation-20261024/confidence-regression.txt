@@ -1,0 +1,6 @@
+test_history_confidence_deduplicates_parents_and_shrinks_with_opposing_evidence (test_macrec.Collaboration.test_history_confidence_deduplicates_parents_and_shrinks_with_opposing_evidence) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.022s
+
+OK

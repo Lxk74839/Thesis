@@ -1,0 +1,18 @@
+test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing (test_macrec.Preparation.test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing) ... ERROR
+
+======================================================================
+ERROR: test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing (test_macrec.Preparation.test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 95, in test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing
+    prepared = read_ref(execute_unit(offline, session)['result'])
+                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\macrec_experiment.py", line 844, in execute_unit
+    raise ValueError('macrec_unknown_operation')
+ValueError: macrec_unknown_operation
+
+----------------------------------------------------------------------
+Ran 1 test in 8.684s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k freeze_cli` failed. (See above for error)

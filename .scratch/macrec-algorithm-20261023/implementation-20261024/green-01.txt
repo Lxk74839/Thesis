@@ -1,0 +1,6 @@
+test_private_target_changes_do_not_change_prepared_model_inputs (test_macrec.Preparation.test_private_target_changes_do_not_change_prepared_model_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+OK

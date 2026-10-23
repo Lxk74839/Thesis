@@ -1,0 +1,6 @@
+test_known_model_failures_are_terminal_and_the_initial_error_burst_stops_new_requests (test_macrec.Collaboration.test_known_model_failures_are_terminal_and_the_initial_error_burst_stops_new_requests) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.136s
+
+OK

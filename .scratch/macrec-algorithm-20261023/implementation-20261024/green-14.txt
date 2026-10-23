@@ -1,0 +1,6 @@
+test_hashed_public_tables_do_not_open_an_unrelated_private_reference (test_macrec.Preparation.test_hashed_public_tables_do_not_open_an_unrelated_private_reference) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.023s
+
+OK

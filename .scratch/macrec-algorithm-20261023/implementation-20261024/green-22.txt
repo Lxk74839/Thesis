@@ -1,0 +1,6 @@
+test_generic_praise_cannot_create_a_weighted_preference (test_macrec.Collaboration.test_generic_praise_cannot_create_a_weighted_preference) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+OK

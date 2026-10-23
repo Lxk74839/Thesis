@@ -1,0 +1,6 @@
+test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target (test_macrec.IndependentEvaluation.test_selection_cli_keeps_all_content_trials_and_reports_recall_without_inserting_target) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.096s
+
+OK

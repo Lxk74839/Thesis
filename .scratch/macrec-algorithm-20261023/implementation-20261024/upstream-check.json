@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "fixed_commit": "cbd9ea036cf6cac05a2ee59592526982a626fc82",
+  "files": [
+    {
+      "unchanged": true,
+      "sha256": "feeb6dc2088ecbcc12c19117643cc9abc8450835240fd929ede7864b149db85a",
+      "path": "MACRec-2402.15235v3.html"
+    },
+    {
+      "unchanged": true,
+      "sha256": "f72b9ea3654364e77092697ec1cb5785a3357b9261297ceb91d2729464093adf",
+      "path": "MACRec-2402.15235v3.pdf"
+    },
+    {
+      "unchanged": true,
+      "sha256": "a66865a1aa01013d8b30752bd919ab33d19a2579ac33122788c66b2f85d8fda9",
+      "path": "MACRec/macrec/systems/collaboration.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "88371e1a595fe28098683b3bbc64fd4295752989a8e795ba85d535d75ccbce94",
+      "path": "MACRec/macrec/systems/base.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "fd5ef7456b46b3109a9ca7179d3447bcd43b03ed2b7b94d11a90034e8d26ceb6",
+      "path": "MACRec/macrec/utils/parse.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "45689d7a55a9e5a189ee8156f531edb3321b38875947fb36cf3efe4b34c19d45",
+      "path": "MACRec/macrec/agents/manager.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "79180ca30dd24710e3eea33f020f641edf6ef415ba21b838063e251ca36fbd21",
+      "path": "MACRec/macrec/agents/analyst.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "0b560e2f23ec3733cd9b8464d64f821d4cbbe3caf330f56898cb6cd95b6ca97c",
+      "path": "MACRec/macrec/agents/searcher.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "c5700914b6d7a341b141b8f9eabe7bd7ea21b855d8ad3f5f4c15b7c64a28c298",
+      "path": "MACRec/macrec/agents/reflector.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "4427ffc0531068a25a1e35149beddef193c64960355a428f1725dac15f7003d7",
+      "path": "MACRec/macrec/agents/base.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "6a5c4df12a16d0675e6cf986f73fce904af54733f0a4be4b6704d79ab40fe264",
+      "path": "MACRec/macrec/tasks/generation.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "70c03ed62abd702a7f3e27d24308757a4d7ff7c59a8978e799e2222e0260aba9",
+      "path": "MACRec/macrec/tasks/evaluate.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "57e7fbbc5da717143c0bfec27eef9aea7980291dae680a693582ecb5fac5e301",
+      "path": "MACRec/macrec/tasks/preprocess.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "6587e60a7bce3638b7eb77402b9f3a8a18d96b070170f771674a87ee335fc0a3",
+      "path": "MACRec/macrec/dataset/amazon.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "c0e15b1bb0cffb78df177cd6cd405374f1d55ccfcfd30a6bfc74804b182cf28e",
+      "path": "MACRec/macrec/dataset/ml100k.py"
+    },
+    {
+      "unchanged": true,
+      "sha256": "95630ec873d4f1e7f33c668fb7e66938267c6165fc71e43dc99f1ecf766246e7",
+      "path": "MACRec/config/systems/collaboration/reflect_analyse_search.json"
+    }
+  ]
+}

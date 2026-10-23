@@ -50,7 +50,13 @@ class IndependentControl(unittest.TestCase):
     def fixture_plan(self, units):
         worker = self.directory / 'fixture_worker.py'
         worker.write_text('''import time
+import hashlib
 from pathlib import Path
+def validate_plan(plan):
+    for stage in plan['stages']:
+        for unit in stage['units']:
+            if unit.get('public_material') and hashlib.sha256(Path(unit['public_material']).read_bytes()).hexdigest() != unit['material_sha256']:
+                raise ValueError('task16_frozen_input_changed')
 def execute_unit(unit, session):
     started = time.time()
     if unit.get("local_output"):
@@ -89,6 +95,18 @@ def execute_unit(unit, session):
         seal = {'plan_sha256': hashlib.sha256(plan_path.read_bytes()).hexdigest(),
             'code': [ref(PROJECT / 'task16_control.py')], 'reviews': reports}
         (self.directory / 'review-seal.json').write_text(json.dumps(seal), encoding='utf-8')
+
+    def test_completed_units_are_not_reused_after_frozen_material_changes(self):
+        material = self.directory / 'public-material.json'
+        material.write_bytes(b'{"PUBLIC":"version1"}')
+        self.fixture_plan([{'id': 'u1-B0', 'root_id': 'u1', 'limit': 37,
+            'public_material': str(material), 'material_sha256': hashlib.sha256(material.read_bytes()).hexdigest()}])
+        _, first = self.command('start')
+        self.assertEqual(first['status'], 'complete')
+        material.write_bytes(b'{"PUBLIC":"version2"}')
+        _, resumed = self.command('resume')
+        self.assertEqual(resumed['stop_reason'], 'task16_frozen_input_changed')
+        self.assertEqual(resumed['calls']['attempts'], 1)
 
     def test_process_crash_after_success_reuses_reply_before_unit_was_saved(self):
         self.fixture_plan([{'id': 'u1-B0', 'root_id': 'u1', 'limit': 37, 'crash_after_success': True}])

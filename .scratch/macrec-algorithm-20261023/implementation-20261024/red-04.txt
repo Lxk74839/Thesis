@@ -1,0 +1,18 @@
+test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking (test_macrec.Collaboration.test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking) ... ERROR
+
+======================================================================
+ERROR: test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking (test_macrec.Collaboration.test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec.py", line 92, in test_i1_semantic_matches_and_short_history_weight_change_the_actual_ranking
+    result = run_task(task, method='I1', invoke=i1_model(preference_fixture(), matches_fixture()),
+        evidence=evidence, policy={'lambda': .75, 'tau': 1})
+  File "D:\Work\Codex\Project\Thesis\macrec_recommendation.py", line 17, in run_task
+    raise ValueError('macrec_unknown_method')
+ValueError: macrec_unknown_method
+
+----------------------------------------------------------------------
+Ran 1 test in 0.010s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest discover -s tests -p test_macrec.py -v -k i1_semantic` failed. (See above for error)

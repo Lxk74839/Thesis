@@ -1,0 +1,6 @@
+test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial (test_macrec.Collaboration.test_feedback_must_point_to_an_actual_allowed_source_before_a_second_trial) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+OK

@@ -1,0 +1,6 @@
+test_semantic_ablation_uses_literal_observable_attributes_and_changes_the_order (test_macrec.Collaboration.test_semantic_ablation_uses_literal_observable_attributes_and_changes_the_order) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.013s
+
+OK

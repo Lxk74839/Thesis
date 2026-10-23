@@ -1,0 +1,6 @@
+test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit (test_macrec.Collaboration.test_200_candidate_six_aspect_comparison_keeps_complete_sources_inside_the_controller_wire_limit) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.647s
+
+OK
