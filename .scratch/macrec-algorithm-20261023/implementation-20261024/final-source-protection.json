@@ -1,0 +1,239 @@
+[
+  {
+    "check": "protected-check.json",
+    "count": 26,
+    "passed": true,
+    "files": [
+      {
+        "path": "AGENTS.md",
+        "unchanged": true
+      },
+      {
+        "path": "research/数据修复方案与验收草案_20261010.md",
+        "unchanged": true
+      },
+      {
+        "path": "research/基础方法与当前实现对应核对_20261023.md",
+        "unchanged": true
+      },
+      {
+        "path": "research/精简范围与性能取舍核对_20261023.md",
+        "unchanged": true
+      },
+      {
+        "path": "manuscript/论文初稿_表达与实验结构修订版_20261010.docx",
+        "unchanged": true
+      },
+      {
+        "path": "personalized_recommendation.py",
+        "unchanged": true
+      },
+      {
+        "path": "compact_experiment.py",
+        "unchanged": true
+      },
+      {
+        "path": "compact_evaluation.py",
+        "unchanged": true
+      },
+      {
+        "path": "evidence_access.py",
+        "unchanged": true
+      },
+      {
+        "path": "evidence_verification.py",
+        "unchanged": true
+      },
+      {
+        "path": "quality_fusion.py",
+        "unchanged": true
+      },
+      {
+        "path": "experiment_evaluation.py",
+        "unchanged": true
+      },
+      {
+        "path": "experiment_runner.py",
+        "unchanged": true
+      },
+      {
+        "path": "provider_fourrouter.py",
+        "unchanged": true
+      },
+      {
+        "path": "fourrouter_probe.py",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/personalized-compact-20261023/spec.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/personalized-compact-20261023/config.json",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/compact-execution-9d0c8eb7/results.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/compact-execution-9d0c8eb7/results.json",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/compact-execution-9d0c8eb7/execution-record.md",
+        "unchanged": true
+      },
+      {
+        "path": "records/splits/grain-A-1.1.15-user-split-1.0.0.json",
+        "unchanged": true
+      },
+      {
+        "path": "records/splits/grain-A-1.1.15-user-split-1.0.0-acceptance.json",
+        "unchanged": true
+      },
+      {
+        "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0.json",
+        "unchanged": true
+      },
+      {
+        "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0-acceptance.json",
+        "unchanged": true
+      },
+      {
+        "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+        "unchanged": true
+      },
+      {
+        "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+        "unchanged": true
+      }
+    ]
+  },
+  {
+    "check": "draft-protection.json",
+    "count": 12,
+    "passed": true,
+    "files": [
+      {
+        "path": ".scratch/macrec-algorithm-20261023/acceptance.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/budget.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/map.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/method-mapping.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/README.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/spec.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/stage1-check.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/issues/01-candidates-and-contract.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/issues/02-macrec-agri-baseline.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/issues/03-source-grounded-ranking.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/issues/04-development-runner-and-evaluation.md",
+        "unchanged": true
+      },
+      {
+        "path": ".scratch/macrec-algorithm-20261023/issues/05-review-and-development-validation.md",
+        "unchanged": true
+      }
+    ]
+  },
+  {
+    "check": "upstream-check.json",
+    "count": 16,
+    "passed": true,
+    "files": [
+      {
+        "path": "MACRec-2402.15235v3.html",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec-2402.15235v3.pdf",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/systems/collaboration.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/systems/base.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/utils/parse.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/agents/manager.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/agents/analyst.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/agents/searcher.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/agents/reflector.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/agents/base.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/tasks/generation.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/tasks/evaluate.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/tasks/preprocess.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/dataset/amazon.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/macrec/dataset/ml100k.py",
+        "unchanged": true
+      },
+      {
+        "path": "MACRec/config/systems/collaboration/reflect_analyse_search.json",
+        "unchanged": true
+      }
+    ]
+  }
+]

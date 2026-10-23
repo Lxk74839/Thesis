@@ -1,0 +1,27 @@
+{
+  "observed_utc": "2026-10-23T21:29:50.4809274+00:00",
+  "ready": true,
+  "worker_active": false,
+  "calls": {
+    "attempts": 0,
+    "successful": 0,
+    "failed": 0,
+    "unresolved": 0
+  },
+  "timing": {
+    "development_seconds": 12695.69524884224,
+    "model_seconds": 0,
+    "evaluation_seconds": 325.59835290908813,
+    "waiting_seconds": 23411.668786525726,
+    "overlap_seconds": 325.59835290908813,
+    "total_seconds": 36107.364035367966,
+    "request_latency_sum_seconds": 0
+  },
+  "new_bytes": 1254662700,
+  "new_GiB": 1.1684956960380077,
+  "dispatch_remaining_seconds": 43092.5190726,
+  "deadline_remaining_seconds": 50292.5190726,
+  "original_dispatch_utc": "2026-10-24T09:28:03.0000000+00:00",
+  "original_deadline_utc": "2026-10-24T11:28:03.0000000+00:00",
+  "accounting_note": "timing intervals may overlap; earlier non-instrumented offline work remains within development; waiting is included"
+}
