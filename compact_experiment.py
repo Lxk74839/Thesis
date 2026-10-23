@@ -1,6 +1,5 @@
 """Offline knowledge-enhanced recommendation; immutable sources and small artifacts."""
 import argparse
-import copy
 import json
 import os
 from pathlib import Path
@@ -40,6 +39,14 @@ class ProfileCalls:
         self.deadline = json.loads(self.started.read_bytes())['deadline']
         self.bytes = sum(p.stat().st_size for p in self.directory.rglob('*') if p.is_file())
         self.last_scan = time.monotonic()
+        self.ledger = self.directory / 'artifacts.jsonl'
+        self.artifacts = {}
+        if self.ledger.exists():
+            for raw in self.ledger.read_bytes().splitlines():
+                ref = json.loads(raw)
+                if ref['path'] in self.artifacts:
+                    raise ValueError('compact_duplicate_artifact_receipt')
+                self.artifacts[ref['path']] = ref
 
     def check(self, reserve=0):
         if time.time() >= self.deadline:
@@ -51,10 +58,37 @@ class ProfileCalls:
             raise ValueError('compact_storage_limit')
 
     def write(self, path, value):
+        path = Path(path).resolve()
+        if not path.is_relative_to(self.directory):
+            raise ValueError('compact_artifact_scope')
+        if path.exists():
+            raise ValueError('compact_artifact_already_exists')
         raw = encoded(value) + b'\n'
-        self.check(len(raw))
+        ref = {'path': path.relative_to(PROJECT).as_posix(), 'bytes': len(raw), 'sha256': digest(raw)}
+        receipt = encoded(ref) + b'\n'
+        self.check(len(raw) + len(receipt))
         store_json(path, value)
-        self.bytes += len(raw)
+        with self.ledger.open('ab') as stream:
+            stream.write(receipt)
+            stream.flush()
+            os.fsync(stream.fileno())
+        self.artifacts[ref['path']] = ref
+        self.bytes += len(raw) + len(receipt)
+
+    def read(self, path):
+        path = Path(path).resolve()
+        if not path.is_relative_to(self.directory):
+            raise ValueError('compact_artifact_scope')
+        key = path.relative_to(PROJECT).as_posix()
+        ref = self.artifacts.get(key)
+        raw = path.read_bytes()
+        if ref is None or ref != {'path': key, 'bytes': len(raw), 'sha256': digest(raw)}:
+            raise ValueError('compact_artifact_changed')
+        return json.loads(raw)
+
+    def reference(self, path):
+        self.read(path)
+        return self.artifacts[Path(path).resolve().relative_to(PROJECT).as_posix()]
 
     def __call__(self, request):
         raw = encoded(request)
@@ -64,7 +98,7 @@ class ProfileCalls:
         directory = self.directory / 'calls'
         result_path = directory / (identity + '.result.json')
         if result_path.exists():
-            prior = json.loads(result_path.read_bytes())
+            prior = self.read(result_path)
             if prior['status'] != 'ok':
                 raise ValueError('recorded_profile_failure')
             if prior.get('request_id') != identity or prior.get('output_sha256') != digest(encoded(prior.get('output'))):
@@ -239,18 +273,19 @@ def execute(*, confirm=False, provider=None):
     _, plan, tables = _task_plan(PROJECT / cfg['plan_directory'])
     catalog = [json.loads(raw) for raw in _json_lines(_path(plan['sources']['catalog']['path']), plan['sources']['catalog'])]
     mapping = [json.loads(raw) for raw in _json_lines(_path(plan['sources']['candidate_map']['path']), plan['sources']['candidate_map'])]
-    summaries, scene_data, scene_refs = {}, {}, {}
+    scene_data, scene_refs = {}, {}
     for scene in tables['scenes.jsonl']:
         cached = OUTPUT / 'scenes' / (scene['snapshot']['sha256'] + '.json')
         if not cached.exists():
             observation = collect_scene(scene['snapshot'], mapping, quality=scene['arm'] == 'quality', checkpoint=calls.check)
             calls.write(cached, observation)
-        observation = json.loads(cached.read_bytes())
-        if observation['snapshot_ref'] != scene['snapshot'] or set(observation['candidates']) != {m['parent_asin'] for m in mapping}:
+        observation = calls.read(cached)
+        if (observation['snapshot_ref'] != scene['snapshot'] or observation['principal_id'] != 'SIM-VERIFIER'
+                or set(observation['candidates']) != {m['parent_asin'] for m in mapping}
+                or any(observation['candidates'][m['parent_asin']]['sim_batch_id'] != m['sim_batch_id'] for m in mapping)):
             raise ValueError('compact_scene_cache_binding')
         scene_data[scene['view_id']] = observation
-        scene_refs[scene['view_id']] = file_ref(cached)
-        summaries[scene['label']] = {'objects': len(mapping), 'supported': sum(r['eligible'] for r in observation['candidates'].values())}
+        scene_refs[scene['view_id']] = calls.reference(cached)
     references = {r['root_task_id']: r for r in tables['root-references.jsonl']}
     relations = {r['binding_id']: r for r in tables['user-scenarios.jsonl']}
     scenes = {s['view_id']: s for s in tables['scenes.jsonl']}
@@ -263,13 +298,12 @@ def execute(*, confirm=False, provider=None):
                 or digest(encoded(candidates['C'])) != root['C_sha256']
                 or digest(encoded(list(zip(candidates['C'], candidates['b'])))) != root['base_scores_sha256']):
             raise ValueError('compact_root_binding')
-        profiles = {}
+        profiles, profile_refs = {}, {}
         for method in ('R', 'S', 'M'):
             profile_path = OUTPUT / 'profiles' / (root_id + '-' + method + '.json')
             if not profile_path.exists():
                 try:
-                    analysis = analyze_profile(root['history'], catalog, method=method, invoke=calls,
-                        evidence_summary={'scope': 'shared SIM preprocessing', 'scenes': summaries})
+                    analysis = analyze_profile(root['history'], catalog, method=method, invoke=calls)
                     value = {'status': 'ok', **analysis}
                 except ValueError as exc:
                     if str(exc) in ('compact_deadline', 'compact_storage_limit', 'compact_call_limit'):
@@ -277,7 +311,8 @@ def execute(*, confirm=False, provider=None):
                     value = {'status': 'failed_model', 'reason': 'profile_not_completed',
                              'profile': {'selections': []}, 'before_feedback': {'selections': []}, 'stages': []}
                 calls.write(profile_path, {'configuration_id': cfg['configuration_id'], 'H_sha256': root['H_sha256'], **value})
-            profiles[method] = json.loads(profile_path.read_bytes())
+            profiles[method] = calls.read(profile_path)
+            profile_refs[method] = calls.reference(profile_path)
             if profiles[method]['configuration_id'] != cfg['configuration_id'] or profiles[method]['H_sha256'] != root['H_sha256']:
                 raise ValueError('compact_profile_cache_binding')
         for task in tables['tasks.jsonl']:
@@ -286,6 +321,9 @@ def execute(*, confirm=False, provider=None):
                 continue
             output = OUTPUT / 'tasks' / (task['task_key'] + '.json')
             if output.exists():
+                prior = calls.read(output)
+                if prior['configuration_id'] != cfg['configuration_id'] or prior['task_key'] != task['task_key']:
+                    raise ValueError('compact_result_binding')
                 continue
             scene = scenes[relation['view_id']]
             data = scene_data[scene['view_id']]
@@ -294,7 +332,7 @@ def execute(*, confirm=False, provider=None):
             analysis = profiles[task['method']]
             result = {'configuration_id': cfg['configuration_id'], 'task_key': task['task_key'],
                 'root_task_id': root_id, 'method': task['method'], 'scene': scene['label'],
-                'snapshot_id': scene['snapshot_id'], 'profile_ref': file_ref(OUTPUT / 'profiles' / (root_id + '-' + task['method'] + '.json')),
+                'snapshot_id': scene['snapshot_id'], 'profile_ref': profile_refs[task['method']],
                 'scene_ref': scene_refs[scene['view_id']],
                 'status': analysis['status'], 'topK': [], 'components': {}}
             if analysis['status'] == 'ok':

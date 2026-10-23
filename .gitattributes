@@ -70,4 +70,13 @@ records/sim-scenarios/*.json -text
 /.scratch/data-preparation/diagnostics/*joint13*.py text eol=lf
 /.scratch/data-preparation/verification/ticket13-* -text
 /records/joint-tasks/*.json -text
+# New compact protocol freezes source hashes; preserve their bytes on checkout.
+/personalized_recommendation.py text eol=lf
+/compact_experiment.py text eol=lf
+/compact_evaluation.py text eol=lf
+/experiment_evaluation.py text eol=lf
+/tests/test_personalized_recommendation.py text eol=lf
+/tests/test_compact_experiment.py text eol=lf
+/.scratch/personalized-compact-20261023/* text eol=lf
+/.scratch/personalized-compact-20261023/issues/* text eol=lf
 /.scratch/data-preparation/diagnostics/ticket13-generation-location.py text eol=lf

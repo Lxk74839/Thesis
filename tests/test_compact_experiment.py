@@ -1,6 +1,9 @@
 """Exercise real restricted tools on public facts, and inject only provider IO."""
 import tempfile
 import unittest
+import json
+import time
+from unittest.mock import patch
 from pathlib import Path
 
 from evidence_access import PROJECT
@@ -8,6 +11,31 @@ from tests.runtime_fixtures import RuntimeFixture
 
 
 class CompactTools(unittest.TestCase):
+    def test_evaluation_checks_shared_deadline_and_storage_before_private_references(self):
+        from compact_evaluation import evaluate
+        with tempfile.TemporaryDirectory(dir=PROJECT / '.tmp') as temp:
+            root = Path(temp)
+            cfg = {'configuration_id': 'public', 'max_new_bytes': 4096, 'max_hours': 24}
+            (root / 'authorization.json').write_text(json.dumps({'configuration_id': 'public'}))
+            for expired, expected in ((True, 'compact_deadline'), (False, 'compact_storage_limit')):
+                (root / 'started.json').write_text(json.dumps({'deadline': time.time() + (-1 if expired else 60)}))
+                (root / 'large.bin').write_bytes(b'x' * (0 if expired else 4096))
+                with (patch('compact_evaluation.OUTPUT', root),
+                      patch('compact_evaluation.load_config', return_value=cfg),
+                      patch('compact_evaluation.source_references', side_effect=AssertionError('private source reached')),
+                      self.assertRaisesRegex(ValueError, expected)):
+                    evaluate()
+
+    def test_changed_cached_evidence_or_profile_is_rejected_before_reuse(self):
+        from compact_experiment import ProfileCalls
+        with tempfile.TemporaryDirectory(dir=PROJECT / '.tmp') as temp:
+            store = ProfileCalls(Path(temp), provider=lambda request: {'selections': [], 'issues': []})
+            cache = Path(temp) / 'scene.json'
+            store.write(cache, {'eligible': False, 'principal_id': 'SIM-VERIFIER'})
+            cache.write_text(json.dumps({'eligible': True, 'principal_id': 'WRONG'}), encoding='utf-8')
+            with self.assertRaisesRegex(ValueError, 'compact_artifact_changed'):
+                store.read(cache)
+
     def test_quality_scene_reuses_the_existing_stock_calculation(self):
         from compact_experiment import collect_scene
         with tempfile.TemporaryDirectory(dir=PROJECT / '.tmp') as temp:

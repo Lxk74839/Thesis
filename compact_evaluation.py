@@ -3,7 +3,7 @@ import copy
 import json
 
 from evidence_access import PROJECT, encoded
-from compact_experiment import DIRECTORY, OUTPUT, load_config, store_json, file_ref
+from compact_experiment import OUTPUT, ProfileCalls, load_config, store_json
 from experiment_evaluation import score_task, summarize, BINDING
 from experiment_io import load_evaluation_inputs
 from experiment_runner import _task_plan, _scan, _path
@@ -32,10 +32,16 @@ def evaluate():
     grant = OUTPUT / 'authorization.json'
     if not grant.exists() or json.loads(grant.read_bytes())['configuration_id'] != cfg['configuration_id']:
         raise ValueError('compact_execution_not_started')
+    target = OUTPUT / 'evaluation' / cfg['configuration_id']
+    budget = ProfileCalls(OUTPUT, provider=None, max_bytes=cfg['max_new_bytes'], hours=cfg['max_hours'])
+    budget.check()
     _, _, tables = _task_plan(PLAN)
     original = source_references()
-    target = OUTPUT / 'evaluation' / cfg['configuration_id']
-    guard = P1StorageGuard(target.parent, 1024**3, run_root=target, run_limit_bytes=128 * 1024**2,
+    outside = sum(p.stat().st_size for p in OUTPUT.rglob('*') if p.is_file() and not p.is_relative_to(target.parent))
+    remaining = cfg['max_new_bytes'] - outside
+    if remaining <= 0:
+        raise ValueError('compact_storage_limit')
+    guard = P1StorageGuard(target.parent, min(1024**3, remaining), run_root=target, run_limit_bytes=128 * 1024**2,
         formal=True, evaluation_sources=[_path(r['path']) for r in original.values()])
     combined = {'source_scope': 'personalized_compact', 'plan_id': cfg['configuration_id'],
         'users': [], 'scenes': None, 'tasks': [], 'applicability': {}, 'cohorts': {'U8': [], 'UQ': []}}
@@ -49,6 +55,7 @@ def evaluate():
             'scope': 'accepted_formal_evaluation', 'fixed_S': sets[0]}
         scene_cache = {}
         for user in tables['sample-users.jsonl']:
+            budget.check()
             plan, observations = load_evaluation_inputs(PLAN, execution_index={}, reference_sources=sources,
                 read_artifact=read, resolve_artifact=_path, formal=True, root_task_ids=[user['root_task_id']])
             combined['users'].extend(plan['users'])
@@ -62,7 +69,7 @@ def evaluate():
                 path = OUTPUT / 'tasks' / (task['task_key'] + '.json')
                 row, execution = None, None
                 if path.exists():
-                    row = json.loads(path.read_bytes())
+                    row = budget.read(path)
                     if (row['configuration_id'] != cfg['configuration_id'] or row['task_key'] != task['task_key']
                             or row['root_task_id'] != task['root_task_id'] or row['snapshot_id'] != task['snapshot_id']):
                         raise ValueError('compact_result_binding')
@@ -72,9 +79,12 @@ def evaluate():
                     if scene_ref['path'] != scene_path.relative_to(PROJECT).as_posix():
                         raise ValueError('compact_scene_path')
                     if scene_ref['path'] not in scene_cache:
-                        if file_ref(scene_path) != scene_ref:
+                        if budget.reference(scene_path) != scene_ref:
                             raise ValueError('compact_scene_digest')
-                        scene_cache[scene_ref['path']] = json.loads(scene_path.read_bytes())['candidates']
+                        observed = budget.read(scene_path)
+                        if observed['principal_id'] != 'SIM-VERIFIER':
+                            raise ValueError('compact_scene_principal')
+                        scene_cache[scene_ref['path']] = observed['candidates']
                     execution = observed_execution(task, reference, row, scene_cache[scene_ref['path']])
                 main = score_task(task, execution, reference, component_protocol='personalized')
                 if row is not None and row['method'] == 'M':
@@ -92,10 +102,12 @@ def evaluate():
                         main['components'] = {mode: parts.get(mode, {'SJ_C': 0 if main['reference_applicable'] else None,
                             'status': 'anchor_failed'}) for mode in ('full', 'no_quality', 'mean_quality')}
                 scores.append(main)
+        budget.check()
         summary = summarize(combined, scores)
         summary.update(protocol=cfg['protocol'], configuration_id=cfg['configuration_id'],
             component_metric=cfg['quality_component_metric'],
             analysis_scope='fixed users and materials; profile verification feedback; no real batch preference labels')
+        budget.check()
         store_json(target / 'summary.json', summary)
         with (target / 'component-scores.jsonl').open('wb') as stream:
             for row in component_scores:

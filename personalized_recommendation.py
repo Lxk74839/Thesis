@@ -5,6 +5,14 @@ import unicodedata
 
 VERSION = 'personalized-recommendation-0.1.0'
 ROLES = ('需求解析', '用户画像', '农产品画像', '生命周期追溯', '推荐管理', '推荐依据核验')
+ROLE_TASK = {
+    '单智能体': 'Infer, check observability and consolidate tentative preferences in one pass.',
+    '需求解析': 'Identify aspects explicitly liked in history; do not invent a current request.',
+    '用户画像': 'Select and weight the supported tentative preferences; distinguish praise from complaints.',
+    '农产品画像': 'Check the selected attributes against the available catalog fields and coverage.',
+    '生命周期追溯': 'Remove preference interpretations that require unavailable batch facts; leave lifecycle verification to host tools.',
+    '推荐管理': 'Consolidate the prior checked selections into the profile used for scoring.',
+    '推荐依据核验': 'Verify every interpretation against history; correct unsupported selections and describe corrections.'}
 FORMS = (('flour', r'\bflour\b'), ('flakes', r'\b(?:flakes|rolled|flaked)\b'),
          ('puffed', r'\b(?:puffed|popped|popcorn)\b'), ('bran', r'\bbran\b'),
          ('grain', r'\b(?:grain|grains|kernel|kernels|groats)\b'))
@@ -37,7 +45,7 @@ def profile_options(history, catalog):
     return options
 
 
-def analyze_profile(history, catalog, *, method, invoke=None, evidence_summary=None):
+def analyze_profile(history, catalog, *, method, invoke=None):
     """Prepare a reusable history-only profile; material facts remain host-owned."""
     options = profile_options(history, catalog)
     if method == 'R':
@@ -49,17 +57,16 @@ def analyze_profile(history, catalog, *, method, invoke=None, evidence_summary=N
     context = {'history': [{'history_index': i, 'parent_asin': h['parent_asin'],
         'text': h.get('text', h.get('review_text', ''))[:2000], 'rating': h.get('rating'),
         'title': products[h['parent_asin']]['title']} for i, h in enumerate(history)],
-        'options': options, 'evidence_summary': evidence_summary or {},
+        'options': options,
         'attribute_coverage': {d: sum(product_attributes(p)[d] is not None for p in catalog)
                                for d in ('crop', 'form')}, 'catalog_count': len(catalog)}
     stages, current, before = [], {'selections': []}, None
     for role in ROLES if method == 'M' else ('单智能体',):
-        result = invoke({'role': role, 'context': context, 'previous': current,
+        result = invoke({'role': role, 'context': context, 'previous': current, 'role_task': ROLE_TASK[role],
             'instruction': 'Select only option_id values from options, with weights in (0,1]. '
                 'Infer tentative preferences only from earlier positive history. Empty selections mean unknown. '
                 'Use text to distinguish liked aspects from incidental words; title occurrence alone is not an explicit preference. '
                 'Do not infer batch quality, origin or certification. Lifecycle evidence is verified by host tools; '
-                'evidence_summary describes controlled SIM observations, not preference labels. '
                 'Product analyst checks whether selected aspects are observable. Manager consolidates preferences. '
                 'Verifier corrects unsupported interpretations in one pass, describing any changes in issues. '
                 'Return exactly selections (option_id,weight) and issues (array of strings).'})
