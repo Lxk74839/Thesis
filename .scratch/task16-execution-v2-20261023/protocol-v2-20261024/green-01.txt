@@ -1,0 +1,6 @@
+test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.398s
+
+OK

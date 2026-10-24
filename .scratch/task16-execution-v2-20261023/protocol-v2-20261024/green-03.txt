@@ -1,0 +1,6 @@
+test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.046s
+
+OK

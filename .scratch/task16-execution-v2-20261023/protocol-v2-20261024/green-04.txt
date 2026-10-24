@@ -1,0 +1,6 @@
+test_probe_and_main_filter_the_same_unsupported_real_preferences_including_empty_profiles (tests.test_macrec_protocol.RoleProtocol.test_probe_and_main_filter_the_same_unsupported_real_preferences_including_empty_profiles) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.142s
+
+OK

@@ -1,0 +1,21 @@
+test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account (tests.test_task16_control.IndependentControl.test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account) ... ERROR
+
+======================================================================
+ERROR: test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account (tests.test_task16_control.IndependentControl.test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 172, in test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account
+    new.invoke({'i':i},lambda body:{'status':'completed'},dependencies={'protocol':'new'})
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\task16_control.py", line 465, in invoke
+    return self._invoke(request_id, request, send, dependencies)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\task16_control.py", line 494, in _invoke
+    raise ValueError('task16_phase_limit')
+ValueError: task16_phase_limit
+
+----------------------------------------------------------------------
+Ran 1 test in 0.185s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_task16_control.IndependentControl.test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account -v` failed. (See above for error)

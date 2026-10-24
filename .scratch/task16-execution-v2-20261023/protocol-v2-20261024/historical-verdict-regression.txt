@@ -1,0 +1,6 @@
+test_all_14_historical_business_payloads_retain_their_original_probe_verdict_offline (tests.test_macrec_protocol.RoleProtocol.test_all_14_historical_business_payloads_retain_their_original_probe_verdict_offline) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.046s
+
+OK

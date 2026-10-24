@@ -1,0 +1,6 @@
+test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account (tests.test_task16_control.IndependentControl.test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.516s
+
+OK

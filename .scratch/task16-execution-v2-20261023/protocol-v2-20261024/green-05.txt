@@ -1,0 +1,6 @@
+test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score (tests.test_macrec_protocol.RoleProtocol.test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.302s
+
+OK

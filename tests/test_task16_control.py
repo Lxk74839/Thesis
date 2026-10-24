@@ -125,6 +125,55 @@ def execute_unit(unit, session):
             denied.invoke({'PUBLIC': 'outside-V00'}, lambda body: sent.append(body), dependencies={})
         self.assertEqual(sent, [])
 
+    def test_protocol_v2_uses_a_new_binding_without_overwriting_the_old_run(self):
+        self.fixture_plan([{'id':'old-B0','root_id':'u','limit':37}])
+        _, first = self.command('start')
+        self.assertEqual(first['status'],'complete')
+        old_binding = (self.directory/'run-binding.json').read_bytes()
+        self.fixture_plan([{'id':'new-B0','root_id':'u','limit':37}])
+        plan_path, seal_path = self.directory/'run-plan.json', self.directory/'review-seal.json'
+        plan = json.loads(plan_path.read_bytes())
+        plan['business_protocol'], plan['namespace'] = 'macrec-agri-v2','fixture-v2'
+        plan['execution'] = {'version':'v00-protocol-v2-20261024','stop_after':'evaluate-v00','max_calls':1504}
+        plan['stages'].append({'id':'evaluate-v00','category':'evaluation','max_calls':0,
+            'units':[{'id':'new-evaluation','root_id':'eval','limit':0,'no_model':True}]})
+        plan_path.write_text(json.dumps(plan),encoding='utf-8')
+        seal = json.loads(seal_path.read_bytes())
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal),encoding='utf-8')
+        _, second = self.command('start')
+        self.assertEqual(second['status'],'complete')
+        self.assertEqual(second['calls']['attempts'],2)
+        self.assertEqual((self.directory/'run-binding.json').read_bytes(),old_binding)
+        self.assertTrue((self.directory/'protocol-bindings/macrec-agri-v2/run-binding.json').exists())
+
+    def test_eight_new_probe_requests_keep_the_fourteen_old_calls_in_the_cumulative_account(self):
+        from task16_control import Session, call_counts
+        self.fixture_plan([{'id':'old','root_id':'u','limit':37}])
+        plan_path, seal_path = self.directory/'run-plan.json', self.directory/'review-seal.json'
+        plan = json.loads(plan_path.read_bytes())
+        plan['stages'][0]['id'], plan['stages'][0]['max_calls'] = 'parameters',32
+        plan_path.write_text(json.dumps(plan),encoding='utf-8')
+        seal = json.loads(seal_path.read_bytes())
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal),encoding='utf-8')
+        old = Session(self.directory,namespace='fixture-v1',phase='parameters',unit='old',limit=37)
+        for i in range(14):
+            old.invoke({'i':i},lambda body:{'status':'completed'},dependencies={'protocol':'old'})
+        plan['business_protocol'],plan['namespace'] = 'macrec-agri-v2','fixture-v2'
+        plan['execution'] = {'version':'v00-protocol-v2-20261024','stop_after':'evaluate-v00','max_calls':1504}
+        plan['stages'][0]['max_calls'] = 8
+        plan['stages'].append({'id':'evaluate-v00','category':'evaluation','max_calls':0,'units':[]})
+        plan_path.write_text(json.dumps(plan),encoding='utf-8')
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal),encoding='utf-8')
+        new = Session(self.directory,namespace='fixture-v2',phase='parameters',unit='new',limit=8)
+        for i in range(8):
+            new.invoke({'i':i},lambda body:{'status':'completed'},dependencies={'protocol':'new'})
+        with self.assertRaisesRegex(ValueError,'^task16_phase_limit$'):
+            new.invoke({'i':8},lambda body:self.fail('ninth probe dispatched'),dependencies={'protocol':'new'})
+        self.assertEqual(call_counts(self.directory)[0]['attempts'],22)
+
     def test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable(self):
         from task16_control import Session, call_counts
         self.fixture_plan([{'id': 'public', 'root_id': 'public', 'limit': 6944}])

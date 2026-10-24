@@ -1,0 +1,19 @@
+test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score (tests.test_macrec_protocol.RoleProtocol.test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score) ... FAIL
+
+======================================================================
+FAIL: test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score (tests.test_macrec_protocol.RoleProtocol.test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 68, in test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score
+    self.assertEqual(result['status'],'ok',result.get('reason'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed_protocol' != 'ok'
+- failed_protocol
++ ok
+ : macrec_evidence_scope
+
+----------------------------------------------------------------------
+Ran 1 test in 0.215s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec_protocol.RoleProtocol.test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score -v` failed. (See above for error)

@@ -1,0 +1,6 @@
+test_interpreter_sends_only_the_current_request_not_history_or_candidates (tests.test_macrec_protocol.RoleProtocol.test_interpreter_sends_only_the_current_request_not_history_or_candidates) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.065s
+
+OK

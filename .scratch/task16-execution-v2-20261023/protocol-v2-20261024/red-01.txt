@@ -1,0 +1,147 @@
+test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) ... 
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='162efcef1b') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='36231e0303') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='455f755a5a') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='4d239b8959') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='52b70cbe9f') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='558ef1a786') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='62d9724308') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='8226328030') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='b547a34806') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='b8ec00040f') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='c29ce160cb') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='d5792b547a') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='ef1b6341a6') ... FAIL
+  test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='fe4dde26ec') ... FAIL
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='162efcef1b')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='36231e0303')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='455f755a5a')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='4d239b8959')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='52b70cbe9f')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='558ef1a786')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='62d9724308')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='8226328030')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='b547a34806')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='b8ec00040f')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='c29ce160cb')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='d5792b547a')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='ef1b6341a6')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+======================================================================
+FAIL: test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) (request='fe4dde26ec')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 52, in test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string
+    self.assertNotIn('data_json', schema['properties'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'data_json' unexpectedly found in {'data_json': {'type': 'string'}}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.331s
+
+FAILED (failures=14)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string -v` failed. (See above for error)

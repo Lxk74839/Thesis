@@ -106,6 +106,7 @@ def new_bytes(directory, *, force=False):
             paths += [PROJECT / '.scratch/macrec-algorithm-20261023',
                 PROJECT / '.scratch/task16-execution-v2-20261023', TEMP,
                 PROJECT / 'task16_control.py', PROJECT / 'tests/test_task16_control.py', PROJECT / 'tests/test_macrec.py',
+                PROJECT / 'macrec_protocol.py', PROJECT / 'tests/test_macrec_protocol.py',
                 PROJECT / 'research/MACRec原文与源码固定核查_20261023.md',
                 *(PROJECT / p for p in ('macrec_experiment.py', 'macrec_recommendation.py', 'macrec_evaluation.py'))]
         shared = 0
@@ -344,13 +345,21 @@ def execution_stages(plan):
     scope = plan.get('execution')
     if scope is None:
         return plan['stages']
-    if (scope.get('version') != 'v00-20261024' or scope.get('stop_after') != 'evaluate-v00'
-            or scope.get('max_calls') != 1504):
+    if (scope.get('version') not in ('v00-20261024','v00-protocol-v2-20261024')
+            or scope.get('stop_after') != 'evaluate-v00' or scope.get('max_calls') != 1504
+            or (scope.get('version') == 'v00-protocol-v2-20261024') != (plan.get('business_protocol') == 'macrec-agri-v2')):
         raise ValueError('task16_execution_scope_invalid')
     ids = [s['id'] for s in plan['stages']]
     if 'evaluate-v00' not in ids:
         raise ValueError('task16_execution_endpoint_missing')
     return plan['stages'][:ids.index('evaluate-v00') + 1]
+
+
+def binding_directory(directory, plan):
+    version = plan.get('business_protocol')
+    if version not in (None,'macrec-agri-v1','macrec-agri-v2'):
+        raise ValueError('task16_protocol_version_invalid')
+    return directory/'protocol-bindings'/version if version == 'macrec-agri-v2' else directory
 
 
 def ready_plan(directory):
@@ -376,12 +385,21 @@ def ready_plan(directory):
             '.scratch/task16-execution-v2-20261023/run-task16.ps1', 'macrec_experiment.py')]
         required_sources = {'panel', 'candidates', 'recall', 'evidence', 'model', 'algorithm_spec',
             'upstream_lock', 'evaluation_contract'}
+        expected_phases, expected_counts = PHASES, [1,32,16,32,1,32,32,16,16,32,16,32,1]
+        if plan.get('business_protocol') == 'macrec-agri-v2':
+            required_code += [PROJECT/'macrec_protocol.py']
+            required_sources |= {'business_protocol','protocol_spec'}
+            expected_phases = [(name,8 if name=='parameters' else limit) for name,limit in PHASES]
+            expected_counts = [1,8,16,32,1,32,32,16,16,32,16,32,1]
+            if plan.get('namespace') != 'task16-macrec-agri-v2' or any(u.get('business_protocol') != 'macrec-agri-v2'
+                    for stage in execution_stages(plan) for u in stage['units']):
+                raise ValueError('task16_protocol_version_invalid')
         if (directory != DEFAULT_SESSION or worker != PROJECT / 'macrec_experiment.py'
                 or plan.get('panel_users') != 16 or not seal.get('spec_confirmed')
-                or [(s['id'], s['max_calls']) for s in plan['stages']] != PHASES
+                or [(s['id'], s['max_calls']) for s in plan['stages']] != expected_phases
                 or any(p not in code for p in required_code)
                 or not required_sources.issubset({r.get('role') for r in plan.get('sources', [])})
-                or [len(s['units']) for s in plan['stages']] != [1, 32, 16, 32, 1, 32, 32, 16, 16, 32, 16, 32, 1]
+                or [len(s['units']) for s in plan['stages']] != expected_counts
                 or any(not s['units'] or sum(u['limit'] for u in s['units']) > s['max_calls']
                     or any(u['phase'] != s['id'] or u['limit'] < 0 for u in s['units']) for s in plan['stages'])):
             raise ValueError('task16_live_plan_incomplete')
@@ -432,7 +450,8 @@ class Session:
     def __init__(self, directory, *, namespace, phase, unit, limit, clock=time.time):
         self.directory = session_path(directory)
         if not self.directory.is_relative_to(TEMP):
-            if ready_plan(self.directory) is None or not (self.directory / 'authorization.json').exists():
+            live_plan = ready_plan(self.directory)
+            if live_plan is None or not (binding_directory(self.directory, live_plan) / 'authorization.json').exists():
                 raise ValueError('task16_live_not_ready')
             if not worker_active(self.directory) or read(self.directory / 'worker.json')['pid'] != os.getpid():
                 raise ValueError('task16_request_requires_owning_worker')
@@ -443,6 +462,9 @@ class Session:
             if self.directory not in ATTEMPTS:
                 ATTEMPTS[self.directory] = request_rows(self.directory)
         plan = ready_plan(self.directory)
+        self.counter_namespace = plan['namespace'] if plan and plan.get('business_protocol') == 'macrec-agri-v2' else None
+        if self.counter_namespace is not None and namespace != self.counter_namespace:
+            raise ValueError('task16_request_namespace_not_authorized')
         if plan and plan.get('execution') and phase not in {s['id'] for s in execution_stages(plan)}:
             raise ValueError('task16_phase_not_authorized')
         self.phase_limit = next((s['max_calls'] for s in execution_stages(plan) if s['id'] == phase), None) if plan else None
@@ -480,7 +502,8 @@ class Session:
             attempts = ATTEMPTS[self.directory]
             if len(attempts) >= min(self.budget['max_calls'], self.execution_limit):
                 raise ValueError('task16_call_limit')
-            phase_attempts = [a for a in attempts if a['phase'] == self.phase]
+            phase_attempts = [a for a in attempts if a['phase'] == self.phase
+                and (self.counter_namespace is None or a['namespace'] == self.counter_namespace)]
             if self.phase_limit is not None and len(phase_attempts) >= self.phase_limit:
                 raise ValueError('task16_phase_limit')
             if sum(a['unit'] == self.unit for a in phase_attempts) >= self.limit:
@@ -565,12 +588,13 @@ def execute_plan(directory, *, confirm_live=False):
     plan_sha = sha((directory / 'run-plan.json').read_bytes())
     seal_sha = sha((directory / 'review-seal.json').read_bytes())
     (directory / 'request-index').mkdir(exist_ok=True)
-    write_once(directory / 'run-binding.json', {'plan_sha256': plan_sha, 'seal_sha256': seal_sha,
+    bindings = binding_directory(directory, plan)
+    write_once(bindings / 'run-binding.json', {'plan_sha256': plan_sha, 'seal_sha256': seal_sha,
         'budget_sha256': sha((directory / 'budget.json').read_bytes())})
     if plan['kind'] == 'live':
-        if not confirm_live and not (directory / 'authorization.json').exists():
+        if not confirm_live and not (bindings / 'authorization.json').exists():
             raise ValueError('task16_confirm_live_required')
-        write_once(directory / 'authorization.json', {'plan_sha256': plan_sha,
+        write_once(bindings / 'authorization.json', {'plan_sha256': plan_sha,
             'seal_sha256': seal_sha, 'explicit_start': True})
     else:
         def fixture_guard(event, args):

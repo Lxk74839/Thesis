@@ -72,8 +72,10 @@ def preferences(task, proposed, tau, variant='I1'):
             value = set(re.findall('[a-z]+', pref['value'].casefold()))
             if not value - {'this', 'it', 'product', 'products', 'quality', 'good', 'great', 'excellent', 'stuff'}:
                 continue
-            positive = bool(words & {'prefer', 'love', 'like', 'enjoy', 'want'})
-            negative = bool(words & {'hate', 'dislike', 'avoid', 'not', 'too'})
+            positive = bool(words & {'prefer','prefers','preferred','love','loves','loved','lover','lovers',
+                'like','likes','liked','enjoy','enjoys','enjoyed','want','wants','wanted'})
+            negative = bool(words & {'hate','hates','hated','dislike','dislikes','disliked',
+                'avoid','avoids','avoided','not','never','too'})
             if not value or not value <= words or positive == negative or stance != (1 if positive else -1):
                 continue
             parents.setdefault(source['parent'], set()).add(stance)
@@ -245,7 +247,8 @@ def run_task(task, *, method, invoke, evidence, policy):
                     current = {'trial': trial, 'ranking': ranking, 'topK': [], 'components': components}
                     if improved:
                         current.update(preferences=copy.deepcopy(state['preferences']),
-                            matches=copy.deepcopy(state['analyses']['Items']['matches']))
+                            matches=copy.deepcopy(state['analyses']['Items']['matches']),
+                            rejected_preferences=copy.deepcopy(state.get('rejected_preferences', [])))
                     validated()
                     break
                 if name not in ('User', 'Items', 'Search') or dispatched >= 3:

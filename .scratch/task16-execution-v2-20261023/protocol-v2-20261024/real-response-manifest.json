@@ -1,0 +1,198 @@
+[
+  {
+    "id": "162efcef1b6d41833e386de328b6971867cd1a239879f432d163913dd527a079",
+    "unit": "c8581d545084d97597839743af246c215554702df73e6fae512ffbd0753469df-low-half-action",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/162efcef1b6d41833e386de328b6971867cd1a239879f432d163913dd527a079.request.json",
+      "sha256": "63650d3df5b1c5aa7899289ca9148712c27eda8ee674f8b36538e2721dbaab94"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/162efcef1b6d41833e386de328b6971867cd1a239879f432d163913dd527a079.response.json",
+      "sha256": "676d349021ca38bb0773d33ec26c826e04a82ef7e1f49acd2a965db4edb3bfde"
+    }
+  },
+  {
+    "id": "36231e030371180852341233fffb52f4f075506af6de863b9c5695f903c10fe3",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-full-action",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/36231e030371180852341233fffb52f4f075506af6de863b9c5695f903c10fe3.request.json",
+      "sha256": "87c224f0063f82c4fc1618bbbd0593c780fd059cfc8099187ed7854a94b45dc1"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/36231e030371180852341233fffb52f4f075506af6de863b9c5695f903c10fe3.response.json",
+      "sha256": "34eae469a1a64a56290dcd73c36c42cfe7fdce6a85bf7c192ef08aeba0bd42a2"
+    }
+  },
+  {
+    "id": "455f755a5a35b3c503a256054c2381ddecb5fe8ef8454b8b7880073bea70ae00",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-half-interpret",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/455f755a5a35b3c503a256054c2381ddecb5fe8ef8454b8b7880073bea70ae00.request.json",
+      "sha256": "83ea8e9bad9ed4f7357d9dcbc41a696ee1600c3f32f2cb2ba252e19c34ccecc1"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/455f755a5a35b3c503a256054c2381ddecb5fe8ef8454b8b7880073bea70ae00.response.json",
+      "sha256": "9a1a8c4b61eee3a7e21b853a382b23b413233e5ac53a37bf6be4ef7a59edfa27"
+    }
+  },
+  {
+    "id": "4d239b8959fad4a70e3f6ba2d40f7ee63562bd23ed455f242657e5493908b4c4",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-full-interpret",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/4d239b8959fad4a70e3f6ba2d40f7ee63562bd23ed455f242657e5493908b4c4.request.json",
+      "sha256": "3e91f897ff30ee9ecfdfdfe93b87512d83932aef0028067d488134ab0e2721eb"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/4d239b8959fad4a70e3f6ba2d40f7ee63562bd23ed455f242657e5493908b4c4.response.json",
+      "sha256": "d99a5c1434aba20b6cdc813c07b94c603efa230b003485e5cc34f0d83bc11ea1"
+    }
+  },
+  {
+    "id": "52b70cbe9fb0621bf7b41624c5d070ebea68e587a0404d782bf3e70dc0aa823a",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-full-interpret",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/52b70cbe9fb0621bf7b41624c5d070ebea68e587a0404d782bf3e70dc0aa823a.request.json",
+      "sha256": "ed22492c61d13012e1bb3264ccf3cb221787dede3bd59b982e8c8855f8b2716f"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/52b70cbe9fb0621bf7b41624c5d070ebea68e587a0404d782bf3e70dc0aa823a.response.json",
+      "sha256": "535fd8bbf7211088601170ef93af6a70cdd15229e3d479b70a7a98d74bd4d98f"
+    }
+  },
+  {
+    "id": "558ef1a786fd09d88695163230c4499e3a5a51edc398a163d36459099a7b47cf",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-half-User",
+    "kind": "agent",
+    "role": "用户画像",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/558ef1a786fd09d88695163230c4499e3a5a51edc398a163d36459099a7b47cf.request.json",
+      "sha256": "91c0306573a3c51cdf3cdc11782a1ecff08479911258a91798c6a2d4ce85c417"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/558ef1a786fd09d88695163230c4499e3a5a51edc398a163d36459099a7b47cf.response.json",
+      "sha256": "c954670e7e2e91fe5de4b2c68d4957eec5b8ff5b45db0a1564bbb2e7e24636c5"
+    }
+  },
+  {
+    "id": "62d97243085a86c23d07460f5392373bdc3796d63f4cad82fc60e906dcde5316",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-half-interpret",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/62d97243085a86c23d07460f5392373bdc3796d63f4cad82fc60e906dcde5316.request.json",
+      "sha256": "cf8bf032cec1e884c1879a39081911e9b3bbab3716c7d0b21f27dea39e6edfa9"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/62d97243085a86c23d07460f5392373bdc3796d63f4cad82fc60e906dcde5316.response.json",
+      "sha256": "8e3c8951366c60e9a24f57f1ce68327bd947d896b8d7a454e5ea2ce271e3e615"
+    }
+  },
+  {
+    "id": "82263280306c7a4c5a7229331e5dc9aa4cc16806e6bcb4ac8d4cb5a1f62d2217",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-half-action",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/82263280306c7a4c5a7229331e5dc9aa4cc16806e6bcb4ac8d4cb5a1f62d2217.request.json",
+      "sha256": "21fdc1bef53c1830669f3f1d586494d2898769030e7949feefe808fe009f877b"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/82263280306c7a4c5a7229331e5dc9aa4cc16806e6bcb4ac8d4cb5a1f62d2217.response.json",
+      "sha256": "f9c51a36b0af439f9bf3a2f4388e9d21d5fa85e5a26400c21a8e1a616e956378"
+    }
+  },
+  {
+    "id": "b547a3480612fdeb16147f4f8e6bfdd506247e501794e1490eeed5b22b7e62e7",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-full-User",
+    "kind": "agent",
+    "role": "用户画像",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/b547a3480612fdeb16147f4f8e6bfdd506247e501794e1490eeed5b22b7e62e7.request.json",
+      "sha256": "e80441e8a4d1015a446fc235c0731371519c24ec5bd37b27b3d5841a7da48471"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/b547a3480612fdeb16147f4f8e6bfdd506247e501794e1490eeed5b22b7e62e7.response.json",
+      "sha256": "2ae734a6a569cd2fcaad4371dfc57ca5b666507f80fddbbb335224e776235add"
+    }
+  },
+  {
+    "id": "b8ec00040f0002d1a455a35aab9d605cc63c15b8c2a1e4d3c015abd72c7ade41",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-half-action",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/b8ec00040f0002d1a455a35aab9d605cc63c15b8c2a1e4d3c015abd72c7ade41.request.json",
+      "sha256": "62b79d7230273816b31e035550f1bc823092db524018bf18715b66b7e7473103"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/b8ec00040f0002d1a455a35aab9d605cc63c15b8c2a1e4d3c015abd72c7ade41.response.json",
+      "sha256": "8f444247aa0228eb57916a597c9093b466fbf877ad10857cd7a7a0ca9ba127ce"
+    }
+  },
+  {
+    "id": "c29ce160cb34f1f9defef196c9b9614dfe63f8cacaeee081c1f777e982a6bbf1",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-full-User",
+    "kind": "agent",
+    "role": "用户画像",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/c29ce160cb34f1f9defef196c9b9614dfe63f8cacaeee081c1f777e982a6bbf1.request.json",
+      "sha256": "b886ea73aaa699d30ad644556170bddf04856b138255e88183998bdee7442506"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/c29ce160cb34f1f9defef196c9b9614dfe63f8cacaeee081c1f777e982a6bbf1.response.json",
+      "sha256": "3b1b53168f1bf6aabf08d40148c7de479590463b0668398e95ef966668541d09"
+    }
+  },
+  {
+    "id": "d5792b547a509e98880be51921c890c1554cc38e583165a543a61bae2b7defc2",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-low-full-action",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d5792b547a509e98880be51921c890c1554cc38e583165a543a61bae2b7defc2.request.json",
+      "sha256": "dcc942446953ce675b529f5f82c7b9cebe9671262b4fb53df47251d4ade43a1a"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d5792b547a509e98880be51921c890c1554cc38e583165a543a61bae2b7defc2.response.json",
+      "sha256": "79929f2e3f5c0494ef60eb0f8823a0fe194229695f3ed8822be06dab30167486"
+    }
+  },
+  {
+    "id": "ef1b6341a632c39d22f0fc169856d4d56b3b6fedb0ce5150c534ae307eaa5db1",
+    "unit": "c8581d545084d97597839743af246c215554702df73e6fae512ffbd0753469df-low-half-interpret",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/ef1b6341a632c39d22f0fc169856d4d56b3b6fedb0ce5150c534ae307eaa5db1.request.json",
+      "sha256": "7dddaaeb5c0fdbec4dd743a55ef3eb91596de85d1035ecb74c3081ae430959a3"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/ef1b6341a632c39d22f0fc169856d4d56b3b6fedb0ce5150c534ae307eaa5db1.response.json",
+      "sha256": "4bbf17d894de65edd271997951b6037c7cd40835d92764e0126e2bc1934edddd"
+    }
+  },
+  {
+    "id": "fe4dde26ec5b6a23b21219596692de0130287425313413e59111c0af2102eb8b",
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-medium-half-User",
+    "kind": "agent",
+    "role": "用户画像",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/fe4dde26ec5b6a23b21219596692de0130287425313413e59111c0af2102eb8b.request.json",
+      "sha256": "a98d6eacb21ca707061a6f0a2257436a6a33789cc16891be5c72402214e2df1b"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/fe4dde26ec5b6a23b21219596692de0130287425313413e59111c0af2102eb8b.response.json",
+      "sha256": "de55729002aa1b8a8633944c1119d1c1d644d7a5e6be56d84cceb129f4f40e59"
+    }
+  }
+]

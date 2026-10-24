@@ -1,0 +1,6 @@
+test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst (tests.test_macrec_protocol.RoleProtocol.test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.111s
+
+OK

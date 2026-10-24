@@ -1,0 +1,18 @@
+test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units (tests.test_macrec_protocol.RoleProtocol.test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units) ... FAIL
+
+======================================================================
+FAIL: test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units (tests.test_macrec_protocol.RoleProtocol.test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 31, in test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : usage: macrec_experiment.py [-h] {prepare,freeze}
+macrec_experiment.py: error: argument command: invalid choice: 'freeze-protocol-v2' (choose from 'prepare', 'freeze')
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.093s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec_protocol.RoleProtocol.test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units -v` failed. (See above for error)

@@ -1,0 +1,6 @@
+test_fixed_medium_full_eight_business_probes_select_one_configuration_for_main (tests.test_macrec_protocol.RoleProtocol.test_fixed_medium_full_eight_business_probes_select_one_configuration_for_main) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.700s
+
+OK

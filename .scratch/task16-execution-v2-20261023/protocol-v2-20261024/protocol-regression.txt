@@ -1,0 +1,12 @@
+test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string (tests.test_macrec_protocol.RoleProtocol.test_all_14_real_replays_use_business_field_schemas_instead_of_an_unchecked_string) ... ok
+test_interpreter_sends_only_the_current_request_not_history_or_candidates (tests.test_macrec_protocol.RoleProtocol.test_interpreter_sends_only_the_current_request_not_history_or_candidates) ... ok
+test_known_wrappers_explain_old_failures_without_changing_historical_records (tests.test_macrec_protocol.RoleProtocol.test_known_wrappers_explain_old_failures_without_changing_historical_records) ... ok
+test_native_json_rejects_real_malformed_reply_duplicate_fields_and_role_wrappers (tests.test_macrec_protocol.RoleProtocol.test_native_json_rejects_real_malformed_reply_duplicate_fields_and_role_wrappers) ... ok
+test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score (tests.test_macrec_protocol.RoleProtocol.test_native_roles_lookup_and_complete_matrix_drive_the_unchanged_i1_score) ... ok
+test_probe_and_main_filter_the_same_unsupported_real_preferences_including_empty_profiles (tests.test_macrec_protocol.RoleProtocol.test_probe_and_main_filter_the_same_unsupported_real_preferences_including_empty_profiles) ... ok
+test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.898s
+
+OK

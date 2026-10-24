@@ -1,0 +1,6 @@
+test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units (tests.test_macrec_protocol.RoleProtocol.test_freeze_v2_keeps_inputs_and_old_records_with_eight_fixed_probes_and_58_active_units) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.107s
+
+OK

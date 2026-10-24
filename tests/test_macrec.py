@@ -62,6 +62,48 @@ def matches_fixture():
         for p, m, quote in (('A', 1, 'oat flakes'), ('B', 0, 'corn flour'))]
 
 
+def native_fixture(wire, response):
+    """Render existing external-model fixtures in the v2 wire contract; never used for real replies."""
+    value = copy.deepcopy(response)
+    request = json.loads(wire['input'][1]['content'])
+    kind, context = request['kind'], request['context']
+    allowed, state = context.get('allowed', {}), context.get('state', {})
+    candidates = allowed.get('candidates', [])
+    positions = {r['parent_asin']:i for i,r in enumerate(candidates)}
+    if kind == 'interpret' and 'preferences' in value:
+        value.setdefault('necessary', allowed['request']['necessary'])
+        value.setdefault('unknown', [])
+    data = value.get('data')
+    if not isinstance(data, dict):
+        return value
+    if kind == 'action' and value.get('action') in ('User','Items','Search'):
+        data.setdefault('instruction','Use the provided sources.')
+    if 'ranking' in data:
+        data['ranking'] = [positions.get(p,p) if isinstance(p,str) else p for p in data['ranking']]
+        data.setdefault('analysis','Source-grounded fixture comparison.')
+    if kind == 'action' and value.get('action') == 'Finish' and allowed.get('protocol') != 'B0':
+        data.setdefault('revisions_matrix', [])
+    if kind == 'agent' and request['role'] == '生命周期追溯' and value.get('action') in ('Lookup','Search'):
+        data['candidates'] = [positions.get(p,p) for p in data.get('candidates',list(positions))]
+    if kind == 'agent' and allowed.get('protocol') == 'B0' and value.get('action') == 'Finish' and request['role'] != '生命周期追溯':
+        value['data'] = {'analysis':data.get('analysis','History-only source analysis.')}
+        return value
+    if 'matches' in data:
+        prefs, matches = state.get('preferences', []), data.pop('matches')
+        matrix = []
+        for parent, i in positions.items():
+            cells = [next((r for r in matches if r['candidate']==parent and r['aspect']==p['id']),None) for p in prefs]
+            if all(c is not None for c in cells):
+                matrix.append({'i':i,'m':[c['match'] for c in cells],
+                    'f':[{'title':0,'crop':1}.get(c['references'][0]['ref'].split(':')[-1],2)
+                        if c.get('references') else 3 for c in cells]})
+        data['matrix'] = matrix
+    if 'matrix' in data:
+        data['matrix'] = [r if isinstance(r,dict) else {'i':r[0],'m':r[1],
+            'f':[{'title':0,'crop':1,'stock':2,'unknown':3}.get(f,f) for f in r[2]]} for r in data['matrix']]
+    return value
+
+
 class Preparation(unittest.TestCase):
     def test_freeze_cli_prepares_real_nonempty_stages_and_identical_paired_inputs_without_authorizing(self):
         result = subprocess.run([sys.executable, '-B', 'macrec_experiment.py', 'freeze'],
@@ -199,15 +241,15 @@ class Collaboration(unittest.TestCase):
                 def transport(wire):
                     return {'status': 'completed', 'model': 'gpt-6-luna',
                         'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
-                        'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(
-                            {'action': 'Finish', 'data': {'matrix': matrix}})})}]}]}
+                        'content': [{'type': 'output_text', 'text': json.dumps(native_fixture(wire,
+                            {'action': 'Finish', 'data': {'matrix': matrix}}))}]}]}
                 client = BusinessClient(session, {'effort': 'medium', 'quota': 'full'}, transport=transport)
                 request = {'kind': 'agent', 'role': '农产品画像', 'context': {'state': {'preferences': []},
                     'allowed': {'candidates': source_fixture()['catalog'][1:]}}}
                 if matrix == [[0, [], []], [1, [], []]]:
                     self.assertEqual(client(request)['data']['matches'], [])
                 else:
-                    with self.assertRaisesRegex(ValueError, '^macrec_business_response_shape$'):
+                    with self.assertRaisesRegex(ValueError, '^macrec_business_response_shape:'):
                         client(request)
 
     def test_history_confidence_deduplicates_parents_and_shrinks_with_opposing_evidence(self):
@@ -272,7 +314,7 @@ class Collaboration(unittest.TestCase):
                     else {'action': 'Finish','data': {'analysis': 'Verified shared SIM source.'}})
                 return {'status': 'completed','model': 'gpt-6-luna','usage': {'input_tokens': 100,'output_tokens': 20},
                     'output': [{'type': 'message','content': [{'type': 'output_text',
-                    'text': json.dumps({'data_json': json.dumps(response)})}]}]}
+                    'text': json.dumps(native_fixture(wire, response))}]}]}
             evidence = lambda selected: {p: {'parent_asin': p,'sim_batch_id': 'SIM-'+p,
                 'eligible': True,'state': 'Supported','stock': {'supported': True,'value': 75,'quality': .6,
                     'components': {'C': {'numerator': 1,'denominator': 1},'T': .2,
@@ -386,7 +428,7 @@ class Collaboration(unittest.TestCase):
                     response = {'action': 'Finish', 'data': {'preferences': []}} if valid else {}
                     session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
                         'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
-                        'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(response)})}]}]}
+                        'content': [{'type': 'output_text', 'text': json.dumps(native_fixture(wire, response))}]}]}
                     if i == maximum:
                         with self.assertRaisesRegex(ValueError, '^task16_business_error_burst$'):
                             execute_unit(unit, session)
@@ -422,7 +464,7 @@ class Collaboration(unittest.TestCase):
                     response = {'action': 'Finish', 'data': {'matches': matches_fixture()}}
                 return {'status': 'completed', 'model': 'gpt-6-luna', 'usage': {'input_tokens': 100, 'output_tokens': 20},
                     'output': [{'type': 'message', 'content': [{'type': 'output_text',
-                    'text': json.dumps({'data_json': json.dumps(response)})}]}]}
+                    'text': json.dumps(native_fixture(wire, response))}]}]}
             for user in ('u','v'):
                 current_task = task | {'root_task_id': user}
                 task_ref = store(directory / (user + '.json'), current_task)
@@ -455,7 +497,7 @@ class Collaboration(unittest.TestCase):
                 response = external(json.loads(wire['input'][1]['content']))
                 return {'status': 'completed', 'model': 'gpt-6-luna', 'usage': {'input_tokens': 100, 'output_tokens': 20},
                     'output': [{'type': 'message', 'content': [{'type': 'output_text',
-                    'text': json.dumps({'data_json': json.dumps(response)})}]}]}
+                    'text': json.dumps(native_fixture(wire, response))}]}]}
             session = Session(directory, namespace='32-parameters', phase='v00-main', unit=current['id'], limit=37)
             session.transport = main_transport
             result = read_ref(execute_unit(current, session)['result'])
@@ -526,7 +568,7 @@ class Collaboration(unittest.TestCase):
                 wires.append(copy.deepcopy(wire))
                 return {'status': 'completed', 'model': 'gpt-6-luna', 'usage': {'input_tokens': 100, 'output_tokens': 20},
                     'output': [{'type': 'message', 'content': [{'type': 'output_text',
-                    'text': json.dumps({'data_json': json.dumps({'selections': [], 'issues': []})})}]}]}
+                    'text': json.dumps({'selections': [], 'issues': []})}]}]}
             session = Session(directory, namespace='compact-aux', phase='auxiliary', unit=unit['id'], limit=6)
             session.transport = transport
             report = execute_unit(unit, session)
@@ -540,7 +582,7 @@ class Collaboration(unittest.TestCase):
             failed_session = Session(directory, namespace='compact-aux-malformed', phase='auxiliary', unit=failed['id'], limit=6)
             failed_session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
                 'usage': {'input_tokens': 100, 'output_tokens': 20}, 'output': [{'type': 'message',
-                'content': [{'type': 'output_text', 'text': json.dumps({'data_json': '{}'})}]}]}
+                'content': [{'type': 'output_text', 'text': '{}'}]}]}
             failure = read_ref(execute_unit(failed, failed_session)['result'])
             self.assertEqual(failure['status'], 'failed_protocol')
             self.assertEqual(failure['model_calls'], 1)
@@ -572,7 +614,7 @@ class Collaboration(unittest.TestCase):
                     answer = model(json.loads(wire['input'][1]['content']))
                     return {'status': 'completed', 'model': 'gpt-6-luna', 'usage': {'input_tokens': 100, 'output_tokens': 50},
                         'output': [{'type': 'message', 'content': [{'type': 'output_text',
-                        'text': json.dumps({'data_json': json.dumps(answer)})}]}]}
+                        'text': json.dumps(native_fixture(wire, answer))}]}]}
                 return send
             feature_session.transport = transport_for(i1_model(preference_fixture(), matches_fixture()))
             prefix = execute_unit(feature, feature_session)
@@ -616,8 +658,8 @@ class Collaboration(unittest.TestCase):
                 session = Session(directory, namespace=current['id'], phase='parameters', unit=current['id'], limit=1)
                 session.transport = lambda wire: {'status': 'completed', 'model': 'gpt-6-luna',
                     'usage': {'input_tokens': 200, 'output_tokens': 80}, 'output': [{'type': 'message',
-                    'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(
-                        {'action': 'Finish', 'data': {'ranking': ranking}})})}]}]}
+                    'content': [{'type': 'output_text', 'text': json.dumps(native_fixture(wire,
+                        {'action': 'Finish', 'data': {'ranking': ranking}}))}]}]}
                 report = execute_unit(current, session)
                 result = read_ref(report['result'])
                 self.assertEqual(report['status'], 'failed_protocol' if invalid else 'ok')
@@ -677,7 +719,7 @@ class Collaboration(unittest.TestCase):
             def transport(wire):
                 answer = external(json.loads(wire['input'][1]['content']))
                 return {'status': 'completed', 'model': 'gpt-6-luna', 'output': [{'type': 'message',
-                    'content': [{'type': 'output_text', 'text': json.dumps({'data_json': json.dumps(answer)})}]}],
+                    'content': [{'type': 'output_text', 'text': json.dumps(native_fixture(wire, answer))}]}],
                     'usage': {'input_tokens': 100, 'output_tokens': 50}}
 
             session = Session(directory, namespace='worker-public', phase='v00-main', unit=unit['id'], limit=37)
@@ -740,7 +782,7 @@ class Collaboration(unittest.TestCase):
                 else:
                     response = ({'action': 'Lookup', 'data': {}} if request['context']['internal_step'] == 0
                         else {'action': 'Finish', 'data': {'analysis': 'Read SIM evidence.'}})
-                body = {'data_json': json.dumps(response)}
+                body = native_fixture(wire, response)
                 return {'status': 'completed', 'model': 'gpt-6-luna', 'output': [{'type': 'message',
                     'content': [{'type': 'output_text', 'text': json.dumps(body)}]}],
                     'usage': {'input_tokens': 100, 'output_tokens': 50}}
@@ -759,7 +801,7 @@ class Collaboration(unittest.TestCase):
             self.assertEqual(call_counts(directory)[0]['successful'], count)
             self.assertTrue(all(r['reasoning']['effort'] == 'medium' for r in requests))
             self.assertEqual(requests[0]['max_output_tokens'], 2048)
-            self.assertNotIn('target', json.dumps(requests))
+            self.assertNotIn('target', json.dumps([json.loads(r['input'][1]['content']) for r in requests]))
 
     def test_real_evidence_tools_supply_quality_components_and_material_bound_observations(self):
         from tests.evidence_fixtures import EvidenceFixture

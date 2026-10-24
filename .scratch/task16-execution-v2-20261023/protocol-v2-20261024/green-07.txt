@@ -1,0 +1,6 @@
+test_protocol_v2_uses_a_new_binding_without_overwriting_the_old_run (tests.test_task16_control.IndependentControl.test_protocol_v2_uses_a_new_binding_without_overwriting_the_old_run) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.669s
+
+OK

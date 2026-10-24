@@ -1,0 +1,21 @@
+test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst (tests.test_macrec_protocol.RoleProtocol.test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst) ... ERROR
+
+======================================================================
+ERROR: test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst (tests.test_macrec_protocol.RoleProtocol.test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 47, in test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst
+    self.assertEqual(client(request)['preferences'],[])
+                     ~~~~~~^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\macrec_experiment.py", line 631, in __call__
+    model_health(self.session.directory)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Work\Codex\Project\Thesis\macrec_experiment.py", line 719, in model_health
+    raise ValueError('task16_business_error_burst')
+ValueError: task16_business_error_burst
+
+----------------------------------------------------------------------
+Ran 1 test in 0.043s
+
+FAILED (errors=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec_protocol.RoleProtocol.test_new_protocol_health_preserves_but_does_not_inherit_old_error_burst -v` failed. (See above for error)

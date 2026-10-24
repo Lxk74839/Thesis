@@ -1,0 +1,33 @@
+test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) ... 
+  test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) (case='actual') ... FAIL
+  test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) (case='conflict') ... FAIL
+
+======================================================================
+FAIL: test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) (case='actual')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 50, in test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards
+    self.assertEqual(result['status'],'ok')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed_protocol' != 'ok'
+- failed_protocol
++ ok
+
+
+======================================================================
+FAIL: test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards (tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards) (case='conflict')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_macrec_protocol.py", line 50, in test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards
+    self.assertEqual(result['status'],'ok')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed_protocol' != 'ok'
+- failed_protocol
++ ok
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.042s
+
+FAILED (failures=2)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_macrec_protocol.RoleProtocol.test_real_oats_lover_preference_affects_ranking_without_losing_negation_or_conflict_guards -v` failed. (See above for error)
