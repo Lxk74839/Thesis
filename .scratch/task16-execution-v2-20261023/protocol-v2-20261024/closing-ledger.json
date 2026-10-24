@@ -1,0 +1,91 @@
+{
+  "as_of_utc": "2026-10-24T04:40:36.913927+00:00",
+  "as_of_JST": "2026-10-24T13:40:36.913927+09:00",
+  "status": "paused_protocol_gap_and_uncertain_send",
+  "worker_active": false,
+  "budget_sha256": "24d87b89be7d74bcc28d324d6ead5461a1ce563a69adad65706270206cbaa30b",
+  "original_started_at_utc": "2026-10-23T11:28:03.0000000+00:00",
+  "original_dispatch_deadline_utc": "2026-10-24T09:28:03.0000000+00:00",
+  "original_total_deadline_utc": "2026-10-24T11:28:03.0000000+00:00",
+  "dispatch_seconds_remaining": 17246.086072683334,
+  "total_seconds_remaining": 24446.086072683334,
+  "cumulative_physical_call_limit": 1504,
+  "cumulative_physical_attempts": 89,
+  "this_version_physical_attempts": 75,
+  "recorded_control_counts": {
+    "attempts": 89,
+    "successful": 88,
+    "failed": 1,
+    "unresolved": 0
+  },
+  "audited_unresolved_send_requests": 1,
+  "unknown_send_do_not_resend": [
+    {
+      "disposition": "unresolved_do_not_resend",
+      "reason": "provider http_diagnostic.send_state=unknown; historical terminal is retained unchanged",
+      "recorded_terminal_status": "failed",
+      "request_id": "dce085fef9c7837c28e3df9a461d5d6c465f4029a8af63ee324fc4485deb45e3",
+      "response": {
+        "bytes": 635,
+        "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/dce085fef9c7837c28e3df9a461d5d6c465f4029a8af63ee324fc4485deb45e3.response.json",
+        "sha256": "19d245664ce8687bfcd78967764139106c6cabedfe30b6b08a35d85daf598008"
+      }
+    }
+  ],
+  "usage_cumulative": {
+    "input_tokens": 1426222,
+    "output_tokens": 28634,
+    "unknown_requests": 1,
+    "cached_input_tokens": 188160,
+    "cache_unknown_requests": 1
+  },
+  "known_usage_this_version": {
+    "input_tokens": 985888,
+    "output_tokens": 18867,
+    "cached_input_tokens": 0
+  },
+  "cost": {
+    "known_uncached_input_and_output_basic_CNY": 0.06215544,
+    "cached_input_CNY_per_M": null,
+    "extra_multiplier": null,
+    "fixed_fees": null,
+    "actual_invoice_CNY": null,
+    "note": "one physical request has unknown usage/send state; subtotal is not a bill"
+  },
+  "timing_cumulative_seconds": {
+    "development_seconds": 17518.961313962936,
+    "model_seconds": 469.6110816001892,
+    "evaluation_seconds": 327.3259882926941,
+    "waiting_seconds": 43964.76592540741,
+    "overlap_seconds": 326.7503819465637,
+    "total_seconds": 61953.913927316666,
+    "request_latency_sum_seconds": 799.3025846481323
+  },
+  "timing_since_pre_start_seconds": {
+    "development_seconds": 904.087146282196,
+    "model_seconds": 312.06911063194275,
+    "evaluation_seconds": 1.152029037475586,
+    "waiting_seconds": 319.06142592430115,
+    "overlap_seconds": 1.152029037475586,
+    "total_seconds": 1535.21768283844,
+    "request_latency_sum_seconds": 601.9808390140533
+  },
+  "v2_supervision": {
+    "charged_seconds": 332.85777229990344,
+    "exit_code": 0,
+    "generation": "ce2255596b524880b2bc36ce6aa1e775",
+    "job_peak_commit_bytes": 637018112,
+    "job_write_transfer_bytes": 9211384,
+    "measured_seconds": 332.85777309990954,
+    "stop_reason": null
+  },
+  "new_bytes_cumulative": 1277045821,
+  "new_GiB_cumulative": 1.1893416019156575,
+  "growth_bytes_since_pre_start": 16684864,
+  "max_new_bytes": 10737418240,
+  "space_snapshot_note": "controller includes original scoped artifacts and shared .git/.tmp growth; files written after as_of are outside this snapshot",
+  "development_intervals_closed": true,
+  "waiting_excluded_from_total": false,
+  "algorithm_main_completed": false,
+  "later_experiments_executed": false
+}
