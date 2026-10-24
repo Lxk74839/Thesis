@@ -1,0 +1,100 @@
+{
+  "status": "partial_control",
+  "reason": "task16_business_error_burst",
+  "main_comparison_completed": false,
+  "independent_evaluation": "post-stop S5 snapshot; planned evaluate-v00 was not reached",
+  "evaluation_report": {
+    "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/evaluation/v00-after-stop-20261024.json",
+    "bytes": 48501,
+    "sha256": "305599475c75b5edb0e45f7a4b7ff8e1930ee8d0197a2c5cd1c8bab5072346ba"
+  },
+  "methods": [
+    {
+      "method": "CB",
+      "users": 16,
+      "completed": 16,
+      "failed": 0,
+      "not_started": 0,
+      "HR10": 0.3125,
+      "NDCG10": 0.178914769206802
+    },
+    {
+      "method": "B0",
+      "users": 16,
+      "completed": 0,
+      "failed": 0,
+      "not_started": 16,
+      "HR10": null,
+      "NDCG10": null
+    },
+    {
+      "method": "I1",
+      "users": 16,
+      "completed": 0,
+      "failed": 0,
+      "not_started": 16,
+      "HR10": null,
+      "NDCG10": null
+    }
+  ],
+  "paired_users": 16,
+  "valid_pairs": 0,
+  "paired_deltas": "all NA, not zero",
+  "paired_file": ".scratch/task16-execution-v2-20261023/v00-20261024/paired-v00.json",
+  "parameters": {
+    "planned": 32,
+    "terminal": 18,
+    "passed": 6,
+    "failed_protocol": 8,
+    "skipped_dependency": 4,
+    "not_started": 14,
+    "all_four_configurations_have_observed_failures": true
+  },
+  "calls": {
+    "attempts": 14,
+    "successful": 14,
+    "failed": 0,
+    "unresolved": 0
+  },
+  "usage": {
+    "input_tokens": 440334,
+    "output_tokens": 9767,
+    "unknown_requests": 0,
+    "cached_input_tokens": 188160,
+    "cache_unknown_requests": 0
+  },
+  "cost": {
+    "uncached_input_tokens": 252174,
+    "known_uncached_input_and_output_basic_CNY": 0.013545405,
+    "all_input_at_regular_rate_estimate_CNY": 0.022012605,
+    "cached_input_CNY_per_M": null,
+    "extra_multiplier": null,
+    "fixed_fees": null,
+    "actual_invoice_total_CNY": null
+  },
+  "timing_snapshot": {
+    "development_seconds": 13781.268042325974,
+    "model_seconds": 157.54197096824646,
+    "evaluation_seconds": 326.1739592552185,
+    "waiting_seconds": 41605.00459575653,
+    "overlap_seconds": 325.59835290908813,
+    "total_seconds": 55544.39021539688,
+    "request_latency_sum_seconds": 197.32174563407898
+  },
+  "new_bytes_snapshot": 1257969713,
+  "development_320_recall": 0.6875,
+  "panel_16_recall": 0.75,
+  "not_executed": [
+    "features-v00",
+    "v00-main",
+    "Q1",
+    "Q2",
+    "semantic",
+    "confidence",
+    "quality",
+    "feedback",
+    "auxiliary S/M",
+    "formal100"
+  ],
+  "material_and_original100_unchanged": true
+}

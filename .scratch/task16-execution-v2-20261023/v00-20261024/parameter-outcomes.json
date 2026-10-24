@@ -1,0 +1,146 @@
+[
+  {
+    "shape": "User",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "medium/half",
+    "reason": "macrec_probe_finish_required",
+    "model_calls": 1
+  },
+  {
+    "shape": "interpret",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "low/full",
+    "reason": "macrec_probe_interpretation",
+    "model_calls": 1
+  },
+  {
+    "shape": "action",
+    "status": "ok",
+    "passed": true,
+    "configuration": "low/full",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "Items",
+    "status": "failed_model",
+    "passed": false,
+    "configuration": "low/half",
+    "reason": "user_probe_failed",
+    "model_calls": 0
+  },
+  {
+    "shape": "interpret",
+    "status": "ok",
+    "passed": true,
+    "configuration": "low/half",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "action",
+    "status": "ok",
+    "passed": true,
+    "configuration": "low/half",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "User",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "low/full",
+    "reason": "macrec_probe_unsupported_profile",
+    "model_calls": 1
+  },
+  {
+    "shape": "interpret",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "medium/half",
+    "reason": "macrec_probe_interpretation",
+    "model_calls": 1
+  },
+  {
+    "shape": "action",
+    "status": "ok",
+    "passed": true,
+    "configuration": "medium/full",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "Items",
+    "status": "failed_model",
+    "passed": false,
+    "configuration": "medium/half",
+    "reason": "user_probe_failed",
+    "model_calls": 0
+  },
+  {
+    "shape": "Items",
+    "status": "failed_model",
+    "passed": false,
+    "configuration": "medium/full",
+    "reason": "user_probe_failed",
+    "model_calls": 0
+  },
+  {
+    "shape": "Items",
+    "status": "failed_model",
+    "passed": false,
+    "configuration": "low/full",
+    "reason": "user_probe_failed",
+    "model_calls": 0
+  },
+  {
+    "shape": "action",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "low/half",
+    "reason": "macrec_probe_permutation",
+    "model_calls": 1
+  },
+  {
+    "shape": "interpret",
+    "status": "ok",
+    "passed": true,
+    "configuration": "low/half",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "action",
+    "status": "ok",
+    "passed": true,
+    "configuration": "medium/half",
+    "reason": null,
+    "model_calls": 1
+  },
+  {
+    "shape": "User",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "low/half",
+    "reason": "macrec_probe_finish_required",
+    "model_calls": 1
+  },
+  {
+    "shape": "interpret",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "medium/full",
+    "reason": "macrec_probe_interpretation",
+    "model_calls": 1
+  },
+  {
+    "shape": "User",
+    "status": "failed_protocol",
+    "passed": false,
+    "configuration": "medium/full",
+    "reason": "macrec_business_response_shape",
+    "model_calls": 1
+  }
+]
