@@ -871,6 +871,61 @@ def policy_for(unit, directory):
         return {k: selected[k] for k in ('lambda', 'tau')}, {'trials': 6, 'selection_id': identity}
 
 
+def v00_forecast(session, latencies, now):
+    from task16_control import read, request_rows, execution_stages, observed_unit, sha, instant
+    path = session.directory / 'run-plan.json'
+    if not path.exists():
+        return None
+    plan = read(path)
+    if not plan.get('execution'):
+        return None
+    budget = session.budget
+    attempts = request_rows(session.directory)
+    available = max(0, min(budget['max_calls'], plan['execution']['max_calls']) - len(attempts))
+    plan_sha = sha(path.read_bytes())
+    mean = sum(latencies) / len(latencies)
+    stages, dispatch_work, local_work, remaining_calls = [], 0., 0., 0
+    for stage in execution_stages(plan):
+        if stage['category'] == 'evaluation':
+            stages.append({'id': stage['id'], 'remaining_calls': 0, 'seconds': 600.})
+            continue
+        phase_attempts = [a for a in attempts if a['phase'] == stage['id']]
+        allowance = max(0, stage['max_calls'] - len(phase_attempts))
+        roots = {}
+        for pending in stage['units']:
+            receipt = observed_unit(session.directory, pending, plan_sha)
+            if receipt and receipt['status'] != 'unresolved' or read_unit_result(session.directory, pending) is not None:
+                continue
+            used = sum(a['unit'] == pending['id'] for a in phase_attempts)
+            calls = min(max(0, pending['limit'] - used), allowance, available)
+            allowance -= calls
+            available -= calls
+            root = roots.setdefault(pending['root_id'], {'calls': 0, 'units': 0})
+            root['calls'] += calls
+            root['units'] += 1
+        lanes = [0., 0.]
+        for root in roots.values():
+            local = root['calls'] * .5 + root['units'] * 5
+            lanes[lanes.index(min(lanes))] += root['calls'] * mean + local
+            local_work += local
+        calls = sum(r['calls'] for r in roots.values())
+        seconds = max(lanes)
+        stages.append({'id': stage['id'], 'remaining_calls': calls, 'roots': len(roots), 'seconds': seconds})
+        remaining_calls += calls
+        dispatch_work += seconds
+    dispatch_remaining = instant(budget['dispatch_deadline_utc']) - now
+    total_remaining = instant(budget['deadline_utc']) - now
+    return {'at': now, 'attempts': len(attempts), 'scope': 'v00-20261024', 'stages': stages,
+        'mean_probe_seconds': mean, 'max_probe_seconds': max(latencies),
+        'remaining_cold_calls': remaining_calls, 'remaining_dispatch_seconds': dispatch_remaining,
+        'remaining_total_seconds': total_remaining, 'dispatch_work_seconds': dispatch_work,
+        'local_processing_seconds': local_work, 'evaluation_reserve_seconds': 600.,
+        'total_seconds': dispatch_work + 600.,
+        'insufficient': dispatch_work > dispatch_remaining or dispatch_work + 600. > total_remaining,
+        'assumption': 'selected eight probe latencies; serial stage barriers and each root, two root workers; '
+            '0.5s per call plus 5s per unfinished unit host allowance; 600s evaluation reserve; estimate, not guarantee'}
+
+
 def model_for(unit, session):
     if 'model' in unit:
         return read_ref(unit['model'])
@@ -916,8 +971,11 @@ def model_for(unit, session):
             'remaining_dispatch_seconds': remaining, 'remaining_cold_calls': max(0, budget['max_calls'] - len(attempts)),
             'optimistic_two_parallel_seconds': estimate, 'insufficient': estimate > remaining,
             'assumption': 'selected configuration probes; ideal two independent roots; estimate, not a completion guarantee'}
+        scoped = v00_forecast(session, latencies, now)
+        if scoped is not None:
+            forecast = scoped
         store(session.directory / 'forecasts' / (uuid.uuid4().hex + '.json'), forecast)
-        if estimate > remaining:
+        if forecast['insufficient']:
             raise ValueError('task16_insufficient_remaining_time')
         return selected
 

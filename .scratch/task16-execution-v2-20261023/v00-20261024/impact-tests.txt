@@ -1,0 +1,15 @@
+test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1 (tests.test_task16_control.IndependentControl.test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1) ... ok
+test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable (tests.test_task16_control.IndependentControl.test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable) ... ok
+test_process_crash_after_success_reuses_reply_before_unit_was_saved (tests.test_task16_control.IndependentControl.test_process_crash_after_success_reuses_reply_before_unit_was_saved) ... ok
+test_process_crash_during_send_leaves_intent_unresolved_after_resume (tests.test_task16_control.IndependentControl.test_process_crash_during_send_leaves_intent_unresolved_after_resume) ... ok
+test_uncertain_stage_finishes_other_roots_and_blocks_following_stages (tests.test_task16_control.IndependentControl.test_uncertain_stage_finishes_other_roots_and_blocks_following_stages) ... ok
+test_original_deadline_and_limits_reject_before_transport (tests.test_task16_control.IndependentControl.test_original_deadline_and_limits_reject_before_transport) ... ok
+test_phase_limit_stops_other_roots_without_spending_remaining_global_budget (tests.test_task16_control.IndependentControl.test_phase_limit_stops_other_roots_without_spending_remaining_global_budget) ... ok
+test_two_roots_overlap_and_methods_within_each_root_remain_ordered (tests.test_task16_control.IndependentControl.test_two_roots_overlap_and_methods_within_each_root_remain_ordered) ... ok
+test_worker_selects_one_shared_configuration_only_after_all_32_business_probes (tests.test_macrec.Collaboration.test_worker_selects_one_shared_configuration_only_after_all_32_business_probes) ... ok
+test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs (tests.test_macrec.Collaboration.test_real_worker_publishes_replayable_algorithm_result_from_verified_inputs) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 37.848s
+
+OK

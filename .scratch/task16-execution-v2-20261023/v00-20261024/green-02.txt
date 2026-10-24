@@ -1,0 +1,6 @@
+test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable (tests.test_task16_control.IndependentControl.test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 33.647s
+
+OK

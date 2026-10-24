@@ -1,0 +1,6 @@
+test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1 (tests.test_task16_control.IndependentControl.test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.619s
+
+OK

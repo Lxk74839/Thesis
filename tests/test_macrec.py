@@ -395,15 +395,15 @@ class Collaboration(unittest.TestCase):
                 self.assertEqual(call_counts(directory)[0]['attempts'], maximum)
 
     def test_worker_selects_one_shared_configuration_only_after_all_32_business_probes(self):
-        from macrec_experiment import prepare, execute_unit, store, read_ref
+        from macrec_experiment import prepare, execute_unit, store, read_ref, file_ref
         from task16_control import Session
         base = Path.cwd() / '.tmp/task16-execution'
         base.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=base) as temp:
             directory = Path(temp)
             (directory / 'budget.json').write_text(json.dumps({'max_calls': 100,
-                'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 120,
-                'deadline_utc': time.time() + 200}), encoding='utf-8')
+                'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 3600,
+                'deadline_utc': time.time() + 7200}), encoding='utf-8')
             task = prepare(source_fixture(), 'public_fixture', {'weights': [1,1,1], 'M': 2})['tasks']['u']
             material = store(directory / 'material.json', {'candidates': {p: {'parent_asin': p,
                 'eligible': True, 'state': 'Supported', 'stock': {'supported': False}, 'source': 'SIM'} for p in ('A','B')}})
@@ -436,7 +436,9 @@ class Collaboration(unittest.TestCase):
                                 'scene': 'V00', 'shape': shape, 'task': task_ref, 'materials': material, 'model': cfg, 'limit': 1}
                             if shape == 'Items':
                                 unit['user_probe'] = user_probe
-                            session = Session(directory, namespace='32-parameters', phase='parameters', unit=unit['id'], limit=1)
+                            ticks = iter([time.time(), time.time(), time.time() + 20])
+                            session = Session(directory, namespace='32-parameters', phase='parameters', unit=unit['id'], limit=1,
+                                clock=lambda: next(ticks))
                             session.transport = transport
                             execute_unit(unit, session)
                             parameters.append(unit)
@@ -459,6 +461,40 @@ class Collaboration(unittest.TestCase):
             result = read_ref(execute_unit(current, session)['result'])
             self.assertEqual(result['model_configuration'], {'effort': 'medium', 'quota': 'full'})
             self.assertEqual(result['status'], 'ok')
+            worker = directory / 'public_worker.py'
+            worker.write_text('from macrec_experiment import execute_unit\n', encoding='utf-8')
+            scoped = current | {'id': 'u-I1-v00-only'}
+            main = [scoped | {'id': 'PUBLIC-%d-%s' % (i, method), 'root_id': 'PUBLIC-' + str(i),
+                'method': method} for i in range(16) for method in ('B0', 'I1')]
+            main[0] = scoped
+            stages = [{'id': 'offline', 'category': 'development', 'max_calls': 0, 'units': []},
+                {'id': 'parameters', 'category': 'model', 'max_calls': 32, 'units': parameters},
+                {'id': 'features-v00', 'category': 'model', 'max_calls': 288,
+                    'units': [{'id': 'PUBLIC-feature-' + str(i), 'root_id': 'PUBLIC-' + str(i), 'limit': 18} for i in range(16)]},
+                {'id': 'v00-main', 'category': 'model', 'max_calls': 1184, 'units': main},
+                {'id': 'evaluate-v00', 'category': 'evaluation', 'max_calls': 0, 'units': []}]
+            plan_ref = store(directory / 'run-plan.json', {'schema': 'task16-run-plan/1', 'kind': 'offline_fixture',
+                'worker': file_ref(worker), 'namespace': '32-parameters', 'stages': stages,
+                'execution': {'version': 'v00-20261024', 'max_calls': 1504, 'stop_after': 'evaluate-v00'}})
+            reviews = []
+            for axis in ('standards', 'spec'):
+                path = directory / (axis + '.md')
+                path.write_text('PASS: PUBLIC fixture only', encoding='utf-8')
+                reviews.append(file_ref(path) | {'axis': axis, 'result': 'PASS'})
+            store(directory / 'review-seal.json', {'plan_sha256': plan_ref['sha256'],
+                'code': [file_ref(Path.cwd() / 'task16_control.py')], 'reviews': reviews})
+            (directory / 'budget.json').write_text(json.dumps({'max_calls': 6944,
+                'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 18000,
+                'deadline_utc': time.time() + 25200}), encoding='utf-8')
+            scoped_session = Session(directory, namespace='32-parameters', phase='v00-main', unit=scoped['id'], limit=37)
+            scoped_session.transport = main_transport
+            self.assertEqual(execute_unit(scoped, scoped_session)['status'], 'ok')
+            forecast = max((json.loads(p.read_bytes()) for p in (directory / 'forecasts').glob('*.json')), key=lambda r: r['at'])
+            self.assertLessEqual(forecast['remaining_cold_calls'], 1472)
+            self.assertEqual(forecast['evaluation_reserve_seconds'], 600)
+            self.assertGreater(forecast['local_processing_seconds'], 0)
+            self.assertEqual([s['id'] for s in forecast['stages']], ['offline', 'parameters', 'features-v00', 'v00-main', 'evaluate-v00'])
+            self.assertGreaterEqual(forecast['total_seconds'], forecast['dispatch_work_seconds'] + 600)
             (directory / 'budget.json').write_text(json.dumps({'max_calls': 6944,
                 'max_new_bytes': 10 * 1024**3, 'dispatch_deadline_utc': time.time() + 1,
                 'deadline_utc': time.time() + 7201}), encoding='utf-8')

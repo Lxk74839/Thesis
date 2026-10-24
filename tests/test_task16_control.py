@@ -59,6 +59,8 @@ def validate_plan(plan):
                 raise ValueError('task16_frozen_input_changed')
 def execute_unit(unit, session):
     started = time.time()
+    if unit.get("no_model"):
+        return {"status":"ok"}
     if unit.get("local_output"):
         Path(__file__).with_suffix('.local-output').write_bytes(b'x' * (1024 * 1024))
         time.sleep(1.5)
@@ -95,6 +97,60 @@ def execute_unit(unit, session):
         seal = {'plan_sha256': hashlib.sha256(plan_path.read_bytes()).hexdigest(),
             'code': [ref(PROJECT / 'task16_control.py')], 'reviews': reports}
         (self.directory / 'review-seal.json').write_text(json.dumps(seal), encoding='utf-8')
+
+    def test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1(self):
+        self.fixture_plan([{'id': 'u-B0', 'root_id': 'u', 'phase': 'v00-main', 'limit': 37}])
+        plan_path = self.directory / 'run-plan.json'
+        plan = json.loads(plan_path.read_text(encoding='utf-8'))
+        plan['execution'] = {'version': 'v00-20261024', 'stop_after': 'evaluate-v00', 'max_calls': 1504}
+        plan['stages'] += [{'id': 'evaluate-v00', 'category': 'evaluation', 'max_calls': 0,
+            'units': [{'id': 'evaluation', 'root_id': 'evaluation', 'limit': 0, 'no_model': True}]},
+            {'id': 'q1', 'category': 'model', 'max_calls': 1184,
+            'units': [{'id': 'u-Q1', 'root_id': 'u', 'limit': 37}]}]
+        plan_path.write_text(json.dumps(plan), encoding='utf-8')
+        seal_path = self.directory / 'review-seal.json'
+        seal = json.loads(seal_path.read_text(encoding='utf-8'))
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        for action in ('start', 'resume'):
+            _, state = self.command(action)
+            self.assertEqual(state['status'], 'complete')
+            self.assertEqual(state['calls']['attempts'], 1)
+            self.assertEqual(state['progress']['planned_units'], 2)
+            self.assertEqual([s['id'] for s in state['progress']['stages']], ['v00-main', 'evaluate-v00'])
+        from task16_control import Session
+        sent = []
+        with self.assertRaisesRegex(ValueError, '^task16_phase_not_authorized$'):
+            denied = Session(self.directory, namespace='fixture-v1', phase='q1', unit='u-Q1', limit=37)
+            denied.invoke({'PUBLIC': 'outside-V00'}, lambda body: sent.append(body), dependencies={})
+        self.assertEqual(sent, [])
+
+    def test_v00_cumulative_limit_counts_failures_and_keeps_successful_cache_reusable(self):
+        from task16_control import Session, call_counts
+        self.fixture_plan([{'id': 'public', 'root_id': 'public', 'limit': 6944}])
+        plan_path = self.directory / 'run-plan.json'
+        plan = json.loads(plan_path.read_text(encoding='utf-8'))
+        plan['execution'] = {'version': 'v00-20261024', 'stop_after': 'evaluate-v00', 'max_calls': 1504}
+        plan['stages'][0]['max_calls'] = 6944
+        plan['stages'].append({'id': 'evaluate-v00', 'category': 'evaluation', 'max_calls': 0, 'units': []})
+        plan_path.write_text(json.dumps(plan), encoding='utf-8')
+        seal_path = self.directory / 'review-seal.json'
+        seal = json.loads(seal_path.read_text(encoding='utf-8'))
+        seal['plan_sha256'] = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        seal_path.write_text(json.dumps(seal), encoding='utf-8')
+        session = Session(self.directory, namespace='public-cap', phase='v00-main', unit='public', limit=6944)
+        for i in range(1504):
+            if i == 0:
+                with self.assertRaisesRegex(ValueError, '^task16_failed_response$'):
+                    session.invoke({'i': i}, lambda body: {'status': 'failed'}, dependencies={})
+            else:
+                session.invoke({'i': i}, lambda body: {'status': 'completed'}, dependencies={})
+        sent = []
+        with self.assertRaisesRegex(ValueError, '^task16_call_limit$'):
+            session.invoke({'i': 1504}, lambda body: sent.append(body), dependencies={})
+        self.assertEqual(session.invoke({'i': 1}, lambda body: sent.append(body), dependencies={})['status'], 'completed')
+        self.assertEqual(sent, [])
+        self.assertEqual(call_counts(self.directory)[0]['attempts'], 1504)
 
     def test_completed_units_are_not_reused_after_frozen_material_changes(self):
         material = self.directory / 'public-material.json'

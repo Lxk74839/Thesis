@@ -1,0 +1,6 @@
+test_worker_selects_one_shared_configuration_only_after_all_32_business_probes (tests.test_macrec.Collaboration.test_worker_selects_one_shared_configuration_only_after_all_32_business_probes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 1.628s
+
+OK

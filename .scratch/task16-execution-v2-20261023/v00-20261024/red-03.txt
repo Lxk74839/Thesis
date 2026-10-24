@@ -1,0 +1,20 @@
+test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1 (tests.test_task16_control.IndependentControl.test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1) ... FAIL
+
+======================================================================
+FAIL: test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1 (tests.test_task16_control.IndependentControl.test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1)
+----------------------------------------------------------------------
+ValueError: task16_failed_response
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Work\Codex\Project\Thesis\tests\test_task16_control.py", line 123, in test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1
+    with self.assertRaisesRegex(ValueError, '^task16_phase_not_authorized$'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "^task16_phase_not_authorized$" does not match "task16_failed_response"
+
+----------------------------------------------------------------------
+Ran 1 test in 0.643s
+
+FAILED (failures=1)
+ERROR conda.cli.main_run:execute(127): `conda run python -B -m unittest tests.test_task16_control.IndependentControl.test_v00_scope_stops_after_evaluation_and_resume_never_starts_q1 -v` failed. (See above for error)

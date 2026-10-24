@@ -340,6 +340,19 @@ def verified_ref(ref):
     return path
 
 
+def execution_stages(plan):
+    scope = plan.get('execution')
+    if scope is None:
+        return plan['stages']
+    if (scope.get('version') != 'v00-20261024' or scope.get('stop_after') != 'evaluate-v00'
+            or scope.get('max_calls') != 1504):
+        raise ValueError('task16_execution_scope_invalid')
+    ids = [s['id'] for s in plan['stages']]
+    if 'evaluate-v00' not in ids:
+        raise ValueError('task16_execution_endpoint_missing')
+    return plan['stages'][:ids.index('evaluate-v00') + 1]
+
+
 def ready_plan(directory):
     plan_path, seal_path = directory / 'run-plan.json', directory / 'review-seal.json'
     if not plan_path.exists() or not seal_path.exists():
@@ -401,7 +414,7 @@ def progress(directory, plan):
             'remaining_units': 0, 'unstarted_units': 0, 'stages': []}
     plan_sha = sha((directory / 'run-plan.json').read_bytes())
     stages = []
-    for stage in plan['stages']:
+    for stage in execution_stages(plan):
         rows = [observed_unit(directory, u, plan_sha) for u in stage['units']]
         completed = sum(r is not None and r['status'] != 'unresolved' for r in rows)
         unknown = sum(r is not None and r['status'] == 'unresolved' for r in rows)
@@ -430,7 +443,10 @@ class Session:
             if self.directory not in ATTEMPTS:
                 ATTEMPTS[self.directory] = request_rows(self.directory)
         plan = ready_plan(self.directory)
-        self.phase_limit = next((s['max_calls'] for s in plan['stages'] if s['id'] == phase), None) if plan else None
+        if plan and plan.get('execution') and phase not in {s['id'] for s in execution_stages(plan)}:
+            raise ValueError('task16_phase_not_authorized')
+        self.phase_limit = next((s['max_calls'] for s in execution_stages(plan) if s['id'] == phase), None) if plan else None
+        self.execution_limit = plan.get('execution', {}).get('max_calls', self.budget['max_calls']) if plan else self.budget['max_calls']
 
     def invoke(self, request, send, *, dependencies):
         request_id = sha(encoded({'namespace': self.namespace, 'dependencies': dependencies, 'request': request}))
@@ -462,7 +478,7 @@ class Session:
             if self.clock() >= instant(self.budget['dispatch_deadline_utc']):
                 raise ValueError('task16_dispatch_deadline')
             attempts = ATTEMPTS[self.directory]
-            if len(attempts) >= self.budget['max_calls']:
+            if len(attempts) >= min(self.budget['max_calls'], self.execution_limit):
                 raise ValueError('task16_call_limit')
             phase_attempts = [a for a in attempts if a['phase'] == self.phase]
             if self.phase_limit is not None and len(phase_attempts) >= self.phase_limit:
@@ -566,7 +582,7 @@ def execute_plan(directory, *, confirm_live=False):
     spec.loader.exec_module(module)
     if hasattr(module, 'validate_plan'):
         module.validate_plan(plan)
-    for stage in plan['stages']:
+    for stage in execution_stages(plan):
         with activity(directory, stage['category']):
             execute_stage(directory, plan, stage, module, plan_sha, budget)
         if any(s['id'] == stage['id'] and s['unresolved'] for s in progress(directory, plan)['stages']):
