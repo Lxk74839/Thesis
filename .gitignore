@@ -1,16 +1,55 @@
+# Project-local environments, caches, credentials and large research data.
 /.conda/
 /.cache/
 /.tmp/
-__pycache__/
-*.py[cod]
+/.secrets/
 /data/
 /manuscript/
 /research/
+node_modules/
+/.scratch/github-publish-20261025/
+
+# Python and local environments.
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
+.venv/
+venv/
+env/
+.python-version
+
+# Environment variables and local secrets.
 .env
 .env.*
-/.secrets/
+!.env.example
 
-# Local dependencies and one-time publication audit files.
-node_modules/
-.venv/
-/.scratch/github-publish-20261025/
+# Legacy scaffold runtime outputs.
+.langchain/
+.langsmith_cache/
+*.sqlite3
+chroma_db/
+chroma.sqlite3
+faiss_index/
+*.faiss
+*.pkl
+outputs/
+runs/
+logs/
+*.log
+
+# Notebook, test and editor caches.
+.ipynb_checkpoints/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

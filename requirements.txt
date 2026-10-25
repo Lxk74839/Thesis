@@ -1,0 +1,3 @@
+# Core project modules use the Python standard library.
+# Create the Thesis Conda environment from environment.yml.
+# Report-generation tools and the MACRec reference submodule have separate dependencies.
