@@ -2,6 +2,7 @@
 /.conda/
 /.cache/
 /.tmp/
+/.tools/
 /.secrets/
 /data/
 /manuscript/
