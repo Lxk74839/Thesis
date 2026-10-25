@@ -1,0 +1,4 @@
+langchain>=1.4,<2
+langchain-openai>=1.7,<2
+langchain-community>=0.3
+python-dotenv>=1.0
