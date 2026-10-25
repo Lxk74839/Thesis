@@ -1,0 +1,104 @@
+{
+  "execution_status": "paused",
+  "main_comparison_completed": false,
+  "methods": {
+    "CB": {
+      "users": 16,
+      "states": {
+        "ok": 16
+      },
+      "metrics10": {
+        "EG_NDCG": 0.178914769206802,
+        "HR": 0.3125,
+        "NDCG_P": 0.178914769206802,
+        "SJ_NDCG": 0.178914769206802
+      }
+    },
+    "B0": {
+      "users": 16,
+      "states": {
+        "not_started": 16
+      },
+      "metrics10": {
+        "EG_NDCG": null,
+        "HR": null,
+        "NDCG_P": null,
+        "SJ_NDCG": null
+      }
+    },
+    "I1": {
+      "users": 16,
+      "states": {
+        "not_started": 16
+      },
+      "metrics10": {
+        "EG_NDCG": null,
+        "HR": null,
+        "NDCG_P": null,
+        "SJ_NDCG": null
+      }
+    }
+  },
+  "probes": {
+    "real_passed": 8,
+    "new_physical_requests": 8,
+    "configuration": {
+      "effort": "medium",
+      "quota": "full"
+    }
+  },
+  "features": {
+    "ok": 0,
+    "failed_protocol": 6,
+    "exhausted": 1,
+    "unknown_send": 1,
+    "interrupted": 2,
+    "not_started": 6
+  },
+  "physical_attempts_cumulative": 89,
+  "physical_attempts_this_version": 75,
+  "recorded_control_counts": {
+    "attempts": 89,
+    "successful": 88,
+    "failed": 1,
+    "unresolved": 0
+  },
+  "audited_unknown_send": 1,
+  "uncertain_audit": {
+    "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/protocol-bindings/macrec-agri-v2/uncertain-send-audit.json",
+    "bytes": 510,
+    "sha256": "f349383525488b21f224cb8279d93a190c5b1fddd8b752452fa1fd4c91a9b5ed"
+  },
+  "usage_cumulative": {
+    "input_tokens": 1426222,
+    "output_tokens": 28634,
+    "unknown_requests": 1,
+    "cached_input_tokens": 188160,
+    "cache_unknown_requests": 1
+  },
+  "known_usage_this_version": {
+    "input_tokens": 985888,
+    "output_tokens": 18867,
+    "cached_input_tokens": 0
+  },
+  "cost": {
+    "known_uncached_input_and_output_basic_CNY": 0.06215544,
+    "cached_input_CNY_per_M": null,
+    "extra_multiplier": null,
+    "fixed_fees": null,
+    "actual_invoice_CNY": null,
+    "note": "one physical request has unknown usage/send state; subtotal is not a bill"
+  },
+  "model_seconds_this_version": 312.06911063194275,
+  "api_latency_sum_this_version": 601.9808390140533,
+  "evaluation_report": {
+    "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/evaluation/macrec-agri-v2/v00-after-stop-20261024.json",
+    "bytes": 48981,
+    "sha256": "b900497f5ac84c9ff80b716399c0b765a29563374324dcbc40b87c2df8cc15f7"
+  },
+  "paired_valid_users": 0,
+  "paired_deltas": "all NA",
+  "recall_dev320": 0.6875,
+  "recall_panel16": 0.75,
+  "later_experiments_executed": false
+}

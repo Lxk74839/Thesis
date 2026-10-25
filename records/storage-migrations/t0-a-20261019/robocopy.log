@@ -1,0 +1,29 @@
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : 20261019 9:29:39
+   Source : C:\Users\Kane\Documents\CodexProject\Thesis\data\ticket12-t0\catalog-0.1.0\
+     Dest : D:\Work\Codex\Project\Thesis\data\ticket12-t0\catalog-0.1.0\
+
+    Files : *.*
+	    
+  Options : *.* /BYTES /NDL /NFL /TEE /S /E /DCOPY:DAT /COPY:DAT /J /NP /XJ /MT:4 /R:1 /W:1 
+
+------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------
+
+                 Total      Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :           3           3         0         0         0         0
+   Files :       22125       22125         0         0         0         0
+   Bytes : 91556152080 91556152080         0         0         0         0
+   Times :     0:06:11     0:00:59                       0:00:00   0:00:14
+
+
+   Speed :             1,540,960,230 Bytes/sec.
+   Speed :                88,174.453 MegaBytes/min.
+   Ended : 20261019 9:30:53
+

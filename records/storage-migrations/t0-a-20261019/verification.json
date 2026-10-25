@@ -1,0 +1,14 @@
+{
+  "schema_version": "thesis-storage-verification-1.0.0",
+  "status": "all_files_sha256_equal",
+  "source": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "target": "D:\\Work\\Codex\\Project\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "files_verified": 22125,
+  "bytes_verified": 91556152080,
+  "mismatches": 0,
+  "source_deleted": false,
+  "elapsed_seconds": 432.8505201,
+  "finished_utc": "2026-10-19T01:38:55.7035319Z",
+  "inventory_sha256": "e59c553148e19173c794f23d1679d6ae6899a82d3d0c502cea914d563dec03fa",
+  "manifest_sha256": "395092c1886e95110af639ea744719e00c5a8ad3f5ff0bf82a01ef11dccd0e6d"
+}

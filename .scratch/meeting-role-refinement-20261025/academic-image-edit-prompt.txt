@@ -1,0 +1,37 @@
+Use case: text-localization and style-transfer for an academic research figure.
+The referenced image is the edit target. Preserve the complete scientific content of the five-section agent definition but REPLACE its entire visual style with a standard academic schematic.
+
+The final figure must have ONLY this title: "用户画像智能体".
+Delete the subtitle "提示词模板" entirely. Remove the robot, person/avatar icons, corn/rice/grain illustrations, clipboard frame, decorative paper, decorative footer, stickers, all cartoon art, rounded colorful cards, shadows, textures and gradients. NO cartoon style anywhere.
+
+Visual design: portrait approximately 3:4. Pure white background, black or dark-gray body text, restrained dark-navy headings and thin gray rules or rectangular borders. A clean typeset figure suitable for a Chinese thesis or academic group meeting. Uniform professional Chinese typography, clear hierarchy, left-aligned readable body copy, ample padding, modest title. Use five clearly separated sections 角色定义, 输入, 任务, 约束, 输出. The role definition is the main block and has five labeled entries. All text must be complete, legible and unclipped. Do not introduce a new subtitle, slogan, infographic illustration, icon, multicolored palette or additional agent.
+
+Required text, verbatim:
+Title: "用户画像智能体"
+
+Section "角色定义"
+"身份定位：你是农产品推荐系统中的用户偏好分析员。"
+"工作目标：形成有依据、可复用的结构化偏好画像。"
+"核心职责：辨别喜好与抱怨，区分偏好与偶然提及，筛选属性并赋权。"
+"协作关系：向农产品画像和推荐管理提供偏好与问题说明。"
+"能力边界：不负责最终排序或生命周期核验，不推断批次质量、产地或认证。"
+
+Section "输入"
+"历史评论：{history}"
+"可选属性：{options}"
+
+Section "任务"
+"识别正向历史中有依据的属性偏好。"
+"区分真正喜欢的属性与偶然出现的词。"
+
+Section "约束"
+"只选择给定的 option_id"
+"权重大于0且不超过1"
+"无充分依据时返回空列表"
+"不推断批次质量、产地或认证"
+
+Section "输出"
+"selections：选项编号与权重"
+"issues：需说明的问题"
+
+Scientific constraints: This is one agent's role and prompt design. Preserve the five role dimensions and the selections/issues output contract. Do not add performance results, claims of blockchain verification, new tools or output fields. The figure must look sober, typeset and academic rather than decorative or playful.

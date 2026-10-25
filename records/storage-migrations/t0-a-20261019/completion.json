@@ -1,0 +1,25 @@
+{
+  "status": "copy_and_verification_complete_manual_C_cleanup_required",
+  "original_source_exists": true,
+  "verified_target": "D:\\Work\\Codex\\Project\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "files_sha256_verified": 22125,
+  "bytes_copied": 91556152080,
+  "hash_mismatches": 0,
+  "cleanup_attempts_rejected": 2,
+  "automatic_approval_reason": "blocked by policy",
+  "C_free_now_GiB": 72.02,
+  "locator": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\ticket12-t0\\catalog-0.1.0.archive.json",
+  "verification": "D:\\Work\\Codex\\Project\\Thesis\\records\\storage-migrations\\t0-a-20261019\\verification.json",
+  "protected_project_files_checked": 10,
+  "protected_project_changes_observed": [
+    "data\\recommendation-runtime-audit\\20261018-batch\\resource-ledger.jsonl"
+  ],
+  "head_before": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "head_after": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "git_status_after": [
+    "?? .scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+    "?? reports/"
+  ],
+  "recorded_utc": "2026-10-19T01:40:47.4920220Z"
+}

@@ -1,0 +1,50 @@
+{
+  "status": "D_project_files_environment_validated_Codex_UI_switch_pending",
+  "new_root": "D:\\Work\\Codex\\Project\\Thesis",
+  "old_root": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis",
+  "old_source_retained": true,
+  "copied_selected_files": 10758,
+  "copied_selected_bytes": 27319755825,
+  "reused_catalog_files": 22125,
+  "reused_catalog_bytes": 91556152080,
+  "total_original_files_verified": 32883,
+  "total_original_bytes_verified": 118875907905,
+  "mismatches": 0,
+  "environment_prefix": "D:\\Work\\Codex\\Project\\Thesis\\.conda\\envs\\Thesis",
+  "conda_packages_matching": 18,
+  "python": "3.13.16",
+  "runtime_cwd": "D:\\Work\\Codex\\Project\\Thesis",
+  "runtime_prefix": "D:\\Work\\Codex\\Project\\Thesis\\.conda\\envs\\Thesis",
+  "project_source_syntax_checked": 22,
+  "git_head": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "preserved_ledgers": [
+    {
+      "path": "data\\recommendation-runtime-audit\\20261018-batch\\resource-ledger.jsonl",
+      "sha256": "7c8938f52811f939944b6f2337552af349ef96274cd4421ba4acbf1e1d57f33c",
+      "cumulative_seconds": 217.7244063001417,
+      "remaining_seconds": 1582.2755936998583,
+      "unchanged": true
+    },
+    {
+      "path": "data\\recommendation-runtime-audit\\ticket12-t0\\resource-ledger.jsonl",
+      "sha256": "c6a1519d4a64a91ef63557f5f7ded535d1d0ef13ad287fb5485028cee335d075",
+      "cumulative_seconds": 1797.3523884000024,
+      "remaining_seconds": 2.6476115999976173,
+      "unchanged": true
+    }
+  ],
+  "agent_instruction_updated": true,
+  "handoff": "D:\\Work\\Codex\\Project\\Thesis\\docs\\operations\\project-migration-20261019.md",
+  "experiment_executions": 0,
+  "supplier_api_calls": 0,
+  "git_status": [
+    " M AGENTS.md",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+    "?? docs/operations/",
+    "?? records/storage-migrations/",
+    "?? reports/"
+  ],
+  "prior_catalog_cleanup_tool_status": "blocked by policy; no recursive cleanup retried",
+  "finished_utc": "2026-10-19T01:55:57.5215233Z"
+}

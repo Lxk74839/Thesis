@@ -1,0 +1,9 @@
+{
+  "status": "exact_source_and_target_revalidated_after_sha256",
+  "source": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "verified_target": "D:\\Work\\Codex\\Project\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "files": 22125,
+  "bytes": 91556152080,
+  "C_free_before_cleanup": 77330771968,
+  "utc": "2026-10-19T01:40:09.4988519Z"
+}

@@ -1,0 +1,82 @@
+3 channel Terms of Service accepted
+Source:      C:\Users\Kane\Documents\CodexProject\Thesis\.conda\envs\Thesis
+Destination: D:\Work\Codex\Project\Thesis\.conda\envs\Thesis
+Packages: 18
+Files: 1
+
+Downloading and Extracting Packages: ...working...
+ca-certificates-2026 |            |   0% 
+
+python_abi-3.13      |            |   0% [A
+
+
+libexpat-2.9.0       |            |   0% [A[A
+
+
+
+libmpdec-4.0.1       |            |   0% [A[A[A
+
+
+
+
+openssl-3.5.9        |            |   0% [A[A[A[A
+
+
+
+
+
+xz-5.8.4             |            |   0% [A[A[A[A[A
+
+
+
+
+
+
+python-3.13.16       |            |   0% [A[A[A[A[A[A
+                                         
+
+
+                                         [A
+
+
+                                         [A[A
+
+
+
+                                         [A[A[A
+
+
+
+
+                                         [A[A[A[A
+
+
+
+
+
+                                         [A[A[A[A[A
+
+
+
+
+
+
+                                         [A[A[A[A[A[A done
+
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/openssl-3.5.9-hbb43b14_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/ca-certificates-2026.9.25-haa95532_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/openssl-3.5.9-hbb43b14_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/libexpat-2.9.0-hd7fb8db_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/python_abi-3.13-5_cp313.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/libmpdec-4.0.1-h1c6eee0_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/xz-5.8.4-hb851c79_0.conda.
+This command is using a remote connection in offline mode.
+OfflineError: EnforceUnusedAdapter called with url https://repo.anaconda.com/pkgs/main/win-64/python-3.13.16-h2e1fde4_102_cp313.conda.
+This command is using a remote connection in offline mode.
+

@@ -9,3 +9,8 @@ __pycache__/
 .env
 .env.*
 /.secrets/
+
+# Local dependencies and one-time publication audit files.
+node_modules/
+.venv/
+/.scratch/github-publish-20261025/

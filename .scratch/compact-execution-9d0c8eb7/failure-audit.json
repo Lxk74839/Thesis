@@ -1,0 +1,167 @@
+{
+  "scope": "read-only; recorded replies only; no supplier API; no result mutation",
+  "profiles": [
+    {
+      "root_task_id": "d565fbc267dd9b4b995e8575f4bcfe232de6b6c17d457ec8bf77db9a1287f089",
+      "method": "S",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "a5bed3d7840d356d6b7c25d4fe47c6335daabb59445180513ef9c584d6376771"
+      ]
+    },
+    {
+      "root_task_id": "818878e2de8161d1bb523fb5d4dd48a9278c1dc5e01729be27a77f3d66843fb9",
+      "method": "S",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "b103def18775af38aa97c9eb4acf837c97ecd03586b02eabb5fff01bd3bb37fb"
+      ]
+    },
+    {
+      "root_task_id": "6dd54c3225d571fc458289bcb5f065b176a6c2d6284b6b99eb385e4c93e286d4",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "4c77e850c7a03997b3f2521500d42da881fb025fb60bfd0baa1f668a26e44bbe",
+        "93e435083678917420bedb46b742ff05a4ae7a7dd824d56caba40071cd2f480e",
+        "0a833accc9a4a8da840c6e98e04986d21e1932ff0d413a69417ceeeeddbf7627",
+        "61812a92b28fd5c4da80cd9d1be419e6d9a700d1329fedf8eb464a8cb1d33959",
+        "06e6938c03df95a6bc4e37b955a123f141f1776a85078780a8e9b20acb1782a8"
+      ]
+    },
+    {
+      "root_task_id": "d386c253932927e4abc07c76f444b5333cdaf9fcc1c5ae5d5f8a6da13787fe3a",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "e8a6259b7b90782aa44010014b815b5e4a577649cce29d3af8b846ae01448db2",
+        "7378f1332200962f1056b49f5a5ededa30bd64bb7e56f4eaecab6e2a24299290",
+        "b9cc97bc14ff0f1d5f430e7eecbbe2304f76dd45d4777fbb2a7d9151b53af827"
+      ]
+    },
+    {
+      "root_task_id": "b68371f5bc5ec458e8b12d9ef0aaa56e8ded1d69beb9ab89ffb70c8da5caea94",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "6cd087139da03345bbc60b12b1f49e80b239c5c5e21a9b987560aa0b5979ed43",
+        "bdeeba5859535497a76c36ac428831aad561eaf5715c24aeb9a62712b7bb29ee",
+        "9b2059771e2982d0eb4e1ae6d18cf3b841d2f2b1459f2b94fe52bcaecbf15497",
+        "214a5e9adea21449bc8bb7e01acaf9f16407665564651365f1a40b3091728ea8",
+        "c6cebe860502a327d0907a737bccb4b0acee58c5af5d274d8991c3f6e5179424",
+        "a7bc339e4c2005420a45cb67eab8fe68607980b107426a42a9ad93838584d9be"
+      ]
+    },
+    {
+      "root_task_id": "90098d109691802c193502abe709aaa38d13c679e83ae6ebf4f053ee6533ebf5",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "d92eb76750331035d7ea6798bf769278ba7d418da80f72d802706c9dfbdf4732",
+        "e2c5aa58cd9c043c8a68f80c7e91de55a5efbf2c743237f93fbd044547112add",
+        "72d7e30a24fe68f0d273e3f4a07fed23b9dfef19ef3423acd7622f387c77a380",
+        "f334e50886a7c718dc75002b858f97614023b7f6c2014f72f5cd779bccb4b365",
+        "2b746fcc2b19b7b7c4f3ea390c6a61d892516a2023817c4acfd9d4000bfdfbcc",
+        "1cf2a4092a78f41e4c25bfc4aee70d0af4d0f5689dcbbef6d4c61ecbddf828c6"
+      ]
+    },
+    {
+      "root_task_id": "48a35591efe15a55e80c5122684b3bc09ac6dfb5082b47f5f63873ddeca1f340",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "unexplained_profile_revision",
+      "recorded_request_ids": [
+        "d786ee18c2ab538ef693fe7b9e06069b6c5a0bd01befce5634e9b517c6f393e7",
+        "7219d917503de24e9779bcb52420e8cea13599ad891645e4c34c4c094bd41dae",
+        "57a57c84f5babc78485c92a682dc354ddd0e9739ce4ed95079157dbbaacbcbbf",
+        "cbb4711ff0dd6462ed819adfb0ac54d2223d4bf5b1a876ed59e3375753ad3924",
+        "d5bd233f082c0a54739309bb22052fb7a9eb50dc39669a5cf4170fce3067f918",
+        "a896ceec85988bc008c73276974f116579a4510ad4100062a35bdacc06df8f16"
+      ]
+    },
+    {
+      "root_task_id": "7d09a9695bebd38f436ad11879cd4d86f83197c41044207378ce21d9e6968647",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "9fa59ccd9216167128fce5b8ec9b2bf6a05c62c32e6c6ad6b32a6a7c6c67d723",
+        "48cee965b758b41378e52e0a2c4481c181a7167a0c2151cdb5ea312ff0b2568a",
+        "c4ed5a0bfbf9e33d42e85a1116ab3cf64be7fc91ae7004a34d0af6d1d8c9e414"
+      ]
+    },
+    {
+      "root_task_id": "e95945cc29827e84fb5807c0ba84fedee2b93e909dc001dd65c22ab31041ee74",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "afadea8fd8ee157614be0d40897934f3cb2741a75549a798d76ec25ff633f0a1",
+        "143e244d0ae19747fe668b486c6ae4f3e06d355c205d4d2376b1d145ae54cc16"
+      ]
+    },
+    {
+      "root_task_id": "7b56ac8b5bcac3af8f54d9fc700a88551ce34dfd47b9892a8e7d8f3beb3eb642",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "bd751618df8e6f84c940bebfef6bea7978ef0f4182d4474b276759a24b03c55f",
+        "a44897ab1792f649e08012b2b7e18957afc372e66ba9a66c01a291026442cf70",
+        "46568c1ed686bc0a9e4fd5ea43035be9d228917dbde004167bbdb65eddaa133f",
+        "1650a8a831f0703bf2be1e1f74a0c08e28d2351d4c344935011c1a73fddedbd7"
+      ]
+    },
+    {
+      "root_task_id": "46b35a82d13339a77507b5155518ae59ff0e7f89770e58f0a6c82cc25e540e59",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "d5d209aeac7134f3e485fa63478d18ca1435230be3ec5d491cfec54095da5d80",
+        "db4504bd53be652657944880b710dc83718a9dca3893174992da55e4a2158947",
+        "2e4c9a7fe4f036231ea92dace765d8332e2e3dc3d366c70497bddeecb5138a72",
+        "f6eaf87e39ab33d58fe44289783810bfe72abd52b341fe93a42c41933a1b97c0"
+      ]
+    },
+    {
+      "root_task_id": "6e2896f42c13805d81ffa268a93ae0911d8a5abbbdbce6e4e0f45517e5235c55",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "9347de17a8b33afd644416149ffe5f85954434c51e286c615978cce09caf9144",
+        "08b63e3c3cf29c8a041c9e5d417cf419a588efa1a0b9d28bf166be6c5ebd5824",
+        "7cb0c08217aa199f14c015b2bf526e4b9ef67086c5631b8dd54dec69770af2a9",
+        "783d259837c0daaf6440ecfad9238dbc99f5a62744e34944bfc4edca4101ae96"
+      ]
+    },
+    {
+      "root_task_id": "6e9afd84b7affd8954ebb725519f9ddd13f81a1a417f7f3af8b4f82dea5e63b6",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "fb1471a378348544ab8174cbe731032282ac42c20eeae33745568e3eca9571b8"
+      ]
+    },
+    {
+      "root_task_id": "7688644847014f9d8b8e262ac722403aa70109494440f59766cb8f0bb16894e5",
+      "method": "M",
+      "recorded_status": "failed_model",
+      "offline_validation_error": "profile_transport_or_protocol",
+      "recorded_request_ids": [
+        "81a527346173f015766aaffbd27a96e1d5c13078465e9aa41503fcd1d5a56b1a",
+        "39b549c91fbab5162b0676d4ef9f3c431533e918b8f2bfe432e5e566dd1a3024",
+        "996b529d33639fdaba15c12689b78c392f627d728cb741fa9955fe9bc2c653ab",
+        "0b9619d358d98d0c44473e50a43869e0b4782d6cd3ff917361ecbaa3e92051f0"
+      ]
+    }
+  ]
+}

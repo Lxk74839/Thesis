@@ -1,0 +1,33 @@
+﻿离线演示运行方法
+
+当前电脑已有Thesis专属Conda环境，可直接复用。
+
+在本目录打开PowerShell执行：
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\运行离线演示.ps1
+
+默认重新生成主表，然后重放18场景5000条任务。运行期间不联网、不读取API Key、不发送模型请求。结果写入同包“04_运行截图与结果\本地重放”。原始失败画像保留为失败，不能改成成功的空画像。
+
+只重放V00单场景时：
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\运行离线演示.ps1 -V00Only
+
+在其他电脑准备环境时：
+
+conda env create -p .\.conda\envs\Thesis -f .\environment.yml
+conda run -p .\.conda\envs\Thesis python -B .\build_wide_csv.py
+conda run -p .\.conda\envs\Thesis python -B .\replay.py --all-scenes
+
+环境仅需Python 3.13.16和标准库。没有调用模型的额外依赖。
+
+主要文件
+
+build_wide_csv.py：真实评论、商品和六阶段SIM属性的确定性关联与CSV生成。
+replay.py：读取真实已保存画像，重新调用原宿主排序，逐任务核对原结果，并输出推荐商品与指标。
+src_snapshot：原项目45份Python模块的未改写快照，用于对应搭建过程和方法实现。
+SOURCE_MANIFEST.json：源码文件摘要及原Git提交标识。
+replay_inputs：300份原画像、18个场景的排序必需字段快照、5000条原结果对照。原完整取证收据仍保留在Thesis项目，此处不把排序快照说成完整取证回放。
+
+原项目从源数据获取到联合任务的入口是prepare_data.py，其采集、过滤、清洗、分组、模拟材料和联合任务阶段依赖原始数据及已确认配置/协议。详细历史搭建过程见随包说明；本包的两个离线入口可直接使用随包数据运行。
+
+src_snapshot中的真实模型实验入口还带有原历史授权与截止约束，不用于本包离线演示，也不能直接复用过期授权启动新的付费实验。

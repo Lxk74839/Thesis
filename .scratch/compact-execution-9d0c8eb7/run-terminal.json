@@ -1,0 +1,1 @@
+{"ended_epoch": 1792733244.058895, "exit_code": 0, "worker_pid": 30372, "timing_basis": "Windows process handle signalled; local wall clock", "entry_point": "compact_experiment.py run --confirm", "automatic_retry": false}

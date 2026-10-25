@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "generated_at": "2026-10-17T09:30:43.879Z",
+  "request": {
+    "topic": "",
+    "title": "Optimizing agricultural food supply chains using permissioned blockchain for traceability and consumer trust",
+    "dois": [],
+    "pdf_url": "https://www.frontiersin.org/journals/sustainable-food-systems/articles/10.3389/fsufs.2026.1827261/pdf",
+    "si_requested": false,
+    "language_override": "",
+    "route_override": "open_access",
+    "source_url": "",
+    "api_fallback_web": null,
+    "api_fallback_web_for": [],
+    "no_api_fallback_web_for": []
+  },
+  "summary": {
+    "total": 1,
+    "downloaded": 1,
+    "seconds": 2.7
+  },
+  "results": [
+    {
+      "title": "Optimizing agricultural food supply chains using permissioned blockchain for traceability and consumer trust",
+      "status": "open_access_downloaded",
+      "provider": "direct_url",
+      "accessMode": "open_access",
+      "ok": true,
+      "file": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\reports\\.literature-download_20261017\\PDFs\\Optimizing_agricultural_food_supply_chains_using_permissioned_blockchain_for_traceability_and_consumer_trust.pdf",
+      "bytes": 1367264,
+      "sha256": "5bb3875b34c9b709ac116d02d2025aa9bda5bd6f6985cc94d4397d1f327f72e1",
+      "contentType": "application/pdf",
+      "format": "pdf",
+      "source": "https://www.frontiersin.org/journals/sustainable-food-systems/articles/10.3389/fsufs.2026.1827261/pdf",
+      "si_requested": false
+    }
+  ]
+}

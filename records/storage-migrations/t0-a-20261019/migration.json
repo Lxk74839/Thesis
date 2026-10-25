@@ -1,0 +1,13 @@
+{
+  "schema_version": "thesis-storage-migration-1.0.0",
+  "stage": "copy_and_sha256_verification_complete_C_cleanup_blocked",
+  "source": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "target": "D:\\Work\\Codex\\Project\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "files": 22125,
+  "directories": 2,
+  "bytes": 91556152080,
+  "started_utc": "2026-10-19T01:29:39.5684092Z",
+  "source_deleted": false,
+  "robocopy_exit_code": 1,
+  "copy_finished_utc": "2026-10-19T01:30:53.8882694Z"
+}

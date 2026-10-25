@@ -1,0 +1,27 @@
+Use case: infographic-diagram
+Asset type: one cartoon-style prompt-template illustration for a Chinese research group meeting and a Word report.
+Primary request: Create a single complete prompt template for ONE User Profile Agent in an agricultural-product recommendation system. This is an illustrated prompt sheet, not a diagram of six agents or a software architecture.
+Canvas: portrait 3:4, high resolution. White or very pale paper background, generous margins, crisp readable large simplified-Chinese typography. All content fits fully inside the canvas.
+Style: warm, clean cartoon illustration with softly outlined shapes, restrained pastel colors, and one friendly small analyst robot. The single robot holds a magnifying glass or comment card and is secondary to the template text. A small grain/seed detail may indicate the agricultural context. Keep the tone suitable for an academic group meeting.
+Composition: A large paper or clipboard prompt sheet contains a clear title and five compact labeled areas arranged vertically: 角色, 输入, 任务, 约束, 输出. The robot is beside the sheet or in a small corner, never over the text. The text should dominate the usable area. Labels may have small intuitive cartoon icons. Do not draw multiple robots, branchy system flows, or six-agent collaboration.
+Required text, verbatim, with line breaks as useful:
+"用户画像智能体"
+"提示词模板"
+"角色"
+"你是农产品推荐系统的用户画像分析员。"
+"输入"
+"历史评论：{history}"
+"可选属性：{options}"
+"任务"
+"识别正向历史中有依据的属性偏好。"
+"区分真正喜欢的属性与偶然出现的词。"
+"约束"
+"只选择给定的 option_id"
+"权重大于0且不超过1"
+"无充分依据时返回空列表"
+"不推断批次质量、产地或认证"
+"输出"
+"selections：选项编号与权重"
+"issues：需说明的问题"
+Small but readable footer: "现有英文提示词的中文示意"
+Scientific constraints: These are source-supported preferences from earlier positive history, not demographic inference. Weight is a preference weight, not a confidence probability. The output fields must be selections and issues. Do not add example performance numbers, invented user facts, blockchain claims, or additional template sections. Preserve all required Chinese and Latin labels accurately. No logos, watermark, fake terminal, or unrelated text.

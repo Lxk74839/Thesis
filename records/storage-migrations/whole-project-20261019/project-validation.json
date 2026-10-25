@@ -1,0 +1,30 @@
+{
+  "status": "D_project_verified_environment_and_ledgers_preserved",
+  "head": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "ledgers": [
+    {
+      "path": "data\\recommendation-runtime-audit\\20261018-batch\\resource-ledger.jsonl",
+      "sha256": "7c8938f52811f939944b6f2337552af349ef96274cd4421ba4acbf1e1d57f33c",
+      "cumulative_seconds": 217.7244063001417,
+      "remaining_seconds": 1582.2755936998583,
+      "unchanged": true
+    },
+    {
+      "path": "data\\recommendation-runtime-audit\\ticket12-t0\\resource-ledger.jsonl",
+      "sha256": "c6a1519d4a64a91ef63557f5f7ded535d1d0ef13ad287fb5485028cee335d075",
+      "cumulative_seconds": 1797.3523884000024,
+      "remaining_seconds": 2.6476115999976173,
+      "unchanged": true
+    }
+  ],
+  "git_status": [
+    " M AGENTS.md",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+    "?? records/storage-migrations/",
+    "?? reports/"
+  ],
+  "old_source_retained": true,
+  "new_project_root": "D:\\Work\\Codex\\Project\\Thesis",
+  "verified_utc": "2026-10-19T01:53:12.5010373Z"
+}

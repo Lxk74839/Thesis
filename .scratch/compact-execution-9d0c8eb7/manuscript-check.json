@@ -1,0 +1,35 @@
+{
+  "output": "D:\\Work\\Codex\\Project\\Thesis\\manuscript\\论文初稿_compact正式结果_9d0c8eb7.docx",
+  "sha256": "e705cc79549e5fcf819db01ce09cfef5a51c376338f0ca8217916be4b65bca62",
+  "source_unchanged": true,
+  "original_sha256": "e09436082eb3cea837e81b89551da6d36b6e9f0ce213eb2d94065329bbc3e027",
+  "changed_package_parts": [
+    "word/document.xml"
+  ],
+  "raw_math_paragraphs_preserved": 17,
+  "seven_numbered_main_formula_source_indices": [
+    29,
+    41,
+    55,
+    58,
+    68,
+    71,
+    75
+  ],
+  "replaced_body_indices": [
+    1,
+    65,
+    88,
+    89,
+    104,
+    108,
+    111,
+    113,
+    115,
+    120,
+    122,
+    125,
+    130
+  ],
+  "new_tables": 4
+}

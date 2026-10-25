@@ -1,0 +1,80 @@
+{
+  "current_protocol": "macrec-agri-v2",
+  "source_files": {
+    "macrec_protocol.py": {
+      "sha256": "d68637520a766f5f6b43be48a85b99a04673c21170ac1a7974e9b0f5a17b83cd"
+    },
+    "macrec_recommendation.py": {
+      "sha256": "0b69799705a3dfbab7dfdb067acafdea7d6543a66f8954637f3d47a7cd3c957a"
+    },
+    "macrec_experiment.py": {
+      "sha256": "c92864c4b8a1181f6474f38f3cbdb8c1cab3cb55681655b7d193c743e72fafe5"
+    },
+    "personalized_recommendation.py": {
+      "sha256": "99df2b2771d67c270e887489df7503bfb628780a94bc735c2d1ba0bb75c553c5"
+    },
+    "compact_experiment.py": {
+      "sha256": "6b7e9197d59b9675e399fcc835e61f1e91e3f6b678fb8e060ed791c2e02b5855"
+    }
+  },
+  "real_v2_request_groups": [
+    {
+      "kind": "action",
+      "role": "推荐管理",
+      "method": "I1",
+      "direct_finish_probe": false,
+      "physical_attempts": 18
+    },
+    {
+      "kind": "thought",
+      "role": "推荐管理",
+      "method": "I1",
+      "direct_finish_probe": false,
+      "physical_attempts": 20
+    },
+    {
+      "kind": "agent",
+      "role": "用户画像",
+      "method": "I1",
+      "direct_finish_probe": true,
+      "physical_attempts": 2
+    },
+    {
+      "kind": "interpret",
+      "role": "需求解析",
+      "method": null,
+      "direct_finish_probe": false,
+      "physical_attempts": 10
+    },
+    {
+      "kind": "agent",
+      "role": "生命周期追溯",
+      "method": "I1",
+      "direct_finish_probe": false,
+      "physical_attempts": 9
+    },
+    {
+      "kind": "action",
+      "role": "推荐管理",
+      "method": "B0",
+      "direct_finish_probe": true,
+      "physical_attempts": 2
+    },
+    {
+      "kind": "agent",
+      "role": "农产品画像",
+      "method": "I1",
+      "direct_finish_probe": true,
+      "physical_attempts": 2
+    },
+    {
+      "kind": "agent",
+      "role": "用户画像",
+      "method": "I1",
+      "direct_finish_probe": false,
+      "physical_attempts": 12
+    }
+  ],
+  "v2_reflection_requests": 0,
+  "prompts_generated_without_provider_calls": true
+}

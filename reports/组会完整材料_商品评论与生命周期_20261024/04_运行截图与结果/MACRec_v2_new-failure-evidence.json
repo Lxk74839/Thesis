@@ -1,0 +1,374 @@
+[
+  {
+    "unit": "c8581d545084d97597839743af246c215554702df73e6fae512ffbd0753469df-features-macrec-agri-v2",
+    "reason": "macrec_evidence_scope",
+    "request_id": "d37290e5bfdb9e93aa9170669753017e7c9264f750127c400b44ee1220f2167e",
+    "kind": "agent",
+    "role": "生命周期追溯",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d37290e5bfdb9e93aa9170669753017e7c9264f750127c400b44ee1220f2167e.request.json",
+      "bytes": 42645,
+      "sha256": "e6fa857a678b4fa1bb3f1b3fa59389fb48bf809df42f465ba2d01743e763cb8f"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d37290e5bfdb9e93aa9170669753017e7c9264f750127c400b44ee1220f2167e.response.json",
+      "bytes": 7178,
+      "sha256": "8084a01476028fe7cb3e63022f22ebd42a7a00d0352a124c77f68d45c8e56dca"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Search",
+    "data_fields": [
+      "candidates"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "candidate_count": 202,
+    "unique_candidate_count": 200,
+    "duplicate_indices": [
+      20
+    ],
+    "out_of_range_indices": [],
+    "raw_excerpt": "{\"action\":\"Search\",\"data\":{\"candidates\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,3",
+    "raw_tail": "157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,20,20]}}"
+  },
+  {
+    "unit": "2f274ce67d44984affc2c7b557e53a89f90f7a711d98f7cc0e38ddc6ab3a4040-features-macrec-agri-v2",
+    "reason": "macrec_evidence_scope",
+    "request_id": "d7e758b4fef8bf03cce63275715936f1b7c01927bff54529ad485dc63b910a3f",
+    "kind": "agent",
+    "role": "生命周期追溯",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d7e758b4fef8bf03cce63275715936f1b7c01927bff54529ad485dc63b910a3f.request.json",
+      "bytes": 42556,
+      "sha256": "e9cdccf1751d5c8e3ecd3f48409df81aab803e034a7f3b27ce0efaca2a280a3f"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d7e758b4fef8bf03cce63275715936f1b7c01927bff54529ad485dc63b910a3f.response.json",
+      "bytes": 6534,
+      "sha256": "91f67ff5b5638456ff11480d3b216164cddedd50a7c9af6d19553378abf046b6"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Lookup",
+    "data_fields": [
+      "candidates"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "candidate_count": 201,
+    "unique_candidate_count": 200,
+    "duplicate_indices": [
+      0
+    ],
+    "out_of_range_indices": [],
+    "raw_excerpt": "{\"action\":\"Lookup\",\"data\":{\"candidates\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,3",
+    "raw_tail": "6,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,  0]}}"
+  },
+  {
+    "unit": "213149a3a130ea0485a964956eb70129f49f3a6fd1663501b31dc5912bd85a75-features-macrec-agri-v2",
+    "reason": "macrec_evidence_scope",
+    "request_id": "f3c016ae3796f53871d8a2fddd7abaff323f24042357a88ad486cb9545e34b56",
+    "kind": "agent",
+    "role": "生命周期追溯",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/f3c016ae3796f53871d8a2fddd7abaff323f24042357a88ad486cb9545e34b56.request.json",
+      "bytes": 36577,
+      "sha256": "038ac92c74360bb1abbc806b180a9143f4b962b6dc7b139b41582c3775ba3fb9"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/f3c016ae3796f53871d8a2fddd7abaff323f24042357a88ad486cb9545e34b56.response.json",
+      "bytes": 5914,
+      "sha256": "38f23d4ca156a60b561abf064e8929db00aad555c35bf1f105c3447f62e6f163"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Lookup",
+    "data_fields": [
+      "candidates"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "candidate_count": 200,
+    "unique_candidate_count": 199,
+    "duplicate_indices": [
+      0
+    ],
+    "out_of_range_indices": [],
+    "raw_excerpt": "{\"action\":\"Lookup\",\"data\":{\"candidates\":[0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,",
+    "raw_tail": "156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,0]}}"
+  },
+  {
+    "unit": "918a01820977ee56cbf61ecc300f654d83e02859e498b7c021ba31f32917eac2-features-macrec-agri-v2",
+    "reason": "macrec_evidence_scope",
+    "request_id": "1b4586ec6ba6ce6187c22509b78717bf774e48efc7965ff8071907c8110a680d",
+    "kind": "agent",
+    "role": "生命周期追溯",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/1b4586ec6ba6ce6187c22509b78717bf774e48efc7965ff8071907c8110a680d.request.json",
+      "bytes": 43576,
+      "sha256": "931a748fa30e8b640d89ce0b911ff099a5b7dd6b50dfabb386c239ba69e535b0"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/1b4586ec6ba6ce6187c22509b78717bf774e48efc7965ff8071907c8110a680d.response.json",
+      "bytes": 6045,
+      "sha256": "cc9070e4d9cdce2ecf5c54b06d21cbf98601bc4977c92cdca332b25984ba5b6d"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Lookup",
+    "data_fields": [
+      "candidates"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "candidate_count": 201,
+    "unique_candidate_count": 200,
+    "duplicate_indices": [
+      0
+    ],
+    "out_of_range_indices": [],
+    "raw_excerpt": "{\"action\":\"Lookup\",\"data\":{\"candidates\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,3",
+    "raw_tail": "56,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199, 0]}}"
+  },
+  {
+    "unit": "11ca897eba758292c92210e99f88e31403da977ebf6192259ba0cab3ebb89a57-features-macrec-agri-v2",
+    "reason": "macrec_business_response_shape:schema:$.data:fields",
+    "request_id": "d1f23636d95ab336fa133354ba30aa58fa30db83223ff644bf0bff813ca0e7f2",
+    "kind": "agent",
+    "role": "用户画像",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d1f23636d95ab336fa133354ba30aa58fa30db83223ff644bf0bff813ca0e7f2.request.json",
+      "bytes": 44012,
+      "sha256": "b18755393f81fcfea4a055115a71897450d098a50a141109d0f6540452fc3359"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/d1f23636d95ab336fa133354ba30aa58fa30db83223ff644bf0bff813ca0e7f2.response.json",
+      "bytes": 9248,
+      "sha256": "59c94726446bd1f2463ce26ae0adc7ba5cdb68055c7c0fd5cc66e143b70f95ba"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Info",
+    "data_fields": [
+      "preferences"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": false,
+    "operation_error": "schema:$.data:fields",
+    "raw_excerpt": "{\"action\":\"Info\",\"data\":{\"preferences\":[{\"attribute\":\"form\",\"id\":\"light_fluffy\",\"supports\":[{\"quote\":\"It is tasty, pops up light and fluffy.\",\"ref\":\"h1.text\",\"stance\":1}],\"value\":\"light and fluffy\",\"weight\":1}]}}"
+  },
+  {
+    "unit": "eebf36aba4863f1b08c77fae02bc4c6c8b9ce17f9343cf709dab6d3e65d23fd0-features-macrec-agri-v2",
+    "reason": "macrec_evidence_scope",
+    "request_id": "e0ce791b8cda3551f68b0f0ed80398960499111b71ec0774e37c3180e1df6b8b",
+    "kind": "agent",
+    "role": "生命周期追溯",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/e0ce791b8cda3551f68b0f0ed80398960499111b71ec0774e37c3180e1df6b8b.request.json",
+      "bytes": 47927,
+      "sha256": "3d0212b4d16dc12547eee430a6255b05f9476d13207f832c926b51c600d11c73"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/e0ce791b8cda3551f68b0f0ed80398960499111b71ec0774e37c3180e1df6b8b.response.json",
+      "bytes": 6398,
+      "sha256": "37bcfa131e8d921b25980dbbf8b2ede081a7c5c9a26de687088c465ca4fb894c"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "Lookup",
+    "data_fields": [
+      "candidates"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "candidate_count": 300,
+    "unique_candidate_count": 200,
+    "duplicate_indices": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199
+    ],
+    "out_of_range_indices": [],
+    "raw_excerpt": "{\"action\":\"Lookup\",\"data\":{\"candidates\":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,3",
+    "raw_tail": "5,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199]}}"
+  },
+  {
+    "unit": "1953b2a9c9859bebad6a980439679d30a9f5bf5f54fbf4f29a70fb1ccbaabbaf-features-macrec-agri-v2",
+    "reason": "macrec_dispatch_exhausted_or_invalid",
+    "request_id": "8f5aff5db15ff2e20ac33c30b522cb646a2089c075a22c3f7dbbecbda4c62ee4",
+    "kind": "action",
+    "role": "推荐管理",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/8f5aff5db15ff2e20ac33c30b522cb646a2089c075a22c3f7dbbecbda4c62ee4.request.json",
+      "bytes": 84195,
+      "sha256": "b056432e4e101ef1e85534eb6dd116f9e6b7646db09cb02d093fc33a62674ba6"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/8f5aff5db15ff2e20ac33c30b522cb646a2089c075a22c3f7dbbecbda4c62ee4.response.json",
+      "bytes": 6179,
+      "sha256": "304742718832f68cfc75e06ba470dfda31a783589748eed522c558ce472e9ccb"
+    },
+    "terminal_status": "ok",
+    "response_status": "completed",
+    "usage_known": true,
+    "action": "User",
+    "data_fields": [
+      "instruction"
+    ],
+    "emitted_schema_accepts": true,
+    "selected_operation_schema_accepts": true,
+    "raw_excerpt": "{\"action\":\"User\",\"data\":{\"instruction\":\"从历史记录中提取可用于排序的稳定偏好，并引用精确历史文本与目录标题；不要判断候选的必要条件资格。\"}}"
+  },
+  {
+    "unit": "fd835acdde4f0511a01ed221230cdab8a944c1eb425588fff47bf9c8c998318d-features-macrec-agri-v2",
+    "reason": "task16_failed_response",
+    "request_id": "dce085fef9c7837c28e3df9a461d5d6c465f4029a8af63ee324fc4485deb45e3",
+    "kind": "interpret",
+    "role": "需求解析",
+    "request": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/dce085fef9c7837c28e3df9a461d5d6c465f4029a8af63ee324fc4485deb45e3.request.json",
+      "bytes": 3436,
+      "sha256": "76f2fe2097e10404014873c73798098cb8c81174d03ecca2b4a5537501fa8705"
+    },
+    "response": {
+      "path": "data/recommendation-runtime-audit/macrec-agri-dev-task16/calls/dce085fef9c7837c28e3df9a461d5d6c465f4029a8af63ee324fc4485deb45e3.response.json",
+      "bytes": 635,
+      "sha256": "19d245664ce8687bfcd78967764139106c6cabedfe30b6b08a35d85daf598008"
+    },
+    "terminal_status": "failed",
+    "response_status": "failed",
+    "usage_known": false,
+    "provider_diagnostic": {
+      "business_output": {
+        "items": [],
+        "omission_reason": "unsupported_output",
+        "replayable": false,
+        "schema_version": "4router-business-output-0.1.0"
+      },
+      "http_diagnostic": {
+        "elapsed_ms": 21076.928200083785,
+        "ended_at_utc_ms": 1792815612356,
+        "error": null,
+        "omission_reason": "local_timeout",
+        "send_state": "unknown",
+        "started_at_utc_ms": 1792815591279,
+        "transport_kind": "local_timeout"
+      },
+      "http_status": null,
+      "native_usage": null,
+      "output_structure": null,
+      "request_body_bytes": 3649,
+      "request_id": null,
+      "response_id": null,
+      "returned_model": null,
+      "usage_diagnostic": {
+        "state": "unknown",
+        "usage": null
+      }
+    }
+  }
+]

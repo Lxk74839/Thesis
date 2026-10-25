@@ -1,0 +1,14 @@
+{
+  "source_package": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会完整材料_商品评论与生命周期_20261024",
+  "users": 100,
+  "display_records": 100,
+  "full_records": 123,
+  "history_products": 75,
+  "candidate_products": 1494,
+  "columns": 42,
+  "source_csv_sha256": {
+    "01_商品评论与生命周期_100行展示.csv": "dba6a8d6c59a788d19c8c6f7033763e3cfa3dca8be23554adbe48ca74b6ab1f5",
+    "02_商品评论与生命周期_完整123条.csv": "4f737ce865be099b094c48c20de68f3edc38503625c6005ed0ae20c01c892f26"
+  },
+  "new_model_api_calls": 0
+}

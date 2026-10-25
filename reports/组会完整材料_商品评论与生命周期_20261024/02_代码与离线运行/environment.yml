@@ -1,0 +1,6 @@
+name: Thesis
+channels:
+  - https://repo.anaconda.com/pkgs/main
+  - nodefaults
+dependencies:
+  - python=3.13.16

@@ -1,0 +1,22 @@
+{
+  "archive": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会修订材料_无代码_字段详解与六角色设计_20261024.zip",
+  "size_mib": 19.291,
+  "sha256": "b56f07b8fb86df178d6aba661213c9ef47bcad636ecab5dd4359b86f05ee8674",
+  "files": 52,
+  "word_pages": [
+    2,
+    10
+  ],
+  "csv_rows": [
+    100,
+    123
+  ],
+  "fields_explained": 42,
+  "roles": 6,
+  "normal_prompt_variants": 12,
+  "design_figures": 2,
+  "code_files": 0,
+  "actual_replay_matched_tasks": 5000,
+  "new_model_api_calls": 0,
+  "terminal_screenshot": "not_acquired; actual terminal retained; no fabricated screenshot"
+}

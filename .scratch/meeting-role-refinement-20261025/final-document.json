@@ -1,0 +1,15 @@
+{
+  "document": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会汇报_角色完善版_20261025\\周组会汇报_实验结果_数据集_智能体设计.docx",
+  "image": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会汇报_角色完善版_20261025\\配图\\用户画像智能体_学术风格.png",
+  "csv_rows": [
+    100,
+    123
+  ],
+  "csv_columns": 42,
+  "unchanged_files_checked": 6,
+  "new_model_api_calls": 0,
+  "source_pages": [
+    "AgentCF C.1 PDF12",
+    "RecMind A PDF12 / p4362"
+  ]
+}

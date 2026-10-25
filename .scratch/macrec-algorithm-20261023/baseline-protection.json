@@ -1,0 +1,139 @@
+{
+  "schema": "macrec-stage1-protection/1",
+  "date": "2026-10-23",
+  "timezone": "Asia/Tokyo",
+  "baseline_commit": "7cf851e95b2254a76547d2785678f0056c1e1ff9",
+  "scope": "Read-only first-stage research and draft preparation; known pre-existing AGENTS.md modification preserved",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 2081,
+      "sha256": "1a81969eceadbd34701bb3e19793e6917cbfb3d335f9ebbfa305362a4c8a00ab"
+    },
+    {
+      "path": "research/数据修复方案与验收草案_20261010.md",
+      "bytes": 18457,
+      "sha256": "40f3960a9cce38221367ef6f05074c61e22251e93ebb664bbad3077fefdb8a8d"
+    },
+    {
+      "path": "research/基础方法与当前实现对应核对_20261023.md",
+      "bytes": 5026,
+      "sha256": "5f832a0d4125fbd2c65be68ef46e0f17a427cdb9a606477968cff8b7496d71f9"
+    },
+    {
+      "path": "research/精简范围与性能取舍核对_20261023.md",
+      "bytes": 5907,
+      "sha256": "7e7a25d1372dc2cc8c5acc8b5e7c428e04bafa8b9222b00fc73a65b6be819f3c"
+    },
+    {
+      "path": "manuscript/论文初稿_表达与实验结构修订版_20261010.docx",
+      "bytes": 547767,
+      "sha256": "b9f44938f7298a23e84a69bfed33f2398bb705a8433bd44f49866f8fbc2064b0"
+    },
+    {
+      "path": "personalized_recommendation.py",
+      "bytes": 10597,
+      "sha256": "99df2b2771d67c270e887489df7503bfb628780a94bc735c2d1ba0bb75c553c5"
+    },
+    {
+      "path": "compact_experiment.py",
+      "bytes": 21966,
+      "sha256": "6b7e9197d59b9675e399fcc835e61f1e91e3f6b678fb8e060ed791c2e02b5855"
+    },
+    {
+      "path": "compact_evaluation.py",
+      "bytes": 7462,
+      "sha256": "ef6954ae4ed622da8429ceaef7970bee5891c2ae61271eb380bdf69d35729204"
+    },
+    {
+      "path": "evidence_access.py",
+      "bytes": 46429,
+      "sha256": "11fbdd93e9cc7672c804a7d09bdae281c850ea1f3f5558ccc9f27d94d68d6767"
+    },
+    {
+      "path": "evidence_verification.py",
+      "bytes": 19458,
+      "sha256": "23140365ba9dad08aa70af2842dc5844ecd3bf0603d4d330663cccdda000b133"
+    },
+    {
+      "path": "quality_fusion.py",
+      "bytes": 22810,
+      "sha256": "d3f3309eff8e17126111e002cae11d261a53302eb76dfbd29e930706a6345657"
+    },
+    {
+      "path": "experiment_evaluation.py",
+      "bytes": 27955,
+      "sha256": "e798e2ab7e951cb8914ee7a42262aed6d2d172a134a88b301338dfa38e15ddf3"
+    },
+    {
+      "path": "experiment_runner.py",
+      "bytes": 27136,
+      "sha256": "85f54f25213d17da909b95c8ba9b91d85fa396797c58e396b9c8a297d579be56"
+    },
+    {
+      "path": "provider_fourrouter.py",
+      "bytes": 29964,
+      "sha256": "9e79576dc1a8ad152da2fce9751edd3c860383d3177474b9055ddd8935198df9"
+    },
+    {
+      "path": "fourrouter_probe.py",
+      "bytes": 18407,
+      "sha256": "5b903a4e181b6de7350ee1b93d0adbf849bd35be087af5dad728baa96d9459a4"
+    },
+    {
+      "path": ".scratch/personalized-compact-20261023/spec.md",
+      "bytes": 3672,
+      "sha256": "9f70217bb32e50f3b9708eb605252f178f3fca45b2e89cce5e1c35abf6aec29a"
+    },
+    {
+      "path": ".scratch/personalized-compact-20261023/config.json",
+      "bytes": 10551,
+      "sha256": "e7dce3c9a6b41636322e7fe3d2d0bb6b91013c66c629f8e2933405487912800d"
+    },
+    {
+      "path": ".scratch/compact-execution-9d0c8eb7/results.md",
+      "bytes": 5821,
+      "sha256": "57bdfb4a1cedca91356fb2170f2c90daf0c4bca24d6153f368f0904b77344309"
+    },
+    {
+      "path": ".scratch/compact-execution-9d0c8eb7/results.json",
+      "bytes": 34087,
+      "sha256": "4e5465f8b356a918b77b1be1b4a39afefa5eab0323bbb573b8e85089d03acdd4"
+    },
+    {
+      "path": ".scratch/compact-execution-9d0c8eb7/execution-record.md",
+      "bytes": 4605,
+      "sha256": "b6e33fd909e6966f3d70a1ee44b16ff413a90f52b3d27b7488e0c89be54065b6"
+    },
+    {
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0.json",
+      "bytes": 5262,
+      "sha256": "2da2aede2c3057c914621bfaf40d2d5ba81b3ad1a1b694451213ea8358a21131"
+    },
+    {
+      "path": "records/splits/grain-A-1.1.15-user-split-1.0.0-acceptance.json",
+      "bytes": 13458,
+      "sha256": "8af692d6409c8136bd67e6d5fbb696c9e725e53aea958ea639417153382d45ad"
+    },
+    {
+      "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0.json",
+      "bytes": 3993,
+      "sha256": "2226fb160a0e25cdf4c1ecf3b7bf213197de144bbd97286311b0bf0f58f9eb58"
+    },
+    {
+      "path": "records/joint-tasks/grain-A-1.1.15-joint-task-package-0.1.0-acceptance.json",
+      "bytes": 6134,
+      "sha256": "9937ff98a530b0b51cb072fc9d055da9bc11f006dcca8ac4296500bed3200976"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/20261018-batch/resource-ledger.jsonl",
+      "bytes": 1735929,
+      "sha256": "33d6d8a0c91bebbc30fa69d286cff0c7497f5686405c11a45d18ee263e74424a"
+    },
+    {
+      "path": "data/recommendation-runtime-audit/ticket12-t0/resource-ledger.jsonl",
+      "bytes": 25417,
+      "sha256": "61364efd7e619517c23377d76ee138b9736ea23805cb47cf08e30697265e70ca"
+    }
+  ]
+}

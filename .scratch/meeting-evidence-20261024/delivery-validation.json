@@ -1,0 +1,26 @@
+{
+  "package": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会完整材料_商品评论与生命周期_20261024",
+  "archive": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会完整材料_含商品级数据代码提示词与运行结果_20261024.zip",
+  "archive_sha256": "af0745c60c03e55ea788479d5825816a9e4eeb9332d652dcb8740c7cea4769bc",
+  "archive_mib": 21.346,
+  "files": 424,
+  "extension_counts": {
+    ".csv": 22,
+    ".txt": 10,
+    ".py": 47,
+    ".yml": 1,
+    ".jsonl": 1,
+    ".json": 325,
+    ".ps1": 1,
+    ".md": 10,
+    ".png": 5,
+    ".docx": 2
+  },
+  "display_rows": 100,
+  "full_rows": 123,
+  "columns": 42,
+  "source_files_verified": 45,
+  "replay_matched_tasks": 5000,
+  "new_model_api_calls": 0,
+  "word_visual_qa_pages": 6
+}

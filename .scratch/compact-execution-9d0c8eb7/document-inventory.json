@@ -1,0 +1,87 @@
+{
+  "reference": "D:\\Work\\Codex\\Project\\Thesis\\manuscript\\论文初稿_推荐算法与精简实验修订版_20261023.docx",
+  "reference_sha256": "cd2ef686719d765c9c7148408803bd257153c4ed29ba03ba7b9a1879d14c3647",
+  "parts": {
+    "[Content_Types].xml": {
+      "bytes": 2018,
+      "sha256": "234178fe471cc125ef2088909cf02c35acffe0b5a6672d7f1c30663c7a7110a1"
+    },
+    "_rels/.rels": {
+      "bytes": 589,
+      "sha256": "a76c44cf6b278166bfc93edce0a98846be30e584462153ba97fa683469ff5916"
+    },
+    "docProps/app.xml": {
+      "bytes": 1048,
+      "sha256": "4f3a17e2dff76aa61c46586ada702c3716bc78e5a886b093dd9ca40c261f13aa"
+    },
+    "docProps/core.xml": {
+      "bytes": 817,
+      "sha256": "b4b60d72a7e399b349ad82d40a6758539329d0a36816588e7c1484e7731e8701"
+    },
+    "word/document.xml": {
+      "bytes": 148468,
+      "sha256": "a07274e193b272dca6f138230c29bc371595af96393266bf338927aed4301f46"
+    },
+    "word/_rels/document.xml.rels": {
+      "bytes": 1750,
+      "sha256": "b82b2fd5019498074ad16ad759ec6e78d47138f211a333ae3e14d7f2464d9c4b"
+    },
+    "word/media/image1.png": {
+      "bytes": 255186,
+      "sha256": "1c0f711f4d2b41f0b61b222b4ea091783cdea3a69961d2190a97bc059e1884d6"
+    },
+    "word/styles.xml": {
+      "bytes": 341145,
+      "sha256": "7d4c49ea162ddd21310d00b0de1014dbabae5f3f83a535db93365e697d105844"
+    },
+    "word/endnotes.xml": {
+      "bytes": 3152,
+      "sha256": "5a1bc3745b74a9674dc7ab206ac847c00a7b57ee272e2065647b0340ebd1efdc"
+    },
+    "word/numbering.xml": {
+      "bytes": 7422,
+      "sha256": "f3477f0fceccfd979497b177d4078bd68fa477ad57a04ad2a4ea8fdf9d9e199e"
+    },
+    "customXml/item1.xml": {
+      "bytes": 260,
+      "sha256": "fd38bf9d14299ec0909557ff8b08b38816a6860d488f11a7c53dc63eb13ee44f"
+    },
+    "customXml/_rels/item1.xml.rels": {
+      "bytes": 295,
+      "sha256": "1ca6c9a64edcebe24ee703a54403611b322d96da33371779e742d2d3f7ed7a6c"
+    },
+    "customXml/itemProps1.xml": {
+      "bytes": 341,
+      "sha256": "4c998dc0bc6eb6f38ecc20856255fff6891d5b6345a7260698c53063da4bc5f2"
+    },
+    "word/footnotes.xml": {
+      "bytes": 3158,
+      "sha256": "8d2689b5a559feffb453fc7b19f6e0f850f2c11a97aa3656fe9214cd0fa525d5"
+    },
+    "word/theme/theme1.xml": {
+      "bytes": 7643,
+      "sha256": "b2295d3198893d2c03f5e584c749a15751b798aefdcd9bee2889f13903d68cb2"
+    },
+    "word/webSettings.xml": {
+      "bytes": 1046,
+      "sha256": "ee07406206c299bd15efc79295c9a223911089ff30b81b89c17dd93064d33d58"
+    },
+    "word/fontTable.xml": {
+      "bytes": 3781,
+      "sha256": "15926e280f179ed770d712a9d39a8f9fa64e72985422f304970699aaedc32712"
+    },
+    "word/settings.xml": {
+      "bytes": 3657,
+      "sha256": "7702da043338d9d54ef5b92799379a5c42db1eb3d07a22154e742c36bbe03bf9"
+    },
+    "word/footer1.xml": {
+      "bytes": 2984,
+      "sha256": "ce6c244161ec109a0c74e430e291520aace6a7c59e847cc5583a5e1a710afbb3"
+    },
+    "word/media/image2.png": {
+      "bytes": 296973,
+      "sha256": "f7a194336de69cfe5d4a68567dff9501d92ced3d189dc4bc8773e302ee839239"
+    }
+  },
+  "read_only_source": "E:/工作/成果/小论文/初稿/论文初稿.docx"
+}

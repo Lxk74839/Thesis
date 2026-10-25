@@ -1,0 +1,18 @@
+{
+  "zip": "D:\\Work\\Codex\\Project\\Thesis\\reports\\组会材料_实验结果_数据集_卡通提示词模板_20261024.zip",
+  "size_mib": 3.991,
+  "sha256": "1701a7ff7f7029bf490fff1c63ade4b0d4c79b291c194a4194fcadde11d0dc12",
+  "word_pages": 3,
+  "sections": 3,
+  "images_in_word": 4,
+  "one_cartoon_agent": true,
+  "terminal_screenshot_unmodified": true,
+  "dataset_records": [
+    100,
+    123
+  ],
+  "dataset_columns": 42,
+  "source_code_files": 0,
+  "new_recommendation_model_calls": 0,
+  "files": 12
+}

@@ -1,0 +1,24 @@
+{
+  "schema_version": "thesis-whole-project-migration-1.0.0",
+  "stage": "D_project_files_environment_validated_Codex_UI_switch_pending",
+  "source": "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis",
+  "target": "D:\\Work\\Codex\\Project\\Thesis",
+  "source_git_head": "69918e613fd700fd33c53a0ded5557b604487fcc",
+  "source_git_status": [
+    "?? .scratch/ticket12-budget-20261018/diagnostics/analyze_t0_payloads.py",
+    "?? .scratch/ticket12-budget-20261018/diagnostics/diagnose_t0_costs.py",
+    "?? reports/"
+  ],
+  "files_to_copy": 10758,
+  "directories_to_copy": 2023,
+  "bytes_to_copy": 27319755825,
+  "reused_catalog": "D:\\Work\\Codex\\Project\\Thesis\\data\\ticket12-t0\\catalog-0.1.0",
+  "reused_catalog_bytes": 91556152080,
+  "exclusions": [
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\.conda\\envs\\Thesis",
+    "C:\\Users\\Kane\\Documents\\CodexProject\\Thesis\\data\\ticket12-t0\\catalog-0.1.0"
+  ],
+  "source_deleted": false,
+  "started_utc": "2026-10-19T01:47:00.8838749Z",
+  "robocopy_exit_code": 3
+}

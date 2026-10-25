@@ -1,0 +1,25 @@
+﻿THESIS | ACTUAL OFFLINE EVALUATION RESULTS
+Completed: 2026-10-24 23:14:40 +09:00 (Japan time)
+
+Source: original Compact experiment, 100 frozen users.
+Reused saved REAL model profiles; host ranking was re-executed.
+Scope: 18 scenes; preference metrics aggregate 16 V scenes.
+Per-user scene mean, then equal-user mean; failed tasks count as zero.
+
+METHOD         HR@10       NDCG@10     SUCCESS    FAILED     USERS
+------------------------------------------------------------------
+R           0.217500      0.121012        1600         0       100
+S           0.195625      0.108129        1568        32       100
+M           0.205625      0.102365        1408       192       100
+
+ALL TASKS: 5000 | MATCHED ORIGINAL: 5000/5000
+STATUS: ok=4752; failed_model=248
+Local replay seconds: 117.86
+NEW MODEL API CALLS: 0
+
+R = rule profile; S = single model profile; M = sequential six-role profile.
+No evidence that M is better overall than R or S.
+NEW MACRec B0/I1: main comparison NOT COMPLETED; HR/NDCG = N/A.
+
+This is a real terminal showing a cache-based offline replay.
+This is not a fresh model-inference experiment or Fabric deployment.

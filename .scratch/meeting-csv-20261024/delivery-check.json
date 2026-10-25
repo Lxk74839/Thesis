@@ -1,0 +1,24 @@
+{
+  "word_pages": 2,
+  "all_pages_visually_reviewed": true,
+  "word_has_three_plain_sections": true,
+  "native_word_tables": 0,
+  "hyperlinks": 0,
+  "first_person_terms": 0,
+  "data_preview_included": true,
+  "render_backend": "Microsoft Word read-only PDF export and bundled Poppler PNG render",
+  "csv_check": {
+    "固定100账户一致": true,
+    "候选顺序基础分及批次逐行一致": true,
+    "评论用户商品关联正确": true,
+    "历史严格早于截止": true,
+    "18场景1800绑定完整": true,
+    "留出目标独立存放": true,
+    "场景构造信息独立存放": true,
+    "CSV文件数": 15,
+    "全部CSV回读及SHA256一致": true,
+    "本次模型API调用": 0
+  },
+  "dataset_source": "frozen original test100 cohort",
+  "new_model_api_calls": 0
+}

@@ -1,0 +1,32 @@
+Use case: text-localization and precise-object-edit.
+The referenced image is the edit target. Revise its ROLE section into a complete role definition while keeping this same cartoon prompt-template design.
+
+Preserve the friendly analyst robot, grain illustrations, clipboard paper, pastel colors, rounded panels, main title 用户画像智能体, subtitle 提示词模板, and the five main panels 角色 / 输入 / 任务 / 约束 / 输出. This is still ONE agent's prompt template, not a diagram of multiple agents.
+
+Replace the one-sentence body inside the 角色 panel with these FIVE short paragraphs, verbatim. Use clearly visible bold labels and comfortably readable simplified-Chinese text. All five paragraphs must appear completely:
+"身份定位：你是农产品推荐系统中的用户偏好分析员。"
+"工作目标：形成有依据、可复用的结构化偏好画像。"
+"核心职责：辨别喜好与抱怨，区分偏好与偶然提及，筛选属性并赋权。"
+"协作关系：向农产品画像和推荐管理提供偏好与问题说明。"
+"能力边界：不负责最终排序或生命周期核验，不推断批次质量、产地或认证。"
+
+Enlarge the ROLE panel substantially, and reflow the other panels downward. A taller portrait canvas around 2:3 is welcome. Modestly reduce the oversized decorative title and decoration if necessary. Do NOT solve the added text by shrinking it into tiny text. No text may overlap the robot or decorative art, spill outside its panel, or be cropped. Keep the complete image and clipboard borders visible.
+
+Preserve the remaining panel text exactly:
+输入:
+"历史评论：{history}"
+"可选属性：{options}"
+任务:
+"识别正向历史中有依据的属性偏好。"
+"区分真正喜欢的属性与偶然出现的词。"
+约束:
+"只选择给定的 option_id"
+"权重大于0且不超过1"
+"无充分依据时返回空列表"
+"不推断批次质量、产地或认证"
+输出:
+"selections：选项编号与权重"
+"issues：需说明的问题"
+
+Update the small readable footer to: "既有提示词与角色分工的中文示意"
+Do not introduce new output fields, experimental results, performance claims, additional agents, logos, or watermarks. Preserve the meaning that this role provides supported preferences, while final ranking and lifecycle verification belong to other modules.

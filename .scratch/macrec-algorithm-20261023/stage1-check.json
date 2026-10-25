@@ -1,0 +1,86 @@
+{
+  "schema": "macrec-stage1-check/1",
+  "date": "2026-10-23",
+  "timezone": "Asia/Tokyo",
+  "status": "draft_delivered_implementation_not_started",
+  "development_scope": "user_confirmed_320_offline_and_first16_by_existing_hash",
+  "method_and_seams_confirmed": false,
+  "production_code_changed": false,
+  "project_tests_written": 0,
+  "project_tests_executed": 0,
+  "model_api_calls": 0,
+  "recommendation_experiments": 0,
+  "dependencies_installed": 0,
+  "protected_files_unchanged": 26,
+  "source_files_verified": 16,
+  "author_worktree_clean": true,
+  "broken_draft_links": [],
+  "root_commit": "7cf851e95b2254a76547d2785678f0056c1e1ff9",
+  "author_commit": "cbd9ea036cf6cac05a2ee59592526982a626fc82",
+  "max_planned_model_calls": 6944,
+  "estimated_new_GiB": 6.27,
+  "price": null,
+  "cost": null,
+  "draft_files": [
+    {
+      "path": ".scratch/macrec-algorithm-20261023/acceptance.md",
+      "bytes": 8291,
+      "sha256": "6e28e70671974ac365fcb2f771ea588c25424c0baf4583aee10ab5d436922c9c"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/budget.md",
+      "bytes": 9343,
+      "sha256": "6225461d721cd96fc7d2630a3325258ef4b74faf7cd1e2c28d745bb52df74dce"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/map.md",
+      "bytes": 1297,
+      "sha256": "beb6ea103bfe4f92233395ceb83d40ca07777be3f602b596aa8e58551cbc28e5"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/method-mapping.md",
+      "bytes": 8596,
+      "sha256": "62c3ba37c3159db641698cba10beca408cf9fb9365cff1cbd0d8abfefb23938e"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/README.md",
+      "bytes": 2902,
+      "sha256": "9ba0949b992f6b5dfb722e7c698aa0be996d8a0732d4f8a9a7909e6adcb88a8a"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/spec.md",
+      "bytes": 23677,
+      "sha256": "d7a68cbb85ab2620c746b18560262b8911950f188b5322782b3d595ee49c4c49"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/stage1-check.md",
+      "bytes": 2391,
+      "sha256": "f81ed0413cd824c8fe7e6fd4ede4d954b81f094bbc835d309e350ac90fbf5280"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/issues/01-candidates-and-contract.md",
+      "bytes": 2016,
+      "sha256": "7fb22039cdb1cabd294375058e4295a38406ebe1ac09beb18deb5cbb0a397c31"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/issues/02-macrec-agri-baseline.md",
+      "bytes": 1928,
+      "sha256": "f38d4502a26bf0aee21d41e868aa14b524530a1a3e979edee1f71c5d5d4bb82b"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/issues/03-source-grounded-ranking.md",
+      "bytes": 1953,
+      "sha256": "aebe6aa9d76874f36a6e3aefcb4fde1b9996b48f1ec02b0101167a9a8e924ee0"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/issues/04-development-runner-and-evaluation.md",
+      "bytes": 2100,
+      "sha256": "a6f2089630eadb78d23e59aa5fb204e039d13594131508ff71ad7b50238c01dd"
+    },
+    {
+      "path": ".scratch/macrec-algorithm-20261023/issues/05-review-and-development-validation.md",
+      "bytes": 2599,
+      "sha256": "3585a391cae26abc0f7529ba98b922b4a5ee3ff7f705c3cf8d832787529b2e27"
+    }
+  ]
+}
